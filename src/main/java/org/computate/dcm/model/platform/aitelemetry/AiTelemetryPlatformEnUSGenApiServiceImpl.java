@@ -1774,19 +1774,27 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
     return "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm";
+  }
+  public String templateSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriSearchPageAiTelemetryPlatform(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateSearchPageAiTelemetryPlatform failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200SearchPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      if(listAiTelemetryPlatform.size() == 0)
-        pageTemplateUri = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1985,19 +1993,27 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateEditPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriEditPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
     return "en-us/edit/ai-telemetry-platform/AiTelemetryPlatformEditPage.htm";
+  }
+  public String templateEditPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriEditPageAiTelemetryPlatform(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateEditPageAiTelemetryPlatform failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200EditPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateEditPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      if(listAiTelemetryPlatform.size() == 0)
-        pageTemplateUri = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateEditPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2196,19 +2212,27 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateUserPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriUserPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
     return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
+  }
+  public String templateUserPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriUserPageAiTelemetryPlatform(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateUserPageAiTelemetryPlatform failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200UserPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateUserPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      if(listAiTelemetryPlatform.size() == 0)
-        pageTemplateUri = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateUserPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2996,7 +3020,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
   }
 
   @Override
-  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName) {
+  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName, String pageTemplate) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");

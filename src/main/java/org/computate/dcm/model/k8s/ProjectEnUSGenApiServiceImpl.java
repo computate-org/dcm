@@ -2463,19 +2463,27 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     promise.complete();
   }
 
-  public String templateSearchPageProject(ServiceRequest serviceRequest) {
+  public String templateUriSearchPageProject(ServiceRequest serviceRequest) {
     return "en-us/search/project/ProjectSearchPage.htm";
+  }
+  public String templateSearchPageProject(ServiceRequest serviceRequest, Project result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriSearchPageProject(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateSearchPageProject failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200SearchPageProject(SearchList<Project> listProject) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listProject.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateSearchPageProject(siteRequest.getServiceRequest());
-      if(listProject.size() == 0)
-        pageTemplateUri = templateSearchPageProject(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateSearchPageProject(siteRequest.getServiceRequest(), listProject.first());
       ProjectPage page = new ProjectPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2676,19 +2684,27 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     promise.complete();
   }
 
-  public String templateEditPageProject(ServiceRequest serviceRequest) {
+  public String templateUriEditPageProject(ServiceRequest serviceRequest) {
     return "en-us/edit/project/ProjectEditPage.htm";
+  }
+  public String templateEditPageProject(ServiceRequest serviceRequest, Project result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriEditPageProject(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateEditPageProject failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200EditPageProject(SearchList<Project> listProject) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listProject.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateEditPageProject(siteRequest.getServiceRequest());
-      if(listProject.size() == 0)
-        pageTemplateUri = templateSearchPageProject(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateEditPageProject(siteRequest.getServiceRequest(), listProject.first());
       ProjectPage page = new ProjectPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2889,19 +2905,27 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     promise.complete();
   }
 
-  public String templateUserPageProject(ServiceRequest serviceRequest) {
+  public String templateUriUserPageProject(ServiceRequest serviceRequest) {
     return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
+  }
+  public String templateUserPageProject(ServiceRequest serviceRequest, Project result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriUserPageProject(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateUserPageProject failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200UserPageProject(SearchList<Project> listProject) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listProject.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateUserPageProject(siteRequest.getServiceRequest());
-      if(listProject.size() == 0)
-        pageTemplateUri = templateSearchPageProject(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateUserPageProject(siteRequest.getServiceRequest(), listProject.first());
       ProjectPage page = new ProjectPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -3880,7 +3904,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
   }
 
   @Override
-  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName) {
+  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName, String pageTemplate) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");

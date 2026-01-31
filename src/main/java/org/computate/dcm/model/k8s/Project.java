@@ -18,11 +18,11 @@ import io.vertx.pgclient.data.Point;
 import io.vertx.pgclient.data.Polygon;
 
 /**
- * Order: 10
+ * Order: 100
  * Description: A research project using AI and GPUs
  * AName: an project
  * PluralName: projects
- * Icon: <i class="fa-regular fa-people-line"></i>
+ * Icon: <i class="fa-duotone fa-regular fa-people-line"></i>
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/project
