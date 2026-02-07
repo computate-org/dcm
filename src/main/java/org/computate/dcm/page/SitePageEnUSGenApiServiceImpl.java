@@ -208,7 +208,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -313,7 +313,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200GETSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -456,7 +456,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listPATCHSitePage failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -467,18 +467,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPATCHSitePage failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listPATCHSitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listPATCHSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -561,14 +561,14 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           }
           promise.complete(o);
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("patchSitePageFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -588,7 +588,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -779,17 +779,17 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           indexSitePage(sitePage).onSuccess(o2 -> {
             promise.complete(sitePage);
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("postSitePageFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -810,7 +810,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -957,7 +957,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise1.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPUTImportSitePage failed. "), ex);
-            promise1.fail(ex);
+            promise1.tryFail(ex);
           });
         }));
       });
@@ -966,11 +966,11 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         promise.complete();
       }).onFailure(ex -> {
         LOG.error(String.format("listPUTImportSitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("listPUTImportSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1123,7 +1123,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1265,7 +1265,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETESitePage failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -1276,18 +1276,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETESitePage failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETESitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETESitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -1356,11 +1356,11 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       unindexSitePage(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deleteSitePageFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1380,7 +1380,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETESitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1489,18 +1489,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200SearchPageSitePage failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchPageSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1681,18 +1681,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200EditPageSitePage failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200EditPageSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1835,18 +1835,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200DisplayPageSitePage failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200DisplayPageSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2022,7 +2022,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETEFilterSitePage failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -2033,18 +2033,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETEFilterSitePage failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETEFilterSitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETEFilterSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -2113,11 +2113,11 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       unindexSitePage(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deletefilterSitePageFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2137,7 +2137,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2152,7 +2152,7 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       promise.complete(o);
     } catch(Exception ex) {
       LOG.error(String.format("createSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2218,13 +2218,13 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           }
         } catch(Exception ex) {
           LOG.error(String.format("searchSitePage failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
       LOG.error(String.format("searchSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2429,18 +2429,18 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete(searchList);
           }).onFailure(ex -> {
             LOG.error(String.format("searchSitePage failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("searchSitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("searchSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2475,15 +2475,15 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("persistSitePage failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("persistSitePage failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
     } catch(Exception ex) {
       LOG.error(String.format("persistSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2525,11 +2525,11 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         promise.complete(o);
       }).onFailure(ex -> {
         LOG.error(String.format("indexSitePage failed. "), new RuntimeException(ex));
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("indexSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2562,15 +2562,15 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(o);
         }).onFailure(ex -> {
           LOG.error(String.format("unindexSitePage failed. "), new RuntimeException(ex));
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("unindexSitePage failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("unindexSitePage failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2617,15 +2617,15 @@ public class SitePageEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(data);
         } catch(Exception ex) {
           LOG.error(String.format(importModelFail, classSimpleName), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("generatePageBody failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("generatePageBody failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }

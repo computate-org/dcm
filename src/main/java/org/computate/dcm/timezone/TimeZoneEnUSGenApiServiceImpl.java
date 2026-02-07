@@ -208,7 +208,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -313,7 +313,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200GETTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -456,7 +456,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listPATCHTimeZone failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -467,18 +467,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPATCHTimeZone failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listPATCHTimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listPATCHTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -561,14 +561,14 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           }
           promise.complete(o);
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("patchTimeZoneFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -588,7 +588,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -779,17 +779,17 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           indexTimeZone(timeZone).onSuccess(o2 -> {
             promise.complete(timeZone);
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("postTimeZoneFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -810,7 +810,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -952,7 +952,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETETimeZone failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -963,18 +963,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETETimeZone failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETETimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETETimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -1043,11 +1043,11 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       unindexTimeZone(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deleteTimeZoneFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1067,7 +1067,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETETimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1214,7 +1214,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise1.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPUTImportTimeZone failed. "), ex);
-            promise1.fail(ex);
+            promise1.tryFail(ex);
           });
         }));
       });
@@ -1223,11 +1223,11 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         promise.complete();
       }).onFailure(ex -> {
         LOG.error(String.format("listPUTImportTimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("listPUTImportTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1380,7 +1380,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1448,19 +1448,27 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
     promise.complete();
   }
 
-  public String templateSearchPageTimeZone(ServiceRequest serviceRequest) {
+  public String templateUriSearchPageTimeZone(ServiceRequest serviceRequest) {
     return "en-us/search/time-zone/TimeZoneSearchPage.htm";
+  }
+  public String templateSearchPageTimeZone(ServiceRequest serviceRequest, TimeZone result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriSearchPageTimeZone(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateSearchPageTimeZone failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200SearchPageTimeZone(SearchList<TimeZone> listTimeZone) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listTimeZone.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateSearchPageTimeZone(siteRequest.getServiceRequest());
-      if(listTimeZone.size() == 0)
-        pageTemplateUri = templateSearchPageTimeZone(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateSearchPageTimeZone(siteRequest.getServiceRequest(), listTimeZone.first());
       TimeZonePage page = new TimeZonePage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1481,18 +1489,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200SearchPageTimeZone failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchPageTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1632,19 +1640,27 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
     promise.complete();
   }
 
-  public String templateEditPageTimeZone(ServiceRequest serviceRequest) {
+  public String templateUriEditPageTimeZone(ServiceRequest serviceRequest) {
     return "en-us/edit/time-zone/TimeZoneEditPage.htm";
+  }
+  public String templateEditPageTimeZone(ServiceRequest serviceRequest, TimeZone result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriEditPageTimeZone(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateEditPageTimeZone failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200EditPageTimeZone(SearchList<TimeZone> listTimeZone) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listTimeZone.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateEditPageTimeZone(siteRequest.getServiceRequest());
-      if(listTimeZone.size() == 0)
-        pageTemplateUri = templateSearchPageTimeZone(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateEditPageTimeZone(siteRequest.getServiceRequest(), listTimeZone.first());
       TimeZonePage page = new TimeZonePage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1665,18 +1681,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200EditPageTimeZone failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200EditPageTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1852,7 +1868,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETEFilterTimeZone failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -1863,18 +1879,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETEFilterTimeZone failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETEFilterTimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETEFilterTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -1943,11 +1959,11 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       unindexTimeZone(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deletefilterTimeZoneFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1967,7 +1983,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1982,7 +1998,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       promise.complete(o);
     } catch(Exception ex) {
       LOG.error(String.format("createTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2048,13 +2064,13 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           }
         } catch(Exception ex) {
           LOG.error(String.format("searchTimeZone failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
       LOG.error(String.format("searchTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2258,18 +2274,18 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete(searchList);
           }).onFailure(ex -> {
             LOG.error(String.format("searchTimeZone failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("searchTimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("searchTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2304,15 +2320,15 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("persistTimeZone failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("persistTimeZone failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
     } catch(Exception ex) {
       LOG.error(String.format("persistTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2354,11 +2370,11 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         promise.complete(o);
       }).onFailure(ex -> {
         LOG.error(String.format("indexTimeZone failed. "), new RuntimeException(ex));
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("indexTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2391,21 +2407,21 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(o);
         }).onFailure(ex -> {
           LOG.error(String.format("unindexTimeZone failed. "), new RuntimeException(ex));
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("unindexTimeZone failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("unindexTimeZone failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
 
   @Override
-  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName) {
+  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName, String pageTemplate) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
@@ -2435,15 +2451,15 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(data);
         } catch(Exception ex) {
           LOG.error(String.format(importModelFail, classSimpleName), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("generatePageBody failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("generatePageBody failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }

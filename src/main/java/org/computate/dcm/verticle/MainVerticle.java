@@ -176,12 +176,15 @@ import org.computate.dcm.timezone.TimeZone;
 import org.computate.dcm.page.SitePageEnUSGenApiService;
 import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
 import org.computate.dcm.page.SitePage;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
+import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
+import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.Project;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
 
 
 /**
@@ -315,44 +318,54 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       siteRequest.setConfig(config);
       siteRequest.setWebClient(webClient);
       siteRequest.initDeepSiteRequest(siteRequest);
-      TimeZoneEnUSApiServiceImpl apiTimeZone = new TimeZoneEnUSApiServiceImpl();
-      apiTimeZone.setVertx(vertx);
-      apiTimeZone.setConfig(config);
-      apiTimeZone.setWebClient(webClient);
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       apiSiteUser.setVertx(vertx);
       apiSiteUser.setConfig(config);
       apiSiteUser.setWebClient(webClient);
+      TimeZoneEnUSApiServiceImpl apiTimeZone = new TimeZoneEnUSApiServiceImpl();
+      apiTimeZone.setVertx(vertx);
+      apiTimeZone.setConfig(config);
+      apiTimeZone.setWebClient(webClient);
       SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
       apiSitePage.setVertx(vertx);
       apiSitePage.setConfig(config);
       apiSitePage.setWebClient(webClient);
-      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
-      apiAiTelemetryPlatform.setVertx(vertx);
-      apiAiTelemetryPlatform.setConfig(config);
-      apiAiTelemetryPlatform.setWebClient(webClient);
+      HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
+      apiHost.setVertx(vertx);
+      apiHost.setConfig(config);
+      apiHost.setWebClient(webClient);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       apiProject.setVertx(vertx);
       apiProject.setConfig(config);
       apiProject.setWebClient(webClient);
+      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
+      apiAiTelemetryPlatform.setVertx(vertx);
+      apiAiTelemetryPlatform.setConfig(config);
+      apiAiTelemetryPlatform.setWebClient(webClient);
       apiSiteUser.createAuthorizationScopes().onSuccess(authToken -> {
-        apiTimeZone.authorizeGroupData(authToken, TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" })
-            .onSuccess(q1 -> {
+          apiTimeZone.authorizeGroupData(authToken, TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" })
+              .onSuccess(q2 -> {
             apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" })
                 .compose(q3 -> apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
                 .onSuccess(q3 -> {
-              apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
-                  .compose(q4 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
-                  .compose(q4 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+              apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostReader", new String[] { "GET" })
+                  .compose(q4 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostEditor", new String[] { "GET", "POST", "PATCH" }))
+                  .compose(q4 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                  .compose(q4 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                   .onSuccess(q4 -> {
                 apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
                     .compose(q5 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
                     .compose(q5 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
                     .compose(q5 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                     .onSuccess(q5 -> {
-                  LOG.info("authorize data complete");
-                  promise.complete();
+                  apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
+                      .compose(q6 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
+                      .compose(q6 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                      .onSuccess(q6 -> {
+                    LOG.info("authorize data complete");
+                    promise.complete();
                 }).onFailure(ex -> promise.fail(ex));
+              }).onFailure(ex -> promise.fail(ex));
             }).onFailure(ex -> promise.fail(ex));
           }).onFailure(ex -> promise.fail(ex));
         }).onFailure(ex -> promise.fail(ex));
@@ -1353,8 +1366,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("SitePage","AiTelemetryPlatform","Project");
-      List<String> authResources = Arrays.asList("SITEPAGE","AITELEMETRYPLATFORM","PROJECT");
+      List<String> authClassSimpleNames = Arrays.asList("SitePage","Host","Project","AiTelemetryPlatform");
+      List<String> authResources = Arrays.asList("SITEPAGE","HOST","PROJECT","AITELEMETRYPLATFORM");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1370,13 +1383,17 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       initializeApiService(apiSitePage);
       registerApiService(SitePageEnUSGenApiService.class, apiSitePage, SitePage.getClassApiAddress());
 
-      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
-      initializeApiService(apiAiTelemetryPlatform);
-      registerApiService(AiTelemetryPlatformEnUSGenApiService.class, apiAiTelemetryPlatform, AiTelemetryPlatform.getClassApiAddress());
+      HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
+      initializeApiService(apiHost);
+      registerApiService(HostEnUSGenApiService.class, apiHost, Host.getClassApiAddress());
 
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);
       registerApiService(ProjectEnUSGenApiService.class, apiProject, Project.getClassApiAddress());
+
+      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
+      initializeApiService(apiAiTelemetryPlatform);
+      registerApiService(AiTelemetryPlatformEnUSGenApiService.class, apiAiTelemetryPlatform, AiTelemetryPlatform.getClassApiAddress());
 
       Future.all(futures).onSuccess( a -> {
         LOG.info("The API was configured properly.");

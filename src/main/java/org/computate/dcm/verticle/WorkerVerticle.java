@@ -39,15 +39,18 @@ import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.timezone.TimeZone;
 import org.computate.dcm.timezone.TimeZoneEnUSApiServiceImpl;
 import org.computate.dcm.timezone.TimeZoneEnUSGenApiService;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
-import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
 import org.computate.dcm.page.SitePage;
 import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
 import org.computate.dcm.page.SitePageEnUSGenApiService;
+import org.computate.dcm.model.eda.host.Host;
+import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
 import org.computate.dcm.model.k8s.Project;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
+import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
 import org.computate.vertx.api.ApiCounter;
 import org.computate.vertx.api.ApiRequest;
 import org.computate.vertx.config.ComputateConfigKeys;
@@ -424,19 +427,23 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
       TimeZoneEnUSApiServiceImpl apiTimeZone = new TimeZoneEnUSApiServiceImpl();
       initializeApiService(apiTimeZone);
-      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
-      initializeApiService(apiAiTelemetryPlatform);
       SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
       initializeApiService(apiSitePage);
+      HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
+      initializeApiService(apiHost);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);
+      AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
+      initializeApiService(apiAiTelemetryPlatform);
 
 			apiTimeZone.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TimeZone.CLASS_CANONICAL_NAME, TimeZone.CLASS_SIMPLE_NAME, TimeZone.CLASS_API_ADDRESS_TimeZone, TimeZone.CLASS_AUTH_RESOURCE, "id", "userPage", "download").onSuccess(q1 -> {
-				apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
-					apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q3 -> {
+				apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
+					apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostName", "userPage", "download").onSuccess(q3 -> {
 						apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q4 -> {
-							LOG.info("data import complete");
-							promise.complete();
+							apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q5 -> {
+								LOG.info("data import complete");
+								promise.complete();
+							}).onFailure(ex -> promise.fail(ex));
 						}).onFailure(ex -> promise.fail(ex));
 					}).onFailure(ex -> promise.fail(ex));
 				}).onFailure(ex -> promise.fail(ex));

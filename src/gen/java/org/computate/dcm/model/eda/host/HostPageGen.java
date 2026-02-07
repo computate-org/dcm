@@ -1,7 +1,7 @@
-package org.computate.dcm.model.eda.computer;
+package org.computate.dcm.model.eda.host;
 
 import org.computate.dcm.request.SiteRequest;
-import org.computate.dcm.model.eda.computer.ComputerGenPage;
+import org.computate.dcm.model.eda.host.HostGenPage;
 import org.computate.dcm.model.BaseModel;
 import org.computate.vertx.api.ApiRequest;
 import org.computate.dcm.config.ConfigKeys;
@@ -41,23 +41,23 @@ import io.vertx.core.json.JsonArray;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these ComputerPage objects in a RESTful API. 
- * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class ComputerPageGen into the class ComputerPage. 
+ * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these HostPage objects in a RESTful API. 
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class HostPageGen into the class HostPage. 
  * </li>
- * <h3>About the ComputerPage class and it's generated class ComputerPageGen&lt;ComputerGenPage&gt;: </h3>extends ComputerPageGen
+ * <h3>About the HostPage class and it's generated class HostPageGen&lt;HostGenPage&gt;: </h3>extends HostPageGen
  * <p>
- * This Java class extends a generated Java class ComputerPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
+ * This Java class extends a generated Java class HostPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
  * Whenever this Java class is modified or touched, the watch service installed as described in the README, indexes all the information about this Java class in a local Apache Solr Search Engine. 
  * If you are running the service, you can see the indexed data about this Java Class here: 
  * </p>
- * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerPage">Find the class ComputerPage in Solr. </a></p>
+ * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostPage">Find the class HostPage in Solr. </a></p>
  * <p>
  * The extended class ending with "Gen" did not exist at first, but was automatically created by the same watch service based on the data retrieved from the local Apache Server search engine. 
  * The extended class contains many generated fields, getters, setters, initialization code, and helper methods to help build a website and API fast, reactive, and scalable. 
  * </p>
- * extends ComputerPageGen<ComputerGenPage>
- * <p>This <code>class ComputerPage extends ComputerPageGen&lt;ComputerGenPage&gt;</code>, which means it extends a newly generated ComputerPageGen. 
- * The generated <code>class ComputerPageGen extends ComputerGenPage</code> which means that ComputerPage extends ComputerPageGen which extends ComputerGenPage. 
+ * extends HostPageGen<HostGenPage>
+ * <p>This <code>class HostPage extends HostPageGen&lt;HostGenPage&gt;</code>, which means it extends a newly generated HostPageGen. 
+ * The generated <code>class HostPageGen extends HostGenPage</code> which means that HostPage extends HostPageGen which extends HostGenPage. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
  * <h2>Api: true</h2>
@@ -66,7 +66,7 @@ import io.vertx.core.json.JsonArray;
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <h2>{@inheritDoc}</h2>
- * <p>By adding a class comment "{@inheritDoc}", the ComputerPage class will inherit the helpful inherited class comments from the super class ComputerPageGen. 
+ * <p>By adding a class comment "{@inheritDoc}", the HostPage class will inherit the helpful inherited class comments from the super class HostPageGen. 
  * </p>
  * <h2>Rows: null</h2>
  * <h2>Model: true</h2>
@@ -76,7 +76,7 @@ import io.vertx.core.json.JsonArray;
  * <p>
  *   This class contains a comment <b>"Promise: true"</b>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
- *   This means that the ComputerPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
+ *   This means that the HostPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
  * <p>
  *   Adding protected void methods beginning with an underscore with a Promise as the only parameter will automatically set `Promise: true`. 
@@ -97,43 +97,54 @@ import io.vertx.core.json.JsonArray;
  * </p>
  * <h2>AName.enUS: null</h2>
  * <p>
- * Delete the class ComputerPage in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerPage&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * Delete the class HostPage in Solr: 
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostPage&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
- * Delete  the package org.computate.dcm.model.eda.computer in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.computer&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * Delete  the package org.computate.dcm.model.eda.host in Solr: 
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.host&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the project dcm in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * Generated: true
  **/
-public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
-  protected static final Logger LOG = LoggerFactory.getLogger(ComputerPage.class);
+public abstract class HostPageGen<DEV> extends HostGenPage {
+  protected static final Logger LOG = LoggerFactory.getLogger(HostPage.class);
 
   //////////////
   // initDeep //
   //////////////
 
-  public Future<ComputerPageGen<DEV>> promiseDeepComputerPage(SiteRequest siteRequest_) {
-    return promiseDeepComputerPage();
+  public Future<HostPageGen<DEV>> promiseDeepHostPage(SiteRequest siteRequest_) {
+    setSiteRequest_(siteRequest_);
+    return promiseDeepHostPage();
   }
 
-  public Future<ComputerPageGen<DEV>> promiseDeepComputerPage() {
-    Promise<ComputerPageGen<DEV>> promise = Promise.promise();
+  public Future<HostPageGen<DEV>> promiseDeepHostPage() {
+    Promise<HostPageGen<DEV>> promise = Promise.promise();
     Promise<Void> promise2 = Promise.promise();
-    promiseComputerPage(promise2);
+    promiseHostPage(promise2);
     promise2.future().onSuccess(a -> {
-      promise.complete(this);
+      super.promiseDeepHostGenPage(siteRequest_).onSuccess(b -> {
+        promise.complete(this);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
     }).onFailure(ex -> {
       promise.fail(ex);
     });
     return promise.future();
   }
 
-  public Future<Void> promiseComputerPage(Promise<Void> promise) {
+  public Future<Void> promiseHostPage(Promise<Void> promise) {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
@@ -150,20 +161,32 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
     return promise.future();
   }
 
-  public Future<? extends ComputerPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
-    return promiseDeepComputerPage(siteRequest_);
+  @Override public Future<? extends HostPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
+    return promiseDeepHostPage(siteRequest_);
+  }
+
+  /////////////////
+  // siteRequest //
+  /////////////////
+
+  public void siteRequestHostPage(SiteRequest siteRequest_) {
+      super.siteRequestHostGenPage(siteRequest_);
+  }
+
+  public void siteRequestForClass(SiteRequest siteRequest_) {
+    siteRequestHostPage(siteRequest_);
   }
 
   /////////////
   // obtain //
   /////////////
 
-  public Object obtainForClass(String var) {
+  @Override public Object obtainForClass(String var) {
     String[] vars = StringUtils.split(var, ".");
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = obtainComputerPage(v);
+        o = obtainHostPage(v);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.obtainForClass(v);
@@ -175,11 +198,11 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
     }
     return o;
   }
-  public Object obtainComputerPage(String var) {
-    ComputerPage oComputerPage = (ComputerPage)this;
+  public Object obtainHostPage(String var) {
+    HostPage oHostPage = (HostPage)this;
     switch(var) {
       default:
-        return null;
+        return super.obtainHostGenPage(var);
     }
   }
 
@@ -187,12 +210,12 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
   // relate //
   ///////////////
 
-  public boolean relateForClass(String var, Object val) {
+  @Override public boolean relateForClass(String var, Object val) {
     String[] vars = StringUtils.split(var, ".");
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = relateComputerPage(v, val);
+        o = relateHostPage(v, val);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.relateForClass(v, val);
@@ -200,11 +223,11 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
     }
     return o != null;
   }
-  public Object relateComputerPage(String var, Object val) {
-    ComputerPage oComputerPage = (ComputerPage)this;
+  public Object relateHostPage(String var, Object val) {
+    HostPage oHostPage = (HostPage)this;
     switch(var) {
       default:
-        return null;
+        return super.relateHostGenPage(var, val);
     }
   }
 
@@ -212,13 +235,13 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
   // staticSet //
   ///////////////
 
-  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, ComputerPage o) {
-    return staticSetComputerPage(entityVar,  siteRequest_, v, o);
+  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, HostPage o) {
+    return staticSetHostPage(entityVar,  siteRequest_, v, o);
   }
-  public static Object staticSetComputerPage(String entityVar, SiteRequest siteRequest_, String v, ComputerPage o) {
+  public static Object staticSetHostPage(String entityVar, SiteRequest siteRequest_, String v, HostPage o) {
     switch(entityVar) {
       default:
-        return null;
+        return HostGenPage.staticSetHostGenPage(entityVar,  siteRequest_, v, o);
     }
   }
 
@@ -227,12 +250,12 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
   ////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchComputerPage(entityVar,  siteRequest_, o);
+    return staticSearchHostPage(entityVar,  siteRequest_, o);
   }
-  public static Object staticSearchComputerPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static Object staticSearchHostPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return null;
+        return HostGenPage.staticSearchHostGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -241,12 +264,12 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
   ///////////////////
 
   public static String staticSearchStrForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchStrComputerPage(entityVar,  siteRequest_, o);
+    return staticSearchStrHostPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchStrComputerPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static String staticSearchStrHostPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return null;
+        return HostGenPage.staticSearchStrHostGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -255,12 +278,12 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
   //////////////////
 
   public static String staticSearchFqForClass(String entityVar, SiteRequest siteRequest_, String o) {
-    return staticSearchFqComputerPage(entityVar,  siteRequest_, o);
+    return staticSearchFqHostPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchFqComputerPage(String entityVar, SiteRequest siteRequest_, String o) {
+  public static String staticSearchFqHostPage(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
       default:
-        return null;
+        return HostGenPage.staticSearchFqHostGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -270,122 +293,132 @@ public abstract class ComputerPageGen<DEV> extends ComputerGenPage {
 
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
+    sb.append(super.toString());
     return sb.toString();
   }
 
-  public static final String CLASS_SIMPLE_NAME = "ComputerPage";
-  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.computer.ComputerPage";
+  public static final String CLASS_SIMPLE_NAME = "HostPage";
+  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.host.HostPage";
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
+  @Override
   public String idForClass() {
     return null;
   }
 
+  @Override
   public String titleForClass() {
     return null;
   }
 
+  @Override
   public String nameForClass() {
     return null;
   }
 
+  @Override
   public String classNameAdjectiveSingularForClass() {
     return null;
   }
 
+  @Override
   public String descriptionForClass() {
     return null;
   }
 
+  @Override
   public String enUSStringFormatUrlEditPageForClass() {
     return null;
   }
 
+  @Override
   public String enUSStringFormatUrlDisplayPageForClass() {
     return null;
   }
 
+  @Override
   public String enUSStringFormatUrlUserPageForClass() {
     return null;
   }
 
+  @Override
   public String enUSStringFormatUrlDownloadForClass() {
     return null;
   }
 
   public static String displayNameForClass(String var) {
-    return ComputerPage.displayNameComputerPage(var);
+    return HostPage.displayNameHostPage(var);
   }
-  public static String displayNameComputerPage(String var) {
+  public static String displayNameHostPage(String var) {
     switch(var) {
     default:
-      return null;
+      return HostGenPage.displayNameHostGenPage(var);
     }
   }
 
-  public static String descriptionComputerPage(String var) {
+  public static String descriptionHostPage(String var) {
     if(var == null)
       return null;
     switch(var) {
       default:
-        return null;
+        return HostGenPage.descriptionHostGenPage(var);
     }
   }
 
-  public static String classSimpleNameComputerPage(String var) {
+  public static String classSimpleNameHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.classSimpleNameHostGenPage(var);
     }
   }
 
-  public static Integer htmColumnComputerPage(String var) {
+  public static Integer htmColumnHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.htmColumnHostGenPage(var);
     }
   }
 
-  public static Integer htmRowComputerPage(String var) {
+  public static Integer htmRowHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.htmRowHostGenPage(var);
     }
   }
 
-  public static Integer htmCellComputerPage(String var) {
+  public static Integer htmCellHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.htmCellHostGenPage(var);
     }
   }
 
-  public static Integer lengthMinComputerPage(String var) {
+  public static Integer lengthMinHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.lengthMinHostGenPage(var);
     }
   }
 
-  public static Integer lengthMaxComputerPage(String var) {
+  public static Integer lengthMaxHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.lengthMaxHostGenPage(var);
     }
   }
 
-  public static Integer maxComputerPage(String var) {
+  public static Integer maxHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.maxHostGenPage(var);
     }
   }
 
-  public static Integer minComputerPage(String var) {
+  public static Integer minHostPage(String var) {
     switch(var) {
       default:
-        return null;
+        return HostGenPage.minHostGenPage(var);
     }
   }
 }

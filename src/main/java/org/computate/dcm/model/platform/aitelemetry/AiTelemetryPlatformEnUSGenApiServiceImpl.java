@@ -272,7 +272,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -441,7 +441,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200GETAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -611,7 +611,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listPATCHAiTelemetryPlatform failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -622,18 +622,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPATCHAiTelemetryPlatform failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listPATCHAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listPATCHAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -716,14 +716,14 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           }
           promise.complete(o);
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("patchAiTelemetryPlatformFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -743,7 +743,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -961,17 +961,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           indexAiTelemetryPlatform(aiTelemetryPlatform).onSuccess(o2 -> {
             promise.complete(aiTelemetryPlatform);
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         }).onFailure(ex -> {
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("postAiTelemetryPlatformFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -992,7 +992,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1161,7 +1161,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETEAiTelemetryPlatform failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -1172,18 +1172,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETEAiTelemetryPlatform failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETEAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETEAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -1252,11 +1252,11 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       unindexAiTelemetryPlatform(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deleteAiTelemetryPlatformFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1276,7 +1276,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1450,7 +1450,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise1.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPUTImportAiTelemetryPlatform failed. "), ex);
-            promise1.fail(ex);
+            promise1.tryFail(ex);
           });
         }));
       });
@@ -1459,11 +1459,11 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         promise.complete();
       }).onFailure(ex -> {
         LOG.error(String.format("listPUTImportAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("listPUTImportAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1616,7 +1616,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1815,18 +1815,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2034,18 +2034,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2253,18 +2253,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2467,7 +2467,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listDELETEFilterAiTelemetryPlatform failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -2478,18 +2478,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listDELETEFilterAiTelemetryPlatform failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listDELETEFilterAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listDELETEFilterAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -2558,11 +2558,11 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       unindexAiTelemetryPlatform(o).onSuccess(e -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("deletefilterAiTelemetryPlatformFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2582,7 +2582,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2597,7 +2597,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       promise.complete(o);
     } catch(Exception ex) {
       LOG.error(String.format("createAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2663,13 +2663,13 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           }
         } catch(Exception ex) {
           LOG.error(String.format("searchAiTelemetryPlatform failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
       LOG.error(String.format("searchAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2873,18 +2873,18 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise.complete(searchList);
           }).onFailure(ex -> {
             LOG.error(String.format("searchAiTelemetryPlatform failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("searchAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("searchAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2919,15 +2919,15 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("persistAiTelemetryPlatform failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("persistAiTelemetryPlatform failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
     } catch(Exception ex) {
       LOG.error(String.format("persistAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2969,11 +2969,11 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         promise.complete(o);
       }).onFailure(ex -> {
         LOG.error(String.format("indexAiTelemetryPlatform failed. "), new RuntimeException(ex));
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("indexAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -3006,15 +3006,15 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           promise.complete(o);
         }).onFailure(ex -> {
           LOG.error(String.format("unindexAiTelemetryPlatform failed. "), new RuntimeException(ex));
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("unindexAiTelemetryPlatform failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("unindexAiTelemetryPlatform failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -3060,15 +3060,15 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           promise.complete(data);
         } catch(Exception ex) {
           LOG.error(String.format(importModelFail, classSimpleName), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("generatePageBody failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("generatePageBody failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }

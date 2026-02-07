@@ -1,9 +1,8 @@
-package org.computate.dcm.model.eda.computer;
+package org.computate.dcm.model.eda.host;
 
-import org.computate.dcm.model.eda.computer.Computer;
+import org.computate.dcm.model.eda.host.Host;
 import java.lang.String;
 import java.util.List;
-import java.lang.Long;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -52,37 +51,37 @@ import java.util.regex.Pattern;
  * Translate: false
  * Generated: true
  **/
-public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
+public class HostGenPage extends HostGenPageGen<PageLayout> {
 
   /**
    * {@inheritDoc}
    * Ignore: true
    **/
-  protected void _searchListComputer_(Wrap<SearchList<Computer>> w) {
+  protected void _searchListHost_(Wrap<SearchList<Host>> w) {
   }
 
   @Override
   protected void _pageResponse(Wrap<String> w) {
-    if(searchListComputer_ != null)
-      w.o(Optional.ofNullable(searchListComputer_.getResponse()).map(response -> JsonObject.mapFrom(response).toString()).orElse(null));
+    if(searchListHost_ != null)
+      w.o(Optional.ofNullable(searchListHost_.getResponse()).map(response -> JsonObject.mapFrom(response).toString()).orElse(null));
   }
 
   @Override
   protected void _stats(Wrap<SolrResponse.Stats> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getResponse()).map(response -> response.getStats()).orElse(null));
+    w.o(Optional.ofNullable(searchListHost_.getResponse()).map(response -> response.getStats()).orElse(null));
   }
 
   @Override
   protected void _facetCounts(Wrap<SolrResponse.FacetCounts> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getResponse()).map(response -> response.getFacetCounts()).orElse(null));
+    w.o(Optional.ofNullable(searchListHost_.getResponse()).map(response -> response.getFacetCounts()).orElse(null));
   }
 
   @Override
   protected void _pagination(JsonObject pagination) {
     JsonArray pages = new JsonArray();
-    Long start = searchListComputer_.getStart().longValue();
-    Long rows = searchListComputer_.getRows().longValue();
-    Long foundNum = Optional.ofNullable(searchListComputer_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListComputer_.getList().size()));
+    Long start = searchListHost_.getStart().longValue();
+    Long rows = searchListHost_.getRows().longValue();
+    Long foundNum = Optional.ofNullable(searchListHost_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListHost_.getList().size()));
     Long startNum = start + 1L;
     Long endNum = start + rows;
     Long floorMod = (rows == 0L ? 0L : Math.floorMod(foundNum, rows));
@@ -124,12 +123,12 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _varsQ(JsonObject vars) {
-    Computer.varsQForClass().forEach(var -> {
+    Host.varsQForClass().forEach(var -> {
       JsonObject json = new JsonObject();
       json.put("var", var);
-      json.put("displayName", Optional.ofNullable(Computer.displayNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(Computer.classSimpleNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("val", Optional.ofNullable(searchListComputer_.getRequest().getQuery()).filter(fq -> fq.startsWith(Computer.varIndexedComputer(var) + ":")).map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
+      json.put("displayName", Optional.ofNullable(Host.displayNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(Host.classSimpleNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("val", Optional.ofNullable(searchListHost_.getRequest().getQuery()).filter(fq -> fq.startsWith(Host.varIndexedHost(var) + ":")).map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
       vars.put(var, json);
     });
   }
@@ -142,22 +141,22 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
   protected void _varsFq(JsonObject vars) {
     Map<String, SolrResponse.FacetField> facetFields = Optional.ofNullable(facetCounts).map(c -> c.getFacetFields()).map(f -> f.getFacets()).orElse(new HashMap<String,SolrResponse.FacetField>());
     varsFqCount = 0;
-    for(String var : Computer.varsFqForClass()) {
-      String varIndexed = Computer.varIndexedComputer(var);
-      String varStored = Computer.varStoredComputer(var);
+    for(String var : Host.varsFqForClass()) {
+      String varIndexed = Host.varIndexedHost(var);
+      String varStored = Host.varStoredHost(var);
       JsonObject json = new JsonObject();
       json.put("var", var);
       json.put("varStored", varStored);
       json.put("varIndexed", varIndexed);
       String type = StringUtils.substringAfterLast(varIndexed, "_");
-      json.put("displayName", Optional.ofNullable(Computer.displayNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(Computer.classSimpleNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      Object v = searchListComputer_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(Computer.varIndexedComputer(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null);
+      json.put("displayName", Optional.ofNullable(Host.displayNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(Host.classSimpleNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      Object v = searchListHost_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(Host.varIndexedHost(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null);
       if(v != null) {
         Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher(SearchTool.unescapeQueryChars((String)v));
         StringBuffer sb = new StringBuffer();
         while(mFq.find()) {
-          String entityVar = Computer.searchVarComputer(varIndexed);
+          String entityVar = Host.searchVarHost(varIndexed);
           String valueIndexed = mFq.group(2).trim();
           String entityFq = entityVar + ":" + valueIndexed;
           if(var.equals(entityVar))
@@ -237,13 +236,13 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _varsRange(JsonObject vars) {
-    Computer.varsRangeForClass().forEach(var -> {
-      String varIndexed = Computer.varIndexedComputer(var);
+    Host.varsRangeForClass().forEach(var -> {
+      String varIndexed = Host.varIndexedHost(var);
       JsonObject json = new JsonObject();
       json.put("var", var);
-      json.put("displayName", Optional.ofNullable(Computer.displayNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(Computer.classSimpleNameComputer(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("val", searchListComputer_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(Computer.varIndexedComputer(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
+      json.put("displayName", Optional.ofNullable(Host.displayNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(Host.classSimpleNameHost(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("val", searchListHost_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(Host.varIndexedHost(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
       vars.put(var, json);
     });
   }
@@ -254,7 +253,7 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
     JsonObject params = serviceRequest.getParams();
 
     JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
-    Long num = Optional.ofNullable(searchListComputer_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListComputer_.getList().size()));
+    Long num = Optional.ofNullable(searchListHost_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListHost_.getList().size()));
     String q = "*:*";
     String q1 = "objectText";
     String q2 = "";
@@ -282,28 +281,28 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
     }
     query.put("q", q);
 
-    Long rows1 = Optional.ofNullable(searchListComputer_).map(l -> l.getRows()).orElse(10L);
-    Long start1 = Optional.ofNullable(searchListComputer_).map(l -> l.getStart()).orElse(1L);
+    Long rows1 = Optional.ofNullable(searchListHost_).map(l -> l.getRows()).orElse(10L);
+    Long start1 = Optional.ofNullable(searchListHost_).map(l -> l.getStart()).orElse(1L);
     Long start2 = start1 - rows1;
     Long start3 = start1 + rows1;
     Long rows2 = rows1 / 2;
     Long rows3 = rows1 * 2;
     start2 = start2 < 0 ? 0 : start2;
     JsonObject fqs = new JsonObject();
-    for(String fq : Optional.ofNullable(searchListComputer_).map(l -> l.getFilterQueries()).orElse(Arrays.asList())) {
+    for(String fq : Optional.ofNullable(searchListHost_).map(l -> l.getFilterQueries()).orElse(Arrays.asList())) {
       if(!StringUtils.contains(fq, "(")) {
-        String fq1 = Computer.searchVarComputer(StringUtils.substringBefore(fq, ":"));
+        String fq1 = Host.searchVarHost(StringUtils.substringBefore(fq, ":"));
         String fq2 = StringUtils.substringAfter(fq, ":");
         if(!StringUtils.startsWithAny(fq, "classCanonicalNames_", "archived_", "sessionId", "userKeys"))
-          fqs.put(fq1, new JsonObject().put("var", fq1).put("val", fq2).put("displayName", Computer.displayNameForClass(fq1)));
+          fqs.put(fq1, new JsonObject().put("var", fq1).put("val", fq2).put("displayName", Host.displayNameForClass(fq1)));
         }
       }
     query.put("fq", fqs);
 
     JsonArray sorts = new JsonArray();
-    for(String sort : Optional.ofNullable(searchListComputer_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
-      String sort1 = Computer.searchVarComputer(StringUtils.substringBefore(sort, " "));
-      sorts.add(new JsonObject().put("var", sort1).put("order", StringUtils.substringAfter(sort, " ")).put("displayName", Computer.displayNameForClass(sort1)));
+    for(String sort : Optional.ofNullable(searchListHost_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
+      String sort1 = Host.searchVarHost(StringUtils.substringBefore(sort, " "));
+      sorts.add(new JsonObject().put("var", sort1).put("order", StringUtils.substringAfter(sort, " ")).put("displayName", Host.displayNameForClass(sort1)));
     }
     query.put("sort", sorts);
   }
@@ -337,31 +336,31 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
   @Override
   protected void _rows(Wrap<Long> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("rows", null) != null)
-      w.o(searchListComputer_.getRows());
+      w.o(searchListHost_.getRows());
   }
 
   @Override
   protected void _start(Wrap<Long> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("start", null) != null)
-      w.o(searchListComputer_.getStart());
+      w.o(searchListHost_.getStart());
   }
 
   @Override
   protected void _rangeGap(Wrap<String> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.gap", null) != null)
-      w.o(Optional.ofNullable(searchListComputer_.getFacetRangeGap()).orElse(null));
+      w.o(Optional.ofNullable(searchListHost_.getFacetRangeGap()).orElse(null));
   }
 
   @Override
   protected void _rangeEnd(Wrap<ZonedDateTime> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.end", null) != null)
-      w.o(Optional.ofNullable(searchListComputer_.getFacetRangeEnd()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
+      w.o(Optional.ofNullable(searchListHost_.getFacetRangeEnd()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
   }
 
   @Override
   protected void _rangeStart(Wrap<ZonedDateTime> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.start", null) != null)
-      w.o(Optional.ofNullable(searchListComputer_.getFacetRangeStart()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
+      w.o(Optional.ofNullable(searchListHost_.getFacetRangeStart()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
   }
 
   @Override
@@ -381,27 +380,27 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultRangeVar(Wrap<String> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getFacetRanges()).orElse(Optional.ofNullable(defaultRangeStats).map(s -> Arrays.asList(s.getString("defaultRangeVar"))).orElse(Arrays.asList())).stream().findFirst().map(v -> { if(v.contains("}")) return StringUtils.substringBefore(StringUtils.substringAfterLast(v, "}"), "_"); else return Computer.searchVarComputer(v); }).orElse("created"));
+    w.o(Optional.ofNullable(searchListHost_.getFacetRanges()).orElse(Optional.ofNullable(defaultRangeStats).map(s -> Arrays.asList(s.getString("defaultRangeVar"))).orElse(Arrays.asList())).stream().findFirst().map(v -> { if(v.contains("}")) return StringUtils.substringBefore(StringUtils.substringAfterLast(v, "}"), "_"); else return Host.searchVarHost(v); }).orElse("created"));
   }
 
   @Override
   protected void _defaultFacetSort(Wrap<String> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getFacetSort()).orElse("index"));
+    w.o(Optional.ofNullable(searchListHost_.getFacetSort()).orElse("index"));
   }
 
   @Override
   protected void _defaultFacetLimit(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getFacetLimit()).orElse(1));
+    w.o(Optional.ofNullable(searchListHost_.getFacetLimit()).orElse(1));
   }
 
   @Override
   protected void _defaultFacetMinCount(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getFacetMinCount()).orElse(1));
+    w.o(Optional.ofNullable(searchListHost_.getFacetMinCount()).orElse(1));
   }
 
   @Override
   protected void _defaultPivotMinCount(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListComputer_.getFacetPivotMinCount()).orElse(0));
+    w.o(Optional.ofNullable(searchListHost_.getFacetPivotMinCount()).orElse(0));
   }
 
   @Override
@@ -417,10 +416,10 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultSortVars(List<String> l) {
-    if(!searchListComputer_.getDefaultSort()) {
-      Optional.ofNullable(searchListComputer_.getSorts()).orElse(Arrays.asList()).forEach(varSortStr -> {
+    if(!searchListHost_.getDefaultSort()) {
+      Optional.ofNullable(searchListHost_.getSorts()).orElse(Arrays.asList()).forEach(varSortStr -> {
         String varSortParts[] = varSortStr.split(" ");
-        String varSort = Computer.searchVarComputer(varSortParts[0]);
+        String varSort = Host.searchVarHost(varSortParts[0]);
         String varSortDirection = varSortParts[1];
         l.add(String.format("%s %s", varSort, varSortDirection));
       });
@@ -429,14 +428,14 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultFieldListVars(List<String> l) {
-    Optional.ofNullable(searchListComputer_.getFields()).orElse(Arrays.asList()).forEach(varStored -> {
+    Optional.ofNullable(searchListHost_.getFields()).orElse(Arrays.asList()).forEach(varStored -> {
       String varStored2 = varStored;
       if(StringUtils.contains(varStored2, "}"))
         varStored2 = StringUtils.substringAfterLast(varStored2, "}");
       String[] parts = varStored2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = Computer.searchVarComputer(part);
+          String var = Host.searchVarHost(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -446,14 +445,14 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultStatsVars(List<String> l) {
-    Optional.ofNullable(searchListComputer_.getStatsFields()).orElse(Arrays.asList()).forEach(varIndexed -> {
+    Optional.ofNullable(searchListHost_.getStatsFields()).orElse(Arrays.asList()).forEach(varIndexed -> {
       String varIndexed2 = varIndexed;
       if(StringUtils.contains(varIndexed2, "}"))
         varIndexed2 = StringUtils.substringAfterLast(varIndexed2, "}");
       String[] parts = varIndexed2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = Computer.searchVarComputer(part);
+          String var = Host.searchVarHost(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -463,14 +462,14 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultPivotVars(List<String> l) {
-    Optional.ofNullable(searchListComputer_.getFacetPivots()).orElse(Arrays.asList()).forEach(facetPivot -> {
+    Optional.ofNullable(searchListHost_.getFacetPivots()).orElse(Arrays.asList()).forEach(facetPivot -> {
       String facetPivot2 = facetPivot;
       if(StringUtils.contains(facetPivot2, "}"))
         facetPivot2 = StringUtils.substringAfterLast(facetPivot2, "}");
       String[] parts = facetPivot2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = Computer.searchVarComputer(part);
+          String var = Host.searchVarHost(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -481,20 +480,20 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
   /**
    * {@inheritDoc}
    **/
-  protected void _listComputer(JsonArray l) {
-    Optional.ofNullable(searchListComputer_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
+  protected void _listHost(JsonArray l) {
+    Optional.ofNullable(searchListHost_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
   }
 
   protected void _resultCount(Wrap<Integer> w) {
-    w.o(searchListComputer_ == null ? 0 : searchListComputer_.size());
+    w.o(searchListHost_ == null ? 0 : searchListHost_.size());
   }
 
   /**
    * Initialized: false
   **/
-  protected void _result(Wrap<Computer> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("")).orElse(null) != null)
-      w.o(searchListComputer_.get(0));
+  protected void _result(Wrap<Host> w) {
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("hostName")).orElse(null) != null)
+      w.o(searchListHost_.get(0));
   }
 
   protected void _pk(Wrap<Long> w) {
@@ -514,7 +513,7 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _classSimpleName(Wrap<String> w) {
-    w.o("Computer");
+    w.o("Host");
   }
 
   @Override
@@ -522,22 +521,22 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
     if(result != null && result.getObjectTitle() != null)
       c.o(result.getObjectTitle());
     else if(result != null)
-      c.o("computers");
-    else if(searchListComputer_ == null || resultCount == 0)
-      c.o("no computer found");
+      c.o("hosts");
+    else if(searchListHost_ == null || resultCount == 0)
+      c.o("no host found");
     else
-      c.o("computers");
+      c.o("hosts");
   }
 
   @Override
   protected void _pageUri(Wrap<String> w) {
     if("enUS".equals(lang))
-      w.o("");
+      w.o("/en-us/search/host");
   }
 
   @Override
   protected void _apiUri(Wrap<String> w) {
-    w.o("");
+    w.o("/en-us/api/host");
   }
 
   @Override
@@ -547,16 +546,20 @@ public class ComputerGenPage extends ComputerGenPageGen<PageLayout> {
 
   @Override
   protected void _pageDescription(Wrap<String> c) {
-      c.o("A computer record for managed computers");
+      c.o("A managed host computer. ");
   }
 
   @Override
   protected void _pageImageUri(Wrap<String> c) {
-      c.o("/png-999.png");
+      c.o("/png/en-us/search/host-999.png");
   }
 
   @Override
   protected void _classIcon(Wrap<String> c) {
       c.o("<i class=\"fa-duotone fa-regular fa-server\"></i>");
+  }
+
+  protected void _pageUriHost(Wrap<String> c) {
+      c.o("/en-us/search/host");
   }
 }

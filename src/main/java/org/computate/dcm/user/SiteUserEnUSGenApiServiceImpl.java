@@ -246,7 +246,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -418,7 +418,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise1.complete();
         }).onFailure(ex -> {
           LOG.error(String.format("listPATCHSiteUser failed. "), ex);
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
       }));
     });
@@ -429,18 +429,18 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("listPATCHSiteUser failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
         LOG.error(String.format("listPATCHSiteUser failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     }).onFailure(ex -> {
       LOG.error(String.format("listPATCHSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     });
     return promise.future();
   }
@@ -530,42 +530,42 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
                   }
                   promise1.complete(siteUser);
                 }).onFailure(ex -> {
-                  promise1.fail(ex);
+                  promise1.tryFail(ex);
                 });
               }).onFailure(ex -> {
-                promise1.fail(ex);
+                promise1.tryFail(ex);
               });
             }).onFailure(ex -> {
-              promise1.fail(ex);
+              promise1.tryFail(ex);
             });
           }).onFailure(ex -> {
-            promise1.fail(ex);
+            promise1.tryFail(ex);
           });
         }).onFailure(ex -> {
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
         return promise1.future();
       }).onSuccess(a -> {
         siteRequest.setSqlConnection(null);
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
-        promise.fail(ex);
+        promise.tryFail(ex);
       }).compose(siteUser -> {
         Promise<SiteUser> promise2 = Promise.promise();
         refreshSiteUser(siteUser).onSuccess(a -> {
           promise2.complete(siteUser);
         }).onFailure(ex -> {
-          promise2.fail(ex);
+          promise2.tryFail(ex);
         });
         return promise2.future();
       }).onSuccess(siteUser -> {
         promise.complete(siteUser);
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("patchSiteUserFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -785,15 +785,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(o3);
         }).onFailure(ex -> {
           LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("sqlPATCHSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -813,7 +813,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1014,29 +1014,29 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
                   indexSiteUser(siteUser).onSuccess(o2 -> {
                     promise1.complete(siteUser);
                   }).onFailure(ex -> {
-                    promise1.fail(ex);
+                    promise1.tryFail(ex);
                   });
                 }).onFailure(ex -> {
-                  promise1.fail(ex);
+                  promise1.tryFail(ex);
                 });
               }).onFailure(ex -> {
-                promise1.fail(ex);
+                promise1.tryFail(ex);
               });
             }).onFailure(ex -> {
-              promise1.fail(ex);
+              promise1.tryFail(ex);
             });
           }).onFailure(ex -> {
-            promise1.fail(ex);
+            promise1.tryFail(ex);
           });
         }).onFailure(ex -> {
-          promise1.fail(ex);
+          promise1.tryFail(ex);
         });
         return promise1.future();
       }).onSuccess(a -> {
         siteRequest.setSqlConnection(null);
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
-        promise.fail(ex);
+        promise.tryFail(ex);
       }).compose(siteUser -> {
         Promise<SiteUser> promise2 = Promise.promise();
         refreshSiteUser(siteUser).onSuccess(a -> {
@@ -1050,10 +1050,10 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise2.complete(siteUser);
           } catch(Exception ex) {
             LOG.error(String.format("postSiteUserFuture failed. "), ex);
-            promise2.fail(ex);
+            promise2.tryFail(ex);
           }
         }).onFailure(ex -> {
-          promise2.fail(ex);
+          promise2.tryFail(ex);
         });
         return promise2.future();
       }).onSuccess(siteUser -> {
@@ -1067,14 +1067,14 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(siteUser);
         } catch(Exception ex) {
           LOG.error(String.format("postSiteUserFuture failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("postSiteUserFuture failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1339,15 +1339,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(o2);
         }).onFailure(ex -> {
           LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("sqlPOSTSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1368,7 +1368,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1474,19 +1474,27 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
     promise.complete();
   }
 
-  public String templateSearchPageSiteUser(ServiceRequest serviceRequest) {
+  public String templateUriSearchPageSiteUser(ServiceRequest serviceRequest) {
     return "en-us/search/user/SiteUserSearchPage.htm";
+  }
+  public String templateSearchPageSiteUser(ServiceRequest serviceRequest, SiteUser result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriSearchPageSiteUser(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateSearchPageSiteUser failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200SearchPageSiteUser(SearchList<SiteUser> listSiteUser) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listSiteUser.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateSearchPageSiteUser(siteRequest.getServiceRequest());
-      if(listSiteUser.size() == 0)
-        pageTemplateUri = templateSearchPageSiteUser(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateSearchPageSiteUser(siteRequest.getServiceRequest(), listSiteUser.first());
       SiteUserPage page = new SiteUserPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1509,18 +1517,18 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200SearchPageSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchPageSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1661,19 +1669,27 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
     promise.complete();
   }
 
-  public String templateEditPageSiteUser(ServiceRequest serviceRequest) {
+  public String templateUriEditPageSiteUser(ServiceRequest serviceRequest) {
     return "en-us/edit/user/SiteUserEditPage.htm";
+  }
+  public String templateEditPageSiteUser(ServiceRequest serviceRequest, SiteUser result) {
+    String template = null;
+    try {
+      String pageTemplateUri = templateUriEditPageSiteUser(serviceRequest);
+      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
+      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
+      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+    } catch(Exception ex) {
+      LOG.error(String.format("templateEditPageSiteUser failed. "), ex);
+      ExceptionUtils.rethrow(ex);
+    }
+    return template;
   }
   public Future<ServiceResponse> response200EditPageSiteUser(SearchList<SiteUser> listSiteUser) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listSiteUser.getSiteRequest_(SiteRequest.class);
-      String pageTemplateUri = templateEditPageSiteUser(siteRequest.getServiceRequest());
-      if(listSiteUser.size() == 0)
-        pageTemplateUri = templateSearchPageSiteUser(siteRequest.getServiceRequest());
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      String template = templateEditPageSiteUser(siteRequest.getServiceRequest(), listSiteUser.first());
       SiteUserPage page = new SiteUserPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1696,18 +1712,18 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             Buffer buffer = Buffer.buffer(renderedTemplate);
             promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
           }).onFailure(ex -> {
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("response200EditPageSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("response200EditPageSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1768,11 +1784,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
         LOG.error("createSiteUser failed. ", ex2);
-        promise.fail(ex2);
+        promise.tryFail(ex2);
       });
     } catch(Exception ex) {
       LOG.error(String.format("createSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1838,13 +1854,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           }
         } catch(Exception ex) {
           LOG.error(String.format("searchSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
       LOG.error(String.format("searchSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1860,15 +1876,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(searchList);
         }).onFailure(ex -> {
           LOG.error("Unable to create site user", ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error("Unable to create site user", ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("searchSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1903,20 +1919,20 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
             promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("persistSiteUser failed. "), ex);
-            promise.fail(ex);
+            promise.tryFail(ex);
           });
         } catch(Exception ex) {
           LOG.error(String.format("persistSiteUser failed. "), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
         LOG.error(String.format("persistSiteUser failed. "), ex2);
-        promise.fail(ex2);
+        promise.tryFail(ex2);
       });
     } catch(Exception ex) {
       LOG.error(String.format("persistSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -1964,11 +1980,11 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         promise.complete(o);
       }).onFailure(ex -> {
         LOG.error(String.format("indexSiteUser failed. "), new RuntimeException(ex));
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("indexSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2001,15 +2017,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(o);
         }).onFailure(ex -> {
           LOG.error(String.format("unindexSiteUser failed. "), new RuntimeException(ex));
-          promise.fail(ex);
+          promise.tryFail(ex);
         });
       }).onFailure(ex -> {
         LOG.error(String.format("unindexSiteUser failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("unindexSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
@@ -2036,13 +2052,13 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       }
     } catch(Exception ex) {
       LOG.error(String.format("refreshSiteUser failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }
 
   @Override
-  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName) {
+  public Future<JsonObject> generatePageBody(ComputateSiteRequest siteRequest, Map<String, Object> ctx, String templatePath, String classSimpleName, String pageTemplate) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
@@ -2080,15 +2096,15 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           promise.complete(data);
         } catch(Exception ex) {
           LOG.error(String.format(importModelFail, classSimpleName), ex);
-          promise.fail(ex);
+          promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         LOG.error(String.format("generatePageBody failed. "), ex);
-        promise.fail(ex);
+        promise.tryFail(ex);
       });
     } catch(Exception ex) {
       LOG.error(String.format("generatePageBody failed. "), ex);
-      promise.fail(ex);
+      promise.tryFail(ex);
     }
     return promise.future();
   }

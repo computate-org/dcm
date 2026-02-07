@@ -577,3 +577,19 @@ IOTAGENT_HTTP_PORT: 7896
 IOTAGENT_NORTH_PORT: 443
 # The message broker transport type (MQTT or AMQP). 
 IOTAGENT_TRANSPORT: AMQP
+
+#########
+# SENSU #
+#########
+
+# The Sensu secret name. 
+SENSU_SECRET: "{{ lookup('env', 'SENSU_SECRET') | default('sensu', true) }}"
+# The Auth admin username. 
+SENSU_TOKEN: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENSU_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"token\": \"\" } } )).data['token'] | b64decode }}"
+# Whether to use SSL when connecting to the Sensu. 
+SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('false', true) | lower) != 'false' }}"
+# The host name to connect to the Sensu in OpenShift. 
+SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('rhel10', true) }}"
+# The default port that the Sensu runs. 
+SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
+# Ensure ClusterOrder and ManagedCluster is updated frequently

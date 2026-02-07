@@ -49,7 +49,7 @@ public class SiteRoutes {
 
     router.get("/refresh").handler(eventHandler -> {
       ServiceRequest serviceRequest = apiSiteUser.generateServiceRequest(eventHandler);
-      apiSiteUser.user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.CLASS_API_ADDRESS_ComputateSiteUser, "postSiteUserFuture", "patchSiteUserFuture", false).onSuccess(siteRequest -> {
+      apiSiteUser.userRefresh(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.CLASS_API_ADDRESS_ComputateSiteUser, "postSiteUserFuture", "patchSiteUserFuture", false, true).onSuccess(siteRequest -> {
         oauth2AuthenticationProvider.refresh(User.create(serviceRequest.getUser())).onSuccess(refreshedUser -> {
           eventHandler.setUser(refreshedUser);
           eventHandler.response().setStatusCode(200).setStatusMessage("OK").send(new JsonObject().toBuffer());

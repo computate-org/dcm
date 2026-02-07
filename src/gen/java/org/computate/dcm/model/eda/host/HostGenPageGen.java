@@ -1,4 +1,4 @@
-package org.computate.dcm.model.eda.computer;
+package org.computate.dcm.model.eda.host;
 
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.page.PageLayout;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.math.RoundingMode;
 import java.util.Map;
 import org.computate.vertx.search.list.SearchList;
-import org.computate.dcm.model.eda.computer.Computer;
+import org.computate.dcm.model.eda.host.Host;
 import java.lang.String;
 import org.computate.search.response.solr.SolrResponse.Stats;
 import org.computate.search.response.solr.SolrResponse.FacetCounts;
@@ -64,23 +64,23 @@ import io.vertx.core.Future;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these ComputerGenPage objects in a RESTful API. 
- * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class ComputerGenPageGen into the class ComputerGenPage. 
+ * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these HostGenPage objects in a RESTful API. 
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class HostGenPageGen into the class HostGenPage. 
  * </li>
- * <h3>About the ComputerGenPage class and it's generated class ComputerGenPageGen&lt;PageLayout&gt;: </h3>extends ComputerGenPageGen
+ * <h3>About the HostGenPage class and it's generated class HostGenPageGen&lt;PageLayout&gt;: </h3>extends HostGenPageGen
  * <p>
- * This Java class extends a generated Java class ComputerGenPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
+ * This Java class extends a generated Java class HostGenPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
  * Whenever this Java class is modified or touched, the watch service installed as described in the README, indexes all the information about this Java class in a local Apache Solr Search Engine. 
  * If you are running the service, you can see the indexed data about this Java Class here: 
  * </p>
- * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage">Find the class ComputerGenPage in Solr. </a></p>
+ * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage">Find the class HostGenPage in Solr. </a></p>
  * <p>
  * The extended class ending with "Gen" did not exist at first, but was automatically created by the same watch service based on the data retrieved from the local Apache Server search engine. 
  * The extended class contains many generated fields, getters, setters, initialization code, and helper methods to help build a website and API fast, reactive, and scalable. 
  * </p>
- * extends ComputerGenPageGen<PageLayout>
- * <p>This <code>class ComputerGenPage extends ComputerGenPageGen&lt;PageLayout&gt;</code>, which means it extends a newly generated ComputerGenPageGen. 
- * The generated <code>class ComputerGenPageGen extends PageLayout</code> which means that ComputerGenPage extends ComputerGenPageGen which extends PageLayout. 
+ * extends HostGenPageGen<PageLayout>
+ * <p>This <code>class HostGenPage extends HostGenPageGen&lt;PageLayout&gt;</code>, which means it extends a newly generated HostGenPageGen. 
+ * The generated <code>class HostGenPageGen extends PageLayout</code> which means that HostGenPage extends HostGenPageGen which extends PageLayout. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
  * <h2>Api: true</h2>
@@ -89,7 +89,7 @@ import io.vertx.core.Future;
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <h2>{@inheritDoc}</h2>
- * <p>By adding a class comment "{@inheritDoc}", the ComputerGenPage class will inherit the helpful inherited class comments from the super class ComputerGenPageGen. 
+ * <p>By adding a class comment "{@inheritDoc}", the HostGenPage class will inherit the helpful inherited class comments from the super class HostGenPageGen. 
  * </p>
  * <h2>Rows: null</h2>
  * <h2>Model: true</h2>
@@ -99,7 +99,7 @@ import io.vertx.core.Future;
  * <p>
  *   This class contains a comment <b>"Promise: true"</b>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
- *   This means that the ComputerGenPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
+ *   This means that the HostGenPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
  * <p>
  *   Adding protected void methods beginning with an underscore with a Promise as the only parameter will automatically set `Promise: true`. 
@@ -120,120 +120,126 @@ import io.vertx.core.Future;
  * </p>
  * <h2>AName.enUS: null</h2>
  * <p>
- * Delete the class ComputerGenPage in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * Delete the class HostGenPage in Solr: 
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
- * Delete  the package org.computate.dcm.model.eda.computer in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.computer&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * Delete  the package org.computate.dcm.model.eda.host in Solr: 
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.host&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the project dcm in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * Generated: true
  **/
-public abstract class ComputerGenPageGen<DEV> extends PageLayout {
-  protected static final Logger LOG = LoggerFactory.getLogger(ComputerGenPage.class);
+public abstract class HostGenPageGen<DEV> extends PageLayout {
+  protected static final Logger LOG = LoggerFactory.getLogger(HostGenPage.class);
 
-	/////////////////////////
-  // searchListComputer_ //
-	/////////////////////////
+	/////////////////////
+  // searchListHost_ //
+	/////////////////////
 
 
   /**
-   *  The entity searchListComputer_
+   *  The entity searchListHost_
    *	 is defined as null before being initialized. 
    */
   @JsonIgnore
   @JsonInclude(Include.NON_NULL)
-  protected SearchList<Computer> searchListComputer_;
+  protected SearchList<Host> searchListHost_;
 
   /**
-   * <br> The entity searchListComputer_
+   * <br> The entity searchListHost_
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:searchListComputer_">Find the entity searchListComputer_ in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:searchListHost_">Find the entity searchListHost_ in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _searchListComputer_(Wrap<SearchList<Computer>> w);
+  protected abstract void _searchListHost_(Wrap<SearchList<Host>> w);
 
-  public SearchList<Computer> getSearchListComputer_() {
-    return searchListComputer_;
+  public SearchList<Host> getSearchListHost_() {
+    return searchListHost_;
   }
 
-  public void setSearchListComputer_(SearchList<Computer> searchListComputer_) {
-    this.searchListComputer_ = searchListComputer_;
+  public void setSearchListHost_(SearchList<Host> searchListHost_) {
+    this.searchListHost_ = searchListHost_;
   }
-  public static SearchList<Computer> staticSetSearchListComputer_(SiteRequest siteRequest_, String o) {
+  public static SearchList<Host> staticSetSearchListHost_(SiteRequest siteRequest_, String o) {
     return null;
   }
-  protected ComputerGenPage searchListComputer_Init() {
-    Wrap<SearchList<Computer>> searchListComputer_Wrap = new Wrap<SearchList<Computer>>().var("searchListComputer_");
-    if(searchListComputer_ == null) {
-      _searchListComputer_(searchListComputer_Wrap);
-      Optional.ofNullable(searchListComputer_Wrap.getO()).ifPresent(o -> {
-        setSearchListComputer_(o);
+  protected HostGenPage searchListHost_Init() {
+    Wrap<SearchList<Host>> searchListHost_Wrap = new Wrap<SearchList<Host>>().var("searchListHost_");
+    if(searchListHost_ == null) {
+      _searchListHost_(searchListHost_Wrap);
+      Optional.ofNullable(searchListHost_Wrap.getO()).ifPresent(o -> {
+        setSearchListHost_(o);
       });
     }
-    return (ComputerGenPage)this;
+    return (HostGenPage)this;
   }
 
-	//////////////////
-  // listComputer //
-	//////////////////
+	//////////////
+  // listHost //
+	//////////////
 
 
   /**
-   *  The entity listComputer
+   *  The entity listHost
    *	 It is constructed before being initialized with the constructor by default. 
    */
   @JsonProperty
   @JsonDeserialize(using = JsonArrayDeserializer.class)
   @JsonInclude(Include.NON_NULL)
-  protected JsonArray listComputer = new JsonArray();
+  protected JsonArray listHost = new JsonArray();
 
   /**
-   * <br> The entity listComputer
+   * <br> The entity listHost
    *  It is constructed before being initialized with the constructor by default. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:listComputer">Find the entity listComputer in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:listHost">Find the entity listHost in Solr</a>
    * <br>
    * @param l is the entity already constructed. 
    **/
-  protected abstract void _listComputer(JsonArray l);
+  protected abstract void _listHost(JsonArray l);
 
-  public JsonArray getListComputer() {
-    return listComputer;
+  public JsonArray getListHost() {
+    return listHost;
   }
 
-  public void setListComputer(JsonArray listComputer) {
-    this.listComputer = listComputer;
+  public void setListHost(JsonArray listHost) {
+    this.listHost = listHost;
   }
   @JsonIgnore
-  public void setListComputer(String o) {
-    this.listComputer = ComputerGenPage.staticSetListComputer(siteRequest_, o);
+  public void setListHost(String o) {
+    this.listHost = HostGenPage.staticSetListHost(siteRequest_, o);
   }
-  public static JsonArray staticSetListComputer(SiteRequest siteRequest_, String o) {
+  public static JsonArray staticSetListHost(SiteRequest siteRequest_, String o) {
     if(o != null) {
         return new JsonArray(o);
     }
     return null;
   }
-  protected ComputerGenPage listComputerInit() {
-    _listComputer(listComputer);
-    return (ComputerGenPage)this;
+  protected HostGenPage listHostInit() {
+    _listHost(listHost);
+    return (HostGenPage)this;
   }
 
-  public static String staticSearchListComputer(SiteRequest siteRequest_, JsonArray o) {
+  public static String staticSearchListHost(SiteRequest siteRequest_, JsonArray o) {
     return o.toString();
   }
 
-  public static String staticSearchStrListComputer(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrListHost(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqListComputer(SiteRequest siteRequest_, String o) {
-    return ComputerGenPage.staticSearchListComputer(siteRequest_, ComputerGenPage.staticSetListComputer(siteRequest_, o)).toString();
+  public static String staticSearchFqListHost(SiteRequest siteRequest_, String o) {
+    return HostGenPage.staticSearchListHost(siteRequest_, HostGenPage.staticSetListHost(siteRequest_, o)).toString();
   }
 
 	/////////////////
@@ -253,7 +259,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity resultCount
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:resultCount">Find the entity resultCount in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:resultCount">Find the entity resultCount in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -268,14 +274,14 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
   @JsonIgnore
   public void setResultCount(String o) {
-    this.resultCount = ComputerGenPage.staticSetResultCount(siteRequest_, o);
+    this.resultCount = HostGenPage.staticSetResultCount(siteRequest_, o);
   }
   public static Integer staticSetResultCount(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Integer.parseInt(o);
     return null;
   }
-  protected ComputerGenPage resultCountInit() {
+  protected HostGenPage resultCountInit() {
     Wrap<Integer> resultCountWrap = new Wrap<Integer>().var("resultCount");
     if(resultCount == null) {
       _resultCount(resultCountWrap);
@@ -283,7 +289,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
         setResultCount(o);
       });
     }
-    return (ComputerGenPage)this;
+    return (HostGenPage)this;
   }
 
   public static Integer staticSearchResultCount(SiteRequest siteRequest_, Integer o) {
@@ -295,7 +301,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqResultCount(SiteRequest siteRequest_, String o) {
-    return ComputerGenPage.staticSearchResultCount(siteRequest_, ComputerGenPage.staticSetResultCount(siteRequest_, o)).toString();
+    return HostGenPage.staticSearchResultCount(siteRequest_, HostGenPage.staticSetResultCount(siteRequest_, o)).toString();
   }
 
 	////////////
@@ -309,36 +315,36 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected Computer result;
+  protected Host result;
 
   /**
    * <br> The entity result
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:result">Find the entity result in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:result">Find the entity result in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _result(Wrap<Computer> w);
+  protected abstract void _result(Wrap<Host> w);
 
-  public Computer getResult() {
+  public Host getResult() {
     return result;
   }
 
-  public void setResult(Computer result) {
+  public void setResult(Host result) {
     this.result = result;
   }
-  public static Computer staticSetResult(SiteRequest siteRequest_, String o) {
+  public static Host staticSetResult(SiteRequest siteRequest_, String o) {
     return null;
   }
-  protected ComputerGenPage resultInit() {
-    Wrap<Computer> resultWrap = new Wrap<Computer>().var("result");
+  protected HostGenPage resultInit() {
+    Wrap<Host> resultWrap = new Wrap<Host>().var("result");
     if(result == null) {
       _result(resultWrap);
       Optional.ofNullable(resultWrap.getO()).ifPresent(o -> {
         setResult(o);
       });
     }
-    return (ComputerGenPage)this;
+    return (HostGenPage)this;
   }
 
 	////////
@@ -358,7 +364,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity pk
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -373,14 +379,14 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
   @JsonIgnore
   public void setPk(String o) {
-    this.pk = ComputerGenPage.staticSetPk(siteRequest_, o);
+    this.pk = HostGenPage.staticSetPk(siteRequest_, o);
   }
   public static Long staticSetPk(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Long.parseLong(o);
     return null;
   }
-  protected ComputerGenPage pkInit() {
+  protected HostGenPage pkInit() {
     Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
     if(pk == null) {
       _pk(pkWrap);
@@ -388,7 +394,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
         setPk(o);
       });
     }
-    return (ComputerGenPage)this;
+    return (HostGenPage)this;
   }
 
   public static Long staticSearchPk(SiteRequest siteRequest_, Long o) {
@@ -400,7 +406,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqPk(SiteRequest siteRequest_, String o) {
-    return ComputerGenPage.staticSearchPk(siteRequest_, ComputerGenPage.staticSetPk(siteRequest_, o)).toString();
+    return HostGenPage.staticSearchPk(siteRequest_, HostGenPage.staticSetPk(siteRequest_, o)).toString();
   }
 
 	////////////
@@ -419,7 +425,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity solrId
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.computer.ComputerGenPage&fq=entiteVar_enUS_indexed_string:solrId">Find the entity solrId in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:solrId">Find the entity solrId in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -429,12 +435,12 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     return solrId;
   }
   public void setSolrId(String o) {
-    this.solrId = ComputerGenPage.staticSetSolrId(siteRequest_, o);
+    this.solrId = HostGenPage.staticSetSolrId(siteRequest_, o);
   }
   public static String staticSetSolrId(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected ComputerGenPage solrIdInit() {
+  protected HostGenPage solrIdInit() {
     Wrap<String> solrIdWrap = new Wrap<String>().var("solrId");
     if(solrId == null) {
       _solrId(solrIdWrap);
@@ -442,7 +448,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
         setSolrId(o);
       });
     }
-    return (ComputerGenPage)this;
+    return (HostGenPage)this;
   }
 
   public static String staticSearchSolrId(SiteRequest siteRequest_, String o) {
@@ -454,22 +460,76 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqSolrId(SiteRequest siteRequest_, String o) {
-    return ComputerGenPage.staticSearchSolrId(siteRequest_, ComputerGenPage.staticSetSolrId(siteRequest_, o)).toString();
+    return HostGenPage.staticSearchSolrId(siteRequest_, HostGenPage.staticSetSolrId(siteRequest_, o)).toString();
+  }
+
+	/////////////////
+  // pageUriHost //
+	/////////////////
+
+
+  /**
+   *  The entity pageUriHost
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String pageUriHost;
+
+  /**
+   * <br> The entity pageUriHost
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.HostGenPage&fq=entiteVar_enUS_indexed_string:pageUriHost">Find the entity pageUriHost in Solr</a>
+   * <br>
+   * @param c is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _pageUriHost(Wrap<String> c);
+
+  public String getPageUriHost() {
+    return pageUriHost;
+  }
+  public void setPageUriHost(String o) {
+    this.pageUriHost = HostGenPage.staticSetPageUriHost(siteRequest_, o);
+  }
+  public static String staticSetPageUriHost(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostGenPage pageUriHostInit() {
+    Wrap<String> pageUriHostWrap = new Wrap<String>().var("pageUriHost");
+    if(pageUriHost == null) {
+      _pageUriHost(pageUriHostWrap);
+      Optional.ofNullable(pageUriHostWrap.getO()).ifPresent(o -> {
+        setPageUriHost(o);
+      });
+    }
+    return (HostGenPage)this;
+  }
+
+  public static String staticSearchPageUriHost(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrPageUriHost(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqPageUriHost(SiteRequest siteRequest_, String o) {
+    return HostGenPage.staticSearchPageUriHost(siteRequest_, HostGenPage.staticSetPageUriHost(siteRequest_, o)).toString();
   }
 
   //////////////
   // initDeep //
   //////////////
 
-  public Future<ComputerGenPageGen<DEV>> promiseDeepComputerGenPage(SiteRequest siteRequest_) {
+  public Future<HostGenPageGen<DEV>> promiseDeepHostGenPage(SiteRequest siteRequest_) {
     setSiteRequest_(siteRequest_);
-    return promiseDeepComputerGenPage();
+    return promiseDeepHostGenPage();
   }
 
-  public Future<ComputerGenPageGen<DEV>> promiseDeepComputerGenPage() {
-    Promise<ComputerGenPageGen<DEV>> promise = Promise.promise();
+  public Future<HostGenPageGen<DEV>> promiseDeepHostGenPage() {
+    Promise<HostGenPageGen<DEV>> promise = Promise.promise();
     Promise<Void> promise2 = Promise.promise();
-    promiseComputerGenPage(promise2);
+    promiseHostGenPage(promise2);
     promise2.future().onSuccess(a -> {
       super.promiseDeepPageLayout(siteRequest_).onSuccess(b -> {
         promise.complete(this);
@@ -482,16 +542,17 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     return promise.future();
   }
 
-  public Future<Void> promiseComputerGenPage(Promise<Void> promise) {
+  public Future<Void> promiseHostGenPage(Promise<Void> promise) {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
-        searchListComputer_Init();
-        listComputerInit();
+        searchListHost_Init();
+        listHostInit();
         resultCountInit();
         resultInit();
         pkInit();
         solrIdInit();
+        pageUriHostInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -505,20 +566,20 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     return promise.future();
   }
 
-  @Override public Future<? extends ComputerGenPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
-    return promiseDeepComputerGenPage(siteRequest_);
+  @Override public Future<? extends HostGenPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
+    return promiseDeepHostGenPage(siteRequest_);
   }
 
   /////////////////
   // siteRequest //
   /////////////////
 
-  public void siteRequestComputerGenPage(SiteRequest siteRequest_) {
+  public void siteRequestHostGenPage(SiteRequest siteRequest_) {
       super.siteRequestPageLayout(siteRequest_);
   }
 
   public void siteRequestForClass(SiteRequest siteRequest_) {
-    siteRequestComputerGenPage(siteRequest_);
+    siteRequestHostGenPage(siteRequest_);
   }
 
   /////////////
@@ -530,7 +591,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = obtainComputerGenPage(v);
+        o = obtainHostGenPage(v);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.obtainForClass(v);
@@ -542,21 +603,23 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     }
     return o;
   }
-  public Object obtainComputerGenPage(String var) {
-    ComputerGenPage oComputerGenPage = (ComputerGenPage)this;
+  public Object obtainHostGenPage(String var) {
+    HostGenPage oHostGenPage = (HostGenPage)this;
     switch(var) {
-      case "searchListComputer_":
-        return oComputerGenPage.searchListComputer_;
-      case "listComputer":
-        return oComputerGenPage.listComputer;
+      case "searchListHost_":
+        return oHostGenPage.searchListHost_;
+      case "listHost":
+        return oHostGenPage.listHost;
       case "resultCount":
-        return oComputerGenPage.resultCount;
+        return oHostGenPage.resultCount;
       case "result":
-        return oComputerGenPage.result;
+        return oHostGenPage.result;
       case "pk":
-        return oComputerGenPage.pk;
+        return oHostGenPage.pk;
       case "solrId":
-        return oComputerGenPage.solrId;
+        return oHostGenPage.solrId;
+      case "pageUriHost":
+        return oHostGenPage.pageUriHost;
       default:
         return super.obtainPageLayout(var);
     }
@@ -571,7 +634,7 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = relateComputerGenPage(v, val);
+        o = relateHostGenPage(v, val);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.relateForClass(v, val);
@@ -579,8 +642,8 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     }
     return o != null;
   }
-  public Object relateComputerGenPage(String var, Object val) {
-    ComputerGenPage oComputerGenPage = (ComputerGenPage)this;
+  public Object relateHostGenPage(String var, Object val) {
+    HostGenPage oHostGenPage = (HostGenPage)this;
     switch(var) {
       default:
         return super.relatePageLayout(var, val);
@@ -591,19 +654,21 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   // staticSet //
   ///////////////
 
-  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, ComputerGenPage o) {
-    return staticSetComputerGenPage(entityVar,  siteRequest_, v, o);
+  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, HostGenPage o) {
+    return staticSetHostGenPage(entityVar,  siteRequest_, v, o);
   }
-  public static Object staticSetComputerGenPage(String entityVar, SiteRequest siteRequest_, String v, ComputerGenPage o) {
+  public static Object staticSetHostGenPage(String entityVar, SiteRequest siteRequest_, String v, HostGenPage o) {
     switch(entityVar) {
-    case "listComputer":
-      return ComputerGenPage.staticSetListComputer(siteRequest_, v);
+    case "listHost":
+      return HostGenPage.staticSetListHost(siteRequest_, v);
     case "resultCount":
-      return ComputerGenPage.staticSetResultCount(siteRequest_, v);
+      return HostGenPage.staticSetResultCount(siteRequest_, v);
     case "pk":
-      return ComputerGenPage.staticSetPk(siteRequest_, v);
+      return HostGenPage.staticSetPk(siteRequest_, v);
     case "solrId":
-      return ComputerGenPage.staticSetSolrId(siteRequest_, v);
+      return HostGenPage.staticSetSolrId(siteRequest_, v);
+    case "pageUriHost":
+      return HostGenPage.staticSetPageUriHost(siteRequest_, v);
       default:
         return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, v, o);
     }
@@ -614,18 +679,20 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   ////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchComputerGenPage(entityVar,  siteRequest_, o);
+    return staticSearchHostGenPage(entityVar,  siteRequest_, o);
   }
-  public static Object staticSearchComputerGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static Object staticSearchHostGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "listComputer":
-      return ComputerGenPage.staticSearchListComputer(siteRequest_, (JsonArray)o);
+    case "listHost":
+      return HostGenPage.staticSearchListHost(siteRequest_, (JsonArray)o);
     case "resultCount":
-      return ComputerGenPage.staticSearchResultCount(siteRequest_, (Integer)o);
+      return HostGenPage.staticSearchResultCount(siteRequest_, (Integer)o);
     case "pk":
-      return ComputerGenPage.staticSearchPk(siteRequest_, (Long)o);
+      return HostGenPage.staticSearchPk(siteRequest_, (Long)o);
     case "solrId":
-      return ComputerGenPage.staticSearchSolrId(siteRequest_, (String)o);
+      return HostGenPage.staticSearchSolrId(siteRequest_, (String)o);
+    case "pageUriHost":
+      return HostGenPage.staticSearchPageUriHost(siteRequest_, (String)o);
       default:
         return PageLayout.staticSearchPageLayout(entityVar,  siteRequest_, o);
     }
@@ -636,18 +703,20 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   ///////////////////
 
   public static String staticSearchStrForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchStrComputerGenPage(entityVar,  siteRequest_, o);
+    return staticSearchStrHostGenPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchStrComputerGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static String staticSearchStrHostGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "listComputer":
-      return ComputerGenPage.staticSearchStrListComputer(siteRequest_, (String)o);
+    case "listHost":
+      return HostGenPage.staticSearchStrListHost(siteRequest_, (String)o);
     case "resultCount":
-      return ComputerGenPage.staticSearchStrResultCount(siteRequest_, (Integer)o);
+      return HostGenPage.staticSearchStrResultCount(siteRequest_, (Integer)o);
     case "pk":
-      return ComputerGenPage.staticSearchStrPk(siteRequest_, (Long)o);
+      return HostGenPage.staticSearchStrPk(siteRequest_, (Long)o);
     case "solrId":
-      return ComputerGenPage.staticSearchStrSolrId(siteRequest_, (String)o);
+      return HostGenPage.staticSearchStrSolrId(siteRequest_, (String)o);
+    case "pageUriHost":
+      return HostGenPage.staticSearchStrPageUriHost(siteRequest_, (String)o);
       default:
         return PageLayout.staticSearchStrPageLayout(entityVar,  siteRequest_, o);
     }
@@ -658,18 +727,20 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   //////////////////
 
   public static String staticSearchFqForClass(String entityVar, SiteRequest siteRequest_, String o) {
-    return staticSearchFqComputerGenPage(entityVar,  siteRequest_, o);
+    return staticSearchFqHostGenPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchFqComputerGenPage(String entityVar, SiteRequest siteRequest_, String o) {
+  public static String staticSearchFqHostGenPage(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
-    case "listComputer":
-      return ComputerGenPage.staticSearchFqListComputer(siteRequest_, o);
+    case "listHost":
+      return HostGenPage.staticSearchFqListHost(siteRequest_, o);
     case "resultCount":
-      return ComputerGenPage.staticSearchFqResultCount(siteRequest_, o);
+      return HostGenPage.staticSearchFqResultCount(siteRequest_, o);
     case "pk":
-      return ComputerGenPage.staticSearchFqPk(siteRequest_, o);
+      return HostGenPage.staticSearchFqPk(siteRequest_, o);
     case "solrId":
-      return ComputerGenPage.staticSearchFqSolrId(siteRequest_, o);
+      return HostGenPage.staticSearchFqSolrId(siteRequest_, o);
+    case "pageUriHost":
+      return HostGenPage.staticSearchFqPageUriHost(siteRequest_, o);
       default:
         return PageLayout.staticSearchFqPageLayout(entityVar,  siteRequest_, o);
     }
@@ -685,22 +756,24 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     return sb.toString();
   }
 
-  public static final String CLASS_SIMPLE_NAME = "ComputerGenPage";
-  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.computer.ComputerGenPage";
+  public static final String CLASS_SIMPLE_NAME = "HostGenPage";
+  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.host.HostGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
-  public static final String VAR_searchListComputer_ = "searchListComputer_";
-  public static final String VAR_listComputer = "listComputer";
+  public static final String VAR_searchListHost_ = "searchListHost_";
+  public static final String VAR_listHost = "listHost";
   public static final String VAR_resultCount = "resultCount";
   public static final String VAR_result = "result";
   public static final String VAR_pk = "pk";
   public static final String VAR_solrId = "solrId";
+  public static final String VAR_pageUriHost = "pageUriHost";
 
-  public static final String DISPLAY_NAME_searchListComputer_ = "";
-  public static final String DISPLAY_NAME_listComputer = "";
+  public static final String DISPLAY_NAME_searchListHost_ = "";
+  public static final String DISPLAY_NAME_listHost = "";
   public static final String DISPLAY_NAME_resultCount = "";
   public static final String DISPLAY_NAME_result = "";
   public static final String DISPLAY_NAME_pk = "";
   public static final String DISPLAY_NAME_solrId = "";
+  public static final String DISPLAY_NAME_pageUriHost = "";
 
   @Override
   public String idForClass() {
@@ -748,14 +821,14 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
   }
 
   public static String displayNameForClass(String var) {
-    return ComputerGenPage.displayNameComputerGenPage(var);
+    return HostGenPage.displayNameHostGenPage(var);
   }
-  public static String displayNameComputerGenPage(String var) {
+  public static String displayNameHostGenPage(String var) {
     switch(var) {
-    case VAR_searchListComputer_:
-      return DISPLAY_NAME_searchListComputer_;
-    case VAR_listComputer:
-      return DISPLAY_NAME_listComputer;
+    case VAR_searchListHost_:
+      return DISPLAY_NAME_searchListHost_;
+    case VAR_listHost:
+      return DISPLAY_NAME_listHost;
     case VAR_resultCount:
       return DISPLAY_NAME_resultCount;
     case VAR_result:
@@ -764,12 +837,14 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
       return DISPLAY_NAME_pk;
     case VAR_solrId:
       return DISPLAY_NAME_solrId;
+    case VAR_pageUriHost:
+      return DISPLAY_NAME_pageUriHost;
     default:
       return PageLayout.displayNamePageLayout(var);
     }
   }
 
-  public static String descriptionComputerGenPage(String var) {
+  public static String descriptionHostGenPage(String var) {
     if(var == null)
       return null;
     switch(var) {
@@ -778,68 +853,70 @@ public abstract class ComputerGenPageGen<DEV> extends PageLayout {
     }
   }
 
-  public static String classSimpleNameComputerGenPage(String var) {
+  public static String classSimpleNameHostGenPage(String var) {
     switch(var) {
-    case VAR_searchListComputer_:
+    case VAR_searchListHost_:
       return "SearchList";
-    case VAR_listComputer:
+    case VAR_listHost:
       return "JsonArray";
     case VAR_resultCount:
       return "Integer";
     case VAR_result:
-      return "Computer";
+      return "Host";
     case VAR_pk:
       return "Long";
     case VAR_solrId:
+      return "String";
+    case VAR_pageUriHost:
       return "String";
       default:
         return PageLayout.classSimpleNamePageLayout(var);
     }
   }
 
-  public static Integer htmColumnComputerGenPage(String var) {
+  public static Integer htmColumnHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmColumnPageLayout(var);
     }
   }
 
-  public static Integer htmRowComputerGenPage(String var) {
+  public static Integer htmRowHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmRowPageLayout(var);
     }
   }
 
-  public static Integer htmCellComputerGenPage(String var) {
+  public static Integer htmCellHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmCellPageLayout(var);
     }
   }
 
-  public static Integer lengthMinComputerGenPage(String var) {
+  public static Integer lengthMinHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.lengthMinPageLayout(var);
     }
   }
 
-  public static Integer lengthMaxComputerGenPage(String var) {
+  public static Integer lengthMaxHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.lengthMaxPageLayout(var);
     }
   }
 
-  public static Integer maxComputerGenPage(String var) {
+  public static Integer maxHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.maxPageLayout(var);
     }
   }
 
-  public static Integer minComputerGenPage(String var) {
+  public static Integer minHostGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.minPageLayout(var);
