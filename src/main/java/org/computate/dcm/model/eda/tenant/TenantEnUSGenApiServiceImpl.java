@@ -1,7 +1,5 @@
-package org.computate.dcm.model.eda.host;
+package org.computate.dcm.model.eda.tenant;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -107,40 +105,40 @@ import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.BooleanUtils;
 import org.computate.vertx.search.list.SearchList;
-import org.computate.dcm.model.eda.host.HostPage;
+import org.computate.dcm.model.eda.tenant.TenantPage;
 
 
 /**
  * Translate: false
  * Generated: true
  **/
-public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements HostEnUSGenApiService {
+public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements TenantEnUSGenApiService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(HostEnUSGenApiServiceImpl.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(TenantEnUSGenApiServiceImpl.class);
 
   // Search //
 
   @Override
-  public void searchHost(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchTenant(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -164,12 +162,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
-                  });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -190,26 +182,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, false).onSuccess(listHost -> {
-                response200SearchHost(listHost).onSuccess(response -> {
+              searchTenantList(siteRequest, false, true, false).onSuccess(listTenant -> {
+                response200SearchTenant(listTenant).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchHost succeeded. "));
+                  LOG.debug(String.format("searchTenant succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchHost failed. "), ex);
+                  LOG.error(String.format("searchTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchHost failed. "), ex);
+                LOG.error(String.format("searchTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchHost failed. "), ex);
+            LOG.error(String.format("searchTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchHost failed. "), ex);
+        LOG.error(String.format("searchTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -217,7 +209,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchHost failed. ", ex2));
+          LOG.error(String.format("searchTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -232,27 +224,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("searchHost failed. "), ex);
+        LOG.error(String.format("searchTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200SearchHost(SearchList<Host> listHost) {
+  public Future<ServiceResponse> response200SearchTenant(SearchList<Tenant> listTenant) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      List<String> fls = listHost.getRequest().getFields();
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+      List<String> fls = listTenant.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
-      listHost.getList().stream().forEach(o -> {
+      listTenant.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
           Set<String> fieldNames = new HashSet<String>();
           for(String fieldName : json2.fieldNames()) {
-            String v = Host.varIndexedHost(fieldName);
+            String v = Tenant.varIndexedTenant(fieldName);
             if(v != null)
-              fieldNames.add(Host.varIndexedHost(fieldName));
+              fieldNames.add(Tenant.varIndexedTenant(fieldName));
           }
           if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves_docvalues_strings")) {
             fieldNames.removeAll(Optional.ofNullable(json2.getJsonArray("saves_docvalues_strings")).orElse(new JsonArray()).stream().map(s -> s.toString()).collect(Collectors.toList()));
@@ -270,10 +262,10 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         l.add(json2);
       });
       json.put("list", l);
-      response200Search(listHost.getRequest(), listHost.getResponse(), json);
+      response200Search(listTenant.getRequest(), listTenant.getResponse(), json);
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -281,12 +273,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchHost failed. "), ex);
+      LOG.error(String.format("response200SearchTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchHost(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchTenant(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -315,7 +307,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchHost(pivotFields2, pivotArray2);
+          responsePivotSearchTenant(pivotFields2, pivotArray2);
         }
       }
     }
@@ -324,26 +316,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // GET //
 
   @Override
-  public void getHost(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void getTenant(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -367,12 +359,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
-                  });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -393,26 +379,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, false).onSuccess(listHost -> {
-                response200GETHost(listHost).onSuccess(response -> {
+              searchTenantList(siteRequest, false, true, false).onSuccess(listTenant -> {
+                response200GETTenant(listTenant).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("getHost succeeded. "));
+                  LOG.debug(String.format("getTenant succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("getHost failed. "), ex);
+                  LOG.error(String.format("getTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("getHost failed. "), ex);
+                LOG.error(String.format("getTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("getHost failed. "), ex);
+            LOG.error(String.format("getTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("getHost failed. "), ex);
+        LOG.error(String.format("getTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -420,7 +406,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("getHost failed. ", ex2));
+          LOG.error(String.format("getTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -435,20 +421,20 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("getHost failed. "), ex);
+        LOG.error(String.format("getTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200GETHost(SearchList<Host> listHost) {
+  public Future<ServiceResponse> response200GETTenant(SearchList<Tenant> listTenant) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      JsonObject json = JsonObject.mapFrom(listHost.getList().stream().findFirst().orElse(null));
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+      JsonObject json = JsonObject.mapFrom(listTenant.getList().stream().findFirst().orElse(null));
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -456,7 +442,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200GETHost failed. "), ex);
+      LOG.error(String.format("response200GETTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -465,27 +451,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // PATCH //
 
   @Override
-  public void patchHost(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("patchHost started. "));
+  public void patchTenant(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("patchTenant started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "PATCH"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -508,12 +494,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -547,48 +527,48 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+              searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHost.getRequest().getRows());
-                  apiRequest.setNumFound(listHost.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenant.getRequest().getRows());
+                  apiRequest.setNumFound(listTenant.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHost.first());
-                  apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
-                  apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenant.first());
+                  apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+                  apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
 
-                  listPATCHHost(apiRequest, listHost).onSuccess(e -> {
-                    response200PATCHHost(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("patchHost succeeded. "));
+                  listPATCHTenant(apiRequest, listTenant).onSuccess(e -> {
+                    response200PATCHTenant(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("patchTenant succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("patchHost failed. "), ex);
+                      LOG.error(String.format("patchTenant failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("patchHost failed. "), ex);
+                    LOG.error(String.format("patchTenant failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("patchHost failed. "), ex);
+                  LOG.error(String.format("patchTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("patchHost failed. "), ex);
+                LOG.error(String.format("patchTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchHost failed. "), ex);
+            LOG.error(String.format("patchTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchHost failed. "), ex);
+        LOG.error(String.format("patchTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -596,7 +576,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("patchHost failed. ", ex2));
+          LOG.error(String.format("patchTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -611,58 +591,58 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("patchHost failed. "), ex);
+        LOG.error(String.format("patchTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPATCHHost(ApiRequest apiRequest, SearchList<Host> listHost) {
+  public Future<Void> listPATCHTenant(ApiRequest apiRequest, SearchList<Tenant> listTenant) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-    listHost.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+    listTenant.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      Host o2 = jsonObject.mapTo(Host.class);
+      Tenant o2 = jsonObject.mapTo(Tenant.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        patchHostFuture(o2, false).onSuccess(a -> {
+        patchTenantFuture(o2, false).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listPATCHHost failed. "), ex);
+          LOG.error(String.format("listPATCHTenant failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHost.next().onSuccess(next -> {
+      listTenant.next().onSuccess(next -> {
         if(next) {
-          listPATCHHost(apiRequest, listHost).onSuccess(b -> {
+          listPATCHTenant(apiRequest, listTenant).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPATCHHost failed. "), ex);
+            LOG.error(String.format("listPATCHTenant failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listPATCHHost failed. "), ex);
+        LOG.error(String.format("listPATCHTenant failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listPATCHHost failed. "), ex);
+      LOG.error(String.format("listPATCHTenant failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void patchHostFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void patchTenantFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -674,9 +654,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             siteRequest.addScopes(scope);
           });
         });
-        searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+        searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
           try {
-            Host o = listHost.first();
+            Tenant o = listTenant.first();
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.setRows(1L);
             apiRequest.setNumFound(1L);
@@ -686,65 +666,65 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
               siteRequest.getRequestVars().put( "refresh", "false" );
             }
-            Host o2;
+            Tenant o2;
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o3 -> o3.getHostName().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o3 -> o3.getSolrId()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o3 -> o3.getTenantId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
-              o2 = jsonObject.mapTo(Host.class);
+              o2 = jsonObject.mapTo(Tenant.class);
               o2.setSiteRequest_(siteRequest);
-              patchHostFuture(o2, false).onSuccess(o3 -> {
+              patchTenantFuture(o2, false).onSuccess(o3 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
               });
             } else {
-              String m = String.format("%s %s not found", "host", null);
+              String m = String.format("%s %s not found", "tenant", null);
               eventHandler.handle(Future.failedFuture(m));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchHost failed. "), ex);
+            LOG.error(String.format("patchTenant failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("patchHost failed. "), ex);
+          LOG.error(String.format("patchTenant failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchHost failed. "), ex);
+        LOG.error(String.format("patchTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("patchHost failed. "), ex);
+      LOG.error(String.format("patchTenant failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<Host> patchHostFuture(Host o, Boolean inheritPrimaryKey) {
+  public Future<Tenant> patchTenantFuture(Tenant o, Boolean inheritPrimaryKey) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<Host> promise = Promise.promise();
+    Promise<Tenant> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<Host> promise1 = Promise.promise();
+      Promise<Tenant> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHost(siteRequest).onSuccess(a -> {
-          sqlPATCHHost(o, inheritPrimaryKey).onSuccess(host -> {
-            persistHost(host, true).onSuccess(c -> {
-              relateHost(host).onSuccess(d -> {
-                indexHost(host).onSuccess(o2 -> {
+        varsTenant(siteRequest).onSuccess(a -> {
+          sqlPATCHTenant(o, inheritPrimaryKey).onSuccess(tenant -> {
+            persistTenant(tenant, true).onSuccess(c -> {
+              relateTenant(tenant).onSuccess(d -> {
+                indexTenant(tenant).onSuccess(o2 -> {
                   if(apiRequest != null) {
                     apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                     if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                      o2.apiRequestHost();
+                      o2.apiRequestTenant();
                       if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                        eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                        eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
                     }
                   }
-                  promise1.complete(host);
+                  promise1.complete(tenant);
                 }).onFailure(ex -> {
                   promise1.tryFail(ex);
                 });
@@ -766,28 +746,28 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(host -> {
-        Promise<Host> promise2 = Promise.promise();
-        refreshHost(host).onSuccess(a -> {
-          promise2.complete(host);
+      }).compose(tenant -> {
+        Promise<Tenant> promise2 = Promise.promise();
+        refreshTenant(tenant).onSuccess(a -> {
+          promise2.complete(tenant);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(host -> {
-        promise.complete(host);
+      }).onSuccess(tenant -> {
+        promise.complete(tenant);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("patchHostFuture failed. "), ex);
+      LOG.error(String.format("patchTenantFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Host> sqlPATCHHost(Host o, Boolean inheritPrimaryKey) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> sqlPATCHTenant(Tenant o, Boolean inheritPrimaryKey) {
+    Promise<Tenant> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -795,102 +775,95 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE Host SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE Tenant SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
       Set<String> methodNames = jsonObject.fieldNames();
-      Host o2 = new Host();
+      Tenant o2 = new Tenant();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
 
       for(String entityVar : methodNames) {
         switch(entityVar) {
-          case "setTenantResource":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("Tenant");
-                  }
-                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "removeTenantResource":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
-              futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(Host.class, pk).setToNull(Host.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
-                  promise2.complete();
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "setHostName":
-              o2.setHostName(jsonObject.getString(entityVar));
+          case "setTenantName":
+              o2.setTenantName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_hostName + "=$" + num);
+              bSql.append(Tenant.VAR_tenantName + "=$" + num);
               num++;
-              bParams.add(o2.sqlHostName());
+              bParams.add(o2.sqlTenantName());
+            break;
+          case "setTenantId":
+              o2.setTenantId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Tenant.VAR_tenantId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlTenantId());
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_created + "=$" + num);
+              bSql.append(Tenant.VAR_created + "=$" + num);
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setHostResource":
-              o2.setHostResource(jsonObject.getString(entityVar));
+          case "setTenantResource":
+              o2.setTenantResource(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_hostResource + "=$" + num);
+              bSql.append(Tenant.VAR_tenantResource + "=$" + num);
               num++;
-              bParams.add(o2.sqlHostResource());
+              bParams.add(o2.sqlTenantResource());
             break;
-          case "setInventoryName":
-              o2.setInventoryName(jsonObject.getString(entityVar));
+          case "setPageId":
+              o2.setPageId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_inventoryName + "=$" + num);
+              bSql.append(Tenant.VAR_pageId + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryName());
+              bParams.add(o2.sqlPageId());
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_archived + "=$" + num);
+              bSql.append(Tenant.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
             break;
-          case "setEventSubscriptions":
-              o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+          case "setDescription":
+              o2.setDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+              bSql.append(Tenant.VAR_description + "=$" + num);
               num++;
-              bParams.add(o2.sqlEventSubscriptions());
+              bParams.add(o2.sqlDescription());
+            break;
+          case "setHubId":
+              o2.setHubId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Tenant.VAR_hubId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlHubId());
+            break;
+          case "setClusterName":
+              o2.setClusterName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Tenant.VAR_clusterName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlClusterName());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_sessionId + "=$" + num);
+              bSql.append(Tenant.VAR_sessionId + "=$" + num);
               num++;
               bParams.add(o2.sqlSessionId());
             break;
@@ -898,7 +871,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_userKey + "=$" + num);
+              bSql.append(Tenant.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
             break;
@@ -906,7 +879,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_objectTitle + "=$" + num);
+              bSql.append(Tenant.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
@@ -914,7 +887,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setDisplayPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_displayPage + "=$" + num);
+              bSql.append(Tenant.VAR_displayPage + "=$" + num);
               num++;
               bParams.add(o2.sqlDisplayPage());
             break;
@@ -922,7 +895,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setEditPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_editPage + "=$" + num);
+              bSql.append(Tenant.VAR_editPage + "=$" + num);
               num++;
               bParams.add(o2.sqlEditPage());
             break;
@@ -930,7 +903,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setUserPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_userPage + "=$" + num);
+              bSql.append(Tenant.VAR_userPage + "=$" + num);
               num++;
               bParams.add(o2.sqlUserPage());
             break;
@@ -938,7 +911,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               o2.setDownload(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_download + "=$" + num);
+              bSql.append(Tenant.VAR_download + "=$" + num);
               num++;
               bParams.add(o2.sqlDownload());
             break;
@@ -954,40 +927,40 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value Host failed", ex);
-            LOG.error(String.format("relateHost failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value Tenant failed", ex);
+            LOG.error(String.format("relateTenant failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
       }
       CompositeFuture.all(futures1).onSuccess(a -> {
         CompositeFuture.all(futures2).onSuccess(b -> {
-          Host o3 = new Host();
+          Tenant o3 = new Tenant();
           o3.setSiteRequest_(o.getSiteRequest_());
           o3.setPk(pk);
           promise.complete(o3);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPATCHHost failed. "), ex);
+          LOG.error(String.format("sqlPATCHTenant failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPATCHHost failed. "), ex);
+        LOG.error(String.format("sqlPATCHTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPATCHHost failed. "), ex);
+      LOG.error(String.format("sqlPATCHTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200PATCHHost(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PATCHTenant(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -995,7 +968,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200PATCHHost failed. "), ex);
+      LOG.error(String.format("response200PATCHTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1004,27 +977,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // POST //
 
   @Override
-  public void postHost(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("postHost started. "));
+  public void postTenant(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("postTenant started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "POST"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1047,12 +1020,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(POST)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1092,7 +1059,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+              eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
               JsonObject params = new JsonObject();
               params.put("body", siteRequest.getJsonObject());
               params.put("path", new JsonObject());
@@ -1111,24 +1078,24 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               params.put("query", query);
               JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
               JsonObject json = new JsonObject().put("context", context);
-              eventBus.request(Host.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postHostFuture")).onSuccess(a -> {
+              eventBus.request(Tenant.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postTenantFuture")).onSuccess(a -> {
                 JsonObject responseMessage = (JsonObject)a.body();
                 JsonObject responseBody = new JsonObject(Buffer.buffer(JsonUtil.BASE64_DECODER.decode(responseMessage.getString("payload"))));
-                apiRequest.setSolrId(responseBody.getString(Host.VAR_solrId));
+                apiRequest.setSolrId(responseBody.getString(Tenant.VAR_solrId));
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
-                LOG.debug(String.format("postHost succeeded. "));
+                LOG.debug(String.format("postTenant succeeded. "));
               }).onFailure(ex -> {
-                LOG.error(String.format("postHost failed. "), ex);
+                LOG.error(String.format("postTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("postHost failed. "), ex);
+            LOG.error(String.format("postTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("postHost failed. "), ex);
+        LOG.error(String.format("postTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1136,7 +1103,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postHost failed. ", ex2));
+          LOG.error(String.format("postTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1151,14 +1118,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("postHost failed. "), ex);
+        LOG.error(String.format("postTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
   @Override
-  public void postHostFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void postTenantFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -1177,13 +1144,13 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
-        postHostFuture(siteRequest, false).onSuccess(o -> {
+        postTenantFuture(siteRequest, false).onSuccess(o -> {
           eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
         }).onFailure(ex -> {
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Throwable ex) {
-        LOG.error(String.format("postHost failed. "), ex);
+        LOG.error(String.format("postTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1191,7 +1158,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postHost failed. ", ex2));
+          LOG.error(String.format("postTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1206,26 +1173,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("postHost failed. "), ex);
+        LOG.error(String.format("postTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Host> postHostFuture(SiteRequest siteRequest, Boolean hostName) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> postTenantFuture(SiteRequest siteRequest, Boolean tenantId) {
+    Promise<Tenant> promise = Promise.promise();
 
     try {
       pgPool.withTransaction(sqlConnection -> {
-        Promise<Host> promise1 = Promise.promise();
+        Promise<Tenant> promise1 = Promise.promise();
         siteRequest.setSqlConnection(sqlConnection);
-        varsHost(siteRequest).onSuccess(a -> {
-          createHost(siteRequest).onSuccess(host -> {
-            sqlPOSTHost(host, hostName).onSuccess(b -> {
-              persistHost(host, false).onSuccess(c -> {
-                relateHost(host).onSuccess(d -> {
-                  indexHost(host).onSuccess(o2 -> {
-                    promise1.complete(host);
+        varsTenant(siteRequest).onSuccess(a -> {
+          createTenant(siteRequest).onSuccess(tenant -> {
+            sqlPOSTTenant(tenant, tenantId).onSuccess(b -> {
+              persistTenant(tenant, false).onSuccess(c -> {
+                relateTenant(tenant).onSuccess(d -> {
+                  indexTenant(tenant).onSuccess(o2 -> {
+                    promise1.complete(tenant);
                   }).onFailure(ex -> {
                     promise1.tryFail(ex);
                   });
@@ -1250,50 +1217,50 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(host -> {
-        Promise<Host> promise2 = Promise.promise();
-        refreshHost(host).onSuccess(a -> {
+      }).compose(tenant -> {
+        Promise<Tenant> promise2 = Promise.promise();
+        refreshTenant(tenant).onSuccess(a -> {
           try {
             ApiRequest apiRequest = siteRequest.getApiRequest_();
             if(apiRequest != null) {
               apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-              host.apiRequestHost();
-              eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+              tenant.apiRequestTenant();
+              eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
             }
-            promise2.complete(host);
+            promise2.complete(tenant);
           } catch(Exception ex) {
-            LOG.error(String.format("postHostFuture failed. "), ex);
+            LOG.error(String.format("postTenantFuture failed. "), ex);
             promise2.tryFail(ex);
           }
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(host -> {
+      }).onSuccess(tenant -> {
         try {
           ApiRequest apiRequest = siteRequest.getApiRequest_();
           if(apiRequest != null) {
             apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-            host.apiRequestHost();
-            eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+            tenant.apiRequestTenant();
+            eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
           }
-          promise.complete(host);
+          promise.complete(tenant);
         } catch(Exception ex) {
-          LOG.error(String.format("postHostFuture failed. "), ex);
+          LOG.error(String.format("postTenantFuture failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("postHostFuture failed. "), ex);
+      LOG.error(String.format("postTenantFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Host> sqlPOSTHost(Host o, Boolean inheritPrimaryKey) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> sqlPOSTTenant(Tenant o, Boolean inheritPrimaryKey) {
+    Promise<Tenant> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -1301,11 +1268,11 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE Host SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE Tenant SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      Host o2 = new Host();
+      Tenant o2 = new Tenant();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -1331,140 +1298,147 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case Host.VAR_tenantResource:
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("Tenant");
-                  }
-                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case Host.VAR_hostName:
-            o2.setHostName(jsonObject.getString(entityVar));
+          case Tenant.VAR_tenantName:
+            o2.setTenantName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_hostName + "=$" + num);
+            bSql.append(Tenant.VAR_tenantName + "=$" + num);
             num++;
-            bParams.add(o2.sqlHostName());
+            bParams.add(o2.sqlTenantName());
             break;
-          case Host.VAR_created:
+          case Tenant.VAR_tenantId:
+            o2.setTenantId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Tenant.VAR_tenantId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlTenantId());
+            break;
+          case Tenant.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_created + "=$" + num);
+            bSql.append(Tenant.VAR_created + "=$" + num);
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case Host.VAR_hostResource:
-            o2.setHostResource(jsonObject.getString(entityVar));
+          case Tenant.VAR_tenantResource:
+            o2.setTenantResource(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_hostResource + "=$" + num);
+            bSql.append(Tenant.VAR_tenantResource + "=$" + num);
             num++;
-            bParams.add(o2.sqlHostResource());
+            bParams.add(o2.sqlTenantResource());
             break;
-          case Host.VAR_inventoryName:
-            o2.setInventoryName(jsonObject.getString(entityVar));
+          case Tenant.VAR_pageId:
+            o2.setPageId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_inventoryName + "=$" + num);
+            bSql.append(Tenant.VAR_pageId + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryName());
+            bParams.add(o2.sqlPageId());
             break;
-          case Host.VAR_archived:
+          case Tenant.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_archived + "=$" + num);
+            bSql.append(Tenant.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
             break;
-          case Host.VAR_eventSubscriptions:
-            o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+          case Tenant.VAR_description:
+            o2.setDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+            bSql.append(Tenant.VAR_description + "=$" + num);
             num++;
-            bParams.add(o2.sqlEventSubscriptions());
+            bParams.add(o2.sqlDescription());
             break;
-          case Host.VAR_sessionId:
+          case Tenant.VAR_hubId:
+            o2.setHubId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Tenant.VAR_hubId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlHubId());
+            break;
+          case Tenant.VAR_clusterName:
+            o2.setClusterName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Tenant.VAR_clusterName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlClusterName());
+            break;
+          case Tenant.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_sessionId + "=$" + num);
+            bSql.append(Tenant.VAR_sessionId + "=$" + num);
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case Host.VAR_userKey:
+          case Tenant.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_userKey + "=$" + num);
+            bSql.append(Tenant.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
             break;
-          case Host.VAR_objectTitle:
+          case Tenant.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_objectTitle + "=$" + num);
+            bSql.append(Tenant.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
-          case Host.VAR_displayPage:
+          case Tenant.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_displayPage + "=$" + num);
+            bSql.append(Tenant.VAR_displayPage + "=$" + num);
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
-          case Host.VAR_editPage:
+          case Tenant.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_editPage + "=$" + num);
+            bSql.append(Tenant.VAR_editPage + "=$" + num);
             num++;
             bParams.add(o2.sqlEditPage());
             break;
-          case Host.VAR_userPage:
+          case Tenant.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_userPage + "=$" + num);
+            bSql.append(Tenant.VAR_userPage + "=$" + num);
             num++;
             bParams.add(o2.sqlUserPage());
             break;
-          case Host.VAR_download:
+          case Tenant.VAR_download:
             o2.setDownload(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_download + "=$" + num);
+            bSql.append(Tenant.VAR_download + "=$" + num);
             num++;
             bParams.add(o2.sqlDownload());
             break;
@@ -1481,8 +1455,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value Host failed", ex);
-            LOG.error(String.format("relateHost failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value Tenant failed", ex);
+            LOG.error(String.format("relateTenant failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
@@ -1491,28 +1465,28 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete(o2);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPOSTHost failed. "), ex);
+          LOG.error(String.format("sqlPOSTTenant failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPOSTHost failed. "), ex);
+        LOG.error(String.format("sqlPOSTTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPOSTHost failed. "), ex);
+      LOG.error(String.format("sqlPOSTTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200POSTHost(Host o) {
+  public Future<ServiceResponse> response200POSTTenant(Tenant o) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1520,7 +1494,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200POSTHost failed. "), ex);
+      LOG.error(String.format("response200POSTTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1529,27 +1503,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // DELETE //
 
   @Override
-  public void deleteHost(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deleteHost started. "));
+  public void deleteTenant(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deleteTenant started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1572,12 +1546,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1611,47 +1579,47 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+              searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHost.getRequest().getRows());
-                  apiRequest.setNumFound(listHost.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenant.getRequest().getRows());
+                  apiRequest.setNumFound(listTenant.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHost.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenant.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETEHost(apiRequest, listHost).onSuccess(e -> {
-                    response200DELETEHost(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deleteHost succeeded. "));
+                  listDELETETenant(apiRequest, listTenant).onSuccess(e -> {
+                    response200DELETETenant(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deleteTenant succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deleteHost failed. "), ex);
+                      LOG.error(String.format("deleteTenant failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deleteHost failed. "), ex);
+                    LOG.error(String.format("deleteTenant failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deleteHost failed. "), ex);
+                  LOG.error(String.format("deleteTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deleteHost failed. "), ex);
+                LOG.error(String.format("deleteTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteHost failed. "), ex);
+            LOG.error(String.format("deleteTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteHost failed. "), ex);
+        LOG.error(String.format("deleteTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1659,7 +1627,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deleteHost failed. ", ex2));
+          LOG.error(String.format("deleteTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1674,58 +1642,58 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("deleteHost failed. "), ex);
+        LOG.error(String.format("deleteTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETEHost(ApiRequest apiRequest, SearchList<Host> listHost) {
+  public Future<Void> listDELETETenant(ApiRequest apiRequest, SearchList<Tenant> listTenant) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-    listHost.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+    listTenant.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      Host o2 = jsonObject.mapTo(Host.class);
+      Tenant o2 = jsonObject.mapTo(Tenant.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deleteHostFuture(o).onSuccess(a -> {
+        deleteTenantFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETEHost failed. "), ex);
+          LOG.error(String.format("listDELETETenant failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHost.next().onSuccess(next -> {
+      listTenant.next().onSuccess(next -> {
         if(next) {
-          listDELETEHost(apiRequest, listHost).onSuccess(b -> {
+          listDELETETenant(apiRequest, listTenant).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETEHost failed. "), ex);
+            LOG.error(String.format("listDELETETenant failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETEHost failed. "), ex);
+        LOG.error(String.format("listDELETETenant failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETEHost failed. "), ex);
+      LOG.error(String.format("listDELETETenant failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deleteHostFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deleteTenantFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -1737,10 +1705,10 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             siteRequest.addScopes(scope);
           });
         });
-        searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+        searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
           try {
-            Host o = listHost.first();
-            if(o != null && listHost.getResponse().getResponse().getNumFound() == 1) {
+            Tenant o = listTenant.first();
+            if(o != null && listTenant.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -1752,9 +1720,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deleteHostFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deleteTenantFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -1763,42 +1731,42 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteHost failed. "), ex);
+            LOG.error(String.format("deleteTenant failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deleteHost failed. "), ex);
+          LOG.error(String.format("deleteTenant failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteHost failed. "), ex);
+        LOG.error(String.format("deleteTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deleteHost failed. "), ex);
+      LOG.error(String.format("deleteTenant failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<Host> deleteHostFuture(Host o) {
+  public Future<Tenant> deleteTenantFuture(Tenant o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<Host> promise = Promise.promise();
+    Promise<Tenant> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<Host> promise1 = Promise.promise();
+      Promise<Tenant> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHost(siteRequest).onSuccess(a -> {
-          sqlDELETEHost(o).onSuccess(host -> {
-            relateHost(o).onSuccess(d -> {
-              unindexHost(o).onSuccess(o2 -> {
+        varsTenant(siteRequest).onSuccess(a -> {
+          sqlDELETETenant(o).onSuccess(tenant -> {
+            relateTenant(o).onSuccess(d -> {
+              unindexTenant(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestHost();
+                    o2.apiRequestTenant();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -1820,27 +1788,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(host -> {
-        Promise<Host> promise2 = Promise.promise();
-        refreshHost(o).onSuccess(a -> {
+      }).compose(tenant -> {
+        Promise<Tenant> promise2 = Promise.promise();
+        refreshTenant(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(host -> {
-        promise.complete(host);
+      }).onSuccess(tenant -> {
+        promise.complete(tenant);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deleteHostFuture failed. "), ex);
+      LOG.error(String.format("deleteTenantFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETEHost(Host o) {
+  public Future<Void> sqlDELETETenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -1849,11 +1817,11 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM Host ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM Tenant ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      Host o2 = new Host();
+      Tenant o2 = new Tenant();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -1862,26 +1830,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case Host.VAR_tenantResource:
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("Tenant");
-                  }
-                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
           }
         }
       }
@@ -1894,8 +1842,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value Host failed", ex);
-          LOG.error(String.format("unrelateHost failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value Tenant failed", ex);
+          LOG.error(String.format("unrelateTenant failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -1903,27 +1851,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETEHost failed. "), ex);
+          LOG.error(String.format("sqlDELETETenant failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETEHost failed. "), ex);
+        LOG.error(String.format("sqlDELETETenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETEHost failed. "), ex);
+      LOG.error(String.format("sqlDELETETenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETEHost(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETETenant(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1931,7 +1879,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETEHost failed. "), ex);
+      LOG.error(String.format("response200DELETETenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1940,27 +1888,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // PUTImport //
 
   @Override
-  public void putimportHost(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("putimportHost started. "));
+  public void putimportTenant(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("putimportTenant started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "PUT"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "PUT"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1983,12 +1931,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(PUT)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2029,32 +1971,32 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
-              varsHost(siteRequest).onSuccess(d -> {
-                listPUTImportHost(apiRequest, siteRequest).onSuccess(e -> {
-                  response200PUTImportHost(siteRequest).onSuccess(response -> {
-                    LOG.debug(String.format("putimportHost succeeded. "));
+              eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
+              varsTenant(siteRequest).onSuccess(d -> {
+                listPUTImportTenant(apiRequest, siteRequest).onSuccess(e -> {
+                  response200PUTImportTenant(siteRequest).onSuccess(response -> {
+                    LOG.debug(String.format("putimportTenant succeeded. "));
                     eventHandler.handle(Future.succeededFuture(response));
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHost failed. "), ex);
+                    LOG.error(String.format("putimportTenant failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 }).onFailure(ex -> {
-                  LOG.error(String.format("putimportHost failed. "), ex);
+                  LOG.error(String.format("putimportTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("putimportHost failed. "), ex);
+                LOG.error(String.format("putimportTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("putimportHost failed. "), ex);
+            LOG.error(String.format("putimportTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportHost failed. "), ex);
+        LOG.error(String.format("putimportTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2062,7 +2004,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportHost failed. ", ex2));
+          LOG.error(String.format("putimportTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2077,13 +2019,13 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("putimportHost failed. "), ex);
+        LOG.error(String.format("putimportTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPUTImportHost(ApiRequest apiRequest, SiteRequest siteRequest) {
+  public Future<Void> listPUTImportTenant(ApiRequest apiRequest, SiteRequest siteRequest) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
     JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
@@ -2108,10 +2050,10 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(Host.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportHostFuture")).onSuccess(a -> {
+          eventBus.request(Tenant.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportTenantFuture")).onSuccess(a -> {
             promise1.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPUTImportHost failed. "), ex);
+            LOG.error(String.format("listPUTImportTenant failed. "), ex);
             promise1.tryFail(ex);
           });
         }));
@@ -2120,18 +2062,18 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
         promise.complete();
       }).onFailure(ex -> {
-        LOG.error(String.format("listPUTImportHost failed. "), ex);
+        LOG.error(String.format("listPUTImportTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("listPUTImportHost failed. "), ex);
+      LOG.error(String.format("listPUTImportTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
   @Override
-  public void putimportHostFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void putimportTenantFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -2147,19 +2089,19 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String hostName = Optional.ofNullable(body.getString(Host.VAR_hostName)).orElse(body.getString(Host.VAR_solrId));
+        String tenantId = Optional.ofNullable(body.getString(Tenant.VAR_tenantId)).orElse(body.getString(Tenant.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE hostName=$1", Host.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE tenantId=$1", Tenant.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(hostName))
+              .execute(Tuple.tuple(Arrays.asList(tenantId))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
                 if(result.size() >= 1) {
-                  Host o = new Host();
+                  Tenant o = new Tenant();
                   o.setSiteRequest_(siteRequest);
                   for(Row definition : result.value()) {
                     for(Integer i = 0; i < definition.size(); i++) {
@@ -2168,11 +2110,11 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                         Object columnValue = definition.getValue(i);
                         o.persistForClass(columnName, columnValue);
                       } catch(Exception e) {
-                        LOG.error(String.format("persistHost failed. "), e);
+                        LOG.error(String.format("persistTenant failed. "), e);
                       }
                     }
                   }
-                  Host o2 = new Host();
+                  Tenant o2 = new Tenant();
                   o2.setSiteRequest_(siteRequest);
                   JsonObject body2 = new JsonObject();
                   for(String f : body.fieldNames()) {
@@ -2204,56 +2146,56 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "hostName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "hostName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getHostName()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getTenantId()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
-                  patchHostFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import Host {} succeeded, modified Host. ", body.getValue(Host.VAR_hostName));
+                  patchTenantFuture(o, true).onSuccess(b -> {
+                    LOG.debug("Import Tenant {} succeeded, modified Tenant. ", body.getValue(Tenant.VAR_tenantId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHostFuture failed. "), ex);
+                    LOG.error(String.format("putimportTenantFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 } else {
-                  postHostFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import Host {} succeeded, created new Host. ", body.getValue(Host.VAR_hostName));
+                  postTenantFuture(siteRequest, true).onSuccess(b -> {
+                    LOG.debug("Import Tenant {} succeeded, created new Tenant. ", body.getValue(Tenant.VAR_tenantId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHostFuture failed. "), ex);
+                    LOG.error(String.format("putimportTenantFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 }
               } catch(Exception ex) {
-                LOG.error(String.format("putimportHostFuture failed. "), ex);
+                LOG.error(String.format("putimportTenantFuture failed. "), ex);
                 eventHandler.handle(Future.failedFuture(ex));
               }
             }).onFailure(ex -> {
-              LOG.error(String.format("putimportHostFuture failed. "), ex);
+              LOG.error(String.format("putimportTenantFuture failed. "), ex);
               eventHandler.handle(Future.failedFuture(ex));
             });
           }).onFailure(ex -> {
-            LOG.error(String.format("putimportHostFuture failed. "), ex);
+            LOG.error(String.format("putimportTenantFuture failed. "), ex);
             eventHandler.handle(Future.failedFuture(ex));
           });
         }).onFailure(ex -> {
-          LOG.error(String.format("putimportHostFuture failed. "), ex);
+          LOG.error(String.format("putimportTenantFuture failed. "), ex);
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportHostFuture failed. "), ex);
+        LOG.error(String.format("putimportTenantFuture failed. "), ex);
         eventHandler.handle(Future.failedFuture(ex));
       }
     }).onFailure(ex -> {
@@ -2261,7 +2203,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportHost failed. ", ex2));
+          LOG.error(String.format("putimportTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2276,19 +2218,19 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("putimportHost failed. "), ex);
+        LOG.error(String.format("putimportTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200PUTImportHost(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PUTImportTenant(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -2296,7 +2238,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200PUTImportHost failed. "), ex);
+      LOG.error(String.format("response200PUTImportTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -2305,28 +2247,28 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // SearchPage //
 
   @Override
-  public void searchpageHost(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchpageTenant(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     oauth2AuthenticationProvider.refresh(User.create(serviceRequest.getUser())).onSuccess(user -> {
       serviceRequest.setUser(user.principal());
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2350,12 +2292,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
-                  });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -2376,26 +2312,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, false).onSuccess(listHost -> {
-                response200SearchPageHost(listHost).onSuccess(response -> {
+              searchTenantList(siteRequest, false, true, false).onSuccess(listTenant -> {
+                response200SearchPageTenant(listTenant).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchpageHost succeeded. "));
+                  LOG.debug(String.format("searchpageTenant succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchpageHost failed. "), ex);
+                  LOG.error(String.format("searchpageTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchpageHost failed. "), ex);
+                LOG.error(String.format("searchpageTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchpageHost failed. "), ex);
+            LOG.error(String.format("searchpageTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchpageHost failed. "), ex);
+        LOG.error(String.format("searchpageTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2403,7 +2339,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageHost failed. ", ex2));
+          LOG.error(String.format("searchpageTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2418,7 +2354,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("searchpageHost failed. "), ex);
+        LOG.error(String.format("searchpageTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
@@ -2427,7 +2363,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageHost failed. ", ex2));
+          LOG.error(String.format("searchpageTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2442,17 +2378,17 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("searchpageHost failed. "), ex);
+        LOG.error(String.format("searchpageTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void searchpageHostPageInit(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<Void> promise) {
+  public void searchpageTenantPageInit(JsonObject ctx, TenantPage page, SearchList<Tenant> listTenant, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host"));
-    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/tenant"));
+    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/tenant"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
@@ -2461,15 +2397,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     promise.complete();
   }
 
-  public String templateUriSearchPageHost(ServiceRequest serviceRequest, Host result) {
-    return "en-us/search/host/HostSearchPage.htm";
+  public String templateUriSearchPageTenant(ServiceRequest serviceRequest, Tenant result) {
+    return "en-us/search/tenant/TenantSearchPage.htm";
   }
-  public void templateSearchPageHost(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<String> promise) {
+  public void templateSearchPageTenant(JsonObject ctx, TenantPage page, SearchList<Tenant> listTenant, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      Host result = listHost.first();
-      String pageTemplateUri = templateUriSearchPageHost(serviceRequest, result);
+      Tenant result = listTenant.first();
+      String pageTemplateUri = templateUriSearchPageTenant(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
@@ -2522,40 +2458,40 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateSearchPageHost failed. "), ex);
+      LOG.error(String.format("templateSearchPageTenant failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200SearchPageHost(SearchList<Host> listHost) {
+  public Future<ServiceResponse> response200SearchPageTenant(SearchList<Tenant> listTenant) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      HostPage page = new HostPage();
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+      TenantPage page = new TenantPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listHost.size() >= 1)
-        siteRequest.setRequestPk(listHost.get(0).getPk());
-      page.setSearchListHost_(listHost);
+      if(listTenant.size() >= 1)
+        siteRequest.setRequestPk(listTenant.get(0).getPk());
+      page.setSearchListTenant_(listTenant);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepHostPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepTenantPage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          searchpageHostPageInit(ctx, page, listHost, promise1);
+          searchpageTenantPageInit(ctx, page, listTenant, promise1);
           promise1.future().onSuccess(b -> {
             Promise<String> promise2 = Promise.promise();
-            templateSearchPageHost(ctx, page, listHost, promise2);
+            templateSearchPageTenant(ctx, page, listTenant, promise2);
             promise2.future().onSuccess(renderedTemplate -> {
               try {
                 Buffer buffer = Buffer.buffer(renderedTemplate);
                 promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
               } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageHost failed. "), ex);
+                LOG.error(String.format("response200SearchPageTenant failed. "), ex);
                 promise.fail(ex);
               }
             }).onFailure(ex -> {
@@ -2565,19 +2501,19 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200SearchPageHost failed. "), ex);
+          LOG.error(String.format("response200SearchPageTenant failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchPageHost failed. "), ex);
+      LOG.error(String.format("response200SearchPageTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchPageHost(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchPageTenant(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -2606,7 +2542,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchPageHost(pivotFields2, pivotArray2);
+          responsePivotSearchPageTenant(pivotFields2, pivotArray2);
         }
       }
     }
@@ -2615,27 +2551,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // EditPage //
 
   @Override
-  public void editpageHost(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void editpageTenant(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostName, "GET"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s-%s#%s", Tenant.CLASS_AUTH_RESOURCE, tenantId, "GET"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2659,12 +2595,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
-                  });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -2685,26 +2615,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, false).onSuccess(listHost -> {
-                response200EditPageHost(listHost).onSuccess(response -> {
+              searchTenantList(siteRequest, false, true, false).onSuccess(listTenant -> {
+                response200EditPageTenant(listTenant).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("editpageHost succeeded. "));
+                  LOG.debug(String.format("editpageTenant succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("editpageHost failed. "), ex);
+                  LOG.error(String.format("editpageTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("editpageHost failed. "), ex);
+                LOG.error(String.format("editpageTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
             });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("editpageHost failed. "), ex);
+            LOG.error(String.format("editpageTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("editpageHost failed. "), ex);
+        LOG.error(String.format("editpageTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2712,7 +2642,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("editpageHost failed. ", ex2));
+          LOG.error(String.format("editpageTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2727,16 +2657,16 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("editpageHost failed. "), ex);
+        LOG.error(String.format("editpageTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void editpageHostPageInit(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<Void> promise) {
+  public void editpageTenantPageInit(JsonObject ctx, TenantPage page, SearchList<Tenant> listTenant, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/tenant"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
@@ -2746,15 +2676,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     promise.complete();
   }
 
-  public String templateUriEditPageHost(ServiceRequest serviceRequest, Host result) {
-    return "en-us/edit/host/HostEditPage.htm";
+  public String templateUriEditPageTenant(ServiceRequest serviceRequest, Tenant result) {
+    return "en-us/edit/tenant/TenantEditPage.htm";
   }
-  public void templateEditPageHost(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<String> promise) {
+  public void templateEditPageTenant(JsonObject ctx, TenantPage page, SearchList<Tenant> listTenant, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      Host result = listHost.first();
-      String pageTemplateUri = templateUriEditPageHost(serviceRequest, result);
+      Tenant result = listTenant.first();
+      String pageTemplateUri = templateUriEditPageTenant(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
@@ -2807,40 +2737,40 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateEditPageHost failed. "), ex);
+      LOG.error(String.format("templateEditPageTenant failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200EditPageHost(SearchList<Host> listHost) {
+  public Future<ServiceResponse> response200EditPageTenant(SearchList<Tenant> listTenant) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      HostPage page = new HostPage();
+      SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+      TenantPage page = new TenantPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listHost.size() >= 1)
-        siteRequest.setRequestPk(listHost.get(0).getPk());
-      page.setSearchListHost_(listHost);
+      if(listTenant.size() >= 1)
+        siteRequest.setRequestPk(listTenant.get(0).getPk());
+      page.setSearchListTenant_(listTenant);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepHostPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepTenantPage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          editpageHostPageInit(ctx, page, listHost, promise1);
+          editpageTenantPageInit(ctx, page, listTenant, promise1);
           promise1.future().onSuccess(b -> {
             Promise<String> promise2 = Promise.promise();
-            templateEditPageHost(ctx, page, listHost, promise2);
+            templateEditPageTenant(ctx, page, listTenant, promise2);
             promise2.future().onSuccess(renderedTemplate -> {
               try {
                 Buffer buffer = Buffer.buffer(renderedTemplate);
                 promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
               } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageHost failed. "), ex);
+                LOG.error(String.format("response200EditPageTenant failed. "), ex);
                 promise.fail(ex);
               }
             }).onFailure(ex -> {
@@ -2850,19 +2780,19 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200EditPageHost failed. "), ex);
+          LOG.error(String.format("response200EditPageTenant failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200EditPageHost failed. "), ex);
+      LOG.error(String.format("response200EditPageTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotEditPageHost(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotEditPageTenant(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -2891,292 +2821,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotEditPageHost(pivotFields2, pivotArray2);
-        }
-      }
-    }
-  }
-
-  // UserPage //
-
-  @Override
-  public void userpageHost(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    Boolean classPublicRead = false;
-    user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
-      try {
-        siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
-        MultiMap form = MultiMap.caseInsensitiveMultiMap();
-        form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
-        form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
-        form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostName, "GET"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
-        webClient.post(
-            config.getInteger(ComputateConfigKeys.AUTH_PORT)
-              , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
-              , config.getString(ComputateConfigKeys.AUTH_TOKEN_URI)
-              )
-              .ssl(config.getBoolean(ComputateConfigKeys.AUTH_SSL))
-              .putHeader("Authorization", String.format("Bearer %s", Optional.ofNullable(siteRequest.getUser()).map(u -> u.principal().getString("access_token")).orElse("")))
-              .sendForm(form)
-              .expecting(HttpResponseExpectation.SC_OK)
-        .onComplete(authorizationDecisionResponse -> {
-          try {
-            HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
-                  });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
-                siteRequest.setFilteredScope(true);
-              }
-            }
-            {
-              siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
-              List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, false).onSuccess(listHost -> {
-                response200UserPageHost(listHost).onSuccess(response -> {
-                  eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("userpageHost succeeded. "));
-                }).onFailure(ex -> {
-                  LOG.error(String.format("userpageHost failed. "), ex);
-                  error(siteRequest, eventHandler, ex);
-                });
-              }).onFailure(ex -> {
-                LOG.error(String.format("userpageHost failed. "), ex);
-                error(siteRequest, eventHandler, ex);
-            });
-            }
-          } catch(Exception ex) {
-            LOG.error(String.format("userpageHost failed. "), ex);
-            error(null, eventHandler, ex);
-          }
-        });
-      } catch(Exception ex) {
-        LOG.error(String.format("userpageHost failed. "), ex);
-        error(null, eventHandler, ex);
-      }
-    }).onFailure(ex -> {
-      if("Inactive Token".equals(ex.getMessage()) || StringUtils.startsWith(ex.getMessage(), "invalid_grant:")) {
-        try {
-          eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-        } catch(Exception ex2) {
-          LOG.error(String.format("userpageHost failed. ", ex2));
-          error(null, eventHandler, ex2);
-        }
-      } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
-        eventHandler.handle(Future.succeededFuture(
-          new ServiceResponse(401, "UNAUTHORIZED",
-            Buffer.buffer().appendString(
-              new JsonObject()
-                .put("errorCode", "401")
-                .put("errorMessage", "SSO Resource Permission check returned DENY")
-                .encodePrettily()
-              ), MultiMap.caseInsensitiveMultiMap()
-              )
-          ));
-      } else {
-        LOG.error(String.format("userpageHost failed. "), ex);
-        error(null, eventHandler, ex);
-      }
-    });
-  }
-
-  public void userpageHostPageInit(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<Void> promise) {
-    String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host"));
-    ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
-    ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
-    ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
-    ctx.put("enUSUrlPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
-    ctx.put("enUSUrlDownload", Optional.ofNullable(page.getResult()).map(o -> o.getDownload()));
-
-    promise.complete();
-  }
-
-  public String templateUriUserPageHost(ServiceRequest serviceRequest, Host result) {
-    return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
-  }
-  public void templateUserPageHost(JsonObject ctx, HostPage page, SearchList<Host> listHost, Promise<String> promise) {
-    try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      Host result = listHost.first();
-      String pageTemplateUri = templateUriUserPageHost(serviceRequest, result);
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
-        String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
-        Map<String, Object> data = new HashMap<>();
-        String body = "";
-        if(template.startsWith("---\n")) {
-          Matcher mMeta = Pattern.compile("---\n([\\w\\W]+?)\n---\n([\\w\\W]+)", Pattern.MULTILINE).matcher(template);
-          if(mMeta.find()) {
-            String meta = mMeta.group(1);
-            body = mMeta.group(2);
-            Yaml yaml = new Yaml();
-            Map<String, Object> map = yaml.load(meta);
-            map.forEach((resultKey, value) -> {
-              if(resultKey.startsWith(metaPrefixResult)) {
-                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
-                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
-                if(val instanceof String) {
-                  String rendered = jinjava.render(val, ctx.getMap());
-                  data.put(key, rendered);
-                } else {
-                  data.put(key, val);
-                }
-              }
-            });
-            map.forEach((resultKey, value) -> {
-              if(resultKey.startsWith(metaPrefixResult)) {
-                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
-                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
-                if(val instanceof String) {
-                  String rendered = jinjava.render(val, ctx.getMap());
-                  data.put(key, rendered);
-                } else {
-                  data.put(key, val);
-                }
-              }
-            });
-          }
-        }
-        org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().build();
-        org.commonmark.node.Node document = parser.parse(body);
-        org.commonmark.renderer.html.HtmlRenderer renderer = org.commonmark.renderer.html.HtmlRenderer.builder().build();
-        String pageExtends =  Optional.ofNullable((String)data.get("extends")).orElse("en-us/Article.htm");
-        String htmTemplate = "{% extends \"" + pageExtends + "\" %}\n{% block htmBodyMiddleArticle %}\n" + renderer.render(document) + "\n{% endblock htmBodyMiddleArticle %}\n";
-        String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
-        promise.complete(renderedTemplate);
-      } else {
-        String renderedTemplate = jinjava.render(template, ctx.getMap());
-        promise.complete(renderedTemplate);
-      }
-    } catch(Exception ex) {
-      LOG.error(String.format("templateUserPageHost failed. "), ex);
-      ExceptionUtils.rethrow(ex);
-    }
-  }
-  public Future<ServiceResponse> response200UserPageHost(SearchList<Host> listHost) {
-    Promise<ServiceResponse> promise = Promise.promise();
-    try {
-      SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-      HostPage page = new HostPage();
-      MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
-      siteRequest.setRequestHeaders(requestHeaders);
-
-      if(listHost.size() >= 1)
-        siteRequest.setRequestPk(listHost.get(0).getPk());
-      page.setSearchListHost_(listHost);
-      page.setSiteRequest_(siteRequest);
-      page.setServiceRequest(siteRequest.getServiceRequest());
-      page.setWebClient(webClient);
-      page.setVertx(vertx);
-      page.promiseDeepHostPage(siteRequest).onSuccess(a -> {
-        try {
-          JsonObject ctx = ConfigKeys.getPageContext(config);
-          ctx.mergeIn(JsonObject.mapFrom(page));
-          Promise<Void> promise1 = Promise.promise();
-          userpageHostPageInit(ctx, page, listHost, promise1);
-          promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateUserPageHost(ctx, page, listHost, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageHost failed. "), ex);
-                promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
-          }).onFailure(ex -> {
-            promise.tryFail(ex);
-          });
-        } catch(Exception ex) {
-          LOG.error(String.format("response200UserPageHost failed. "), ex);
-          promise.tryFail(ex);
-        }
-      }).onFailure(ex -> {
-        promise.tryFail(ex);
-      });
-    } catch(Exception ex) {
-      LOG.error(String.format("response200UserPageHost failed. "), ex);
-      promise.tryFail(ex);
-    }
-    return promise.future();
-  }
-  public void responsePivotUserPageHost(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
-    if(pivots != null) {
-      for(SolrResponse.Pivot pivotField : pivots) {
-        String entityIndexed = pivotField.getField();
-        String entityVar = StringUtils.substringBefore(entityIndexed, "_docvalues_");
-        JsonObject pivotJson = new JsonObject();
-        pivotArray.add(pivotJson);
-        pivotJson.put("field", entityVar);
-        pivotJson.put("value", pivotField.getValue());
-        pivotJson.put("count", pivotField.getCount());
-        Collection<SolrResponse.PivotRange> pivotRanges = pivotField.getRanges().values();
-        List<SolrResponse.Pivot> pivotFields2 = pivotField.getPivotList();
-        if(pivotRanges != null) {
-          JsonObject rangeJson = new JsonObject();
-          pivotJson.put("ranges", rangeJson);
-          for(SolrResponse.PivotRange rangeFacet : pivotRanges) {
-            JsonObject rangeFacetJson = new JsonObject();
-            String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_docvalues_");
-            rangeJson.put(rangeFacetVar, rangeFacetJson);
-            JsonObject rangeFacetCountsObject = new JsonObject();
-            rangeFacetJson.put("counts", rangeFacetCountsObject);
-            rangeFacet.getCounts().forEach((value, count) -> {
-              rangeFacetCountsObject.put(value, count);
-            });
-          }
-        }
-        if(pivotFields2 != null) {
-          JsonArray pivotArray2 = new JsonArray();
-          pivotJson.put("pivot", pivotArray2);
-          responsePivotUserPageHost(pivotFields2, pivotArray2);
+          responsePivotEditPageTenant(pivotFields2, pivotArray2);
         }
       }
     }
@@ -3185,27 +2830,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
   // DELETEFilter //
 
   @Override
-  public void deletefilterHost(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deletefilterHost started. "));
+  public void deletefilterTenant(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deletefilterTenant started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "PUT"));
+        if(tenantId != null)
+          form.add("permission", String.format("%s#%s", tenantId, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3228,12 +2873,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hostResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3267,47 +2906,47 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+              searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHost.getRequest().getRows());
-                  apiRequest.setNumFound(listHost.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenant.getRequest().getRows());
+                  apiRequest.setNumFound(listTenant.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHost.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenant.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETEFilterHost(apiRequest, listHost).onSuccess(e -> {
-                    response200DELETEFilterHost(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deletefilterHost succeeded. "));
+                  listDELETEFilterTenant(apiRequest, listTenant).onSuccess(e -> {
+                    response200DELETEFilterTenant(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deletefilterTenant succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deletefilterHost failed. "), ex);
+                      LOG.error(String.format("deletefilterTenant failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deletefilterHost failed. "), ex);
+                    LOG.error(String.format("deletefilterTenant failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deletefilterHost failed. "), ex);
+                  LOG.error(String.format("deletefilterTenant failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deletefilterHost failed. "), ex);
+                LOG.error(String.format("deletefilterTenant failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterHost failed. "), ex);
+            LOG.error(String.format("deletefilterTenant failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterHost failed. "), ex);
+        LOG.error(String.format("deletefilterTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3315,7 +2954,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deletefilterHost failed. ", ex2));
+          LOG.error(String.format("deletefilterTenant failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3330,58 +2969,58 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               )
           ));
       } else {
-        LOG.error(String.format("deletefilterHost failed. "), ex);
+        LOG.error(String.format("deletefilterTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETEFilterHost(ApiRequest apiRequest, SearchList<Host> listHost) {
+  public Future<Void> listDELETEFilterTenant(ApiRequest apiRequest, SearchList<Tenant> listTenant) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
-    listHost.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
+    listTenant.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      Host o2 = jsonObject.mapTo(Host.class);
+      Tenant o2 = jsonObject.mapTo(Tenant.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deletefilterHostFuture(o).onSuccess(a -> {
+        deletefilterTenantFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETEFilterHost failed. "), ex);
+          LOG.error(String.format("listDELETEFilterTenant failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHost.next().onSuccess(next -> {
+      listTenant.next().onSuccess(next -> {
         if(next) {
-          listDELETEFilterHost(apiRequest, listHost).onSuccess(b -> {
+          listDELETEFilterTenant(apiRequest, listTenant).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETEFilterHost failed. "), ex);
+            LOG.error(String.format("listDELETEFilterTenant failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETEFilterHost failed. "), ex);
+        LOG.error(String.format("listDELETEFilterTenant failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETEFilterHost failed. "), ex);
+      LOG.error(String.format("listDELETEFilterTenant failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deletefilterHostFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deletefilterTenantFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -3393,10 +3032,10 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             siteRequest.addScopes(scope);
           });
         });
-        searchHostList(siteRequest, false, true, true).onSuccess(listHost -> {
+        searchTenantList(siteRequest, false, true, true).onSuccess(listTenant -> {
           try {
-            Host o = listHost.first();
-            if(o != null && listHost.getResponse().getResponse().getNumFound() == 1) {
+            Tenant o = listTenant.first();
+            if(o != null && listTenant.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -3408,9 +3047,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deletefilterHostFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deletefilterTenantFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -3419,42 +3058,42 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterHost failed. "), ex);
+            LOG.error(String.format("deletefilterTenant failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deletefilterHost failed. "), ex);
+          LOG.error(String.format("deletefilterTenant failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterHost failed. "), ex);
+        LOG.error(String.format("deletefilterTenant failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deletefilterHost failed. "), ex);
+      LOG.error(String.format("deletefilterTenant failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<Host> deletefilterHostFuture(Host o) {
+  public Future<Tenant> deletefilterTenantFuture(Tenant o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<Host> promise = Promise.promise();
+    Promise<Tenant> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<Host> promise1 = Promise.promise();
+      Promise<Tenant> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHost(siteRequest).onSuccess(a -> {
-          sqlDELETEFilterHost(o).onSuccess(host -> {
-            relateHost(o).onSuccess(d -> {
-              unindexHost(o).onSuccess(o2 -> {
+        varsTenant(siteRequest).onSuccess(a -> {
+          sqlDELETEFilterTenant(o).onSuccess(tenant -> {
+            relateTenant(o).onSuccess(d -> {
+              unindexTenant(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestHost();
+                    o2.apiRequestTenant();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -3476,27 +3115,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(host -> {
-        Promise<Host> promise2 = Promise.promise();
-        refreshHost(o).onSuccess(a -> {
+      }).compose(tenant -> {
+        Promise<Tenant> promise2 = Promise.promise();
+        refreshTenant(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(host -> {
-        promise.complete(host);
+      }).onSuccess(tenant -> {
+        promise.complete(tenant);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deletefilterHostFuture failed. "), ex);
+      LOG.error(String.format("deletefilterTenantFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETEFilterHost(Host o) {
+  public Future<Void> sqlDELETEFilterTenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -3505,11 +3144,11 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM Host ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM Tenant ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      Host o2 = new Host();
+      Tenant o2 = new Tenant();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -3518,26 +3157,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case Host.VAR_tenantResource:
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("Tenant");
-                  }
-                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
           }
         }
       }
@@ -3550,8 +3169,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value Host failed", ex);
-          LOG.error(String.format("unrelateHost failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value Tenant failed", ex);
+          LOG.error(String.format("unrelateTenant failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -3559,27 +3178,27 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETEFilterHost failed. "), ex);
+          LOG.error(String.format("sqlDELETEFilterTenant failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETEFilterHost failed. "), ex);
+        LOG.error(String.format("sqlDELETEFilterTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETEFilterHost failed. "), ex);
+      LOG.error(String.format("sqlDELETEFilterTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETEFilterHost(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETEFilterTenant(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String m = String.format("%s %s not found", "tenant", tenantId);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -3587,7 +3206,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETEFilterHost failed. "), ex);
+      LOG.error(String.format("response200DELETEFilterTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -3595,78 +3214,78 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
 
   // General //
 
-  public Future<Host> createHost(SiteRequest siteRequest) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> createTenant(SiteRequest siteRequest) {
+    Promise<Tenant> promise = Promise.promise();
     try {
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       String userId = siteRequest.getUserId();
       Long userKey = siteRequest.getUserKey();
       ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, ComputateZonedDateTimeSerializer.ZONED_DATE_TIME_FORMATTER.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
-      sqlConnection.preparedQuery("INSERT INTO Host(created, userKey) VALUES($1, $2) RETURNING pk")
+      sqlConnection.preparedQuery("INSERT INTO Tenant(created, userKey) VALUES($1, $2) RETURNING pk")
           .collecting(Collectors.toList())
           .execute(Tuple.of(created.toOffsetDateTime(), userKey)).onSuccess(result -> {
         Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
         Long pk = createLine.getLong(0);
-        Host o = new Host();
+        Tenant o = new Tenant();
         o.setPk(pk);
         o.setSiteRequest_(siteRequest);
         promise.complete(o);
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error("createHost failed. ", ex2);
+        LOG.error("createTenant failed. ", ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("createHost failed. "), ex);
+      LOG.error(String.format("createTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public void searchHostQ(SearchList<Host> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchTenantQ(SearchList<Tenant> searchList, String entityVar, String valueIndexed, String varIndexed) {
     searchList.q(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : SearchTool.escapeQueryChars(valueIndexed)));
     if(!"*".equals(entityVar)) {
     }
   }
 
-  public String searchHostFq(SearchList<Host> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public String searchTenantFq(SearchList<Tenant> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     if(StringUtils.startsWith(valueIndexed, "[")) {
       String[] fqs = StringUtils.substringAfter(StringUtils.substringBeforeLast(valueIndexed, "]"), "[").split(" TO ");
       if(fqs.length != 2)
         throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
-      String fq1 = fqs[0].equals("*") ? fqs[0] : Host.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
-      String fq2 = fqs[1].equals("*") ? fqs[1] : Host.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
+      String fq1 = fqs[0].equals("*") ? fqs[0] : Tenant.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
+      String fq2 = fqs[1].equals("*") ? fqs[1] : Tenant.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
        return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
     } else {
-      return varIndexed + ":" + SearchTool.escapeQueryChars(Host.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
+      return varIndexed + ":" + SearchTool.escapeQueryChars(Tenant.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
     }
   }
 
-  public void searchHostSort(SearchList<Host> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchTenantSort(SearchList<Tenant> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     searchList.sort(varIndexed, valueIndexed);
   }
 
-  public void searchHostRows(SearchList<Host> searchList, Long valueRows) {
+  public void searchTenantRows(SearchList<Tenant> searchList, Long valueRows) {
       searchList.rows(valueRows != null ? valueRows : 10L);
   }
 
-  public void searchHostStart(SearchList<Host> searchList, Long valueStart) {
+  public void searchTenantStart(SearchList<Tenant> searchList, Long valueStart) {
     searchList.start(valueStart);
   }
 
-  public void searchHostVar(SearchList<Host> searchList, String var, String value) {
+  public void searchTenantVar(SearchList<Tenant> searchList, String var, String value) {
     searchList.getSiteRequest_(SiteRequest.class).getRequestVars().put(var, value);
   }
 
-  public void searchHostUri(SearchList<Host> searchList) {
+  public void searchTenantUri(SearchList<Tenant> searchList) {
   }
 
-  public Future<ServiceResponse> varsHost(SiteRequest siteRequest) {
+  public Future<ServiceResponse> varsTenant(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -3684,25 +3303,25 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             siteRequest.getRequestVars().put(entityVar, valueIndexed);
           }
         } catch(Exception ex) {
-          LOG.error(String.format("searchHost failed. "), ex);
+          LOG.error(String.format("searchTenant failed. "), ex);
           promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
-      LOG.error(String.format("searchHost failed. "), ex);
+      LOG.error(String.format("searchTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<SearchList<Host>> searchHostList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
-    Promise<SearchList<Host>> promise = Promise.promise();
+  public Future<SearchList<Tenant>> searchTenantList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
+    Promise<SearchList<Tenant>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-      SearchList<Host> searchList = new SearchList<Host>();
+      SearchList<Tenant> searchList = new SearchList<Tenant>();
       String facetRange = null;
       Date facetRangeStart = null;
       Date facetRangeEnd = null;
@@ -3712,18 +3331,18 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       searchList.setPopulate(populate);
       searchList.setStore(store);
       searchList.q("*:*");
-      searchList.setC(Host.class);
+      searchList.setC(Tenant.class);
       searchList.setSiteRequest_(siteRequest);
       searchList.facetMinCount(1);
       if(entityList != null) {
         for(String v : entityList) {
-          searchList.fl(Host.varIndexedHost(v));
+          searchList.fl(Tenant.varIndexedTenant(v));
         }
       }
 
-      String hostName = serviceRequest.getParams().getJsonObject("path").getString("hostName");
-      if(hostName != null) {
-        searchList.fq("hostName_docvalues_string:" + SearchTool.escapeQueryChars(hostName));
+      String tenantId = serviceRequest.getParams().getJsonObject("path").getString("tenantId");
+      if(tenantId != null) {
+        searchList.fq("tenantId_docvalues_string:" + SearchTool.escapeQueryChars(tenantId));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3746,7 +3365,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               String[] varsIndexed = new String[entityVars.length];
               for(Integer i = 0; i < entityVars.length; i++) {
                 entityVar = entityVars[i];
-                varsIndexed[i] = Host.varIndexedHost(entityVar);
+                varsIndexed[i] = Tenant.varIndexedTenant(entityVar);
               }
               searchList.facetPivot((solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
             }
@@ -3758,8 +3377,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 while(mQ.find()) {
                   entityVar = mQ.group(1).trim();
                   valueIndexed = mQ.group(2).trim();
-                  varIndexed = Host.varIndexedHost(entityVar);
-                  String entityQ = searchHostFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = Tenant.varIndexedTenant(entityVar);
+                  String entityQ = searchTenantFq(searchList, entityVar, valueIndexed, varIndexed);
                   mQ.appendReplacement(sb, entityQ);
                 }
                 if(!sb.isEmpty()) {
@@ -3772,8 +3391,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 while(mFq.find()) {
                   entityVar = mFq.group(1).trim();
                   valueIndexed = mFq.group(2).trim();
-                  varIndexed = Host.varIndexedHost(entityVar);
-                  String entityFq = searchHostFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = Tenant.varIndexedTenant(entityVar);
+                  String entityFq = searchTenantFq(searchList, entityVar, valueIndexed, varIndexed);
                   mFq.appendReplacement(sb, entityFq);
                 }
                 if(!sb.isEmpty()) {
@@ -3783,14 +3402,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               } else if(paramName.equals("sort")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
                 valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-                varIndexed = Host.varIndexedHost(entityVar);
-                searchHostSort(searchList, entityVar, valueIndexed, varIndexed);
+                varIndexed = Tenant.varIndexedTenant(entityVar);
+                searchTenantSort(searchList, entityVar, valueIndexed, varIndexed);
               } else if(paramName.equals("start")) {
                 valueStart = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchHostStart(searchList, valueStart);
+                searchTenantStart(searchList, valueStart);
               } else if(paramName.equals("rows")) {
                 valueRows = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchHostRows(searchList, valueRows);
+                searchTenantRows(searchList, valueRows);
               } else if(paramName.equals("stats")) {
                 searchList.stats((Boolean)paramObject);
               } else if(paramName.equals("stats.field")) {
@@ -3798,7 +3417,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 if(mStats.find()) {
                   String solrLocalParams = mStats.group(1);
                   entityVar = mStats.group(2).trim();
-                  varIndexed = Host.varIndexedHost(entityVar);
+                  varIndexed = Tenant.varIndexedTenant(entityVar);
                   searchList.statsField((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   statsField = entityVar;
                   statsFieldIndexed = varIndexed;
@@ -3824,25 +3443,25 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 if(mFacetRange.find()) {
                   String solrLocalParams = mFacetRange.group(1);
                   entityVar = mFacetRange.group(2).trim();
-                  varIndexed = Host.varIndexedHost(entityVar);
+                  varIndexed = Tenant.varIndexedTenant(entityVar);
                   searchList.facetRange((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   facetRange = entityVar;
                 }
               } else if(paramName.equals("facet.field")) {
                 entityVar = (String)paramObject;
-                varIndexed = Host.varIndexedHost(entityVar);
+                varIndexed = Tenant.varIndexedTenant(entityVar);
                 if(varIndexed != null)
                   searchList.facetField(varIndexed);
               } else if(paramName.equals("var")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
                 valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-                searchHostVar(searchList, entityVar, valueIndexed);
+                searchTenantVar(searchList, entityVar, valueIndexed);
               } else if(paramName.equals("cursorMark")) {
                 valueCursorMark = (String)paramObject;
                 searchList.cursorMark((String)paramObject);
               }
             }
-            searchHostUri(searchList);
+            searchTenantUri(searchList);
           }
         } catch(Exception e) {
           ExceptionUtils.rethrow(e);
@@ -3857,7 +3476,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       String facetRangeGap2 = facetRangeGap;
       String statsField2 = statsField;
       String statsFieldIndexed2 = statsFieldIndexed;
-      searchHost2(siteRequest, populate, store, modify, searchList);
+      searchTenant2(siteRequest, populate, store, modify, searchList);
       searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
         if(facetRange2 != null && statsField2 != null && facetRange2.equals(statsField2)) {
           StatsField stats = searchList.getResponse().getStats().getStatsFields().get(statsFieldIndexed2);
@@ -3893,32 +3512,32 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
           searchList.query().onSuccess(b -> {
             promise.complete(searchList);
           }).onFailure(ex -> {
-            LOG.error(String.format("searchHost failed. "), ex);
+            LOG.error(String.format("searchTenant failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("searchHost failed. "), ex);
+        LOG.error(String.format("searchTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("searchHost failed. "), ex);
+      LOG.error(String.format("searchTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void searchHost2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<Host> searchList) {
+  public void searchTenant2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<Tenant> searchList) {
   }
 
-  public Future<Void> persistHost(Host o, Boolean patch) {
+  public Future<Void> persistTenant(Tenant o, Boolean patch) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, hostName, created, hostResource, inventoryName, archived, eventSubscriptions, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM Host WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantResource, pageId, archived, description, hubId, clusterName, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM Tenant WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3931,7 +3550,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 try {
                   o.persistForClass(columnName, columnValue);
                 } catch(Exception e) {
-                  LOG.error(String.format("persistHost failed. "), e);
+                  LOG.error(String.format("persistTenant failed. "), e);
                 }
               }
             }
@@ -3939,68 +3558,42 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
           o.promiseDeepForClass(siteRequest).onSuccess(a -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("persistHost failed. "), ex);
+            LOG.error(String.format("persistTenant failed. "), ex);
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("persistHost failed. "), ex);
+          LOG.error(String.format("persistTenant failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("persistHost failed. "), ex2);
+        LOG.error(String.format("persistTenant failed. "), ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("persistHost failed. "), ex);
+      LOG.error(String.format("persistTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> relateHost(Host o) {
+  public Future<Void> relateTenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
-    try {
-      SiteRequest siteRequest = o.getSiteRequest_();
-      SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1")
-          .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
-          ).onSuccess(result -> {
-        try {
-          if(result != null) {
-            for(Row definition : result.value()) {
-              o.relateForClass(definition.getString(1), definition.getValue(0));
-            }
-          }
-          promise.complete();
-        } catch(Exception ex) {
-          LOG.error(String.format("relateHost failed. "), ex);
-          promise.tryFail(ex);
-        }
-      }).onFailure(ex -> {
-        RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("relateHost failed. "), ex2);
-        promise.tryFail(ex2);
-      });
-    } catch(Exception ex) {
-      LOG.error(String.format("relateHost failed. "), ex);
-      promise.tryFail(ex);
-    }
+    promise.complete();
     return promise.future();
   }
 
   public String searchVar(String varIndexed) {
-    return Host.searchVarHost(varIndexed);
+    return Tenant.searchVarTenant(varIndexed);
   }
 
   @Override
   public String getClassApiAddress() {
-    return Host.CLASS_API_ADDRESS_Host;
+    return Tenant.CLASS_API_ADDRESS_Tenant;
   }
 
-  public Future<Host> indexHost(Host o) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> indexTenant(Tenant o) {
+    Promise<Tenant> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4009,7 +3602,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       json.put("add", add);
       JsonObject doc = new JsonObject();
       add.put("doc", doc);
-      o.indexHost(doc);
+      o.indexTenant(doc);
       String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
       String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
       String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
@@ -4026,18 +3619,18 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        LOG.error(String.format("indexHost failed. "), new RuntimeException(ex));
+        LOG.error(String.format("indexTenant failed. "), new RuntimeException(ex));
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("indexHost failed. "), ex);
+      LOG.error(String.format("indexTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Host> unindexHost(Host o) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Tenant> unindexTenant(Tenant o) {
+    Promise<Tenant> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4045,7 +3638,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         JsonObject json = new JsonObject();
         JsonObject delete = new JsonObject();
         json.put("delete", delete);
-        String query = String.format("filter(%s:%s)", Host.VAR_solrId, o.obtainForClass(Host.VAR_solrId));
+        String query = String.format("filter(%s:%s)", Tenant.VAR_solrId, o.obtainForClass(Tenant.VAR_solrId));
         delete.put("query", query);
         String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
         String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
@@ -4063,21 +3656,21 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
           promise.complete(o);
         }).onFailure(ex -> {
-          LOG.error(String.format("unindexHost failed. "), new RuntimeException(ex));
+          LOG.error(String.format("unindexTenant failed. "), new RuntimeException(ex));
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("unindexHost failed. "), ex);
+        LOG.error(String.format("unindexTenant failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("unindexHost failed. "), ex);
+      LOG.error(String.format("unindexTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> refreshHost(Host o) {
+  public Future<Void> refreshTenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
     SiteRequest siteRequest = o.getSiteRequest_();
     try {
@@ -4091,41 +3684,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         for(int i=0; i < solrIds.size(); i++) {
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
-
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
-            searchList2.setStore(true);
-            searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
-            searchList2.fq("solrId:" + solrId2);
-            searchList2.rows(1L);
-            futures.add(Future.future(promise2 -> {
-              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
-                if(o2 != null) {
-                  JsonObject params = new JsonObject();
-                  params.put("body", new JsonObject());
-                  params.put("cookie", new JsonObject());
-                  params.put("path", new JsonObject());
-                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
-                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
-                  JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
-                    JsonObject responseMessage = (JsonObject)c.body();
-                    Integer statusCode = responseMessage.getInteger("statusCode");
-                    if(statusCode.equals(200))
-                      promise2.complete();
-                    else
-                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-                  }).onFailure(ex -> {
-                    promise2.fail(ex);
-                  });
-                }
-              }).onFailure(ex -> {
-                promise2.fail(ex);
-              });
-            }));
-          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {
@@ -4149,7 +3707,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(Host.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchHostFuture")).onSuccess(c -> {
+          eventBus.request(Tenant.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
             JsonObject responseMessage = (JsonObject)c.body();
             Integer statusCode = responseMessage.getInteger("statusCode");
             if(statusCode.equals(200))
@@ -4168,7 +3726,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         promise.complete();
       }
     } catch(Exception ex) {
-      LOG.error(String.format("refreshHost failed. "), ex);
+      LOG.error(String.format("refreshTenant failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -4181,23 +3739,25 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
       SiteRequest siteRequest2 = (SiteRequest)siteRequest;
       String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-      Host o = new Host();
+      Tenant o = new Tenant();
       o.setSiteRequest_((SiteRequest)siteRequest);
 
-      o.persistForClass(Host.VAR_tenantResource, Host.staticSetTenantResource(siteRequest2, (String)result.get(Host.VAR_tenantResource)));
-      o.persistForClass(Host.VAR_hostName, Host.staticSetHostName(siteRequest2, (String)result.get(Host.VAR_hostName)));
-      o.persistForClass(Host.VAR_created, Host.staticSetCreated(siteRequest2, (String)result.get(Host.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(Host.VAR_hostResource, Host.staticSetHostResource(siteRequest2, (String)result.get(Host.VAR_hostResource)));
-      o.persistForClass(Host.VAR_inventoryName, Host.staticSetInventoryName(siteRequest2, (String)result.get(Host.VAR_inventoryName)));
-      o.persistForClass(Host.VAR_archived, Host.staticSetArchived(siteRequest2, (String)result.get(Host.VAR_archived)));
-      o.persistForClass(Host.VAR_eventSubscriptions, Host.staticSetEventSubscriptions(siteRequest2, (String)result.get(Host.VAR_eventSubscriptions)));
-      o.persistForClass(Host.VAR_sessionId, Host.staticSetSessionId(siteRequest2, (String)result.get(Host.VAR_sessionId)));
-      o.persistForClass(Host.VAR_userKey, Host.staticSetUserKey(siteRequest2, (String)result.get(Host.VAR_userKey)));
-      o.persistForClass(Host.VAR_objectTitle, Host.staticSetObjectTitle(siteRequest2, (String)result.get(Host.VAR_objectTitle)));
-      o.persistForClass(Host.VAR_displayPage, Host.staticSetDisplayPage(siteRequest2, (String)result.get(Host.VAR_displayPage)));
-      o.persistForClass(Host.VAR_editPage, Host.staticSetEditPage(siteRequest2, (String)result.get(Host.VAR_editPage)));
-      o.persistForClass(Host.VAR_userPage, Host.staticSetUserPage(siteRequest2, (String)result.get(Host.VAR_userPage)));
-      o.persistForClass(Host.VAR_download, Host.staticSetDownload(siteRequest2, (String)result.get(Host.VAR_download)));
+      o.persistForClass(Tenant.VAR_tenantName, Tenant.staticSetTenantName(siteRequest2, (String)result.get(Tenant.VAR_tenantName)));
+      o.persistForClass(Tenant.VAR_tenantId, Tenant.staticSetTenantId(siteRequest2, (String)result.get(Tenant.VAR_tenantId)));
+      o.persistForClass(Tenant.VAR_created, Tenant.staticSetCreated(siteRequest2, (String)result.get(Tenant.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(Tenant.VAR_tenantResource, Tenant.staticSetTenantResource(siteRequest2, (String)result.get(Tenant.VAR_tenantResource)));
+      o.persistForClass(Tenant.VAR_pageId, Tenant.staticSetPageId(siteRequest2, (String)result.get(Tenant.VAR_pageId)));
+      o.persistForClass(Tenant.VAR_archived, Tenant.staticSetArchived(siteRequest2, (String)result.get(Tenant.VAR_archived)));
+      o.persistForClass(Tenant.VAR_description, Tenant.staticSetDescription(siteRequest2, (String)result.get(Tenant.VAR_description)));
+      o.persistForClass(Tenant.VAR_hubId, Tenant.staticSetHubId(siteRequest2, (String)result.get(Tenant.VAR_hubId)));
+      o.persistForClass(Tenant.VAR_clusterName, Tenant.staticSetClusterName(siteRequest2, (String)result.get(Tenant.VAR_clusterName)));
+      o.persistForClass(Tenant.VAR_sessionId, Tenant.staticSetSessionId(siteRequest2, (String)result.get(Tenant.VAR_sessionId)));
+      o.persistForClass(Tenant.VAR_userKey, Tenant.staticSetUserKey(siteRequest2, (String)result.get(Tenant.VAR_userKey)));
+      o.persistForClass(Tenant.VAR_objectTitle, Tenant.staticSetObjectTitle(siteRequest2, (String)result.get(Tenant.VAR_objectTitle)));
+      o.persistForClass(Tenant.VAR_displayPage, Tenant.staticSetDisplayPage(siteRequest2, (String)result.get(Tenant.VAR_displayPage)));
+      o.persistForClass(Tenant.VAR_editPage, Tenant.staticSetEditPage(siteRequest2, (String)result.get(Tenant.VAR_editPage)));
+      o.persistForClass(Tenant.VAR_userPage, Tenant.staticSetUserPage(siteRequest2, (String)result.get(Tenant.VAR_userPage)));
+      o.persistForClass(Tenant.VAR_download, Tenant.staticSetDownload(siteRequest2, (String)result.get(Tenant.VAR_download)));
 
       o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
         try {

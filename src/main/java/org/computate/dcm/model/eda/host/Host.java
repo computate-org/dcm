@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
-import org.computate.dcm.model.eda.host.HostGen;
 
 /**
- * Order: 3
+ * Order: 5
  * Description: A managed host computer. 
  * AName: a host
  * Icon: <i class="fa-duotone fa-regular fa-server"></i>
@@ -50,14 +49,28 @@ import org.computate.dcm.model.eda.host.HostGen;
 public class Host extends HostGen<BaseModel> {
 
   /**
-   * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * Unique: true
+   * DisplayName: tenant auth resource
+   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * AuthorizationResource: TENANT
+   * Relate: Tenant.tenantResource
    * HtmRowTitleOpen: host details
    * HtmRow: 3
    * HtmCell: 0
    * HtmColumn: 0
+   **/
+  protected void _tenantResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * HtmRow: 3
+   * HtmCell: 1
+   * HtmColumn: 1
    * DisplayName: Fully Qualified Domain Name
    * Description: The computer fully qualified domain name
    * Required: true
@@ -87,6 +100,8 @@ public class Host extends HostGen<BaseModel> {
    * DisplayName: inventory name
    * Description: The unique authorization resource for the host for multi-tenancy
    * Facet: true
+   * HtmRow: 3
+   * HtmCell: 1
    **/
   protected void _inventoryName(Wrap<String> w) {
   }
@@ -96,7 +111,7 @@ public class Host extends HostGen<BaseModel> {
    * Persist: true
    * HtmRow: 3
    * HtmCell: 1
-   * HtmColumn: 1
+   * HtmColumn: 2
    * DisplayName: event subscriptions
    * Description: The list of event subscriptions the host subscribes to. 
    */

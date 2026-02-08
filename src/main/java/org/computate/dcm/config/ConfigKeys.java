@@ -13,4 +13,11 @@ public class ConfigKeys extends ComputateConfigKeys {
   public static final String SENSU_PORT = "SENSU_PORT";
   public static final String SENSU_OPENSHIFT_SECRET = "SENSU_OPENSHIFT_SECRET";
   public static final String SENSU_TOKEN = "SENSU_TOKEN";
+
+  public static final String AAP_HOST_NAME = "AAP_HOST_NAME";
+  public static final String AAP_SSL = "AAP_SSL";
+  public static final String AAP_PORT = "AAP_PORT";
+  public static final String AAP_OPENSHIFT_SECRET = "AAP_OPENSHIFT_SECRET";
+  public static final String AAP_USER_NAME = "AAP_USER_NAME";
+  public static final String AAP_PASSWORD = "AAP_PASSWORD";
 }

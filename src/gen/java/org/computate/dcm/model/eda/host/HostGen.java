@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
+import org.computate.dcm.model.eda.tenant.Tenant;
 import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
@@ -85,11 +86,11 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>This class contains a comment <b>"Rows: 100"</b>, which means the Host API will return a default of 100 records instead of 10 by default. 
  * Each API has built in pagination of the search records to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
- * <h2>Order: 3</h2>
- * <p>This class contains a comment <b>"Order: 3"</b>, which means this class will be sorted by the given number 3 ascending when code that relates to multiple classes at the same time is generated. 
+ * <h2>Order: 5</h2>
+ * <p>This class contains a comment <b>"Order: 5"</b>, which means this class will be sorted by the given number 5 ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 3</h2>
- * <p>This class contains a comment <b>"SqlOrder: 3"</b>, which means this class will be sorted by the given number 3 ascending when SQL code to create and drop the tables is generated. 
+ * <h2>SqlOrder: 5</h2>
+ * <p>This class contains a comment <b>"SqlOrder: 5"</b>, which means this class will be sorted by the given number 5 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <b>"Model: true"</b>, which means this class will be stored in the database. 
@@ -208,6 +209,68 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static final String Icon = "<i class=\"fa-duotone fa-regular fa-server\"></i>";
   public static final Integer Rows = 100;
+
+	////////////////////
+  // tenantResource //
+	////////////////////
+
+
+  /**
+   *  The entity tenantResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantResource;
+
+  /**
+   * <br> The entity tenantResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.Host&fq=entiteVar_enUS_indexed_string:tenantResource">Find the entity tenantResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantResource(Wrap<String> w);
+
+  public String getTenantResource() {
+    return tenantResource;
+  }
+  public void setTenantResource(String o) {
+    this.tenantResource = Host.staticSetTenantResource(siteRequest_, o);
+  }
+  public static String staticSetTenantResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Host tenantResourceInit() {
+    Wrap<String> tenantResourceWrap = new Wrap<String>().var("tenantResource");
+    if(tenantResource == null) {
+      _tenantResource(tenantResourceWrap);
+      Optional.ofNullable(tenantResourceWrap.getO()).ifPresent(o -> {
+        setTenantResource(o);
+      });
+    }
+    return (Host)this;
+  }
+
+  public static String staticSearchTenantResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantResource(SiteRequest siteRequest_, String o) {
+    return Host.staticSearchTenantResource(siteRequest_, Host.staticSetTenantResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantResource() {
+    return tenantResource;
+  }
+
+  public static String staticJsonTenantResource(String tenantResource) {
+    return tenantResource;
+  }
 
 	//////////////
   // hostName //
@@ -511,6 +574,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
+        tenantResourceInit();
         hostNameInit();
         hostResourceInit();
         inventoryNameInit();
@@ -568,6 +632,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   public Object obtainHost(String var) {
     Host oHost = (Host)this;
     switch(var) {
+      case "tenantResource":
+        return oHost.tenantResource;
       case "hostName":
         return oHost.hostName;
       case "hostResource":
@@ -601,6 +667,12 @@ public abstract class HostGen<DEV> extends BaseModel {
   public Object relateHost(String var, Object val) {
     Host oHost = (Host)this;
     switch(var) {
+      case "tenantResource":
+        if(oHost.getTenantResource() == null)
+          oHost.setTenantResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("tenantResource"))
+          saves.add("tenantResource");
+        return val;
       default:
         return super.relateBaseModel(var, val);
     }
@@ -615,6 +687,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static Object staticSetHost(String entityVar, SiteRequest siteRequest_, String v, Host o) {
     switch(entityVar) {
+    case "tenantResource":
+      return Host.staticSetTenantResource(siteRequest_, v);
     case "hostName":
       return Host.staticSetHostName(siteRequest_, v);
     case "hostResource":
@@ -637,6 +711,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static Object staticSearchHost(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "tenantResource":
+      return Host.staticSearchTenantResource(siteRequest_, (String)o);
     case "hostName":
       return Host.staticSearchHostName(siteRequest_, (String)o);
     case "hostResource":
@@ -659,6 +735,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static String staticSearchStrHost(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "tenantResource":
+      return Host.staticSearchStrTenantResource(siteRequest_, (String)o);
     case "hostName":
       return Host.staticSearchStrHostName(siteRequest_, (String)o);
     case "hostResource":
@@ -681,6 +759,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static String staticSearchFqHost(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
+    case "tenantResource":
+      return Host.staticSearchFqTenantResource(siteRequest_, o);
     case "hostName":
       return Host.staticSearchFqHostName(siteRequest_, o);
     case "hostResource":
@@ -715,7 +795,13 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public Object persistHost(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("hostname".equals(varLower)) {
+      if("tenantresource".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantResource((String)val);
+        }
+        saves.add("tenantResource");
+        return val;
+      } else if("hostname".equals(varLower)) {
         if(val instanceof String) {
           setHostName((String)val);
         }
@@ -762,6 +848,10 @@ public abstract class HostGen<DEV> extends BaseModel {
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
 
+      String tenantResource = (String)doc.get("tenantResource_docvalues_string");
+      if(tenantResource != null)
+        oHost.setTenantResource(tenantResource);
+
       if(saves.contains("hostName")) {
         String hostName = (String)doc.get("hostName_docvalues_string");
         if(hostName != null)
@@ -794,6 +884,9 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
 
   public void indexHost(JsonObject doc) {
+    if(tenantResource != null) {
+      doc.put("tenantResource_docvalues_string", tenantResource);
+    }
     if(hostName != null) {
       doc.put("hostName_docvalues_string", hostName);
     }
@@ -816,6 +909,8 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static String varStoredHost(String entityVar) {
     switch(entityVar) {
+      case "tenantResource":
+        return "tenantResource_docvalues_string";
       case "hostName":
         return "hostName_docvalues_string";
       case "hostResource":
@@ -831,6 +926,8 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static String varIndexedHost(String entityVar) {
     switch(entityVar) {
+      case "tenantResource":
+        return "tenantResource_docvalues_string";
       case "hostName":
         return "hostName_docvalues_string";
       case "hostResource":
@@ -846,6 +943,8 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static String searchVarHost(String searchVar) {
     switch(searchVar) {
+      case "tenantResource_docvalues_string":
+        return "tenantResource";
       case "hostName_docvalues_string":
         return "hostName";
       case "hostResource_docvalues_string":
@@ -884,6 +983,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     Host oHost = (Host)this;
     SiteRequest siteRequest = oHost.getSiteRequest_();
 
+    oHost.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setHostName(Optional.ofNullable(doc.get("hostName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setHostResource(Optional.ofNullable(doc.get("hostResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setInventoryName(Optional.ofNullable(doc.get("inventoryName_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -903,6 +1003,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof Host) {
       Host original = (Host)o;
+      if(!Objects.equals(tenantResource, original.getTenantResource()))
+        apiRequest.addVars("tenantResource");
       if(!Objects.equals(hostName, original.getHostName()))
         apiRequest.addVars("hostName");
       if(!Objects.equals(hostResource, original.getHostResource()))
@@ -922,6 +1024,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
+    sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hostName).map(v -> "hostName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hostResource).map(v -> "hostResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryName).map(v -> "inventoryName: \"" + v + "\"\n" ).orElse(""));
@@ -936,6 +1039,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_Host;
   }
+  public static final String VAR_tenantResource = "tenantResource";
   public static final String VAR_hostName = "hostName";
   public static final String VAR_hostResource = "hostResource";
   public static final String VAR_inventoryName = "inventoryName";
@@ -967,6 +1071,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     return vars;
   }
 
+  public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_hostName = "Fully Qualified Domain Name";
   public static final String DISPLAY_NAME_hostResource = "host auth resource";
   public static final String DISPLAY_NAME_inventoryName = "inventory name";
@@ -1022,6 +1127,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static String displayNameHost(String var) {
     switch(var) {
+    case VAR_tenantResource:
+      return DISPLAY_NAME_tenantResource;
     case VAR_hostName:
       return DISPLAY_NAME_hostName;
     case VAR_hostResource:
@@ -1039,6 +1146,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     if(var == null)
       return null;
     switch(var) {
+    case VAR_tenantResource:
+      return "The unique authorization resource for the tenant for multi-tenancy";
     case VAR_hostName:
       return "The computer fully qualified domain name";
     case VAR_hostResource:
@@ -1054,6 +1163,8 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static String classSimpleNameHost(String var) {
     switch(var) {
+    case VAR_tenantResource:
+      return "String";
     case VAR_hostName:
       return "String";
     case VAR_hostResource:
@@ -1069,10 +1180,12 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static Integer htmColumnHost(String var) {
     switch(var) {
-    case VAR_hostName:
+    case VAR_tenantResource:
       return 0;
-    case VAR_eventSubscriptions:
+    case VAR_hostName:
       return 1;
+    case VAR_eventSubscriptions:
+      return 2;
       default:
         return BaseModel.htmColumnBaseModel(var);
     }
@@ -1080,7 +1193,11 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static Integer htmRowHost(String var) {
     switch(var) {
+    case VAR_tenantResource:
+      return 3;
     case VAR_hostName:
+      return 3;
+    case VAR_inventoryName:
       return 3;
     case VAR_eventSubscriptions:
       return 3;
@@ -1091,8 +1208,12 @@ public abstract class HostGen<DEV> extends BaseModel {
 
   public static Integer htmCellHost(String var) {
     switch(var) {
-    case VAR_hostName:
+    case VAR_tenantResource:
       return 0;
+    case VAR_hostName:
+      return 1;
+    case VAR_inventoryName:
+      return 1;
     case VAR_eventSubscriptions:
       return 1;
       default:

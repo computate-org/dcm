@@ -592,4 +592,22 @@ SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('false', true) | lower) != 
 SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('rhel10', true) }}"
 # The default port that the Sensu runs. 
 SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
-# Ensure ClusterOrder and ManagedCluster is updated frequently
+
+#######
+# AAP #
+#######
+
+# The AAP namespace. 
+AAP_NAMESPACE: "{{ lookup('env', 'AAP_NAMESPACE') | default('aap', true) }}"
+# The AAP secret name. 
+AAP_SECRET: "{{ lookup('env', 'AAP_SECRET') | default('aap-admin-password', true) }}"
+# The AAP admin username. 
+AAP_USER_NAME: "{{ lookup('env', 'AAP_USER_NAME') | default('admin', true) }}"
+# The Auth admin username. 
+AAP_PASSWORD: "{{ query('kubernetes.core.k8s', kind='Secret', resource_name=AAP_SECRET, namespace=AAP_NAMESPACE)[0].data['password'] | b64decode }}"
+# Whether to use SSL when connecting to the Sensu. 
+AAP_SSL: "{{ (lookup('env', 'AAP_SSL') | default('true', true) | lower) != 'false' }}"
+# The host name to connect to the Sensu in OpenShift. 
+AAP_HOST_NAME: "{{ lookup('env', 'AAP_HOST_NAME') | default('aap-aap.apps-crc.testing', true) }}"
+# The default port that the Sensu runs. 
+AAP_PORT: "{{ lookup('env', 'AAP_PORT') | default('443', true) }}"

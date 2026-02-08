@@ -30,29 +30,17 @@ import com.hubspot.jinjava.Jinjava;
  **/
 public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
 
-  public Future<Host> sqlUpsertHost(Host o, Boolean inheritPrimaryKey, Boolean patch) {
-    Promise<Host> promise = Promise.promise();
+  public Future<Void> sensuUpsertHost(Host o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
-        if(patch) {
-          super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
-            promise.complete(o2);
-          }).onFailure(ex -> {
-            promise.fail(ex);
-          });
-        } else {
-          super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
-            promise.complete(o2);
-          }).onFailure(ex -> {
-            promise.fail(ex);
-          });
-        }
+        promise.complete();
       } else {
         JsonObject hostJson = o.getSiteRequest_().getJsonObject();
-        String hostName = hostJson.getString(patch ? "setHostName": "hostName");
-        JsonArray subscriptions = hostJson.getJsonArray(patch ? "setEventSubscriptions" : "eventSubscriptions");
+        String hostName = Optional.ofNullable(hostJson.getString(patch ? "setHostName": "hostName")).orElse(o.getHostName());
+        JsonArray subscriptions = Optional.ofNullable(hostJson.getJsonArray(patch ? "setEventSubscriptions" : "eventSubscriptions")).orElse(new JsonArray(o.getEventSubscriptions()));
 
         Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
         String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
@@ -83,19 +71,62 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               .sendJsonObject(body)
               .expecting(HttpResponseExpectation.SC_OK)
               .onSuccess(HostResponse -> {
-            if(patch) {
-              super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
-                promise.complete(o2);
-              }).onFailure(ex -> {
-                promise.fail(ex);
-              });
-            } else {
-              super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
-                promise.complete(o2);
-              }).onFailure(ex -> {
-                promise.fail(ex);
-              });
-            }
+            promise.complete();
+          }).onFailure(ex -> {
+            LOG.error(String.format("Updating Sensu host failed. "), ex);
+            promise.fail(ex);
+          });
+        }
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("Updating Sensu host failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
+  public Future<Void> aapUpsertHost(Host o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<Void> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject hostJson = o.getSiteRequest_().getJsonObject();
+        String hostName = hostJson.getString(patch ? "setHostName": "hostName");
+        JsonArray subscriptions = hostJson.getJsonArray(patch ? "setEventSubscriptions" : "eventSubscriptions");
+
+        Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
+        String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
+        Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
+        String sensuUri = String.format("/api/v2/inventories/%s/hosts/%s", urlEncode(hostName));
+        String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+
+        JsonObject body = new JsonObject();
+        body.put("entity_class", "proxy");
+        body.put("sensu_agent_version", "1.0.0");
+        body.put("subscriptions", subscriptions);
+        body.put("deregister", false);
+        body.put("deregistration", new JsonObject());
+        JsonObject metadata = new JsonObject();
+        metadata.put("name", hostName);
+        metadata.put("namespace", "default");
+        metadata.put("labels", null);
+        metadata.put("annotations", null);
+        body.put("metadata", metadata);
+
+        if(StringUtils.isEmpty(hostName)) {
+          RuntimeException ex = new RuntimeException("Missing host name");
+          LOG.error(ex.getMessage(), ex);
+          promise.fail(ex);
+        } else {
+          webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+              .putHeader("Authorization", String.format("Key %s", accessToken))
+              .sendJsonObject(body)
+              .expecting(HttpResponseExpectation.SC_OK)
+              .onSuccess(HostResponse -> {
+            promise.complete();
           }).onFailure(ex -> {
             LOG.error(String.format("Updating Sensu host failed. "), ex);
             promise.fail(ex);
@@ -111,12 +142,32 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
 
   @Override
   public Future<Host> sqlPOSTHost(Host o, Boolean inheritPrimaryKey) {
-    return sqlUpsertHost(o, inheritPrimaryKey, false);
+    Promise<Host> promise = Promise.promise();
+    sensuUpsertHost(o, inheritPrimaryKey, false).onSuccess(a -> {
+      super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
+        promise.complete(o2);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
   }
 
   @Override
   public Future<Host> sqlPATCHHost(Host o, Boolean inheritPrimaryKey) {
-    return sqlUpsertHost(o, inheritPrimaryKey, true);
+    Promise<Host> promise = Promise.promise();
+    sensuUpsertHost(o, inheritPrimaryKey, false).onSuccess(a -> {
+      super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
+        promise.complete(o2);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
   }
 
   public Future<Void> sqlDeleteHost(Host o) {
@@ -140,19 +191,14 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
             .send()
             .expecting(HttpResponseExpectation.SC_NO_CONTENT.or(HttpResponseExpectation.SC_NOT_FOUND))
             .onSuccess(HostResponse -> {
-          super.sqlDELETEHost(o).onSuccess(a -> {
-            promise.complete();
-          }).onFailure(ex -> {
-            LOG.error(String.format("Updating Sensu host failed. "), ex);
-            promise.fail(ex);
-          });
+          promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("Updating Sensu host failed. "), ex);
+          LOG.error(String.format("Deleting Sensu host failed. "), ex);
           promise.fail(ex);
         });
       }
     } catch(Exception ex) {
-      LOG.error(String.format("Updating Sensu host failed. "), ex);
+      LOG.error(String.format("Deleting Sensu host failed. "), ex);
       promise.fail(ex);
     }
     return promise.future();
@@ -160,11 +206,31 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
 
   @Override
   public Future<Void> sqlDELETEFilterHost(Host o) {
-    return sqlDeleteHost(o);
+    Promise<Void> promise = Promise.promise();
+    sqlDeleteHost(o).onSuccess(a -> {
+      super.sqlDELETEFilterHost(o).onSuccess(b -> {
+        promise.complete();
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
   }
 
   @Override
   public Future<Void> sqlDELETEHost(Host o) {
-    return sqlDeleteHost(o);
+    Promise<Void> promise = Promise.promise();
+    sqlDeleteHost(o).onSuccess(a -> {
+      super.sqlDELETEHost(o).onSuccess(b -> {
+        promise.complete();
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
   }
 }
