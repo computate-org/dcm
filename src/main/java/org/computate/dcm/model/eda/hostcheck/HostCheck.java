@@ -13,8 +13,8 @@ import org.computate.dcm.model.BaseModel;
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host-check
- * EditPageUri: /en-us/edit/host-check/{checkId}
- * UserPageUri: /en-us/user/host-check/{checkId}
+ * EditPageUri: /en-us/edit/host-check/{checkName}
+ * UserPageUri: /en-us/user/host-check/{checkName}
  * ApiUri: /en-us/api/host-check
  * ApiMethod:
  *   Search:

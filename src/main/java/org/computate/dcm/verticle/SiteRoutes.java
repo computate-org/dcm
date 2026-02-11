@@ -16,6 +16,7 @@ import org.computate.vertx.config.ComputateConfigKeys;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import org.computate.vertx.search.list.SearchList;
 import org.computate.dcm.config.ConfigKeys;
+import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.dcm.user.SiteUserEnUSApiServiceImpl;
@@ -181,10 +182,84 @@ public class SiteRoutes {
     });
   }
 
-  public static Future<Void> kafkaConsumer(Vertx vertx, KafkaConsumer<String, String> consumer, JsonObject config) {
+  public static Future<Void> kafkaConsumer(Vertx vertx, KafkaConsumer<String, String> consumer, JsonObject config, WebClient webClient) {
     Promise<Void> promise = Promise.promise();
     try {
-      promise.complete();
+      String kafkaTopicOrderStatus = config.getString(ConfigKeys.KAFKA_TOPIC_SENSU_EVENT);
+      consumer.handler(message -> {
+        try {
+          String topic = message.topic();
+          String bodyStr = message.value();
+          LOG.debug(String.format("Kafka message received on topic %s: %s", topic, bodyStr));
+          JsonObject messageBody = new JsonObject(bodyStr);
+          String checkName = messageBody.getJsonObject("check").getJsonObject("metadata").getString("name");
+          String checkState = messageBody.getJsonObject("check").getString("state");
+          String hostName = messageBody.getJsonObject("entity").getJsonObject("metadata").getString("name");
+          Long templateId = 9L;
+          if(!"passing".equals(checkState)) {
+            LOG.info(String.format("Check %s in status %s on host %s", checkName, checkState, hostName));
+
+            SiteRequest siteRequest = new SiteRequest();
+            siteRequest.setConfig(config);
+            siteRequest.setWebClient(webClient);
+            siteRequest.initDeepSiteRequest(siteRequest);
+            siteRequest.addScopes("GET");
+
+            SearchList<Host> searchList = new SearchList<Host>();
+            searchList.setStore(true);
+            searchList.q("*:*");
+            searchList.fq(String.format("hostName_docvalues_string:%s", hostName));
+            searchList.setC(Host.class);
+            searchList.setSiteRequest_(siteRequest);
+            searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
+              try {
+                Host host = searchList.first();
+                if(host == null) {
+                  RuntimeException ex = new RuntimeException(String.format("Could not find a matching host %s", hostName));
+                  LOG.error(ex.getMessage(), ex);
+                } else {
+                  String ipAddress = host.getIpAddress();
+
+                  Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+                  String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+                  Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+                  String aapUri = String.format("/api/controller/v2/job_templates/%s/launch/", templateId);
+                  String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+                  String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+
+                  JsonObject body = new JsonObject();
+                  body.put("limit", ipAddress);
+
+                  webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
+                      .putHeader("Content-Type", "application/json")
+                      .basicAuthentication(aapUserName, aapPassword)
+                      .sendJsonObject(body)
+                      .expecting(HttpResponseExpectation.SC_CREATED)
+                      .onSuccess(hostResponse -> {
+                    JsonObject responseBody = hostResponse.bodyAsJsonObject();
+                    LOG.info(String.format("AAP job %s submitted with job template %s", responseBody.getString("job"), responseBody.getString("name")));
+                  }).onFailure(ex -> {
+                    LOG.error(String.format("Updating AAP host failed. "), ex);
+                  });
+                }
+              } catch(Exception ex) {
+                LOG.error(String.format("Updating Sensu host failed. "), ex);
+              }
+            }).onFailure(ex -> {
+              LOG.error(String.format("search HostInventory failed. "), ex);
+            });
+          }
+        } catch(Exception ex) {
+          LOG.error(String.format("Failed to handle message %s", message), ex);
+        }
+      });
+      consumer.subscribe(kafkaTopicOrderStatus).onSuccess(a -> {
+        LOG.info(String.format("Successfully subscribed to topic", kafkaTopicOrderStatus));
+        promise.complete();
+      }).onFailure(ex -> {
+        LOG.error(String.format("Failed to subscribe to topic", kafkaTopicOrderStatus), ex);
+        promise.fail(ex);
+      });
     } catch(Exception ex) {
       LOG.error("Unable to configure Kafka consumers. ", ex);
       promise.fail(ex);

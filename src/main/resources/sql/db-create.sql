@@ -105,6 +105,24 @@ ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkPublished boolean;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS eventSubscriptions text[];
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS eventHandlers text[];
 
+CREATE TABLE IF NOT EXISTS JobTemplate();
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS pk bigserial primary key;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS created timestamp with time zone;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS archived boolean;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS sessionId text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS userKey bigint;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS objectTitle text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS displayPage text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS editPage text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS userPage text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS download text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(tenantResource);
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS inventoryResource text references HostInventory(inventoryResource);
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateName text UNIQUE;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateDescription text UNIQUE;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobType text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansibleProjectId bigint;
+
 CREATE TABLE IF NOT EXISTS Project();
 ALTER TABLE Project ADD COLUMN IF NOT EXISTS pk bigserial primary key;
 ALTER TABLE Project ADD COLUMN IF NOT EXISTS created timestamp with time zone;

@@ -12,6 +12,8 @@ import org.computate.dcm.model.BaseModel;
  * PluralName: host inventories
  * Icon: <i class="fa-duotone fa-regular fa-network-wired"></i>
  * Rows: 100
+ * MenuDetails: hosts
+ * MenuDetailsOpen: true
  * 
  * SearchPageUri: /en-us/search/host-inventory
  * EditPageUri: /en-us/edit/host-inventory/{inventoryResource}

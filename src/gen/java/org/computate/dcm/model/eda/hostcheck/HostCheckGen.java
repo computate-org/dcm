@@ -173,7 +173,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no host check found";
   public static final String ApiUri_enUS = "/en-us/api/host-check";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/host-check";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-check/{checkId}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-check/{checkName}";
   public static final String OfName_enUS = "of host check";
   public static final String ANameAdjective_enUS = "an host check";
   public static final String NameAdjectiveSingular_enUS = "host check";
@@ -199,10 +199,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/host-check";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/host-check";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/host-check";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-check/{checkId}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-check/{checkName}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/host-check/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/host-check/%s";
-  public static final String UserPage_enUS_OpenApiUri = "/en-us/user/host-check/{checkId}";
+  public static final String UserPage_enUS_OpenApiUri = "/en-us/user/host-check/{checkName}";
   public static final String UserPage_enUS_StringFormatUri = "/en-us/user/host-check/%s";
   public static final String UserPage_enUS_StringFormatUrl = "%s/en-us/user/host-check/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/host-check";

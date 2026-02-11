@@ -24,6 +24,8 @@ import io.vertx.pgclient.data.Polygon;
  * PluralName: projects
  * Icon: <i class="fa-duotone fa-regular fa-people-line"></i>
  * Rows: 100
+ * MenuDetails: OpenShift
+ * MenuDetailsOpen: true
  * 
  * SearchPageUri: /en-us/search/project
  * EditPageUri: /en-us/edit/project/{projectResource}

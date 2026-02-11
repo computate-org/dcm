@@ -1,7 +1,9 @@
-package org.computate.dcm.model.eda.hostinventory;
+package org.computate.dcm.model.eda.jobtemplate;
 
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -107,40 +109,39 @@ import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.BooleanUtils;
 import org.computate.vertx.search.list.SearchList;
-import org.computate.dcm.model.eda.hostinventory.HostInventoryPage;
 
 
 /**
  * Translate: false
  * Generated: true
  **/
-public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl implements HostInventoryEnUSGenApiService {
+public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl implements JobTemplateEnUSGenApiService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(HostInventoryEnUSGenApiServiceImpl.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(JobTemplateEnUSGenApiServiceImpl.class);
 
   // Search //
 
   @Override
-  public void searchHostInventory(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -190,26 +191,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, false).onSuccess(listHostInventory -> {
-                response200SearchHostInventory(listHostInventory).onSuccess(response -> {
+              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+                response200SearchJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchHostInventory succeeded. "));
+                  LOG.debug(String.format("searchJobTemplate succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchHostInventory failed. "), ex);
+                  LOG.error(String.format("searchJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchHostInventory failed. "), ex);
+                LOG.error(String.format("searchJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchHostInventory failed. "), ex);
+            LOG.error(String.format("searchJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchHostInventory failed. "), ex);
+        LOG.error(String.format("searchJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -217,7 +218,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchHostInventory failed. ", ex2));
+          LOG.error(String.format("searchJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -232,27 +233,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("searchHostInventory failed. "), ex);
+        LOG.error(String.format("searchJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200SearchHostInventory(SearchList<HostInventory> listHostInventory) {
+  public Future<ServiceResponse> response200SearchJobTemplate(SearchList<JobTemplate> listJobTemplate) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-      List<String> fls = listHostInventory.getRequest().getFields();
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+      List<String> fls = listJobTemplate.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
-      listHostInventory.getList().stream().forEach(o -> {
+      listJobTemplate.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
           Set<String> fieldNames = new HashSet<String>();
           for(String fieldName : json2.fieldNames()) {
-            String v = HostInventory.varIndexedHostInventory(fieldName);
+            String v = JobTemplate.varIndexedJobTemplate(fieldName);
             if(v != null)
-              fieldNames.add(HostInventory.varIndexedHostInventory(fieldName));
+              fieldNames.add(JobTemplate.varIndexedJobTemplate(fieldName));
           }
           if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves_docvalues_strings")) {
             fieldNames.removeAll(Optional.ofNullable(json2.getJsonArray("saves_docvalues_strings")).orElse(new JsonArray()).stream().map(s -> s.toString()).collect(Collectors.toList()));
@@ -270,10 +271,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         l.add(json2);
       });
       json.put("list", l);
-      response200Search(listHostInventory.getRequest(), listHostInventory.getResponse(), json);
+      response200Search(listJobTemplate.getRequest(), listJobTemplate.getResponse(), json);
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -281,12 +282,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchHostInventory failed. "), ex);
+      LOG.error(String.format("response200SearchJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchHostInventory(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchJobTemplate(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -315,7 +316,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchHostInventory(pivotFields2, pivotArray2);
+          responsePivotSearchJobTemplate(pivotFields2, pivotArray2);
         }
       }
     }
@@ -324,26 +325,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // GET //
 
   @Override
-  public void getHostInventory(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void getJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -393,26 +394,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, false).onSuccess(listHostInventory -> {
-                response200GETHostInventory(listHostInventory).onSuccess(response -> {
+              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+                response200GETJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("getHostInventory succeeded. "));
+                  LOG.debug(String.format("getJobTemplate succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("getHostInventory failed. "), ex);
+                  LOG.error(String.format("getJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("getHostInventory failed. "), ex);
+                LOG.error(String.format("getJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("getHostInventory failed. "), ex);
+            LOG.error(String.format("getJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("getHostInventory failed. "), ex);
+        LOG.error(String.format("getJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -420,7 +421,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("getHostInventory failed. ", ex2));
+          LOG.error(String.format("getJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -435,20 +436,20 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("getHostInventory failed. "), ex);
+        LOG.error(String.format("getJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200GETHostInventory(SearchList<HostInventory> listHostInventory) {
+  public Future<ServiceResponse> response200GETJobTemplate(SearchList<JobTemplate> listJobTemplate) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-      JsonObject json = JsonObject.mapFrom(listHostInventory.getList().stream().findFirst().orElse(null));
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+      JsonObject json = JsonObject.mapFrom(listJobTemplate.getList().stream().findFirst().orElse(null));
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -456,7 +457,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200GETHostInventory failed. "), ex);
+      LOG.error(String.format("response200GETJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -465,27 +466,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // PATCH //
 
   @Override
-  public void patchHostInventory(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("patchHostInventory started. "));
+  public void patchJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("patchJobTemplate started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "PATCH"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -547,48 +548,48 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHostInventory.getRequest().getRows());
-                  apiRequest.setNumFound(listHostInventory.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listJobTemplate.getRequest().getRows());
+                  apiRequest.setNumFound(listJobTemplate.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHostInventory.first());
-                  apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
-                  apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listJobTemplate.first());
+                  apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+                  apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
 
-                  listPATCHHostInventory(apiRequest, listHostInventory).onSuccess(e -> {
-                    response200PATCHHostInventory(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("patchHostInventory succeeded. "));
+                  listPATCHJobTemplate(apiRequest, listJobTemplate).onSuccess(e -> {
+                    response200PATCHJobTemplate(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("patchJobTemplate succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("patchHostInventory failed. "), ex);
+                      LOG.error(String.format("patchJobTemplate failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("patchHostInventory failed. "), ex);
+                    LOG.error(String.format("patchJobTemplate failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("patchHostInventory failed. "), ex);
+                  LOG.error(String.format("patchJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("patchHostInventory failed. "), ex);
+                LOG.error(String.format("patchJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchHostInventory failed. "), ex);
+            LOG.error(String.format("patchJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchHostInventory failed. "), ex);
+        LOG.error(String.format("patchJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -596,7 +597,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("patchHostInventory failed. ", ex2));
+          LOG.error(String.format("patchJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -611,58 +612,58 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("patchHostInventory failed. "), ex);
+        LOG.error(String.format("patchJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPATCHHostInventory(ApiRequest apiRequest, SearchList<HostInventory> listHostInventory) {
+  public Future<Void> listPATCHJobTemplate(ApiRequest apiRequest, SearchList<JobTemplate> listJobTemplate) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-    listHostInventory.getList().forEach(o -> {
+    SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+    listJobTemplate.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      HostInventory o2 = jsonObject.mapTo(HostInventory.class);
+      JobTemplate o2 = jsonObject.mapTo(JobTemplate.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        patchHostInventoryFuture(o2, false).onSuccess(a -> {
+        patchJobTemplateFuture(o2, false).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listPATCHHostInventory failed. "), ex);
+          LOG.error(String.format("listPATCHJobTemplate failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHostInventory.next().onSuccess(next -> {
+      listJobTemplate.next().onSuccess(next -> {
         if(next) {
-          listPATCHHostInventory(apiRequest, listHostInventory).onSuccess(b -> {
+          listPATCHJobTemplate(apiRequest, listJobTemplate).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPATCHHostInventory failed. "), ex);
+            LOG.error(String.format("listPATCHJobTemplate failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listPATCHHostInventory failed. "), ex);
+        LOG.error(String.format("listPATCHJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listPATCHHostInventory failed. "), ex);
+      LOG.error(String.format("listPATCHJobTemplate failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void patchHostInventoryFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void patchJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -674,9 +675,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             siteRequest.addScopes(scope);
           });
         });
-        searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
           try {
-            HostInventory o = listHostInventory.first();
+            JobTemplate o = listJobTemplate.first();
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.setRows(1L);
             apiRequest.setNumFound(1L);
@@ -686,65 +687,65 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
               siteRequest.getRequestVars().put( "refresh", "false" );
             }
-            HostInventory o2;
+            JobTemplate o2;
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o3 -> o3.getInventoryResource().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o3 -> o3.getSolrId()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
-              o2 = jsonObject.mapTo(HostInventory.class);
+              o2 = jsonObject.mapTo(JobTemplate.class);
               o2.setSiteRequest_(siteRequest);
-              patchHostInventoryFuture(o2, false).onSuccess(o3 -> {
+              patchJobTemplateFuture(o2, false).onSuccess(o3 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
               });
             } else {
-              String m = String.format("%s %s not found", "host inventory", null);
+              String m = String.format("%s %s not found", "job template", null);
               eventHandler.handle(Future.failedFuture(m));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchHostInventory failed. "), ex);
+            LOG.error(String.format("patchJobTemplate failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("patchHostInventory failed. "), ex);
+          LOG.error(String.format("patchJobTemplate failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchHostInventory failed. "), ex);
+        LOG.error(String.format("patchJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("patchHostInventory failed. "), ex);
+      LOG.error(String.format("patchJobTemplate failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<HostInventory> patchHostInventoryFuture(HostInventory o, Boolean inheritPrimaryKey) {
+  public Future<JobTemplate> patchJobTemplateFuture(JobTemplate o, Boolean inheritPrimaryKey) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<HostInventory> promise = Promise.promise();
+    Promise<JobTemplate> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<HostInventory> promise1 = Promise.promise();
+      Promise<JobTemplate> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHostInventory(siteRequest).onSuccess(a -> {
-          sqlPATCHHostInventory(o, inheritPrimaryKey).onSuccess(hostInventory -> {
-            persistHostInventory(hostInventory, true).onSuccess(c -> {
-              relateHostInventory(hostInventory).onSuccess(d -> {
-                indexHostInventory(hostInventory).onSuccess(o2 -> {
+        varsJobTemplate(siteRequest).onSuccess(a -> {
+          sqlPATCHJobTemplate(o, inheritPrimaryKey).onSuccess(jobTemplate -> {
+            persistJobTemplate(jobTemplate, true).onSuccess(c -> {
+              relateJobTemplate(jobTemplate).onSuccess(d -> {
+                indexJobTemplate(jobTemplate).onSuccess(o2 -> {
                   if(apiRequest != null) {
                     apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                     if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                      o2.apiRequestHostInventory();
+                      o2.apiRequestJobTemplate();
                       if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                        eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                        eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
                     }
                   }
-                  promise1.complete(hostInventory);
+                  promise1.complete(jobTemplate);
                 }).onFailure(ex -> {
                   promise1.tryFail(ex);
                 });
@@ -766,28 +767,28 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(hostInventory -> {
-        Promise<HostInventory> promise2 = Promise.promise();
-        refreshHostInventory(hostInventory).onSuccess(a -> {
-          promise2.complete(hostInventory);
+      }).compose(jobTemplate -> {
+        Promise<JobTemplate> promise2 = Promise.promise();
+        refreshJobTemplate(jobTemplate).onSuccess(a -> {
+          promise2.complete(jobTemplate);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(hostInventory -> {
-        promise.complete(hostInventory);
+      }).onSuccess(jobTemplate -> {
+        promise.complete(jobTemplate);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("patchHostInventoryFuture failed. "), ex);
+      LOG.error(String.format("patchJobTemplateFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<HostInventory> sqlPATCHHostInventory(HostInventory o, Boolean inheritPrimaryKey) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> sqlPATCHJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
+    Promise<JobTemplate> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -795,12 +796,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE HostInventory SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE JobTemplate SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
       Set<String> methodNames = jsonObject.fieldNames();
-      HostInventory o2 = new HostInventory();
+      JobTemplate o2 = new JobTemplate();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -816,7 +817,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     solrIds.add(solrId2);
                     classes.add("Tenant");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -830,7 +831,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(HostInventory.class, pk).setToNull(HostInventory.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -838,83 +839,90 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }));
             });
             break;
-          case "setInventoryName":
-              o2.setInventoryName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlInventoryName());
+          case "setInventoryResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_inventoryResource, HostInventory.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeInventoryResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_inventoryResource, HostInventory.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_created + "=$" + num);
+              bSql.append(JobTemplate.VAR_created + "=$" + num);
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setInventoryId":
-              o2.setInventoryId(jsonObject.getString(entityVar));
+          case "setJobTemplateName":
+              o2.setJobTemplateName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryId + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryId());
+              bParams.add(o2.sqlJobTemplateName());
             break;
-          case "setInventoryResource":
-              o2.setInventoryResource(jsonObject.getString(entityVar));
+          case "setJobTemplateDescription":
+              o2.setJobTemplateDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryResource + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryResource());
+              bParams.add(o2.sqlJobTemplateDescription());
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_archived + "=$" + num);
+              bSql.append(JobTemplate.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
             break;
-          case "setInventoryDescription":
-              o2.setInventoryDescription(jsonObject.getString(entityVar));
+          case "setJobType":
+              o2.setJobType(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobType + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryDescription());
+              bParams.add(o2.sqlJobType());
             break;
-          case "setAapInventoryId":
-              o2.setAapInventoryId(jsonObject.getString(entityVar));
+          case "setAnsibleProjectId":
+              o2.setAnsibleProjectId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
+              bSql.append(JobTemplate.VAR_ansibleProjectId + "=$" + num);
               num++;
-              bParams.add(o2.sqlAapInventoryId());
-            break;
-          case "setInventoryOrganizationId":
-              o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryOrganizationId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlInventoryOrganizationId());
-            break;
-          case "setInventoryKind":
-              o2.setInventoryKind(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
-              num++;
-              bParams.add(o2.sqlInventoryKind());
+              bParams.add(o2.sqlAnsibleProjectId());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_sessionId + "=$" + num);
+              bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
               num++;
               bParams.add(o2.sqlSessionId());
             break;
@@ -922,7 +930,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_userKey + "=$" + num);
+              bSql.append(JobTemplate.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
             break;
@@ -930,7 +938,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_objectTitle + "=$" + num);
+              bSql.append(JobTemplate.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
@@ -938,7 +946,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setDisplayPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_displayPage + "=$" + num);
+              bSql.append(JobTemplate.VAR_displayPage + "=$" + num);
               num++;
               bParams.add(o2.sqlDisplayPage());
             break;
@@ -946,7 +954,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setEditPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_editPage + "=$" + num);
+              bSql.append(JobTemplate.VAR_editPage + "=$" + num);
               num++;
               bParams.add(o2.sqlEditPage());
             break;
@@ -954,7 +962,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setUserPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_userPage + "=$" + num);
+              bSql.append(JobTemplate.VAR_userPage + "=$" + num);
               num++;
               bParams.add(o2.sqlUserPage());
             break;
@@ -962,7 +970,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               o2.setDownload(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_download + "=$" + num);
+              bSql.append(JobTemplate.VAR_download + "=$" + num);
               num++;
               bParams.add(o2.sqlDownload());
             break;
@@ -978,40 +986,40 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value HostInventory failed", ex);
-            LOG.error(String.format("relateHostInventory failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value JobTemplate failed", ex);
+            LOG.error(String.format("relateJobTemplate failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
       }
       CompositeFuture.all(futures1).onSuccess(a -> {
         CompositeFuture.all(futures2).onSuccess(b -> {
-          HostInventory o3 = new HostInventory();
+          JobTemplate o3 = new JobTemplate();
           o3.setSiteRequest_(o.getSiteRequest_());
           o3.setPk(pk);
           promise.complete(o3);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPATCHHostInventory failed. "), ex);
+          LOG.error(String.format("sqlPATCHJobTemplate failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPATCHHostInventory failed. "), ex);
+        LOG.error(String.format("sqlPATCHJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPATCHHostInventory failed. "), ex);
+      LOG.error(String.format("sqlPATCHJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200PATCHHostInventory(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PATCHJobTemplate(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1019,7 +1027,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200PATCHHostInventory failed. "), ex);
+      LOG.error(String.format("response200PATCHJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1028,27 +1036,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // POST //
 
   @Override
-  public void postHostInventory(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("postHostInventory started. "));
+  public void postJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("postJobTemplate started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "POST"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1116,7 +1124,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+              eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
               JsonObject params = new JsonObject();
               params.put("body", siteRequest.getJsonObject());
               params.put("path", new JsonObject());
@@ -1136,24 +1144,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               params.put("query", query);
               JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
               JsonObject json = new JsonObject().put("context", context);
-              eventBus.request(HostInventory.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postHostInventoryFuture")).onSuccess(a -> {
+              eventBus.request(JobTemplate.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postJobTemplateFuture")).onSuccess(a -> {
                 JsonObject responseMessage = (JsonObject)a.body();
                 JsonObject responseBody = new JsonObject(Buffer.buffer(JsonUtil.BASE64_DECODER.decode(responseMessage.getString("payload"))));
-                apiRequest.setSolrId(responseBody.getString(HostInventory.VAR_solrId));
+                apiRequest.setSolrId(responseBody.getString(JobTemplate.VAR_solrId));
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
-                LOG.debug(String.format("postHostInventory succeeded. "));
+                LOG.debug(String.format("postJobTemplate succeeded. "));
               }).onFailure(ex -> {
-                LOG.error(String.format("postHostInventory failed. "), ex);
+                LOG.error(String.format("postJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("postHostInventory failed. "), ex);
+            LOG.error(String.format("postJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("postHostInventory failed. "), ex);
+        LOG.error(String.format("postJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1161,7 +1169,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postHostInventory failed. ", ex2));
+          LOG.error(String.format("postJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1176,14 +1184,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("postHostInventory failed. "), ex);
+        LOG.error(String.format("postJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
   @Override
-  public void postHostInventoryFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void postJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -1202,13 +1210,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
-        postHostInventoryFuture(siteRequest, false).onSuccess(o -> {
+        postJobTemplateFuture(siteRequest, false).onSuccess(o -> {
           eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
         }).onFailure(ex -> {
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Throwable ex) {
-        LOG.error(String.format("postHostInventory failed. "), ex);
+        LOG.error(String.format("postJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1216,7 +1224,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postHostInventory failed. ", ex2));
+          LOG.error(String.format("postJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1231,26 +1239,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("postHostInventory failed. "), ex);
+        LOG.error(String.format("postJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<HostInventory> postHostInventoryFuture(SiteRequest siteRequest, Boolean inventoryResource) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> postJobTemplateFuture(SiteRequest siteRequest, Boolean jobTemplateName) {
+    Promise<JobTemplate> promise = Promise.promise();
 
     try {
       pgPool.withTransaction(sqlConnection -> {
-        Promise<HostInventory> promise1 = Promise.promise();
+        Promise<JobTemplate> promise1 = Promise.promise();
         siteRequest.setSqlConnection(sqlConnection);
-        varsHostInventory(siteRequest).onSuccess(a -> {
-          createHostInventory(siteRequest).onSuccess(hostInventory -> {
-            sqlPOSTHostInventory(hostInventory, inventoryResource).onSuccess(b -> {
-              persistHostInventory(hostInventory, false).onSuccess(c -> {
-                relateHostInventory(hostInventory).onSuccess(d -> {
-                  indexHostInventory(hostInventory).onSuccess(o2 -> {
-                    promise1.complete(hostInventory);
+        varsJobTemplate(siteRequest).onSuccess(a -> {
+          createJobTemplate(siteRequest).onSuccess(jobTemplate -> {
+            sqlPOSTJobTemplate(jobTemplate, jobTemplateName).onSuccess(b -> {
+              persistJobTemplate(jobTemplate, false).onSuccess(c -> {
+                relateJobTemplate(jobTemplate).onSuccess(d -> {
+                  indexJobTemplate(jobTemplate).onSuccess(o2 -> {
+                    promise1.complete(jobTemplate);
                   }).onFailure(ex -> {
                     promise1.tryFail(ex);
                   });
@@ -1275,50 +1283,50 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(hostInventory -> {
-        Promise<HostInventory> promise2 = Promise.promise();
-        refreshHostInventory(hostInventory).onSuccess(a -> {
+      }).compose(jobTemplate -> {
+        Promise<JobTemplate> promise2 = Promise.promise();
+        refreshJobTemplate(jobTemplate).onSuccess(a -> {
           try {
             ApiRequest apiRequest = siteRequest.getApiRequest_();
             if(apiRequest != null) {
               apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-              hostInventory.apiRequestHostInventory();
-              eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+              jobTemplate.apiRequestJobTemplate();
+              eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
             }
-            promise2.complete(hostInventory);
+            promise2.complete(jobTemplate);
           } catch(Exception ex) {
-            LOG.error(String.format("postHostInventoryFuture failed. "), ex);
+            LOG.error(String.format("postJobTemplateFuture failed. "), ex);
             promise2.tryFail(ex);
           }
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(hostInventory -> {
+      }).onSuccess(jobTemplate -> {
         try {
           ApiRequest apiRequest = siteRequest.getApiRequest_();
           if(apiRequest != null) {
             apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-            hostInventory.apiRequestHostInventory();
-            eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+            jobTemplate.apiRequestJobTemplate();
+            eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
           }
-          promise.complete(hostInventory);
+          promise.complete(jobTemplate);
         } catch(Exception ex) {
-          LOG.error(String.format("postHostInventoryFuture failed. "), ex);
+          LOG.error(String.format("postJobTemplateFuture failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("postHostInventoryFuture failed. "), ex);
+      LOG.error(String.format("postJobTemplateFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<HostInventory> sqlPOSTHostInventory(HostInventory o, Boolean inheritPrimaryKey) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> sqlPOSTJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
+    Promise<JobTemplate> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -1326,11 +1334,11 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE HostInventory SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE JobTemplate SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      HostInventory o2 = new HostInventory();
+      JobTemplate o2 = new JobTemplate();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -1356,7 +1364,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case HostInventory.VAR_tenantResource:
+          case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
@@ -1365,7 +1373,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     solrIds.add(solrId2);
                     classes.add("Tenant");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1376,147 +1384,140 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }));
             });
             break;
-          case HostInventory.VAR_inventoryName:
-            o2.setInventoryName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlInventoryName());
+          case JobTemplate.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_inventoryResource, HostInventory.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
-          case HostInventory.VAR_created:
+          case JobTemplate.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_created + "=$" + num);
+            bSql.append(JobTemplate.VAR_created + "=$" + num);
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case HostInventory.VAR_inventoryId:
-            o2.setInventoryId(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateName:
+            o2.setJobTemplateName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryId + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryId());
+            bParams.add(o2.sqlJobTemplateName());
             break;
-          case HostInventory.VAR_inventoryResource:
-            o2.setInventoryResource(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateDescription:
+            o2.setJobTemplateDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryResource + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryResource());
+            bParams.add(o2.sqlJobTemplateDescription());
             break;
-          case HostInventory.VAR_archived:
+          case JobTemplate.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_archived + "=$" + num);
+            bSql.append(JobTemplate.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
             break;
-          case HostInventory.VAR_inventoryDescription:
-            o2.setInventoryDescription(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobType:
+            o2.setJobType(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobType + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryDescription());
+            bParams.add(o2.sqlJobType());
             break;
-          case HostInventory.VAR_aapInventoryId:
-            o2.setAapInventoryId(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_ansibleProjectId:
+            o2.setAnsibleProjectId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
+            bSql.append(JobTemplate.VAR_ansibleProjectId + "=$" + num);
             num++;
-            bParams.add(o2.sqlAapInventoryId());
+            bParams.add(o2.sqlAnsibleProjectId());
             break;
-          case HostInventory.VAR_inventoryOrganizationId:
-            o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_inventoryOrganizationId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlInventoryOrganizationId());
-            break;
-          case HostInventory.VAR_inventoryKind:
-            o2.setInventoryKind(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
-            num++;
-            bParams.add(o2.sqlInventoryKind());
-            break;
-          case HostInventory.VAR_sessionId:
+          case JobTemplate.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_sessionId + "=$" + num);
+            bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case HostInventory.VAR_userKey:
+          case JobTemplate.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_userKey + "=$" + num);
+            bSql.append(JobTemplate.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
             break;
-          case HostInventory.VAR_objectTitle:
+          case JobTemplate.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_objectTitle + "=$" + num);
+            bSql.append(JobTemplate.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
-          case HostInventory.VAR_displayPage:
+          case JobTemplate.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_displayPage + "=$" + num);
+            bSql.append(JobTemplate.VAR_displayPage + "=$" + num);
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
-          case HostInventory.VAR_editPage:
+          case JobTemplate.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_editPage + "=$" + num);
+            bSql.append(JobTemplate.VAR_editPage + "=$" + num);
             num++;
             bParams.add(o2.sqlEditPage());
             break;
-          case HostInventory.VAR_userPage:
+          case JobTemplate.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_userPage + "=$" + num);
+            bSql.append(JobTemplate.VAR_userPage + "=$" + num);
             num++;
             bParams.add(o2.sqlUserPage());
             break;
-          case HostInventory.VAR_download:
+          case JobTemplate.VAR_download:
             o2.setDownload(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_download + "=$" + num);
+            bSql.append(JobTemplate.VAR_download + "=$" + num);
             num++;
             bParams.add(o2.sqlDownload());
             break;
@@ -1533,8 +1534,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value HostInventory failed", ex);
-            LOG.error(String.format("relateHostInventory failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value JobTemplate failed", ex);
+            LOG.error(String.format("relateJobTemplate failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
@@ -1543,28 +1544,28 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete(o2);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPOSTHostInventory failed. "), ex);
+          LOG.error(String.format("sqlPOSTJobTemplate failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPOSTHostInventory failed. "), ex);
+        LOG.error(String.format("sqlPOSTJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPOSTHostInventory failed. "), ex);
+      LOG.error(String.format("sqlPOSTJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200POSTHostInventory(HostInventory o) {
+  public Future<ServiceResponse> response200POSTJobTemplate(JobTemplate o) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1572,7 +1573,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200POSTHostInventory failed. "), ex);
+      LOG.error(String.format("response200POSTJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1581,27 +1582,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // DELETE //
 
   @Override
-  public void deleteHostInventory(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deleteHostInventory started. "));
+  public void deleteJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deleteJobTemplate started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1663,47 +1664,47 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHostInventory.getRequest().getRows());
-                  apiRequest.setNumFound(listHostInventory.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listJobTemplate.getRequest().getRows());
+                  apiRequest.setNumFound(listJobTemplate.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHostInventory.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listJobTemplate.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETEHostInventory(apiRequest, listHostInventory).onSuccess(e -> {
-                    response200DELETEHostInventory(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deleteHostInventory succeeded. "));
+                  listDELETEJobTemplate(apiRequest, listJobTemplate).onSuccess(e -> {
+                    response200DELETEJobTemplate(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deleteJobTemplate succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deleteHostInventory failed. "), ex);
+                      LOG.error(String.format("deleteJobTemplate failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deleteHostInventory failed. "), ex);
+                    LOG.error(String.format("deleteJobTemplate failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deleteHostInventory failed. "), ex);
+                  LOG.error(String.format("deleteJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deleteHostInventory failed. "), ex);
+                LOG.error(String.format("deleteJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteHostInventory failed. "), ex);
+            LOG.error(String.format("deleteJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteHostInventory failed. "), ex);
+        LOG.error(String.format("deleteJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1711,7 +1712,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deleteHostInventory failed. ", ex2));
+          LOG.error(String.format("deleteJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1726,58 +1727,58 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("deleteHostInventory failed. "), ex);
+        LOG.error(String.format("deleteJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETEHostInventory(ApiRequest apiRequest, SearchList<HostInventory> listHostInventory) {
+  public Future<Void> listDELETEJobTemplate(ApiRequest apiRequest, SearchList<JobTemplate> listJobTemplate) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-    listHostInventory.getList().forEach(o -> {
+    SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+    listJobTemplate.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      HostInventory o2 = jsonObject.mapTo(HostInventory.class);
+      JobTemplate o2 = jsonObject.mapTo(JobTemplate.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deleteHostInventoryFuture(o).onSuccess(a -> {
+        deleteJobTemplateFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETEHostInventory failed. "), ex);
+          LOG.error(String.format("listDELETEJobTemplate failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHostInventory.next().onSuccess(next -> {
+      listJobTemplate.next().onSuccess(next -> {
         if(next) {
-          listDELETEHostInventory(apiRequest, listHostInventory).onSuccess(b -> {
+          listDELETEJobTemplate(apiRequest, listJobTemplate).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETEHostInventory failed. "), ex);
+            LOG.error(String.format("listDELETEJobTemplate failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETEHostInventory failed. "), ex);
+        LOG.error(String.format("listDELETEJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETEHostInventory failed. "), ex);
+      LOG.error(String.format("listDELETEJobTemplate failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deleteHostInventoryFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deleteJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -1789,10 +1790,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             siteRequest.addScopes(scope);
           });
         });
-        searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
           try {
-            HostInventory o = listHostInventory.first();
-            if(o != null && listHostInventory.getResponse().getResponse().getNumFound() == 1) {
+            JobTemplate o = listJobTemplate.first();
+            if(o != null && listJobTemplate.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -1804,9 +1805,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deleteHostInventoryFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deleteJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -1815,42 +1816,42 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteHostInventory failed. "), ex);
+            LOG.error(String.format("deleteJobTemplate failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deleteHostInventory failed. "), ex);
+          LOG.error(String.format("deleteJobTemplate failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteHostInventory failed. "), ex);
+        LOG.error(String.format("deleteJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deleteHostInventory failed. "), ex);
+      LOG.error(String.format("deleteJobTemplate failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<HostInventory> deleteHostInventoryFuture(HostInventory o) {
+  public Future<JobTemplate> deleteJobTemplateFuture(JobTemplate o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<HostInventory> promise = Promise.promise();
+    Promise<JobTemplate> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<HostInventory> promise1 = Promise.promise();
+      Promise<JobTemplate> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHostInventory(siteRequest).onSuccess(a -> {
-          sqlDELETEHostInventory(o).onSuccess(hostInventory -> {
-            relateHostInventory(o).onSuccess(d -> {
-              unindexHostInventory(o).onSuccess(o2 -> {
+        varsJobTemplate(siteRequest).onSuccess(a -> {
+          sqlDELETEJobTemplate(o).onSuccess(jobTemplate -> {
+            relateJobTemplate(o).onSuccess(d -> {
+              unindexJobTemplate(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestHostInventory();
+                    o2.apiRequestJobTemplate();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -1872,27 +1873,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(hostInventory -> {
-        Promise<HostInventory> promise2 = Promise.promise();
-        refreshHostInventory(o).onSuccess(a -> {
+      }).compose(jobTemplate -> {
+        Promise<JobTemplate> promise2 = Promise.promise();
+        refreshJobTemplate(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(hostInventory -> {
-        promise.complete(hostInventory);
+      }).onSuccess(jobTemplate -> {
+        promise.complete(jobTemplate);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deleteHostInventoryFuture failed. "), ex);
+      LOG.error(String.format("deleteJobTemplateFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETEHostInventory(HostInventory o) {
+  public Future<Void> sqlDELETEJobTemplate(JobTemplate o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -1901,11 +1902,11 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM HostInventory ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM JobTemplate ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      HostInventory o2 = new HostInventory();
+      JobTemplate o2 = new JobTemplate();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -1914,7 +1915,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case HostInventory.VAR_tenantResource:
+          case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
@@ -1923,7 +1924,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     solrIds.add(solrId2);
                     classes.add("Tenant");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case JobTemplate.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_inventoryResource, HostInventory.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1946,8 +1967,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value HostInventory failed", ex);
-          LOG.error(String.format("unrelateHostInventory failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value JobTemplate failed", ex);
+          LOG.error(String.format("unrelateJobTemplate failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -1955,27 +1976,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETEHostInventory failed. "), ex);
+          LOG.error(String.format("sqlDELETEJobTemplate failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETEHostInventory failed. "), ex);
+        LOG.error(String.format("sqlDELETEJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETEHostInventory failed. "), ex);
+      LOG.error(String.format("sqlDELETEJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETEHostInventory(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETEJobTemplate(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1983,7 +2004,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETEHostInventory failed. "), ex);
+      LOG.error(String.format("response200DELETEJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1992,27 +2013,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // PUTImport //
 
   @Override
-  public void putimportHostInventory(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("putimportHostInventory started. "));
+  public void putimportJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("putimportJobTemplate started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "PUT"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "PUT"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2081,32 +2102,32 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
-              varsHostInventory(siteRequest).onSuccess(d -> {
-                listPUTImportHostInventory(apiRequest, siteRequest).onSuccess(e -> {
-                  response200PUTImportHostInventory(siteRequest).onSuccess(response -> {
-                    LOG.debug(String.format("putimportHostInventory succeeded. "));
+              eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
+              varsJobTemplate(siteRequest).onSuccess(d -> {
+                listPUTImportJobTemplate(apiRequest, siteRequest).onSuccess(e -> {
+                  response200PUTImportJobTemplate(siteRequest).onSuccess(response -> {
+                    LOG.debug(String.format("putimportJobTemplate succeeded. "));
                     eventHandler.handle(Future.succeededFuture(response));
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHostInventory failed. "), ex);
+                    LOG.error(String.format("putimportJobTemplate failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 }).onFailure(ex -> {
-                  LOG.error(String.format("putimportHostInventory failed. "), ex);
+                  LOG.error(String.format("putimportJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("putimportHostInventory failed. "), ex);
+                LOG.error(String.format("putimportJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("putimportHostInventory failed. "), ex);
+            LOG.error(String.format("putimportJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportHostInventory failed. "), ex);
+        LOG.error(String.format("putimportJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2114,7 +2135,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportHostInventory failed. ", ex2));
+          LOG.error(String.format("putimportJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2129,13 +2150,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("putimportHostInventory failed. "), ex);
+        LOG.error(String.format("putimportJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPUTImportHostInventory(ApiRequest apiRequest, SiteRequest siteRequest) {
+  public Future<Void> listPUTImportJobTemplate(ApiRequest apiRequest, SiteRequest siteRequest) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
     JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
@@ -2160,10 +2181,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(HostInventory.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportHostInventoryFuture")).onSuccess(a -> {
+          eventBus.request(JobTemplate.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportJobTemplateFuture")).onSuccess(a -> {
             promise1.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPUTImportHostInventory failed. "), ex);
+            LOG.error(String.format("listPUTImportJobTemplate failed. "), ex);
             promise1.tryFail(ex);
           });
         }));
@@ -2172,18 +2193,18 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
         promise.complete();
       }).onFailure(ex -> {
-        LOG.error(String.format("listPUTImportHostInventory failed. "), ex);
+        LOG.error(String.format("listPUTImportJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("listPUTImportHostInventory failed. "), ex);
+      LOG.error(String.format("listPUTImportJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
   @Override
-  public void putimportHostInventoryFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void putimportJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -2199,19 +2220,19 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String inventoryResource = Optional.ofNullable(body.getString(HostInventory.VAR_inventoryResource)).orElse(body.getString(HostInventory.VAR_solrId));
+        String jobTemplateName = Optional.ofNullable(body.getString(JobTemplate.VAR_jobTemplateName)).orElse(body.getString(JobTemplate.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE inventoryResource=$1", HostInventory.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE jobTemplateName=$1", JobTemplate.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(inventoryResource))
+              .execute(Tuple.tuple(Arrays.asList(jobTemplateName))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
                 if(result.size() >= 1) {
-                  HostInventory o = new HostInventory();
+                  JobTemplate o = new JobTemplate();
                   o.setSiteRequest_(siteRequest);
                   for(Row definition : result.value()) {
                     for(Integer i = 0; i < definition.size(); i++) {
@@ -2220,11 +2241,11 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         Object columnValue = definition.getValue(i);
                         o.persistForClass(columnName, columnValue);
                       } catch(Exception e) {
-                        LOG.error(String.format("persistHostInventory failed. "), e);
+                        LOG.error(String.format("persistJobTemplate failed. "), e);
                       }
                     }
                   }
-                  HostInventory o2 = new HostInventory();
+                  JobTemplate o2 = new JobTemplate();
                   o2.setSiteRequest_(siteRequest);
                   JsonObject body2 = new JsonObject();
                   for(String f : body.fieldNames()) {
@@ -2256,56 +2277,56 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "inventoryResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "inventoryResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getInventoryResource()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getJobTemplateName()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
-                  patchHostInventoryFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import HostInventory {} succeeded, modified HostInventory. ", body.getValue(HostInventory.VAR_inventoryResource));
+                  patchJobTemplateFuture(o, true).onSuccess(b -> {
+                    LOG.debug("Import JobTemplate {} succeeded, modified JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateName));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+                    LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 } else {
-                  postHostInventoryFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import HostInventory {} succeeded, created new HostInventory. ", body.getValue(HostInventory.VAR_inventoryResource));
+                  postJobTemplateFuture(siteRequest, true).onSuccess(b -> {
+                    LOG.debug("Import JobTemplate {} succeeded, created new JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateName));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+                    LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 }
               } catch(Exception ex) {
-                LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+                LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
                 eventHandler.handle(Future.failedFuture(ex));
               }
             }).onFailure(ex -> {
-              LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+              LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
               eventHandler.handle(Future.failedFuture(ex));
             });
           }).onFailure(ex -> {
-            LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+            LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
             eventHandler.handle(Future.failedFuture(ex));
           });
         }).onFailure(ex -> {
-          LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+          LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
+        LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
         eventHandler.handle(Future.failedFuture(ex));
       }
     }).onFailure(ex -> {
@@ -2313,7 +2334,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportHostInventory failed. ", ex2));
+          LOG.error(String.format("putimportJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2328,19 +2349,19 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("putimportHostInventory failed. "), ex);
+        LOG.error(String.format("putimportJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200PUTImportHostInventory(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PUTImportJobTemplate(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -2348,7 +2369,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200PUTImportHostInventory failed. "), ex);
+      LOG.error(String.format("response200PUTImportJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -2357,28 +2378,28 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // SearchPage //
 
   @Override
-  public void searchpageHostInventory(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     oauth2AuthenticationProvider.refresh(User.create(serviceRequest.getUser())).onSuccess(user -> {
       serviceRequest.setUser(user.principal());
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2428,26 +2449,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, false).onSuccess(listHostInventory -> {
-                response200SearchPageHostInventory(listHostInventory).onSuccess(response -> {
+              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+                response200SearchPageJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchpageHostInventory succeeded. "));
+                  LOG.debug(String.format("searchpageJobTemplate succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchpageHostInventory failed. "), ex);
+                  LOG.error(String.format("searchpageJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchpageHostInventory failed. "), ex);
+                LOG.error(String.format("searchpageJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchpageHostInventory failed. "), ex);
+            LOG.error(String.format("searchpageJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchpageHostInventory failed. "), ex);
+        LOG.error(String.format("searchpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2455,7 +2476,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageHostInventory failed. ", ex2));
+          LOG.error(String.format("searchpageJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2470,7 +2491,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("searchpageHostInventory failed. "), ex);
+        LOG.error(String.format("searchpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
@@ -2479,7 +2500,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageHostInventory failed. ", ex2));
+          LOG.error(String.format("searchpageJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2494,17 +2515,17 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("searchpageHostInventory failed. "), ex);
+        LOG.error(String.format("searchpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void searchpageHostInventoryPageInit(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<Void> promise) {
+  public void searchpageJobTemplatePageInit(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host-inventory"));
-    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host-inventory"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/job-template"));
+    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/job-template"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
@@ -2513,15 +2534,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     promise.complete();
   }
 
-  public String templateUriSearchPageHostInventory(ServiceRequest serviceRequest, HostInventory result) {
-    return "en-us/search/host-inventory/HostInventorySearchPage.htm";
+  public String templateUriSearchPageJobTemplate(ServiceRequest serviceRequest, JobTemplate result) {
+    return "en-us/search/job-template/JobTemplateSearchPage.htm";
   }
-  public void templateSearchPageHostInventory(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<String> promise) {
+  public void templateSearchPageJobTemplate(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      HostInventory result = listHostInventory.first();
-      String pageTemplateUri = templateUriSearchPageHostInventory(serviceRequest, result);
+      JobTemplate result = listJobTemplate.first();
+      String pageTemplateUri = templateUriSearchPageJobTemplate(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
@@ -2574,40 +2595,40 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateSearchPageHostInventory failed. "), ex);
+      LOG.error(String.format("templateSearchPageJobTemplate failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200SearchPageHostInventory(SearchList<HostInventory> listHostInventory) {
+  public Future<ServiceResponse> response200SearchPageJobTemplate(SearchList<JobTemplate> listJobTemplate) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-      HostInventoryPage page = new HostInventoryPage();
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+      JobTemplatePage page = new JobTemplatePage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listHostInventory.size() >= 1)
-        siteRequest.setRequestPk(listHostInventory.get(0).getPk());
-      page.setSearchListHostInventory_(listHostInventory);
+      if(listJobTemplate.size() >= 1)
+        siteRequest.setRequestPk(listJobTemplate.get(0).getPk());
+      page.setSearchListJobTemplate_(listJobTemplate);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepHostInventoryPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepJobTemplatePage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          searchpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
+          searchpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
           promise1.future().onSuccess(b -> {
             Promise<String> promise2 = Promise.promise();
-            templateSearchPageHostInventory(ctx, page, listHostInventory, promise2);
+            templateSearchPageJobTemplate(ctx, page, listJobTemplate, promise2);
             promise2.future().onSuccess(renderedTemplate -> {
               try {
                 Buffer buffer = Buffer.buffer(renderedTemplate);
                 promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
               } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+                LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
                 promise.fail(ex);
               }
             }).onFailure(ex -> {
@@ -2617,19 +2638,19 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+          LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+      LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchPageHostInventory(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchPageJobTemplate(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -2658,7 +2679,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchPageHostInventory(pivotFields2, pivotArray2);
+          responsePivotSearchPageJobTemplate(pivotFields2, pivotArray2);
         }
       }
     }
@@ -2667,27 +2688,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // EditPage //
 
   @Override
-  public void editpageHostInventory(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void editpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryResource, "GET"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s-%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, jobTemplateName, "GET"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2737,26 +2758,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, false).onSuccess(listHostInventory -> {
-                response200EditPageHostInventory(listHostInventory).onSuccess(response -> {
+              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+                response200EditPageJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("editpageHostInventory succeeded. "));
+                  LOG.debug(String.format("editpageJobTemplate succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("editpageHostInventory failed. "), ex);
+                  LOG.error(String.format("editpageJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("editpageHostInventory failed. "), ex);
+                LOG.error(String.format("editpageJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
             });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("editpageHostInventory failed. "), ex);
+            LOG.error(String.format("editpageJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("editpageHostInventory failed. "), ex);
+        LOG.error(String.format("editpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2764,7 +2785,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("editpageHostInventory failed. ", ex2));
+          LOG.error(String.format("editpageJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2779,16 +2800,16 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("editpageHostInventory failed. "), ex);
+        LOG.error(String.format("editpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void editpageHostInventoryPageInit(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<Void> promise) {
+  public void editpageJobTemplatePageInit(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host-inventory"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/job-template"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
@@ -2798,15 +2819,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     promise.complete();
   }
 
-  public String templateUriEditPageHostInventory(ServiceRequest serviceRequest, HostInventory result) {
-    return "en-us/edit/host-inventory/HostInventoryEditPage.htm";
+  public String templateUriEditPageJobTemplate(ServiceRequest serviceRequest, JobTemplate result) {
+    return "en-us/edit/job-template/JobTemplateEditPage.htm";
   }
-  public void templateEditPageHostInventory(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<String> promise) {
+  public void templateEditPageJobTemplate(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      HostInventory result = listHostInventory.first();
-      String pageTemplateUri = templateUriEditPageHostInventory(serviceRequest, result);
+      JobTemplate result = listJobTemplate.first();
+      String pageTemplateUri = templateUriEditPageJobTemplate(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
@@ -2859,40 +2880,40 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateEditPageHostInventory failed. "), ex);
+      LOG.error(String.format("templateEditPageJobTemplate failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200EditPageHostInventory(SearchList<HostInventory> listHostInventory) {
+  public Future<ServiceResponse> response200EditPageJobTemplate(SearchList<JobTemplate> listJobTemplate) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-      HostInventoryPage page = new HostInventoryPage();
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+      JobTemplatePage page = new JobTemplatePage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listHostInventory.size() >= 1)
-        siteRequest.setRequestPk(listHostInventory.get(0).getPk());
-      page.setSearchListHostInventory_(listHostInventory);
+      if(listJobTemplate.size() >= 1)
+        siteRequest.setRequestPk(listJobTemplate.get(0).getPk());
+      page.setSearchListJobTemplate_(listJobTemplate);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepHostInventoryPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepJobTemplatePage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          editpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
+          editpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
           promise1.future().onSuccess(b -> {
             Promise<String> promise2 = Promise.promise();
-            templateEditPageHostInventory(ctx, page, listHostInventory, promise2);
+            templateEditPageJobTemplate(ctx, page, listJobTemplate, promise2);
             promise2.future().onSuccess(renderedTemplate -> {
               try {
                 Buffer buffer = Buffer.buffer(renderedTemplate);
                 promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
               } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+                LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
                 promise.fail(ex);
               }
             }).onFailure(ex -> {
@@ -2902,19 +2923,19 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+          LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+      LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotEditPageHostInventory(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotEditPageJobTemplate(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -2943,7 +2964,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotEditPageHostInventory(pivotFields2, pivotArray2);
+          responsePivotEditPageJobTemplate(pivotFields2, pivotArray2);
         }
       }
     }
@@ -2952,27 +2973,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // UserPage //
 
   @Override
-  public void userpageHostInventory(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void userpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryResource, "GET"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s-%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, jobTemplateName, "GET"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3022,26 +3043,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, false).onSuccess(listHostInventory -> {
-                response200UserPageHostInventory(listHostInventory).onSuccess(response -> {
+              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+                response200UserPageJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("userpageHostInventory succeeded. "));
+                  LOG.debug(String.format("userpageJobTemplate succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("userpageHostInventory failed. "), ex);
+                  LOG.error(String.format("userpageJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("userpageHostInventory failed. "), ex);
+                LOG.error(String.format("userpageJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
             });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("userpageHostInventory failed. "), ex);
+            LOG.error(String.format("userpageJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("userpageHostInventory failed. "), ex);
+        LOG.error(String.format("userpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3049,7 +3070,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("userpageHostInventory failed. ", ex2));
+          LOG.error(String.format("userpageJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3064,16 +3085,16 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("userpageHostInventory failed. "), ex);
+        LOG.error(String.format("userpageJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void userpageHostInventoryPageInit(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<Void> promise) {
+  public void userpageJobTemplatePageInit(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/host-inventory"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/job-template"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
@@ -3083,15 +3104,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     promise.complete();
   }
 
-  public String templateUriUserPageHostInventory(ServiceRequest serviceRequest, HostInventory result) {
+  public String templateUriUserPageJobTemplate(ServiceRequest serviceRequest, JobTemplate result) {
     return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
   }
-  public void templateUserPageHostInventory(JsonObject ctx, HostInventoryPage page, SearchList<HostInventory> listHostInventory, Promise<String> promise) {
+  public void templateUserPageJobTemplate(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      HostInventory result = listHostInventory.first();
-      String pageTemplateUri = templateUriUserPageHostInventory(serviceRequest, result);
+      JobTemplate result = listJobTemplate.first();
+      String pageTemplateUri = templateUriUserPageJobTemplate(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
@@ -3144,40 +3165,40 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateUserPageHostInventory failed. "), ex);
+      LOG.error(String.format("templateUserPageJobTemplate failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200UserPageHostInventory(SearchList<HostInventory> listHostInventory) {
+  public Future<ServiceResponse> response200UserPageJobTemplate(SearchList<JobTemplate> listJobTemplate) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-      HostInventoryPage page = new HostInventoryPage();
+      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+      JobTemplatePage page = new JobTemplatePage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listHostInventory.size() >= 1)
-        siteRequest.setRequestPk(listHostInventory.get(0).getPk());
-      page.setSearchListHostInventory_(listHostInventory);
+      if(listJobTemplate.size() >= 1)
+        siteRequest.setRequestPk(listJobTemplate.get(0).getPk());
+      page.setSearchListJobTemplate_(listJobTemplate);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepHostInventoryPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepJobTemplatePage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          userpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
+          userpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
           promise1.future().onSuccess(b -> {
             Promise<String> promise2 = Promise.promise();
-            templateUserPageHostInventory(ctx, page, listHostInventory, promise2);
+            templateUserPageJobTemplate(ctx, page, listJobTemplate, promise2);
             promise2.future().onSuccess(renderedTemplate -> {
               try {
                 Buffer buffer = Buffer.buffer(renderedTemplate);
                 promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
               } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+                LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
                 promise.fail(ex);
               }
             }).onFailure(ex -> {
@@ -3187,19 +3208,19 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+          LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+      LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotUserPageHostInventory(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotUserPageJobTemplate(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -3228,7 +3249,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotUserPageHostInventory(pivotFields2, pivotArray2);
+          responsePivotUserPageJobTemplate(pivotFields2, pivotArray2);
         }
       }
     }
@@ -3237,27 +3258,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
   // DELETEFilter //
 
   @Override
-  public void deletefilterHostInventory(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deletefilterHostInventory started. "));
+  public void deletefilterJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deletefilterJobTemplate started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryResource != null)
-          form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
+        if(jobTemplateName != null)
+          form.add("permission", String.format("%s#%s", jobTemplateName, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3319,47 +3340,47 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listHostInventory.getRequest().getRows());
-                  apiRequest.setNumFound(listHostInventory.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listJobTemplate.getRequest().getRows());
+                  apiRequest.setNumFound(listJobTemplate.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listHostInventory.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listJobTemplate.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETEFilterHostInventory(apiRequest, listHostInventory).onSuccess(e -> {
-                    response200DELETEFilterHostInventory(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deletefilterHostInventory succeeded. "));
+                  listDELETEFilterJobTemplate(apiRequest, listJobTemplate).onSuccess(e -> {
+                    response200DELETEFilterJobTemplate(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deletefilterJobTemplate succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+                      LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+                    LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+                  LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+                LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+            LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+        LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3367,7 +3388,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deletefilterHostInventory failed. ", ex2));
+          LOG.error(String.format("deletefilterJobTemplate failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3382,58 +3403,58 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               )
           ));
       } else {
-        LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+        LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETEFilterHostInventory(ApiRequest apiRequest, SearchList<HostInventory> listHostInventory) {
+  public Future<Void> listDELETEFilterJobTemplate(ApiRequest apiRequest, SearchList<JobTemplate> listJobTemplate) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
-    listHostInventory.getList().forEach(o -> {
+    SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
+    listJobTemplate.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      HostInventory o2 = jsonObject.mapTo(HostInventory.class);
+      JobTemplate o2 = jsonObject.mapTo(JobTemplate.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deletefilterHostInventoryFuture(o).onSuccess(a -> {
+        deletefilterJobTemplateFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETEFilterHostInventory failed. "), ex);
+          LOG.error(String.format("listDELETEFilterJobTemplate failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listHostInventory.next().onSuccess(next -> {
+      listJobTemplate.next().onSuccess(next -> {
         if(next) {
-          listDELETEFilterHostInventory(apiRequest, listHostInventory).onSuccess(b -> {
+          listDELETEFilterJobTemplate(apiRequest, listJobTemplate).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETEFilterHostInventory failed. "), ex);
+            LOG.error(String.format("listDELETEFilterJobTemplate failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETEFilterHostInventory failed. "), ex);
+        LOG.error(String.format("listDELETEFilterJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETEFilterHostInventory failed. "), ex);
+      LOG.error(String.format("listDELETEFilterJobTemplate failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deletefilterHostInventoryFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deletefilterJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -3445,10 +3466,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             siteRequest.addScopes(scope);
           });
         });
-        searchHostInventoryList(siteRequest, false, true, true).onSuccess(listHostInventory -> {
+        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
           try {
-            HostInventory o = listHostInventory.first();
-            if(o != null && listHostInventory.getResponse().getResponse().getNumFound() == 1) {
+            JobTemplate o = listJobTemplate.first();
+            if(o != null && listJobTemplate.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -3460,9 +3481,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deletefilterHostInventoryFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deletefilterJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -3471,42 +3492,42 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+            LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+          LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+        LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deletefilterHostInventory failed. "), ex);
+      LOG.error(String.format("deletefilterJobTemplate failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<HostInventory> deletefilterHostInventoryFuture(HostInventory o) {
+  public Future<JobTemplate> deletefilterJobTemplateFuture(JobTemplate o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<HostInventory> promise = Promise.promise();
+    Promise<JobTemplate> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<HostInventory> promise1 = Promise.promise();
+      Promise<JobTemplate> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsHostInventory(siteRequest).onSuccess(a -> {
-          sqlDELETEFilterHostInventory(o).onSuccess(hostInventory -> {
-            relateHostInventory(o).onSuccess(d -> {
-              unindexHostInventory(o).onSuccess(o2 -> {
+        varsJobTemplate(siteRequest).onSuccess(a -> {
+          sqlDELETEFilterJobTemplate(o).onSuccess(jobTemplate -> {
+            relateJobTemplate(o).onSuccess(d -> {
+              unindexJobTemplate(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestHostInventory();
+                    o2.apiRequestJobTemplate();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -3528,27 +3549,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(hostInventory -> {
-        Promise<HostInventory> promise2 = Promise.promise();
-        refreshHostInventory(o).onSuccess(a -> {
+      }).compose(jobTemplate -> {
+        Promise<JobTemplate> promise2 = Promise.promise();
+        refreshJobTemplate(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(hostInventory -> {
-        promise.complete(hostInventory);
+      }).onSuccess(jobTemplate -> {
+        promise.complete(jobTemplate);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deletefilterHostInventoryFuture failed. "), ex);
+      LOG.error(String.format("deletefilterJobTemplateFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETEFilterHostInventory(HostInventory o) {
+  public Future<Void> sqlDELETEFilterJobTemplate(JobTemplate o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -3557,11 +3578,11 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM HostInventory ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM JobTemplate ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      HostInventory o2 = new HostInventory();
+      JobTemplate o2 = new JobTemplate();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -3570,7 +3591,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case HostInventory.VAR_tenantResource:
+          case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
@@ -3579,7 +3600,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     solrIds.add(solrId2);
                     classes.add("Tenant");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case JobTemplate.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_inventoryResource, HostInventory.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3602,8 +3643,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value HostInventory failed", ex);
-          LOG.error(String.format("unrelateHostInventory failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value JobTemplate failed", ex);
+          LOG.error(String.format("unrelateJobTemplate failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -3611,27 +3652,27 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETEFilterHostInventory failed. "), ex);
+          LOG.error(String.format("sqlDELETEFilterJobTemplate failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETEFilterHostInventory failed. "), ex);
+        LOG.error(String.format("sqlDELETEFilterJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETEFilterHostInventory failed. "), ex);
+      LOG.error(String.format("sqlDELETEFilterJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETEFilterHostInventory(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETEFilterJobTemplate(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
+        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String m = String.format("%s %s not found", "job template", jobTemplateName);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -3639,7 +3680,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
       }
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETEFilterHostInventory failed. "), ex);
+      LOG.error(String.format("response200DELETEFilterJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -3647,78 +3688,78 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
 
   // General //
 
-  public Future<HostInventory> createHostInventory(SiteRequest siteRequest) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> createJobTemplate(SiteRequest siteRequest) {
+    Promise<JobTemplate> promise = Promise.promise();
     try {
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       String userId = siteRequest.getUserId();
       Long userKey = siteRequest.getUserKey();
       ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, ComputateZonedDateTimeSerializer.ZONED_DATE_TIME_FORMATTER.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
-      sqlConnection.preparedQuery("INSERT INTO HostInventory(created, userKey) VALUES($1, $2) RETURNING pk")
+      sqlConnection.preparedQuery("INSERT INTO JobTemplate(created, userKey) VALUES($1, $2) RETURNING pk")
           .collecting(Collectors.toList())
           .execute(Tuple.of(created.toOffsetDateTime(), userKey)).onSuccess(result -> {
         Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
         Long pk = createLine.getLong(0);
-        HostInventory o = new HostInventory();
+        JobTemplate o = new JobTemplate();
         o.setPk(pk);
         o.setSiteRequest_(siteRequest);
         promise.complete(o);
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error("createHostInventory failed. ", ex2);
+        LOG.error("createJobTemplate failed. ", ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("createHostInventory failed. "), ex);
+      LOG.error(String.format("createJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public void searchHostInventoryQ(SearchList<HostInventory> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchJobTemplateQ(SearchList<JobTemplate> searchList, String entityVar, String valueIndexed, String varIndexed) {
     searchList.q(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : SearchTool.escapeQueryChars(valueIndexed)));
     if(!"*".equals(entityVar)) {
     }
   }
 
-  public String searchHostInventoryFq(SearchList<HostInventory> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public String searchJobTemplateFq(SearchList<JobTemplate> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     if(StringUtils.startsWith(valueIndexed, "[")) {
       String[] fqs = StringUtils.substringAfter(StringUtils.substringBeforeLast(valueIndexed, "]"), "[").split(" TO ");
       if(fqs.length != 2)
         throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
-      String fq1 = fqs[0].equals("*") ? fqs[0] : HostInventory.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
-      String fq2 = fqs[1].equals("*") ? fqs[1] : HostInventory.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
+      String fq1 = fqs[0].equals("*") ? fqs[0] : JobTemplate.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
+      String fq2 = fqs[1].equals("*") ? fqs[1] : JobTemplate.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
        return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
     } else {
-      return varIndexed + ":" + SearchTool.escapeQueryChars(HostInventory.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
+      return varIndexed + ":" + SearchTool.escapeQueryChars(JobTemplate.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
     }
   }
 
-  public void searchHostInventorySort(SearchList<HostInventory> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchJobTemplateSort(SearchList<JobTemplate> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     searchList.sort(varIndexed, valueIndexed);
   }
 
-  public void searchHostInventoryRows(SearchList<HostInventory> searchList, Long valueRows) {
+  public void searchJobTemplateRows(SearchList<JobTemplate> searchList, Long valueRows) {
       searchList.rows(valueRows != null ? valueRows : 10L);
   }
 
-  public void searchHostInventoryStart(SearchList<HostInventory> searchList, Long valueStart) {
+  public void searchJobTemplateStart(SearchList<JobTemplate> searchList, Long valueStart) {
     searchList.start(valueStart);
   }
 
-  public void searchHostInventoryVar(SearchList<HostInventory> searchList, String var, String value) {
+  public void searchJobTemplateVar(SearchList<JobTemplate> searchList, String var, String value) {
     searchList.getSiteRequest_(SiteRequest.class).getRequestVars().put(var, value);
   }
 
-  public void searchHostInventoryUri(SearchList<HostInventory> searchList) {
+  public void searchJobTemplateUri(SearchList<JobTemplate> searchList) {
   }
 
-  public Future<ServiceResponse> varsHostInventory(SiteRequest siteRequest) {
+  public Future<ServiceResponse> varsJobTemplate(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -3736,25 +3777,25 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             siteRequest.getRequestVars().put(entityVar, valueIndexed);
           }
         } catch(Exception ex) {
-          LOG.error(String.format("searchHostInventory failed. "), ex);
+          LOG.error(String.format("searchJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
-      LOG.error(String.format("searchHostInventory failed. "), ex);
+      LOG.error(String.format("searchJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<SearchList<HostInventory>> searchHostInventoryList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
-    Promise<SearchList<HostInventory>> promise = Promise.promise();
+  public Future<SearchList<JobTemplate>> searchJobTemplateList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
+    Promise<SearchList<JobTemplate>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-      SearchList<HostInventory> searchList = new SearchList<HostInventory>();
+      SearchList<JobTemplate> searchList = new SearchList<JobTemplate>();
       String facetRange = null;
       Date facetRangeStart = null;
       Date facetRangeEnd = null;
@@ -3764,18 +3805,18 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       searchList.setPopulate(populate);
       searchList.setStore(store);
       searchList.q("*:*");
-      searchList.setC(HostInventory.class);
+      searchList.setC(JobTemplate.class);
       searchList.setSiteRequest_(siteRequest);
       searchList.facetMinCount(1);
       if(entityList != null) {
         for(String v : entityList) {
-          searchList.fl(HostInventory.varIndexedHostInventory(v));
+          searchList.fl(JobTemplate.varIndexedJobTemplate(v));
         }
       }
 
-      String inventoryResource = serviceRequest.getParams().getJsonObject("path").getString("inventoryResource");
-      if(inventoryResource != null) {
-        searchList.fq("inventoryResource_docvalues_string:" + SearchTool.escapeQueryChars(inventoryResource));
+      String jobTemplateName = serviceRequest.getParams().getJsonObject("path").getString("jobTemplateName");
+      if(jobTemplateName != null) {
+        searchList.fq("jobTemplateName_docvalues_string:" + SearchTool.escapeQueryChars(jobTemplateName));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3798,7 +3839,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               String[] varsIndexed = new String[entityVars.length];
               for(Integer i = 0; i < entityVars.length; i++) {
                 entityVar = entityVars[i];
-                varsIndexed[i] = HostInventory.varIndexedHostInventory(entityVar);
+                varsIndexed[i] = JobTemplate.varIndexedJobTemplate(entityVar);
               }
               searchList.facetPivot((solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
             }
@@ -3810,8 +3851,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                 while(mQ.find()) {
                   entityVar = mQ.group(1).trim();
                   valueIndexed = mQ.group(2).trim();
-                  varIndexed = HostInventory.varIndexedHostInventory(entityVar);
-                  String entityQ = searchHostInventoryFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
+                  String entityQ = searchJobTemplateFq(searchList, entityVar, valueIndexed, varIndexed);
                   mQ.appendReplacement(sb, entityQ);
                 }
                 if(!sb.isEmpty()) {
@@ -3824,8 +3865,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                 while(mFq.find()) {
                   entityVar = mFq.group(1).trim();
                   valueIndexed = mFq.group(2).trim();
-                  varIndexed = HostInventory.varIndexedHostInventory(entityVar);
-                  String entityFq = searchHostInventoryFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
+                  String entityFq = searchJobTemplateFq(searchList, entityVar, valueIndexed, varIndexed);
                   mFq.appendReplacement(sb, entityFq);
                 }
                 if(!sb.isEmpty()) {
@@ -3835,14 +3876,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               } else if(paramName.equals("sort")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
                 valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-                varIndexed = HostInventory.varIndexedHostInventory(entityVar);
-                searchHostInventorySort(searchList, entityVar, valueIndexed, varIndexed);
+                varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
+                searchJobTemplateSort(searchList, entityVar, valueIndexed, varIndexed);
               } else if(paramName.equals("start")) {
                 valueStart = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchHostInventoryStart(searchList, valueStart);
+                searchJobTemplateStart(searchList, valueStart);
               } else if(paramName.equals("rows")) {
                 valueRows = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchHostInventoryRows(searchList, valueRows);
+                searchJobTemplateRows(searchList, valueRows);
               } else if(paramName.equals("stats")) {
                 searchList.stats((Boolean)paramObject);
               } else if(paramName.equals("stats.field")) {
@@ -3850,7 +3891,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                 if(mStats.find()) {
                   String solrLocalParams = mStats.group(1);
                   entityVar = mStats.group(2).trim();
-                  varIndexed = HostInventory.varIndexedHostInventory(entityVar);
+                  varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
                   searchList.statsField((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   statsField = entityVar;
                   statsFieldIndexed = varIndexed;
@@ -3876,25 +3917,25 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                 if(mFacetRange.find()) {
                   String solrLocalParams = mFacetRange.group(1);
                   entityVar = mFacetRange.group(2).trim();
-                  varIndexed = HostInventory.varIndexedHostInventory(entityVar);
+                  varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
                   searchList.facetRange((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   facetRange = entityVar;
                 }
               } else if(paramName.equals("facet.field")) {
                 entityVar = (String)paramObject;
-                varIndexed = HostInventory.varIndexedHostInventory(entityVar);
+                varIndexed = JobTemplate.varIndexedJobTemplate(entityVar);
                 if(varIndexed != null)
                   searchList.facetField(varIndexed);
               } else if(paramName.equals("var")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
                 valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-                searchHostInventoryVar(searchList, entityVar, valueIndexed);
+                searchJobTemplateVar(searchList, entityVar, valueIndexed);
               } else if(paramName.equals("cursorMark")) {
                 valueCursorMark = (String)paramObject;
                 searchList.cursorMark((String)paramObject);
               }
             }
-            searchHostInventoryUri(searchList);
+            searchJobTemplateUri(searchList);
           }
         } catch(Exception e) {
           ExceptionUtils.rethrow(e);
@@ -3909,7 +3950,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       String facetRangeGap2 = facetRangeGap;
       String statsField2 = statsField;
       String statsFieldIndexed2 = statsFieldIndexed;
-      searchHostInventory2(siteRequest, populate, store, modify, searchList);
+      searchJobTemplate2(siteRequest, populate, store, modify, searchList);
       searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
         if(facetRange2 != null && statsField2 != null && facetRange2.equals(statsField2)) {
           StatsField stats = searchList.getResponse().getStats().getStatsFields().get(statsFieldIndexed2);
@@ -3945,32 +3986,32 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           searchList.query().onSuccess(b -> {
             promise.complete(searchList);
           }).onFailure(ex -> {
-            LOG.error(String.format("searchHostInventory failed. "), ex);
+            LOG.error(String.format("searchJobTemplate failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("searchHostInventory failed. "), ex);
+        LOG.error(String.format("searchJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("searchHostInventory failed. "), ex);
+      LOG.error(String.format("searchJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void searchHostInventory2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<HostInventory> searchList) {
+  public void searchJobTemplate2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<JobTemplate> searchList) {
   }
 
-  public Future<Void> persistHostInventory(HostInventory o, Boolean patch) {
+  public Future<Void> persistJobTemplate(JobTemplate o, Boolean patch) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, inventoryName, created, inventoryId, inventoryResource, archived, inventoryDescription, aapInventoryId, inventoryOrganizationId, inventoryKind, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, inventoryResource, created, jobTemplateName, jobTemplateDescription, archived, jobType, ansibleProjectId, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3983,7 +4024,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                 try {
                   o.persistForClass(columnName, columnValue);
                 } catch(Exception e) {
-                  LOG.error(String.format("persistHostInventory failed. "), e);
+                  LOG.error(String.format("persistJobTemplate failed. "), e);
                 }
               }
             }
@@ -3991,33 +4032,33 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           o.promiseDeepForClass(siteRequest).onSuccess(a -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("persistHostInventory failed. "), ex);
+            LOG.error(String.format("persistJobTemplate failed. "), ex);
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("persistHostInventory failed. "), ex);
+          LOG.error(String.format("persistJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("persistHostInventory failed. "), ex2);
+        LOG.error(String.format("persistJobTemplate failed. "), ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("persistHostInventory failed. "), ex);
+      LOG.error(String.format("persistJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> relateHostInventory(HostInventory o) {
+  public Future<Void> relateJobTemplate(JobTemplate o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
+          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4027,32 +4068,32 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           }
           promise.complete();
         } catch(Exception ex) {
-          LOG.error(String.format("relateHostInventory failed. "), ex);
+          LOG.error(String.format("relateJobTemplate failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("relateHostInventory failed. "), ex2);
+        LOG.error(String.format("relateJobTemplate failed. "), ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("relateHostInventory failed. "), ex);
+      LOG.error(String.format("relateJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
   public String searchVar(String varIndexed) {
-    return HostInventory.searchVarHostInventory(varIndexed);
+    return JobTemplate.searchVarJobTemplate(varIndexed);
   }
 
   @Override
   public String getClassApiAddress() {
-    return HostInventory.CLASS_API_ADDRESS_HostInventory;
+    return JobTemplate.CLASS_API_ADDRESS_JobTemplate;
   }
 
-  public Future<HostInventory> indexHostInventory(HostInventory o) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> indexJobTemplate(JobTemplate o) {
+    Promise<JobTemplate> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4061,7 +4102,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       json.put("add", add);
       JsonObject doc = new JsonObject();
       add.put("doc", doc);
-      o.indexHostInventory(doc);
+      o.indexJobTemplate(doc);
       String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
       String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
       String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
@@ -4078,18 +4119,18 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        LOG.error(String.format("indexHostInventory failed. "), new RuntimeException(ex));
+        LOG.error(String.format("indexJobTemplate failed. "), new RuntimeException(ex));
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("indexHostInventory failed. "), ex);
+      LOG.error(String.format("indexJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<HostInventory> unindexHostInventory(HostInventory o) {
-    Promise<HostInventory> promise = Promise.promise();
+  public Future<JobTemplate> unindexJobTemplate(JobTemplate o) {
+    Promise<JobTemplate> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4097,7 +4138,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         JsonObject json = new JsonObject();
         JsonObject delete = new JsonObject();
         json.put("delete", delete);
-        String query = String.format("filter(%s:%s)", HostInventory.VAR_solrId, o.obtainForClass(HostInventory.VAR_solrId));
+        String query = String.format("filter(%s:%s)", JobTemplate.VAR_solrId, o.obtainForClass(JobTemplate.VAR_solrId));
         delete.put("query", query);
         String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
         String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
@@ -4115,21 +4156,21 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
           promise.complete(o);
         }).onFailure(ex -> {
-          LOG.error(String.format("unindexHostInventory failed. "), new RuntimeException(ex));
+          LOG.error(String.format("unindexJobTemplate failed. "), new RuntimeException(ex));
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("unindexHostInventory failed. "), ex);
+        LOG.error(String.format("unindexJobTemplate failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("unindexHostInventory failed. "), ex);
+      LOG.error(String.format("unindexJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> refreshHostInventory(HostInventory o) {
+  public Future<Void> refreshJobTemplate(JobTemplate o) {
     Promise<Void> promise = Promise.promise();
     SiteRequest siteRequest = o.getSiteRequest_();
     try {
@@ -4179,6 +4220,42 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               });
             }));
           }
+
+          if("HostInventory".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<HostInventory> searchList2 = new SearchList<HostInventory>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(HostInventory.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                HostInventory o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-HostInventory", json, new DeliveryOptions().addHeader("action", "patchHostInventoryFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {
@@ -4202,7 +4279,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(HostInventory.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchHostInventoryFuture")).onSuccess(c -> {
+          eventBus.request(JobTemplate.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchJobTemplateFuture")).onSuccess(c -> {
             JsonObject responseMessage = (JsonObject)c.body();
             Integer statusCode = responseMessage.getInteger("statusCode");
             if(statusCode.equals(200))
@@ -4221,7 +4298,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         promise.complete();
       }
     } catch(Exception ex) {
-      LOG.error(String.format("refreshHostInventory failed. "), ex);
+      LOG.error(String.format("refreshJobTemplate failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -4234,26 +4311,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
       SiteRequest siteRequest2 = (SiteRequest)siteRequest;
       String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-      HostInventory o = new HostInventory();
+      JobTemplate o = new JobTemplate();
       o.setSiteRequest_((SiteRequest)siteRequest);
 
-      o.persistForClass(HostInventory.VAR_tenantResource, HostInventory.staticSetTenantResource(siteRequest2, (String)result.get(HostInventory.VAR_tenantResource)));
-      o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
-      o.persistForClass(HostInventory.VAR_created, HostInventory.staticSetCreated(siteRequest2, (String)result.get(HostInventory.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(HostInventory.VAR_inventoryId, HostInventory.staticSetInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryId)));
-      o.persistForClass(HostInventory.VAR_inventoryResource, HostInventory.staticSetInventoryResource(siteRequest2, (String)result.get(HostInventory.VAR_inventoryResource)));
-      o.persistForClass(HostInventory.VAR_archived, HostInventory.staticSetArchived(siteRequest2, (String)result.get(HostInventory.VAR_archived)));
-      o.persistForClass(HostInventory.VAR_inventoryDescription, HostInventory.staticSetInventoryDescription(siteRequest2, (String)result.get(HostInventory.VAR_inventoryDescription)));
-      o.persistForClass(HostInventory.VAR_aapInventoryId, HostInventory.staticSetAapInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_aapInventoryId)));
-      o.persistForClass(HostInventory.VAR_inventoryOrganizationId, HostInventory.staticSetInventoryOrganizationId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryOrganizationId)));
-      o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
-      o.persistForClass(HostInventory.VAR_sessionId, HostInventory.staticSetSessionId(siteRequest2, (String)result.get(HostInventory.VAR_sessionId)));
-      o.persistForClass(HostInventory.VAR_userKey, HostInventory.staticSetUserKey(siteRequest2, (String)result.get(HostInventory.VAR_userKey)));
-      o.persistForClass(HostInventory.VAR_objectTitle, HostInventory.staticSetObjectTitle(siteRequest2, (String)result.get(HostInventory.VAR_objectTitle)));
-      o.persistForClass(HostInventory.VAR_displayPage, HostInventory.staticSetDisplayPage(siteRequest2, (String)result.get(HostInventory.VAR_displayPage)));
-      o.persistForClass(HostInventory.VAR_editPage, HostInventory.staticSetEditPage(siteRequest2, (String)result.get(HostInventory.VAR_editPage)));
-      o.persistForClass(HostInventory.VAR_userPage, HostInventory.staticSetUserPage(siteRequest2, (String)result.get(HostInventory.VAR_userPage)));
-      o.persistForClass(HostInventory.VAR_download, HostInventory.staticSetDownload(siteRequest2, (String)result.get(HostInventory.VAR_download)));
+      o.persistForClass(JobTemplate.VAR_tenantResource, JobTemplate.staticSetTenantResource(siteRequest2, (String)result.get(JobTemplate.VAR_tenantResource)));
+      o.persistForClass(JobTemplate.VAR_inventoryResource, JobTemplate.staticSetInventoryResource(siteRequest2, (String)result.get(JobTemplate.VAR_inventoryResource)));
+      o.persistForClass(JobTemplate.VAR_created, JobTemplate.staticSetCreated(siteRequest2, (String)result.get(JobTemplate.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
+      o.persistForClass(JobTemplate.VAR_archived, JobTemplate.staticSetArchived(siteRequest2, (String)result.get(JobTemplate.VAR_archived)));
+      o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
+      o.persistForClass(JobTemplate.VAR_ansibleProjectId, JobTemplate.staticSetAnsibleProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_ansibleProjectId)));
+      o.persistForClass(JobTemplate.VAR_sessionId, JobTemplate.staticSetSessionId(siteRequest2, (String)result.get(JobTemplate.VAR_sessionId)));
+      o.persistForClass(JobTemplate.VAR_userKey, JobTemplate.staticSetUserKey(siteRequest2, (String)result.get(JobTemplate.VAR_userKey)));
+      o.persistForClass(JobTemplate.VAR_objectTitle, JobTemplate.staticSetObjectTitle(siteRequest2, (String)result.get(JobTemplate.VAR_objectTitle)));
+      o.persistForClass(JobTemplate.VAR_displayPage, JobTemplate.staticSetDisplayPage(siteRequest2, (String)result.get(JobTemplate.VAR_displayPage)));
+      o.persistForClass(JobTemplate.VAR_editPage, JobTemplate.staticSetEditPage(siteRequest2, (String)result.get(JobTemplate.VAR_editPage)));
+      o.persistForClass(JobTemplate.VAR_userPage, JobTemplate.staticSetUserPage(siteRequest2, (String)result.get(JobTemplate.VAR_userPage)));
+      o.persistForClass(JobTemplate.VAR_download, JobTemplate.staticSetDownload(siteRequest2, (String)result.get(JobTemplate.VAR_download)));
 
       o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
         try {

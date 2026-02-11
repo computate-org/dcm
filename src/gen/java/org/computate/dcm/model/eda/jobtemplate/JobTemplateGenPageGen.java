@@ -1,4 +1,4 @@
-package org.computate.dcm.model.k8s;
+package org.computate.dcm.model.eda.jobtemplate;
 
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.page.PageLayout;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.math.RoundingMode;
 import java.util.Map;
 import org.computate.vertx.search.list.SearchList;
-import org.computate.dcm.model.k8s.Project;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import java.lang.String;
 import org.computate.search.response.solr.SolrResponse.Stats;
 import org.computate.search.response.solr.SolrResponse.FacetCounts;
@@ -64,23 +64,23 @@ import io.vertx.core.Future;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these ProjectGenPage objects in a RESTful API. 
- * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class ProjectGenPageGen into the class ProjectGenPage. 
+ * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these JobTemplateGenPage objects in a RESTful API. 
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class JobTemplateGenPageGen into the class JobTemplateGenPage. 
  * </li>
- * <h3>About the ProjectGenPage class and it's generated class ProjectGenPageGen&lt;PageLayout&gt;: </h3>extends ProjectGenPageGen
+ * <h3>About the JobTemplateGenPage class and it's generated class JobTemplateGenPageGen&lt;PageLayout&gt;: </h3>extends JobTemplateGenPageGen
  * <p>
- * This Java class extends a generated Java class ProjectGenPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
+ * This Java class extends a generated Java class JobTemplateGenPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
  * Whenever this Java class is modified or touched, the watch service installed as described in the README, indexes all the information about this Java class in a local Apache Solr Search Engine. 
  * If you are running the service, you can see the indexed data about this Java Class here: 
  * </p>
- * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage">Find the class ProjectGenPage in Solr. </a></p>
+ * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage">Find the class JobTemplateGenPage in Solr. </a></p>
  * <p>
  * The extended class ending with "Gen" did not exist at first, but was automatically created by the same watch service based on the data retrieved from the local Apache Server search engine. 
  * The extended class contains many generated fields, getters, setters, initialization code, and helper methods to help build a website and API fast, reactive, and scalable. 
  * </p>
- * extends ProjectGenPageGen<PageLayout>
- * <p>This <code>class ProjectGenPage extends ProjectGenPageGen&lt;PageLayout&gt;</code>, which means it extends a newly generated ProjectGenPageGen. 
- * The generated <code>class ProjectGenPageGen extends PageLayout</code> which means that ProjectGenPage extends ProjectGenPageGen which extends PageLayout. 
+ * extends JobTemplateGenPageGen<PageLayout>
+ * <p>This <code>class JobTemplateGenPage extends JobTemplateGenPageGen&lt;PageLayout&gt;</code>, which means it extends a newly generated JobTemplateGenPageGen. 
+ * The generated <code>class JobTemplateGenPageGen extends PageLayout</code> which means that JobTemplateGenPage extends JobTemplateGenPageGen which extends PageLayout. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
  * <h2>Api: true</h2>
@@ -89,7 +89,7 @@ import io.vertx.core.Future;
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <h2>{@inheritDoc}</h2>
- * <p>By adding a class comment "{@inheritDoc}", the ProjectGenPage class will inherit the helpful inherited class comments from the super class ProjectGenPageGen. 
+ * <p>By adding a class comment "{@inheritDoc}", the JobTemplateGenPage class will inherit the helpful inherited class comments from the super class JobTemplateGenPageGen. 
  * </p>
  * <h2>Rows: null</h2>
  * <h2>Model: true</h2>
@@ -99,7 +99,7 @@ import io.vertx.core.Future;
  * <p>
  *   This class contains a comment <b>"Promise: true"</b>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
- *   This means that the ProjectGenPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
+ *   This means that the JobTemplateGenPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
  * <p>
  *   Adding protected void methods beginning with an underscore with a Promise as the only parameter will automatically set `Promise: true`. 
@@ -120,15 +120,15 @@ import io.vertx.core.Future;
  * </p>
  * <h2>AName.enUS: null</h2>
  * <p>
- * Delete the class ProjectGenPage in Solr: 
+ * Delete the class JobTemplateGenPage in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
- * Delete  the package org.computate.dcm.model.k8s in Solr: 
+ * Delete  the package org.computate.dcm.model.eda.jobtemplate in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.k8s&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
@@ -139,107 +139,107 @@ import io.vertx.core.Future;
  * </p>
  * Generated: true
  **/
-public abstract class ProjectGenPageGen<DEV> extends PageLayout {
-  protected static final Logger LOG = LoggerFactory.getLogger(ProjectGenPage.class);
+public abstract class JobTemplateGenPageGen<DEV> extends PageLayout {
+  protected static final Logger LOG = LoggerFactory.getLogger(JobTemplateGenPage.class);
 
-	////////////////////////
-  // searchListProject_ //
-	////////////////////////
+	////////////////////////////
+  // searchListJobTemplate_ //
+	////////////////////////////
 
 
   /**
-   *  The entity searchListProject_
+   *  The entity searchListJobTemplate_
    *	 is defined as null before being initialized. 
    */
   @JsonIgnore
   @JsonInclude(Include.NON_NULL)
-  protected SearchList<Project> searchListProject_;
+  protected SearchList<JobTemplate> searchListJobTemplate_;
 
   /**
-   * <br> The entity searchListProject_
+   * <br> The entity searchListJobTemplate_
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:searchListProject_">Find the entity searchListProject_ in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:searchListJobTemplate_">Find the entity searchListJobTemplate_ in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _searchListProject_(Wrap<SearchList<Project>> w);
+  protected abstract void _searchListJobTemplate_(Wrap<SearchList<JobTemplate>> w);
 
-  public SearchList<Project> getSearchListProject_() {
-    return searchListProject_;
+  public SearchList<JobTemplate> getSearchListJobTemplate_() {
+    return searchListJobTemplate_;
   }
 
-  public void setSearchListProject_(SearchList<Project> searchListProject_) {
-    this.searchListProject_ = searchListProject_;
+  public void setSearchListJobTemplate_(SearchList<JobTemplate> searchListJobTemplate_) {
+    this.searchListJobTemplate_ = searchListJobTemplate_;
   }
-  public static SearchList<Project> staticSetSearchListProject_(SiteRequest siteRequest_, String o) {
+  public static SearchList<JobTemplate> staticSetSearchListJobTemplate_(SiteRequest siteRequest_, String o) {
     return null;
   }
-  protected ProjectGenPage searchListProject_Init() {
-    Wrap<SearchList<Project>> searchListProject_Wrap = new Wrap<SearchList<Project>>().var("searchListProject_");
-    if(searchListProject_ == null) {
-      _searchListProject_(searchListProject_Wrap);
-      Optional.ofNullable(searchListProject_Wrap.getO()).ifPresent(o -> {
-        setSearchListProject_(o);
+  protected JobTemplateGenPage searchListJobTemplate_Init() {
+    Wrap<SearchList<JobTemplate>> searchListJobTemplate_Wrap = new Wrap<SearchList<JobTemplate>>().var("searchListJobTemplate_");
+    if(searchListJobTemplate_ == null) {
+      _searchListJobTemplate_(searchListJobTemplate_Wrap);
+      Optional.ofNullable(searchListJobTemplate_Wrap.getO()).ifPresent(o -> {
+        setSearchListJobTemplate_(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
-	/////////////////
-  // listProject //
-	/////////////////
+	/////////////////////
+  // listJobTemplate //
+	/////////////////////
 
 
   /**
-   *  The entity listProject
+   *  The entity listJobTemplate
    *	 It is constructed before being initialized with the constructor by default. 
    */
   @JsonProperty
   @JsonDeserialize(using = JsonArrayDeserializer.class)
   @JsonInclude(Include.NON_NULL)
-  protected JsonArray listProject = new JsonArray();
+  protected JsonArray listJobTemplate = new JsonArray();
 
   /**
-   * <br> The entity listProject
+   * <br> The entity listJobTemplate
    *  It is constructed before being initialized with the constructor by default. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:listProject">Find the entity listProject in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:listJobTemplate">Find the entity listJobTemplate in Solr</a>
    * <br>
    * @param l is the entity already constructed. 
    **/
-  protected abstract void _listProject(JsonArray l);
+  protected abstract void _listJobTemplate(JsonArray l);
 
-  public JsonArray getListProject() {
-    return listProject;
+  public JsonArray getListJobTemplate() {
+    return listJobTemplate;
   }
 
-  public void setListProject(JsonArray listProject) {
-    this.listProject = listProject;
+  public void setListJobTemplate(JsonArray listJobTemplate) {
+    this.listJobTemplate = listJobTemplate;
   }
   @JsonIgnore
-  public void setListProject(String o) {
-    this.listProject = ProjectGenPage.staticSetListProject(siteRequest_, o);
+  public void setListJobTemplate(String o) {
+    this.listJobTemplate = JobTemplateGenPage.staticSetListJobTemplate(siteRequest_, o);
   }
-  public static JsonArray staticSetListProject(SiteRequest siteRequest_, String o) {
+  public static JsonArray staticSetListJobTemplate(SiteRequest siteRequest_, String o) {
     if(o != null) {
         return new JsonArray(o);
     }
     return null;
   }
-  protected ProjectGenPage listProjectInit() {
-    _listProject(listProject);
-    return (ProjectGenPage)this;
+  protected JobTemplateGenPage listJobTemplateInit() {
+    _listJobTemplate(listJobTemplate);
+    return (JobTemplateGenPage)this;
   }
 
-  public static String staticSearchListProject(SiteRequest siteRequest_, JsonArray o) {
+  public static String staticSearchListJobTemplate(SiteRequest siteRequest_, JsonArray o) {
     return o.toString();
   }
 
-  public static String staticSearchStrListProject(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrListJobTemplate(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqListProject(SiteRequest siteRequest_, String o) {
-    return ProjectGenPage.staticSearchListProject(siteRequest_, ProjectGenPage.staticSetListProject(siteRequest_, o)).toString();
+  public static String staticSearchFqListJobTemplate(SiteRequest siteRequest_, String o) {
+    return JobTemplateGenPage.staticSearchListJobTemplate(siteRequest_, JobTemplateGenPage.staticSetListJobTemplate(siteRequest_, o)).toString();
   }
 
 	/////////////////
@@ -259,7 +259,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity resultCount
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:resultCount">Find the entity resultCount in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:resultCount">Find the entity resultCount in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -274,14 +274,14 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
   @JsonIgnore
   public void setResultCount(String o) {
-    this.resultCount = ProjectGenPage.staticSetResultCount(siteRequest_, o);
+    this.resultCount = JobTemplateGenPage.staticSetResultCount(siteRequest_, o);
   }
   public static Integer staticSetResultCount(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Integer.parseInt(o);
     return null;
   }
-  protected ProjectGenPage resultCountInit() {
+  protected JobTemplateGenPage resultCountInit() {
     Wrap<Integer> resultCountWrap = new Wrap<Integer>().var("resultCount");
     if(resultCount == null) {
       _resultCount(resultCountWrap);
@@ -289,7 +289,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
         setResultCount(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
   public static Integer staticSearchResultCount(SiteRequest siteRequest_, Integer o) {
@@ -301,7 +301,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqResultCount(SiteRequest siteRequest_, String o) {
-    return ProjectGenPage.staticSearchResultCount(siteRequest_, ProjectGenPage.staticSetResultCount(siteRequest_, o)).toString();
+    return JobTemplateGenPage.staticSearchResultCount(siteRequest_, JobTemplateGenPage.staticSetResultCount(siteRequest_, o)).toString();
   }
 
 	////////////
@@ -315,36 +315,36 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected Project result;
+  protected JobTemplate result;
 
   /**
    * <br> The entity result
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:result">Find the entity result in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:result">Find the entity result in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _result(Wrap<Project> w);
+  protected abstract void _result(Wrap<JobTemplate> w);
 
-  public Project getResult() {
+  public JobTemplate getResult() {
     return result;
   }
 
-  public void setResult(Project result) {
+  public void setResult(JobTemplate result) {
     this.result = result;
   }
-  public static Project staticSetResult(SiteRequest siteRequest_, String o) {
+  public static JobTemplate staticSetResult(SiteRequest siteRequest_, String o) {
     return null;
   }
-  protected ProjectGenPage resultInit() {
-    Wrap<Project> resultWrap = new Wrap<Project>().var("result");
+  protected JobTemplateGenPage resultInit() {
+    Wrap<JobTemplate> resultWrap = new Wrap<JobTemplate>().var("result");
     if(result == null) {
       _result(resultWrap);
       Optional.ofNullable(resultWrap.getO()).ifPresent(o -> {
         setResult(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
 	////////
@@ -364,7 +364,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity pk
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:pk">Find the entity pk in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -379,14 +379,14 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
   @JsonIgnore
   public void setPk(String o) {
-    this.pk = ProjectGenPage.staticSetPk(siteRequest_, o);
+    this.pk = JobTemplateGenPage.staticSetPk(siteRequest_, o);
   }
   public static Long staticSetPk(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Long.parseLong(o);
     return null;
   }
-  protected ProjectGenPage pkInit() {
+  protected JobTemplateGenPage pkInit() {
     Wrap<Long> pkWrap = new Wrap<Long>().var("pk");
     if(pk == null) {
       _pk(pkWrap);
@@ -394,7 +394,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
         setPk(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
   public static Long staticSearchPk(SiteRequest siteRequest_, Long o) {
@@ -406,7 +406,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqPk(SiteRequest siteRequest_, String o) {
-    return ProjectGenPage.staticSearchPk(siteRequest_, ProjectGenPage.staticSetPk(siteRequest_, o)).toString();
+    return JobTemplateGenPage.staticSearchPk(siteRequest_, JobTemplateGenPage.staticSetPk(siteRequest_, o)).toString();
   }
 
 	////////////
@@ -425,7 +425,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   /**
    * <br> The entity solrId
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:solrId">Find the entity solrId in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:solrId">Find the entity solrId in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
@@ -435,12 +435,12 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     return solrId;
   }
   public void setSolrId(String o) {
-    this.solrId = ProjectGenPage.staticSetSolrId(siteRequest_, o);
+    this.solrId = JobTemplateGenPage.staticSetSolrId(siteRequest_, o);
   }
   public static String staticSetSolrId(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected ProjectGenPage solrIdInit() {
+  protected JobTemplateGenPage solrIdInit() {
     Wrap<String> solrIdWrap = new Wrap<String>().var("solrId");
     if(solrId == null) {
       _solrId(solrIdWrap);
@@ -448,7 +448,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
         setSolrId(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
   public static String staticSearchSolrId(SiteRequest siteRequest_, String o) {
@@ -460,76 +460,76 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
 
   public static String staticSearchFqSolrId(SiteRequest siteRequest_, String o) {
-    return ProjectGenPage.staticSearchSolrId(siteRequest_, ProjectGenPage.staticSetSolrId(siteRequest_, o)).toString();
+    return JobTemplateGenPage.staticSearchSolrId(siteRequest_, JobTemplateGenPage.staticSetSolrId(siteRequest_, o)).toString();
   }
 
-	////////////////////
-  // pageUriProject //
-	////////////////////
+	////////////////////////
+  // pageUriJobTemplate //
+	////////////////////////
 
 
   /**
-   *  The entity pageUriProject
+   *  The entity pageUriJobTemplate
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String pageUriProject;
+  protected String pageUriJobTemplate;
 
   /**
-   * <br> The entity pageUriProject
+   * <br> The entity pageUriJobTemplate
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectGenPage&fq=entiteVar_enUS_indexed_string:pageUriProject">Find the entity pageUriProject in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage&fq=entiteVar_enUS_indexed_string:pageUriJobTemplate">Find the entity pageUriJobTemplate in Solr</a>
    * <br>
    * @param c is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _pageUriProject(Wrap<String> c);
+  protected abstract void _pageUriJobTemplate(Wrap<String> c);
 
-  public String getPageUriProject() {
-    return pageUriProject;
+  public String getPageUriJobTemplate() {
+    return pageUriJobTemplate;
   }
-  public void setPageUriProject(String o) {
-    this.pageUriProject = ProjectGenPage.staticSetPageUriProject(siteRequest_, o);
+  public void setPageUriJobTemplate(String o) {
+    this.pageUriJobTemplate = JobTemplateGenPage.staticSetPageUriJobTemplate(siteRequest_, o);
   }
-  public static String staticSetPageUriProject(SiteRequest siteRequest_, String o) {
+  public static String staticSetPageUriJobTemplate(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected ProjectGenPage pageUriProjectInit() {
-    Wrap<String> pageUriProjectWrap = new Wrap<String>().var("pageUriProject");
-    if(pageUriProject == null) {
-      _pageUriProject(pageUriProjectWrap);
-      Optional.ofNullable(pageUriProjectWrap.getO()).ifPresent(o -> {
-        setPageUriProject(o);
+  protected JobTemplateGenPage pageUriJobTemplateInit() {
+    Wrap<String> pageUriJobTemplateWrap = new Wrap<String>().var("pageUriJobTemplate");
+    if(pageUriJobTemplate == null) {
+      _pageUriJobTemplate(pageUriJobTemplateWrap);
+      Optional.ofNullable(pageUriJobTemplateWrap.getO()).ifPresent(o -> {
+        setPageUriJobTemplate(o);
       });
     }
-    return (ProjectGenPage)this;
+    return (JobTemplateGenPage)this;
   }
 
-  public static String staticSearchPageUriProject(SiteRequest siteRequest_, String o) {
+  public static String staticSearchPageUriJobTemplate(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrPageUriProject(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrPageUriJobTemplate(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqPageUriProject(SiteRequest siteRequest_, String o) {
-    return ProjectGenPage.staticSearchPageUriProject(siteRequest_, ProjectGenPage.staticSetPageUriProject(siteRequest_, o)).toString();
+  public static String staticSearchFqPageUriJobTemplate(SiteRequest siteRequest_, String o) {
+    return JobTemplateGenPage.staticSearchPageUriJobTemplate(siteRequest_, JobTemplateGenPage.staticSetPageUriJobTemplate(siteRequest_, o)).toString();
   }
 
   //////////////
   // initDeep //
   //////////////
 
-  public Future<ProjectGenPageGen<DEV>> promiseDeepProjectGenPage(SiteRequest siteRequest_) {
+  public Future<JobTemplateGenPageGen<DEV>> promiseDeepJobTemplateGenPage(SiteRequest siteRequest_) {
     setSiteRequest_(siteRequest_);
-    return promiseDeepProjectGenPage();
+    return promiseDeepJobTemplateGenPage();
   }
 
-  public Future<ProjectGenPageGen<DEV>> promiseDeepProjectGenPage() {
-    Promise<ProjectGenPageGen<DEV>> promise = Promise.promise();
+  public Future<JobTemplateGenPageGen<DEV>> promiseDeepJobTemplateGenPage() {
+    Promise<JobTemplateGenPageGen<DEV>> promise = Promise.promise();
     Promise<Void> promise2 = Promise.promise();
-    promiseProjectGenPage(promise2);
+    promiseJobTemplateGenPage(promise2);
     promise2.future().onSuccess(a -> {
       super.promiseDeepPageLayout(siteRequest_).onSuccess(b -> {
         promise.complete(this);
@@ -542,17 +542,17 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     return promise.future();
   }
 
-  public Future<Void> promiseProjectGenPage(Promise<Void> promise) {
+  public Future<Void> promiseJobTemplateGenPage(Promise<Void> promise) {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
-        searchListProject_Init();
-        listProjectInit();
+        searchListJobTemplate_Init();
+        listJobTemplateInit();
         resultCountInit();
         resultInit();
         pkInit();
         solrIdInit();
-        pageUriProjectInit();
+        pageUriJobTemplateInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -566,20 +566,20 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     return promise.future();
   }
 
-  @Override public Future<? extends ProjectGenPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
-    return promiseDeepProjectGenPage(siteRequest_);
+  @Override public Future<? extends JobTemplateGenPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
+    return promiseDeepJobTemplateGenPage(siteRequest_);
   }
 
   /////////////////
   // siteRequest //
   /////////////////
 
-  public void siteRequestProjectGenPage(SiteRequest siteRequest_) {
+  public void siteRequestJobTemplateGenPage(SiteRequest siteRequest_) {
       super.siteRequestPageLayout(siteRequest_);
   }
 
   public void siteRequestForClass(SiteRequest siteRequest_) {
-    siteRequestProjectGenPage(siteRequest_);
+    siteRequestJobTemplateGenPage(siteRequest_);
   }
 
   /////////////
@@ -591,7 +591,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = obtainProjectGenPage(v);
+        o = obtainJobTemplateGenPage(v);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.obtainForClass(v);
@@ -603,23 +603,23 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     }
     return o;
   }
-  public Object obtainProjectGenPage(String var) {
-    ProjectGenPage oProjectGenPage = (ProjectGenPage)this;
+  public Object obtainJobTemplateGenPage(String var) {
+    JobTemplateGenPage oJobTemplateGenPage = (JobTemplateGenPage)this;
     switch(var) {
-      case "searchListProject_":
-        return oProjectGenPage.searchListProject_;
-      case "listProject":
-        return oProjectGenPage.listProject;
+      case "searchListJobTemplate_":
+        return oJobTemplateGenPage.searchListJobTemplate_;
+      case "listJobTemplate":
+        return oJobTemplateGenPage.listJobTemplate;
       case "resultCount":
-        return oProjectGenPage.resultCount;
+        return oJobTemplateGenPage.resultCount;
       case "result":
-        return oProjectGenPage.result;
+        return oJobTemplateGenPage.result;
       case "pk":
-        return oProjectGenPage.pk;
+        return oJobTemplateGenPage.pk;
       case "solrId":
-        return oProjectGenPage.solrId;
-      case "pageUriProject":
-        return oProjectGenPage.pageUriProject;
+        return oJobTemplateGenPage.solrId;
+      case "pageUriJobTemplate":
+        return oJobTemplateGenPage.pageUriJobTemplate;
       default:
         return super.obtainPageLayout(var);
     }
@@ -634,7 +634,7 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = relateProjectGenPage(v, val);
+        o = relateJobTemplateGenPage(v, val);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.relateForClass(v, val);
@@ -642,8 +642,8 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     }
     return o != null;
   }
-  public Object relateProjectGenPage(String var, Object val) {
-    ProjectGenPage oProjectGenPage = (ProjectGenPage)this;
+  public Object relateJobTemplateGenPage(String var, Object val) {
+    JobTemplateGenPage oJobTemplateGenPage = (JobTemplateGenPage)this;
     switch(var) {
       default:
         return super.relatePageLayout(var, val);
@@ -654,21 +654,21 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   // staticSet //
   ///////////////
 
-  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, ProjectGenPage o) {
-    return staticSetProjectGenPage(entityVar,  siteRequest_, v, o);
+  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, JobTemplateGenPage o) {
+    return staticSetJobTemplateGenPage(entityVar,  siteRequest_, v, o);
   }
-  public static Object staticSetProjectGenPage(String entityVar, SiteRequest siteRequest_, String v, ProjectGenPage o) {
+  public static Object staticSetJobTemplateGenPage(String entityVar, SiteRequest siteRequest_, String v, JobTemplateGenPage o) {
     switch(entityVar) {
-    case "listProject":
-      return ProjectGenPage.staticSetListProject(siteRequest_, v);
+    case "listJobTemplate":
+      return JobTemplateGenPage.staticSetListJobTemplate(siteRequest_, v);
     case "resultCount":
-      return ProjectGenPage.staticSetResultCount(siteRequest_, v);
+      return JobTemplateGenPage.staticSetResultCount(siteRequest_, v);
     case "pk":
-      return ProjectGenPage.staticSetPk(siteRequest_, v);
+      return JobTemplateGenPage.staticSetPk(siteRequest_, v);
     case "solrId":
-      return ProjectGenPage.staticSetSolrId(siteRequest_, v);
-    case "pageUriProject":
-      return ProjectGenPage.staticSetPageUriProject(siteRequest_, v);
+      return JobTemplateGenPage.staticSetSolrId(siteRequest_, v);
+    case "pageUriJobTemplate":
+      return JobTemplateGenPage.staticSetPageUriJobTemplate(siteRequest_, v);
       default:
         return PageLayout.staticSetPageLayout(entityVar,  siteRequest_, v, o);
     }
@@ -679,20 +679,20 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   ////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchProjectGenPage(entityVar,  siteRequest_, o);
+    return staticSearchJobTemplateGenPage(entityVar,  siteRequest_, o);
   }
-  public static Object staticSearchProjectGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static Object staticSearchJobTemplateGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "listProject":
-      return ProjectGenPage.staticSearchListProject(siteRequest_, (JsonArray)o);
+    case "listJobTemplate":
+      return JobTemplateGenPage.staticSearchListJobTemplate(siteRequest_, (JsonArray)o);
     case "resultCount":
-      return ProjectGenPage.staticSearchResultCount(siteRequest_, (Integer)o);
+      return JobTemplateGenPage.staticSearchResultCount(siteRequest_, (Integer)o);
     case "pk":
-      return ProjectGenPage.staticSearchPk(siteRequest_, (Long)o);
+      return JobTemplateGenPage.staticSearchPk(siteRequest_, (Long)o);
     case "solrId":
-      return ProjectGenPage.staticSearchSolrId(siteRequest_, (String)o);
-    case "pageUriProject":
-      return ProjectGenPage.staticSearchPageUriProject(siteRequest_, (String)o);
+      return JobTemplateGenPage.staticSearchSolrId(siteRequest_, (String)o);
+    case "pageUriJobTemplate":
+      return JobTemplateGenPage.staticSearchPageUriJobTemplate(siteRequest_, (String)o);
       default:
         return PageLayout.staticSearchPageLayout(entityVar,  siteRequest_, o);
     }
@@ -703,20 +703,20 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   ///////////////////
 
   public static String staticSearchStrForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchStrProjectGenPage(entityVar,  siteRequest_, o);
+    return staticSearchStrJobTemplateGenPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchStrProjectGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static String staticSearchStrJobTemplateGenPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "listProject":
-      return ProjectGenPage.staticSearchStrListProject(siteRequest_, (String)o);
+    case "listJobTemplate":
+      return JobTemplateGenPage.staticSearchStrListJobTemplate(siteRequest_, (String)o);
     case "resultCount":
-      return ProjectGenPage.staticSearchStrResultCount(siteRequest_, (Integer)o);
+      return JobTemplateGenPage.staticSearchStrResultCount(siteRequest_, (Integer)o);
     case "pk":
-      return ProjectGenPage.staticSearchStrPk(siteRequest_, (Long)o);
+      return JobTemplateGenPage.staticSearchStrPk(siteRequest_, (Long)o);
     case "solrId":
-      return ProjectGenPage.staticSearchStrSolrId(siteRequest_, (String)o);
-    case "pageUriProject":
-      return ProjectGenPage.staticSearchStrPageUriProject(siteRequest_, (String)o);
+      return JobTemplateGenPage.staticSearchStrSolrId(siteRequest_, (String)o);
+    case "pageUriJobTemplate":
+      return JobTemplateGenPage.staticSearchStrPageUriJobTemplate(siteRequest_, (String)o);
       default:
         return PageLayout.staticSearchStrPageLayout(entityVar,  siteRequest_, o);
     }
@@ -727,20 +727,20 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   //////////////////
 
   public static String staticSearchFqForClass(String entityVar, SiteRequest siteRequest_, String o) {
-    return staticSearchFqProjectGenPage(entityVar,  siteRequest_, o);
+    return staticSearchFqJobTemplateGenPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchFqProjectGenPage(String entityVar, SiteRequest siteRequest_, String o) {
+  public static String staticSearchFqJobTemplateGenPage(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
-    case "listProject":
-      return ProjectGenPage.staticSearchFqListProject(siteRequest_, o);
+    case "listJobTemplate":
+      return JobTemplateGenPage.staticSearchFqListJobTemplate(siteRequest_, o);
     case "resultCount":
-      return ProjectGenPage.staticSearchFqResultCount(siteRequest_, o);
+      return JobTemplateGenPage.staticSearchFqResultCount(siteRequest_, o);
     case "pk":
-      return ProjectGenPage.staticSearchFqPk(siteRequest_, o);
+      return JobTemplateGenPage.staticSearchFqPk(siteRequest_, o);
     case "solrId":
-      return ProjectGenPage.staticSearchFqSolrId(siteRequest_, o);
-    case "pageUriProject":
-      return ProjectGenPage.staticSearchFqPageUriProject(siteRequest_, o);
+      return JobTemplateGenPage.staticSearchFqSolrId(siteRequest_, o);
+    case "pageUriJobTemplate":
+      return JobTemplateGenPage.staticSearchFqPageUriJobTemplate(siteRequest_, o);
       default:
         return PageLayout.staticSearchFqPageLayout(entityVar,  siteRequest_, o);
     }
@@ -756,24 +756,24 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     return sb.toString();
   }
 
-  public static final String CLASS_SIMPLE_NAME = "ProjectGenPage";
-  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.k8s.ProjectGenPage";
+  public static final String CLASS_SIMPLE_NAME = "JobTemplateGenPage";
+  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
-  public static final String VAR_searchListProject_ = "searchListProject_";
-  public static final String VAR_listProject = "listProject";
+  public static final String VAR_searchListJobTemplate_ = "searchListJobTemplate_";
+  public static final String VAR_listJobTemplate = "listJobTemplate";
   public static final String VAR_resultCount = "resultCount";
   public static final String VAR_result = "result";
   public static final String VAR_pk = "pk";
   public static final String VAR_solrId = "solrId";
-  public static final String VAR_pageUriProject = "pageUriProject";
+  public static final String VAR_pageUriJobTemplate = "pageUriJobTemplate";
 
-  public static final String DISPLAY_NAME_searchListProject_ = "";
-  public static final String DISPLAY_NAME_listProject = "";
+  public static final String DISPLAY_NAME_searchListJobTemplate_ = "";
+  public static final String DISPLAY_NAME_listJobTemplate = "";
   public static final String DISPLAY_NAME_resultCount = "";
   public static final String DISPLAY_NAME_result = "";
   public static final String DISPLAY_NAME_pk = "";
   public static final String DISPLAY_NAME_solrId = "";
-  public static final String DISPLAY_NAME_pageUriProject = "";
+  public static final String DISPLAY_NAME_pageUriJobTemplate = "";
 
   @Override
   public String idForClass() {
@@ -821,14 +821,14 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
   }
 
   public static String displayNameForClass(String var) {
-    return ProjectGenPage.displayNameProjectGenPage(var);
+    return JobTemplateGenPage.displayNameJobTemplateGenPage(var);
   }
-  public static String displayNameProjectGenPage(String var) {
+  public static String displayNameJobTemplateGenPage(String var) {
     switch(var) {
-    case VAR_searchListProject_:
-      return DISPLAY_NAME_searchListProject_;
-    case VAR_listProject:
-      return DISPLAY_NAME_listProject;
+    case VAR_searchListJobTemplate_:
+      return DISPLAY_NAME_searchListJobTemplate_;
+    case VAR_listJobTemplate:
+      return DISPLAY_NAME_listJobTemplate;
     case VAR_resultCount:
       return DISPLAY_NAME_resultCount;
     case VAR_result:
@@ -837,14 +837,14 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
       return DISPLAY_NAME_pk;
     case VAR_solrId:
       return DISPLAY_NAME_solrId;
-    case VAR_pageUriProject:
-      return DISPLAY_NAME_pageUriProject;
+    case VAR_pageUriJobTemplate:
+      return DISPLAY_NAME_pageUriJobTemplate;
     default:
       return PageLayout.displayNamePageLayout(var);
     }
   }
 
-  public static String descriptionProjectGenPage(String var) {
+  public static String descriptionJobTemplateGenPage(String var) {
     if(var == null)
       return null;
     switch(var) {
@@ -853,70 +853,70 @@ public abstract class ProjectGenPageGen<DEV> extends PageLayout {
     }
   }
 
-  public static String classSimpleNameProjectGenPage(String var) {
+  public static String classSimpleNameJobTemplateGenPage(String var) {
     switch(var) {
-    case VAR_searchListProject_:
+    case VAR_searchListJobTemplate_:
       return "SearchList";
-    case VAR_listProject:
+    case VAR_listJobTemplate:
       return "JsonArray";
     case VAR_resultCount:
       return "Integer";
     case VAR_result:
-      return "Project";
+      return "JobTemplate";
     case VAR_pk:
       return "Long";
     case VAR_solrId:
       return "String";
-    case VAR_pageUriProject:
+    case VAR_pageUriJobTemplate:
       return "String";
       default:
         return PageLayout.classSimpleNamePageLayout(var);
     }
   }
 
-  public static Integer htmColumnProjectGenPage(String var) {
+  public static Integer htmColumnJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmColumnPageLayout(var);
     }
   }
 
-  public static Integer htmRowProjectGenPage(String var) {
+  public static Integer htmRowJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmRowPageLayout(var);
     }
   }
 
-  public static Integer htmCellProjectGenPage(String var) {
+  public static Integer htmCellJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.htmCellPageLayout(var);
     }
   }
 
-  public static Integer lengthMinProjectGenPage(String var) {
+  public static Integer lengthMinJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.lengthMinPageLayout(var);
     }
   }
 
-  public static Integer lengthMaxProjectGenPage(String var) {
+  public static Integer lengthMaxJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.lengthMaxPageLayout(var);
     }
   }
 
-  public static Integer maxProjectGenPage(String var) {
+  public static Integer maxJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.maxPageLayout(var);
     }
   }
 
-  public static Integer minProjectGenPage(String var) {
+  public static Integer minJobTemplateGenPage(String var) {
     switch(var) {
       default:
         return PageLayout.minPageLayout(var);

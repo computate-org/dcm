@@ -20,4 +20,6 @@ public class ConfigKeys extends ComputateConfigKeys {
   public static final String AAP_OPENSHIFT_SECRET = "AAP_OPENSHIFT_SECRET";
   public static final String AAP_USER_NAME = "AAP_USER_NAME";
   public static final String AAP_PASSWORD = "AAP_PASSWORD";
+
+  public static final String KAFKA_TOPIC_SENSU_EVENT = "KAFKA_TOPIC_SENSU_EVENT";
 }

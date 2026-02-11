@@ -188,6 +188,9 @@ import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.Project;
@@ -355,6 +358,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiHostCheck.setVertx(vertx);
       apiHostCheck.setConfig(config);
       apiHostCheck.setWebClient(webClient);
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      apiJobTemplate.setVertx(vertx);
+      apiJobTemplate.setConfig(config);
+      apiJobTemplate.setWebClient(webClient);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       apiProject.setVertx(vertx);
       apiProject.setConfig(config);
@@ -388,17 +395,23 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
                         .compose(q7 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
                         .compose(q7 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                         .onSuccess(q7 -> {
-                      apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
-                          .compose(q8 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
-                          .compose(q8 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                          .compose(q8 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                      apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateReader", new String[] { "GET" })
+                          .compose(q8 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateEditor", new String[] { "GET", "POST", "PATCH" }))
+                          .compose(q8 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                          .compose(q8 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                           .onSuccess(q8 -> {
-                        apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
-                            .compose(q9 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
-                            .compose(q9 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                        apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                             .onSuccess(q9 -> {
-                          LOG.info("authorize data complete");
-                          promise.complete();
+                          apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
+                              .compose(q10 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
+                              .compose(q10 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                              .onSuccess(q10 -> {
+                            LOG.info("authorize data complete");
+                            promise.complete();
+                        }).onFailure(ex -> promise.fail(ex));
                       }).onFailure(ex -> promise.fail(ex));
                     }).onFailure(ex -> promise.fail(ex));
                   }).onFailure(ex -> promise.fail(ex));
@@ -814,7 +827,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
         Map<String, String> kafkaConfig = new HashMap<>();
         kafkaConfig.put("bootstrap.servers", config().getString(ConfigKeys.KAFKA_BROKERS));
         kafkaConfig.put("acks", "1");
-        kafkaConfig.put("security.protocol", "SSL");
+        if(StringUtils.isNotBlank(config().getString(ConfigKeys.KAFKA_SECURITY_PROTOCOL)))
+          kafkaConfig.put("security.protocol", config().getString(ConfigKeys.KAFKA_SECURITY_PROTOCOL));
         kafkaConfig.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         kafkaConfig.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         kafkaConfig.put("group.id", config().getString(ConfigKeys.KAFKA_GROUP));
@@ -837,7 +851,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
               
         // use consumer for interacting with Apache Kafka
         kafkaConsumer = KafkaConsumer.create(vertx, kafkaConfig);
-        SiteRoutes.kafkaConsumer(vertx, kafkaConsumer, config()).onSuccess(a -> {
+        SiteRoutes.kafkaConsumer(vertx, kafkaConsumer, config(), webClient).onSuccess(a -> {
           LOG.info("The Kafka producer was initialized successfully. ");
           promise.complete(kafkaProducer);
         }).onFailure(ex -> {
@@ -1404,8 +1418,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("SitePage","Tenant","HostInventory","Host","HostCheck","Project","AiTelemetryPlatform");
-      List<String> authResources = Arrays.asList("SITEPAGE","TENANT","HOSTINVENTORY","HOST","HOSTCHECK","PROJECT","AITELEMETRYPLATFORM");
+      List<String> authClassSimpleNames = Arrays.asList("SitePage","Tenant","HostInventory","Host","HostCheck","JobTemplate","Project","AiTelemetryPlatform");
+      List<String> authResources = Arrays.asList("SITEPAGE","TENANT","HOSTINVENTORY","HOST","HOSTCHECK","JOBTEMPLATE","PROJECT","AITELEMETRYPLATFORM");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1436,6 +1450,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
       initializeApiService(apiHostCheck);
       registerApiService(HostCheckEnUSGenApiService.class, apiHostCheck, HostCheck.getClassApiAddress());
+
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      initializeApiService(apiJobTemplate);
+      registerApiService(JobTemplateEnUSGenApiService.class, apiJobTemplate, JobTemplate.getClassApiAddress());
 
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);

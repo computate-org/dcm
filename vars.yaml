@@ -403,10 +403,10 @@ AUTH_FINE_GRAINED_POLICY_PERMISSIONS: true
 # Kafka vars #
 ##############
 
-# The kafka keystore secret name. 
-KAFKA_KEYSTORE_SECRET: "{{ lookup('env', 'KAFKA_KEYSTORE_SECRET_' + SITE_SHORT_NAME) | default('kafka-' + SITE_NAME, true) }}"
-# The kafka truststore secret name. 
-KAFKA_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_TRUSTSTORE_SECRET_' + SITE_SHORT_NAME) | default('kafka-cluster-ca-cert', true) }}"
+# # The kafka keystore secret name. 
+# KAFKA_KEYSTORE_SECRET: "{{ lookup('env', 'KAFKA_KEYSTORE_SECRET_' + SITE_SHORT_NAME) | default('kafka-' + SITE_NAME, true) }}"
+# # The kafka truststore secret name. 
+# KAFKA_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_TRUSTSTORE_SECRET_' + SITE_SHORT_NAME) | default('kafka-cluster-ca-cert', true) }}"
 # Enable Kafka message integration. 
 ENABLE_KAFKA: "{{ (lookup('env', 'ENABLE_KAFKA') | lower) == 'true' }}"
 # The Kafka port. 
@@ -416,25 +416,27 @@ KAFKA_NAMESPACE: "{{ lookup('env', 'KAFKA_NAMESPACE') | default('kafka', true) }
 # The Kafka brokers hostname and port. 
 KAFKA_BROKERS: "{{ lookup('env', 'KAFKA_BROKERS') | default('console-openshift-console.apps-crc.testing:32000', true) }}"
 # The Kafka group for receiving messages. 
-KAFKA_GROUP: "{{ lookup('env', 'KAFKA_GROUP') | default('esi-ai-telemetry', true) }}"
-# The Kafka security protocol. 
-KAFKA_SECURITY_PROTOCOL: "{{ lookup('env', 'KAFKA_SECURITY_PROTOCOL') | default('SSL', true) }}"
-# The Kafka SSL keystore type. 
-KAFKA_SSL_KEYSTORE_TYPE: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_TYPE') | default('PKCS12', true) }}"
-# The Kafka SSL keystore location. 
-KAFKA_SSL_KEYSTORE_LOCATION: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_LOCATION') | default('/opt/app-root/src/kafka/keystore/user.p12', true) }}"
-# The Kafka SSL keystore OpenShift secret. 
-KAFKA_SSL_KEYSTORE_SECRET: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_SECRET') | default(KAFKA_KEYSTORE_SECRET, true) }}"
-# The Kafka SSL keystore password. 
-KAFKA_SSL_KEYSTORE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=KAFKA_SSL_KEYSTORE_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"user.password\": \"\" } } )).data['user.password'] | b64decode }}"
-# The Kafka SSL truststore type. 
-KAFKA_SSL_TRUSTSTORE_TYPE: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_TYPE') | default('PKCS12', true) }}"
-# The Kafka SSL truststore location. 
-KAFKA_SSL_TRUSTSTORE_LOCATION: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_LOCATION') | default('/opt/app-root/src/kafka/truststore/ca.p12', true) }}"
-# The Kafka SSL truststore OpenShift secret. 
-KAFKA_SSL_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_SECRET') | default(KAFKA_TRUSTSTORE_SECRET, true) }}"
-# The Kafka SSL truststore password. 
-KAFKA_SSL_TRUSTSTORE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=KAFKA_SSL_TRUSTSTORE_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"ca.password\": \"\" } } )).data['ca.password'] | b64decode }}"
+KAFKA_GROUP: "{{ lookup('env', 'KAFKA_GROUP') | default('dcm-site', true) }}"
+# # The Kafka security protocol. 
+# KAFKA_SECURITY_PROTOCOL: "{{ lookup('env', 'KAFKA_SECURITY_PROTOCOL') | default('SSL', true) }}"
+# # The Kafka SSL keystore type. 
+# KAFKA_SSL_KEYSTORE_TYPE: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_TYPE') | default('PKCS12', true) }}"
+# # The Kafka SSL keystore location. 
+# KAFKA_SSL_KEYSTORE_LOCATION: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_LOCATION') | default('/opt/app-root/src/kafka/keystore/user.p12', true) }}"
+# # The Kafka SSL keystore OpenShift secret. 
+# KAFKA_SSL_KEYSTORE_SECRET: "{{ lookup('env', 'KAFKA_SSL_KEYSTORE_SECRET') | default(KAFKA_KEYSTORE_SECRET, true) }}"
+# # The Kafka SSL keystore password. 
+# KAFKA_SSL_KEYSTORE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=KAFKA_SSL_KEYSTORE_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"user.password\": \"\" } } )).data['user.password'] | b64decode }}"
+# # The Kafka SSL truststore type. 
+# KAFKA_SSL_TRUSTSTORE_TYPE: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_TYPE') | default('PKCS12', true) }}"
+# # The Kafka SSL truststore location. 
+# KAFKA_SSL_TRUSTSTORE_LOCATION: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_LOCATION') | default('/opt/app-root/src/kafka/truststore/ca.p12', true) }}"
+# # The Kafka SSL truststore OpenShift secret. 
+# KAFKA_SSL_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_SECRET') | default(KAFKA_TRUSTSTORE_SECRET, true) }}"
+# # The Kafka SSL truststore password. 
+# KAFKA_SSL_TRUSTSTORE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=KAFKA_SSL_TRUSTSTORE_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"ca.password\": \"\" } } )).data['ca.password'] | b64decode }}"
+# The Kafka topic for Sensu events
+KAFKA_TOPIC_SENSU_EVENT: "{{ lookup('env', 'KAFKA_TOPIC_SENSU_EVENT') | default('sensu-event', true) }}"
 
 ################################
 # OpenShift Deployment Details #

@@ -1,7 +1,7 @@
-package org.computate.dcm.model.k8s;
+package org.computate.dcm.model.eda.jobtemplate;
 
 import org.computate.dcm.request.SiteRequest;
-import org.computate.dcm.model.k8s.ProjectGenPage;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage;
 import org.computate.dcm.model.BaseModel;
 import org.computate.vertx.api.ApiRequest;
 import org.computate.dcm.config.ConfigKeys;
@@ -41,23 +41,23 @@ import io.vertx.core.json.JsonArray;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these ProjectPage objects in a RESTful API. 
- * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class ProjectPageGen into the class ProjectPage. 
+ * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these JobTemplatePage objects in a RESTful API. 
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class JobTemplatePageGen into the class JobTemplatePage. 
  * </li>
- * <h3>About the ProjectPage class and it's generated class ProjectPageGen&lt;ProjectGenPage&gt;: </h3>extends ProjectPageGen
+ * <h3>About the JobTemplatePage class and it's generated class JobTemplatePageGen&lt;JobTemplateGenPage&gt;: </h3>extends JobTemplatePageGen
  * <p>
- * This Java class extends a generated Java class ProjectPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
+ * This Java class extends a generated Java class JobTemplatePageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
  * Whenever this Java class is modified or touched, the watch service installed as described in the README, indexes all the information about this Java class in a local Apache Solr Search Engine. 
  * If you are running the service, you can see the indexed data about this Java Class here: 
  * </p>
- * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectPage">Find the class ProjectPage in Solr. </a></p>
+ * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplatePage">Find the class JobTemplatePage in Solr. </a></p>
  * <p>
  * The extended class ending with "Gen" did not exist at first, but was automatically created by the same watch service based on the data retrieved from the local Apache Server search engine. 
  * The extended class contains many generated fields, getters, setters, initialization code, and helper methods to help build a website and API fast, reactive, and scalable. 
  * </p>
- * extends ProjectPageGen<ProjectGenPage>
- * <p>This <code>class ProjectPage extends ProjectPageGen&lt;ProjectGenPage&gt;</code>, which means it extends a newly generated ProjectPageGen. 
- * The generated <code>class ProjectPageGen extends ProjectGenPage</code> which means that ProjectPage extends ProjectPageGen which extends ProjectGenPage. 
+ * extends JobTemplatePageGen<JobTemplateGenPage>
+ * <p>This <code>class JobTemplatePage extends JobTemplatePageGen&lt;JobTemplateGenPage&gt;</code>, which means it extends a newly generated JobTemplatePageGen. 
+ * The generated <code>class JobTemplatePageGen extends JobTemplateGenPage</code> which means that JobTemplatePage extends JobTemplatePageGen which extends JobTemplateGenPage. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
  * <h2>Api: true</h2>
@@ -66,7 +66,7 @@ import io.vertx.core.json.JsonArray;
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <h2>{@inheritDoc}</h2>
- * <p>By adding a class comment "{@inheritDoc}", the ProjectPage class will inherit the helpful inherited class comments from the super class ProjectPageGen. 
+ * <p>By adding a class comment "{@inheritDoc}", the JobTemplatePage class will inherit the helpful inherited class comments from the super class JobTemplatePageGen. 
  * </p>
  * <h2>Rows: null</h2>
  * <h2>Model: true</h2>
@@ -76,7 +76,7 @@ import io.vertx.core.json.JsonArray;
  * <p>
  *   This class contains a comment <b>"Promise: true"</b>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
- *   This means that the ProjectPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
+ *   This means that the JobTemplatePage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
  * <p>
  *   Adding protected void methods beginning with an underscore with a Promise as the only parameter will automatically set `Promise: true`. 
@@ -97,15 +97,15 @@ import io.vertx.core.json.JsonArray;
  * </p>
  * <h2>AName.enUS: null</h2>
  * <p>
- * Delete the class ProjectPage in Solr: 
+ * Delete the class JobTemplatePage in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.k8s.ProjectPage&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplatePage&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
- * Delete  the package org.computate.dcm.model.k8s in Solr: 
+ * Delete  the package org.computate.dcm.model.eda.jobtemplate in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.k8s&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
@@ -116,24 +116,24 @@ import io.vertx.core.json.JsonArray;
  * </p>
  * Generated: true
  **/
-public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
-  protected static final Logger LOG = LoggerFactory.getLogger(ProjectPage.class);
+public abstract class JobTemplatePageGen<DEV> extends JobTemplateGenPage {
+  protected static final Logger LOG = LoggerFactory.getLogger(JobTemplatePage.class);
 
   //////////////
   // initDeep //
   //////////////
 
-  public Future<ProjectPageGen<DEV>> promiseDeepProjectPage(SiteRequest siteRequest_) {
+  public Future<JobTemplatePageGen<DEV>> promiseDeepJobTemplatePage(SiteRequest siteRequest_) {
     setSiteRequest_(siteRequest_);
-    return promiseDeepProjectPage();
+    return promiseDeepJobTemplatePage();
   }
 
-  public Future<ProjectPageGen<DEV>> promiseDeepProjectPage() {
-    Promise<ProjectPageGen<DEV>> promise = Promise.promise();
+  public Future<JobTemplatePageGen<DEV>> promiseDeepJobTemplatePage() {
+    Promise<JobTemplatePageGen<DEV>> promise = Promise.promise();
     Promise<Void> promise2 = Promise.promise();
-    promiseProjectPage(promise2);
+    promiseJobTemplatePage(promise2);
     promise2.future().onSuccess(a -> {
-      super.promiseDeepProjectGenPage(siteRequest_).onSuccess(b -> {
+      super.promiseDeepJobTemplateGenPage(siteRequest_).onSuccess(b -> {
         promise.complete(this);
       }).onFailure(ex -> {
         promise.fail(ex);
@@ -144,7 +144,7 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     return promise.future();
   }
 
-  public Future<Void> promiseProjectPage(Promise<Void> promise) {
+  public Future<Void> promiseJobTemplatePage(Promise<Void> promise) {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
@@ -161,20 +161,20 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     return promise.future();
   }
 
-  @Override public Future<? extends ProjectPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
-    return promiseDeepProjectPage(siteRequest_);
+  @Override public Future<? extends JobTemplatePageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
+    return promiseDeepJobTemplatePage(siteRequest_);
   }
 
   /////////////////
   // siteRequest //
   /////////////////
 
-  public void siteRequestProjectPage(SiteRequest siteRequest_) {
-      super.siteRequestProjectGenPage(siteRequest_);
+  public void siteRequestJobTemplatePage(SiteRequest siteRequest_) {
+      super.siteRequestJobTemplateGenPage(siteRequest_);
   }
 
   public void siteRequestForClass(SiteRequest siteRequest_) {
-    siteRequestProjectPage(siteRequest_);
+    siteRequestJobTemplatePage(siteRequest_);
   }
 
   /////////////
@@ -186,7 +186,7 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = obtainProjectPage(v);
+        o = obtainJobTemplatePage(v);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.obtainForClass(v);
@@ -198,11 +198,11 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     }
     return o;
   }
-  public Object obtainProjectPage(String var) {
-    ProjectPage oProjectPage = (ProjectPage)this;
+  public Object obtainJobTemplatePage(String var) {
+    JobTemplatePage oJobTemplatePage = (JobTemplatePage)this;
     switch(var) {
       default:
-        return super.obtainProjectGenPage(var);
+        return super.obtainJobTemplateGenPage(var);
     }
   }
 
@@ -215,7 +215,7 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = relateProjectPage(v, val);
+        o = relateJobTemplatePage(v, val);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.relateForClass(v, val);
@@ -223,11 +223,11 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     }
     return o != null;
   }
-  public Object relateProjectPage(String var, Object val) {
-    ProjectPage oProjectPage = (ProjectPage)this;
+  public Object relateJobTemplatePage(String var, Object val) {
+    JobTemplatePage oJobTemplatePage = (JobTemplatePage)this;
     switch(var) {
       default:
-        return super.relateProjectGenPage(var, val);
+        return super.relateJobTemplateGenPage(var, val);
     }
   }
 
@@ -235,13 +235,13 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
   // staticSet //
   ///////////////
 
-  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, ProjectPage o) {
-    return staticSetProjectPage(entityVar,  siteRequest_, v, o);
+  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, JobTemplatePage o) {
+    return staticSetJobTemplatePage(entityVar,  siteRequest_, v, o);
   }
-  public static Object staticSetProjectPage(String entityVar, SiteRequest siteRequest_, String v, ProjectPage o) {
+  public static Object staticSetJobTemplatePage(String entityVar, SiteRequest siteRequest_, String v, JobTemplatePage o) {
     switch(entityVar) {
       default:
-        return ProjectGenPage.staticSetProjectGenPage(entityVar,  siteRequest_, v, o);
+        return JobTemplateGenPage.staticSetJobTemplateGenPage(entityVar,  siteRequest_, v, o);
     }
   }
 
@@ -250,12 +250,12 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
   ////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchProjectPage(entityVar,  siteRequest_, o);
+    return staticSearchJobTemplatePage(entityVar,  siteRequest_, o);
   }
-  public static Object staticSearchProjectPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static Object staticSearchJobTemplatePage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return ProjectGenPage.staticSearchProjectGenPage(entityVar,  siteRequest_, o);
+        return JobTemplateGenPage.staticSearchJobTemplateGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -264,12 +264,12 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
   ///////////////////
 
   public static String staticSearchStrForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchStrProjectPage(entityVar,  siteRequest_, o);
+    return staticSearchStrJobTemplatePage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchStrProjectPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static String staticSearchStrJobTemplatePage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return ProjectGenPage.staticSearchStrProjectGenPage(entityVar,  siteRequest_, o);
+        return JobTemplateGenPage.staticSearchStrJobTemplateGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -278,12 +278,12 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
   //////////////////
 
   public static String staticSearchFqForClass(String entityVar, SiteRequest siteRequest_, String o) {
-    return staticSearchFqProjectPage(entityVar,  siteRequest_, o);
+    return staticSearchFqJobTemplatePage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchFqProjectPage(String entityVar, SiteRequest siteRequest_, String o) {
+  public static String staticSearchFqJobTemplatePage(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
       default:
-        return ProjectGenPage.staticSearchFqProjectGenPage(entityVar,  siteRequest_, o);
+        return JobTemplateGenPage.staticSearchFqJobTemplateGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -297,8 +297,8 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
     return sb.toString();
   }
 
-  public static final String CLASS_SIMPLE_NAME = "ProjectPage";
-  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.k8s.ProjectPage";
+  public static final String CLASS_SIMPLE_NAME = "JobTemplatePage";
+  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.jobtemplate.JobTemplatePage";
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
@@ -348,77 +348,77 @@ public abstract class ProjectPageGen<DEV> extends ProjectGenPage {
   }
 
   public static String displayNameForClass(String var) {
-    return ProjectPage.displayNameProjectPage(var);
+    return JobTemplatePage.displayNameJobTemplatePage(var);
   }
-  public static String displayNameProjectPage(String var) {
+  public static String displayNameJobTemplatePage(String var) {
     switch(var) {
     default:
-      return ProjectGenPage.displayNameProjectGenPage(var);
+      return JobTemplateGenPage.displayNameJobTemplateGenPage(var);
     }
   }
 
-  public static String descriptionProjectPage(String var) {
+  public static String descriptionJobTemplatePage(String var) {
     if(var == null)
       return null;
     switch(var) {
       default:
-        return ProjectGenPage.descriptionProjectGenPage(var);
+        return JobTemplateGenPage.descriptionJobTemplateGenPage(var);
     }
   }
 
-  public static String classSimpleNameProjectPage(String var) {
+  public static String classSimpleNameJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.classSimpleNameProjectGenPage(var);
+        return JobTemplateGenPage.classSimpleNameJobTemplateGenPage(var);
     }
   }
 
-  public static Integer htmColumnProjectPage(String var) {
+  public static Integer htmColumnJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.htmColumnProjectGenPage(var);
+        return JobTemplateGenPage.htmColumnJobTemplateGenPage(var);
     }
   }
 
-  public static Integer htmRowProjectPage(String var) {
+  public static Integer htmRowJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.htmRowProjectGenPage(var);
+        return JobTemplateGenPage.htmRowJobTemplateGenPage(var);
     }
   }
 
-  public static Integer htmCellProjectPage(String var) {
+  public static Integer htmCellJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.htmCellProjectGenPage(var);
+        return JobTemplateGenPage.htmCellJobTemplateGenPage(var);
     }
   }
 
-  public static Integer lengthMinProjectPage(String var) {
+  public static Integer lengthMinJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.lengthMinProjectGenPage(var);
+        return JobTemplateGenPage.lengthMinJobTemplateGenPage(var);
     }
   }
 
-  public static Integer lengthMaxProjectPage(String var) {
+  public static Integer lengthMaxJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.lengthMaxProjectGenPage(var);
+        return JobTemplateGenPage.lengthMaxJobTemplateGenPage(var);
     }
   }
 
-  public static Integer maxProjectPage(String var) {
+  public static Integer maxJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.maxProjectGenPage(var);
+        return JobTemplateGenPage.maxJobTemplateGenPage(var);
     }
   }
 
-  public static Integer minProjectPage(String var) {
+  public static Integer minJobTemplatePage(String var) {
     switch(var) {
       default:
-        return ProjectGenPage.minProjectGenPage(var);
+        return JobTemplateGenPage.minJobTemplateGenPage(var);
     }
   }
 }
