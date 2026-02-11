@@ -13,8 +13,8 @@ import org.computate.dcm.model.BaseModel;
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host
- * EditPageUri: /en-us/edit/host/{hostName}
- * UserPageUri: /en-us/user/host/{hostName}
+ * EditPageUri: /en-us/edit/host/{hostResource}
+ * UserPageUri: /en-us/user/host/{hostResource}
  * ApiUri: /en-us/api/host
  * ApiMethod:
  *   Search:
@@ -51,7 +51,7 @@ public class Host extends HostGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * DisplayName: tenant auth resource
+   * DisplayName: tenant
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
@@ -64,17 +64,39 @@ public class Host extends HostGen<BaseModel> {
   }
 
   /**
+   * DocValues: true
+   * Persist: true
+   * DisplayName: inventory
+   * Description: The unique authorization resource for the inventory for multi-tenancy
+   * AuthorizationResource: HOSTINVENTORY
+   * Relate: HostInventory.inventoryResource
+   * HtmRow: 3
+   * HtmCell: 1
+   **/
+  protected void _inventoryResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the host. 
+   */
+  protected void _aapHostId(Wrap<Long> w) {
+  }
+
+  /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
    * Unique: true
    * HtmRow: 3
-   * HtmCell: 1
+   * HtmCell: 2
    * HtmColumn: 1
    * DisplayName: Fully Qualified Domain Name
    * Description: The computer fully qualified domain name
    * Required: true
-   * VarId: true
    * VarName: true
    */
   protected void _hostName(Wrap<String> w) {
@@ -84,13 +106,50 @@ public class Host extends HostGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: host auth resource
+   * Unique: true
+   * DisplayName: host ID
+   * Description: The ID of the host in DCM. 
+   */
+  protected void _hostId(Wrap<String> w) {
+    w.o(toId(hostName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: host resource
    * Description: The unique authorization resource for the host for multi-tenancy
-   * Facet: true
+   * VarId: true
    * AuthorizationResource: HOST
-   **/
+   */
   protected void _hostResource(Wrap<String> w) {
     w.o(String.format("%s-%s", Host.CLASS_AUTH_RESOURCE, hostName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * HtmRow: 3
+   * HtmCell: 3
+   * HtmColumn: 2
+   * DisplayName: host description
+   * Description: The description of the host in AAP. 
+   * VarDescription: true
+   */
+  protected void _hostDescription(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the inventory. 
+   */
+  protected void _aapInventoryId(Wrap<Long> w) {
   }
 
   /**
@@ -100,8 +159,6 @@ public class Host extends HostGen<BaseModel> {
    * DisplayName: inventory name
    * Description: The unique authorization resource for the host for multi-tenancy
    * Facet: true
-   * HtmRow: 3
-   * HtmCell: 1
    **/
   protected void _inventoryName(Wrap<String> w) {
   }
@@ -110,7 +167,7 @@ public class Host extends HostGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 3
-   * HtmCell: 1
+   * HtmCell: 5
    * HtmColumn: 2
    * DisplayName: event subscriptions
    * Description: The list of event subscriptions the host subscribes to. 

@@ -9,13 +9,13 @@ import org.computate.dcm.model.BaseModel;
  * Order: 4
  * Description: A managed host inventory. 
  * AName: a host inventory
- * PluralName: a host inventories
+ * PluralName: host inventories
  * Icon: <i class="fa-duotone fa-regular fa-network-wired"></i>
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host-inventory
- * EditPageUri: /en-us/edit/host-inventory/{inventoryName}
- * UserPageUri: /en-us/user/host-inventory/{inventoryName}
+ * EditPageUri: /en-us/edit/host-inventory/{inventoryResource}
+ * UserPageUri: /en-us/user/host-inventory/{inventoryResource}
  * ApiUri: /en-us/api/host-inventory
  * ApiMethod:
  *   Search:
@@ -75,8 +75,6 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * HtmRowTitleOpen: inventory details
    * DisplayName: inventory name
    * Description: The name of the inventory in AAP. 
-   * Required: true
-   * VarId: true
    * VarName: true
    */
   protected void _inventoryName(Wrap<String> w) {
@@ -86,12 +84,37 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * Unique: true
+   * DisplayName: inventory ID
+   * Description: The ID of the inventory in DCM. 
+   */
+  protected void _inventoryId(Wrap<String> w) {
+    w.o(toId(inventoryName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: inventory resource
+   * Description: The unique authorization resource for the inventory for multi-tenancy
+   * VarId: true
+   * AuthorizationResource: HOSTINVENTORY
+   */
+  protected void _inventoryResource(Wrap<String> w) {
+    w.o(String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
    * HtmRow: 3
-   * HtmCell: 2
+   * HtmCell: 3
    * HtmColumn: 2
    * DisplayName: inventory description
    * Description: The description of the inventory in AAP. 
-   * Required: true
    * VarDescription: true
    */
   protected void _inventoryDescription(Wrap<String> w) {
@@ -104,7 +127,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * DisplayName: AAP ID
    * Description: The Ansible Automation Platform ID of the inventory. 
    */
-  protected void _inventoryId(Wrap<Long> w) {
+  protected void _aapInventoryId(Wrap<Long> w) {
   }
 
   /**
@@ -123,6 +146,8 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * Persist: true
    * DisplayName: AAP kind
    * Description: The Ansible Automation Platform kind of the inventory ("", "smart", "constructed"). 
+   * HtmRow: 3
+   * HtmCell: 6
    */
   protected void _inventoryKind(Wrap<String> w) {
     w.o("");

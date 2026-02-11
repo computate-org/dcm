@@ -55,8 +55,10 @@ ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS userPage text;
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS download text;
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(tenantResource);
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryName text UNIQUE;
+ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryId text UNIQUE;
+ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryResource text UNIQUE;
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryDescription text;
-ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryId bigint;
+ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS aapInventoryId bigint;
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryOrganizationId bigint;
 ALTER TABLE HostInventory ADD COLUMN IF NOT EXISTS inventoryKind text;
 
@@ -72,8 +74,13 @@ ALTER TABLE Host ADD COLUMN IF NOT EXISTS editPage text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS userPage text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS download text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(tenantResource);
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryResource text references HostInventory(inventoryResource);
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapHostId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostName text UNIQUE;
-ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostResource text;
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostId text UNIQUE;
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostResource text UNIQUE;
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostDescription text;
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapInventoryId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryName text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS eventSubscriptions text[];
 

@@ -40,7 +40,11 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
       } else {
         JsonObject inventoryJson = o.getSiteRequest_().getJsonObject();
         String inventoryName = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryName": "inventoryName")).orElse(o.getInventoryName());
-        Long inventoryId = Optional.ofNullable(inventoryJson.getLong(patch ? "setInventoryId": "inventoryId")).orElse(o.getInventoryId());
+        String inventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryId": "inventoryId")).orElse(HostInventory.toId(inventoryName));
+        inventoryJson.put(HostInventory.VAR_inventoryId, inventoryId);
+        String inventoryResource = String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryId);
+        inventoryJson.put(HostInventory.VAR_inventoryResource, inventoryResource);
+        Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setAapInventoryId": "aapInventoryId")).map(s -> Long.parseLong(s)).orElse(o.getAapInventoryId());
         String inventoryDescription = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryDescription": "inventoryDescription")).orElse(o.getInventoryDescription());
         String tenantResource = Optional.ofNullable(inventoryJson.getString(patch ? "setTenantResource": "tenantResource")).orElse(o.getTenantResource());
         String inventoryKind = Optional.ofNullable(Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryKind": "inventoryKind")).orElse(o.getInventoryKind())).orElse("");
@@ -49,7 +53,7 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
         String aapInventoryName = config.getString(ConfigKeys.AAP_HOST_NAME);
         Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-        String aapUri = patch ? String.format("/api/controller/v2/inventories/%s/", inventoryId) : "/api/controller/v2/inventories/";
+        String aapUri = patch ? String.format("/api/controller/v2/inventories/%s/", aapInventoryId) : "/api/controller/v2/inventories/";
         String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
         String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
@@ -85,8 +89,8 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
                 .expecting(HttpResponseExpectation.SC_CREATED)
                 .onSuccess(inventoryResponse -> {
               JsonObject responseBody = inventoryResponse.bodyAsJsonObject();
-              String id = responseBody.getString("id");
-              inventoryJson.put(HostInventory.VAR_inventoryId, id);
+              String aapInventoryId2 = responseBody.getString("id");
+              inventoryJson.put(HostInventory.VAR_aapInventoryId, aapInventoryId2);
               promise.complete();
             }).onFailure(ex -> {
               LOG.error(String.format("Updating AAP inventory failed. "), ex);
@@ -140,16 +144,16 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
       if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
         promise.complete();
       } else {
-        Long inventoryId = o.getInventoryId();
+        Long aapInventoryId = o.getAapInventoryId();
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
         String aapInventoryName = config.getString(ConfigKeys.AAP_HOST_NAME);
         Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-        String aapUri = String.format("/api/controller/v2/inventories/%s/", inventoryId);
+        String aapUri = String.format("/api/controller/v2/inventories/%s/", aapInventoryId);
         String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
         String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
-        if(inventoryId == null) {
+        if(aapInventoryId == null) {
           RuntimeException ex = new RuntimeException("Missing inventory ID");
           LOG.error(ex.getMessage(), ex);
           promise.fail(ex);

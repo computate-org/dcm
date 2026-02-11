@@ -126,7 +126,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -139,8 +139,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "GET"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -163,6 +163,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -266,8 +272,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       json.put("list", l);
       response200Search(listHostInventory.getRequest(), listHostInventory.getResponse(), json);
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -323,7 +329,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -336,8 +342,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "GET"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -360,6 +366,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -435,8 +447,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listHostInventory.getList().stream().findFirst().orElse(null));
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -459,7 +471,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -472,8 +484,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "PATCH"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "PATCH"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -496,6 +508,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -539,7 +557,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listHostInventory.first());
-                  apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryName().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketHostInventory", JsonObject.mapFrom(apiRequest).toString());
 
@@ -672,7 +690,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o3 -> o3.getInventoryName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o3 -> o3.getInventoryResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(HostInventory.class);
@@ -836,14 +854,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setInventoryDescription":
-              o2.setInventoryDescription(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
-              num++;
-              bParams.add(o2.sqlInventoryDescription());
-            break;
           case "setInventoryId":
               o2.setInventoryId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -852,6 +862,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlInventoryId());
             break;
+          case "setInventoryResource":
+              o2.setInventoryResource(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_inventoryResource + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryResource());
+            break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -859,6 +877,22 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               bSql.append(HostInventory.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
+            break;
+          case "setInventoryDescription":
+              o2.setInventoryDescription(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryDescription());
+            break;
+          case "setAapInventoryId":
+              o2.setAapInventoryId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapInventoryId());
             break;
           case "setInventoryOrganizationId":
               o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
@@ -976,8 +1010,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1000,7 +1034,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1013,8 +1047,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "POST"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "POST"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1037,6 +1071,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1196,7 +1236,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     });
   }
 
-  public Future<HostInventory> postHostInventoryFuture(SiteRequest siteRequest, Boolean inventoryName) {
+  public Future<HostInventory> postHostInventoryFuture(SiteRequest siteRequest, Boolean inventoryResource) {
     Promise<HostInventory> promise = Promise.promise();
 
     try {
@@ -1205,7 +1245,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         siteRequest.setSqlConnection(sqlConnection);
         varsHostInventory(siteRequest).onSuccess(a -> {
           createHostInventory(siteRequest).onSuccess(hostInventory -> {
-            sqlPOSTHostInventory(hostInventory, inventoryName).onSuccess(b -> {
+            sqlPOSTHostInventory(hostInventory, inventoryResource).onSuccess(b -> {
               persistHostInventory(hostInventory, false).onSuccess(c -> {
                 relateHostInventory(hostInventory).onSuccess(d -> {
                   indexHostInventory(hostInventory).onSuccess(o2 -> {
@@ -1353,15 +1393,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case HostInventory.VAR_inventoryDescription:
-            o2.setInventoryDescription(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
-            num++;
-            bParams.add(o2.sqlInventoryDescription());
-            break;
           case HostInventory.VAR_inventoryId:
             o2.setInventoryId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1371,6 +1402,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlInventoryId());
             break;
+          case HostInventory.VAR_inventoryResource:
+            o2.setInventoryResource(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_inventoryResource + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryResource());
+            break;
           case HostInventory.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1379,6 +1419,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             bSql.append(HostInventory.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
+            break;
+          case HostInventory.VAR_inventoryDescription:
+            o2.setInventoryDescription(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_inventoryDescription + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryDescription());
+            break;
+          case HostInventory.VAR_aapInventoryId:
+            o2.setAapInventoryId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapInventoryId());
             break;
           case HostInventory.VAR_inventoryOrganizationId:
             o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
@@ -1504,8 +1562,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1528,7 +1586,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1541,8 +1599,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "DELETE"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1565,6 +1623,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1739,7 +1803,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteHostInventoryFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1909,8 +1973,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1933,7 +1997,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1946,8 +2010,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "PUT"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "PUT"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1970,6 +2034,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2128,14 +2198,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String inventoryName = Optional.ofNullable(body.getString(HostInventory.VAR_inventoryName)).orElse(body.getString(HostInventory.VAR_solrId));
+        String inventoryResource = Optional.ofNullable(body.getString(HostInventory.VAR_inventoryResource)).orElse(body.getString(HostInventory.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE inventoryName=$1", HostInventory.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE inventoryResource=$1", HostInventory.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(inventoryName))
+              .execute(Tuple.tuple(Arrays.asList(inventoryResource))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2185,24 +2255,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "inventoryName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "inventoryResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "inventoryName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "inventoryResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getInventoryName()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getInventoryResource()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchHostInventoryFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import HostInventory {} succeeded, modified HostInventory. ", body.getValue(HostInventory.VAR_inventoryName));
+                    LOG.debug("Import HostInventory {} succeeded, modified HostInventory. ", body.getValue(HostInventory.VAR_inventoryResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
@@ -2210,7 +2280,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                   });
                 } else {
                   postHostInventoryFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import HostInventory {} succeeded, created new HostInventory. ", body.getValue(HostInventory.VAR_inventoryName));
+                    LOG.debug("Import HostInventory {} succeeded, created new HostInventory. ", body.getValue(HostInventory.VAR_inventoryResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportHostInventoryFuture failed. "), ex);
@@ -2268,8 +2338,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -2293,7 +2363,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2306,8 +2376,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "GET"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2330,6 +2400,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2595,7 +2671,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2608,9 +2684,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryName, "GET"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "GET"));
+        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryResource, "GET"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2633,6 +2709,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2874,7 +2956,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2887,9 +2969,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryName, "GET"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "GET"));
+        form.add("permission", String.format("%s-%s#%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryResource, "GET"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2912,6 +2994,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3154,7 +3242,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
         String HOSTINVENTORY = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOSTINVENTORY");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -3167,8 +3255,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", HostInventory.CLASS_AUTH_RESOURCE, "PUT"));
-        if(inventoryName != null)
-          form.add("permission", String.format("%s#%s", inventoryName, "DELETE"));
+        if(inventoryResource != null)
+          form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3191,6 +3279,12 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3365,7 +3459,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getInventoryResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHostInventory.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterHostInventoryFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3535,8 +3629,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String inventoryName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryName");
-        String m = String.format("%s %s not found", "host inventory", inventoryName);
+        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
+        String m = String.format("%s %s not found", "host inventory", inventoryResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -3678,9 +3772,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         }
       }
 
-      String inventoryName = serviceRequest.getParams().getJsonObject("path").getString("inventoryName");
-      if(inventoryName != null) {
-        searchList.fq("inventoryName_docvalues_string:" + SearchTool.escapeQueryChars(inventoryName));
+      String inventoryResource = serviceRequest.getParams().getJsonObject("path").getString("inventoryResource");
+      if(inventoryResource != null) {
+        searchList.fq("inventoryResource_docvalues_string:" + SearchTool.escapeQueryChars(inventoryResource));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3875,7 +3969,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, inventoryName, created, inventoryDescription, inventoryId, archived, inventoryOrganizationId, inventoryKind, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, inventoryName, created, inventoryId, inventoryResource, archived, inventoryDescription, aapInventoryId, inventoryOrganizationId, inventoryKind, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4144,9 +4238,11 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       o.persistForClass(HostInventory.VAR_tenantResource, HostInventory.staticSetTenantResource(siteRequest2, (String)result.get(HostInventory.VAR_tenantResource)));
       o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
       o.persistForClass(HostInventory.VAR_created, HostInventory.staticSetCreated(siteRequest2, (String)result.get(HostInventory.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(HostInventory.VAR_inventoryDescription, HostInventory.staticSetInventoryDescription(siteRequest2, (String)result.get(HostInventory.VAR_inventoryDescription)));
       o.persistForClass(HostInventory.VAR_inventoryId, HostInventory.staticSetInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryId)));
+      o.persistForClass(HostInventory.VAR_inventoryResource, HostInventory.staticSetInventoryResource(siteRequest2, (String)result.get(HostInventory.VAR_inventoryResource)));
       o.persistForClass(HostInventory.VAR_archived, HostInventory.staticSetArchived(siteRequest2, (String)result.get(HostInventory.VAR_archived)));
+      o.persistForClass(HostInventory.VAR_inventoryDescription, HostInventory.staticSetInventoryDescription(siteRequest2, (String)result.get(HostInventory.VAR_inventoryDescription)));
+      o.persistForClass(HostInventory.VAR_aapInventoryId, HostInventory.staticSetAapInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_aapInventoryId)));
       o.persistForClass(HostInventory.VAR_inventoryOrganizationId, HostInventory.staticSetInventoryOrganizationId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryOrganizationId)));
       o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
       o.persistForClass(HostInventory.VAR_sessionId, HostInventory.staticSetSessionId(siteRequest2, (String)result.get(HostInventory.VAR_sessionId)));

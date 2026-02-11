@@ -70,7 +70,7 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>This class contains a comment <b>"Api: true"</b>, which means this class will have Java Vert.x API backend code generated for these objects. 
  * </p>
  * <h2>ApiTag.enUS: true</h2>
- * <p>This class contains a comment <b>"ApiTag: a host inventories"</b>, which groups all of the OpenAPIs for HostInventory objects under the tag "a host inventories". 
+ * <p>This class contains a comment <b>"ApiTag: host inventories"</b>, which groups all of the OpenAPIs for HostInventory objects under the tag "host inventories". 
  * </p>
  * <h2>ApiUri.enUS: /en-us/api/host-inventory</h2>
  * <p>This class contains a comment <b>"ApiUri: /en-us/api/host-inventory"</b>, which defines the base API URI for HostInventory objects as "/en-us/api/host-inventory" in the OpenAPI spec. 
@@ -162,25 +162,25 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String A_enUS = "a ";
   public static final String TheName_enUS = "thehost inventory";
   public static final String SingularName_enUS = "host inventory";
-  public static final String PluralName_enUS = "a host inventories";
+  public static final String PluralName_enUS = "host inventories";
   public static final String NameActual_enUS = "current host inventory";
-  public static final String AllName_enUS = "all a host inventories";
-  public static final String SearchAllNameBy_enUS = "search a host inventories by ";
-  public static final String SearchAllName_enUS = "search a host inventories";
-  public static final String Title_enUS = "a host inventories";
-  public static final String ThePluralName_enUS = "the a host inventories";
+  public static final String AllName_enUS = "all host inventories";
+  public static final String SearchAllNameBy_enUS = "search host inventories by ";
+  public static final String SearchAllName_enUS = "search host inventories";
+  public static final String Title_enUS = "host inventories";
+  public static final String ThePluralName_enUS = "the host inventories";
   public static final String NoNameFound_enUS = "no host inventory found";
   public static final String ApiUri_enUS = "/en-us/api/host-inventory";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/host-inventory";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-inventory/{inventoryName}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-inventory/{inventoryResource}";
   public static final String OfName_enUS = "of host inventory";
   public static final String ANameAdjective_enUS = "an host inventory";
   public static final String NameAdjectiveSingular_enUS = "host inventory";
-  public static final String NameAdjectivePlural_enUS = "a host inventories";
+  public static final String NameAdjectivePlural_enUS = "host inventories";
   public static final String Search_enUS_OpenApiUri = "/en-us/api/host-inventory";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/host-inventory";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/host-inventory";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/host-inventory/{inventoryName}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/host-inventory/{inventoryResource}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/host-inventory/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/host-inventory/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/host-inventory";
@@ -189,7 +189,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/host-inventory";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/host-inventory";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/host-inventory";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/host-inventory/{inventoryName}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/host-inventory/{inventoryResource}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/host-inventory/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/host-inventory/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/host-inventory-import";
@@ -198,10 +198,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/host-inventory";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/host-inventory";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/host-inventory";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-inventory/{inventoryName}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-inventory/{inventoryResource}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/host-inventory/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/host-inventory/%s";
-  public static final String UserPage_enUS_OpenApiUri = "/en-us/user/host-inventory/{inventoryName}";
+  public static final String UserPage_enUS_OpenApiUri = "/en-us/user/host-inventory/{inventoryResource}";
   public static final String UserPage_enUS_StringFormatUri = "/en-us/user/host-inventory/%s";
   public static final String UserPage_enUS_StringFormatUrl = "%s/en-us/user/host-inventory/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/host-inventory";
@@ -335,6 +335,130 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     return inventoryName;
   }
 
+	/////////////////
+  // inventoryId //
+	/////////////////
+
+
+  /**
+   *  The entity inventoryId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String inventoryId;
+
+  /**
+   * <br> The entity inventoryId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostinventory.HostInventory&fq=entiteVar_enUS_indexed_string:inventoryId">Find the entity inventoryId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _inventoryId(Wrap<String> w);
+
+  public String getInventoryId() {
+    return inventoryId;
+  }
+  public void setInventoryId(String o) {
+    this.inventoryId = HostInventory.staticSetInventoryId(siteRequest_, o);
+  }
+  public static String staticSetInventoryId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostInventory inventoryIdInit() {
+    Wrap<String> inventoryIdWrap = new Wrap<String>().var("inventoryId");
+    if(inventoryId == null) {
+      _inventoryId(inventoryIdWrap);
+      Optional.ofNullable(inventoryIdWrap.getO()).ifPresent(o -> {
+        setInventoryId(o);
+      });
+    }
+    return (HostInventory)this;
+  }
+
+  public static String staticSearchInventoryId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrInventoryId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqInventoryId(SiteRequest siteRequest_, String o) {
+    return HostInventory.staticSearchInventoryId(siteRequest_, HostInventory.staticSetInventoryId(siteRequest_, o)).toString();
+  }
+
+  public String sqlInventoryId() {
+    return inventoryId;
+  }
+
+  public static String staticJsonInventoryId(String inventoryId) {
+    return inventoryId;
+  }
+
+	///////////////////////
+  // inventoryResource //
+	///////////////////////
+
+
+  /**
+   *  The entity inventoryResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String inventoryResource;
+
+  /**
+   * <br> The entity inventoryResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostinventory.HostInventory&fq=entiteVar_enUS_indexed_string:inventoryResource">Find the entity inventoryResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _inventoryResource(Wrap<String> w);
+
+  public String getInventoryResource() {
+    return inventoryResource;
+  }
+  public void setInventoryResource(String o) {
+    this.inventoryResource = HostInventory.staticSetInventoryResource(siteRequest_, o);
+  }
+  public static String staticSetInventoryResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostInventory inventoryResourceInit() {
+    Wrap<String> inventoryResourceWrap = new Wrap<String>().var("inventoryResource");
+    if(inventoryResource == null) {
+      _inventoryResource(inventoryResourceWrap);
+      Optional.ofNullable(inventoryResourceWrap.getO()).ifPresent(o -> {
+        setInventoryResource(o);
+      });
+    }
+    return (HostInventory)this;
+  }
+
+  public static String staticSearchInventoryResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrInventoryResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqInventoryResource(SiteRequest siteRequest_, String o) {
+    return HostInventory.staticSearchInventoryResource(siteRequest_, HostInventory.staticSetInventoryResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlInventoryResource() {
+    return inventoryResource;
+  }
+
+  public static String staticJsonInventoryResource(String inventoryResource) {
+    return inventoryResource;
+  }
+
 	//////////////////////////
   // inventoryDescription //
 	//////////////////////////
@@ -397,74 +521,74 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     return inventoryDescription;
   }
 
-	/////////////////
-  // inventoryId //
-	/////////////////
+	////////////////////
+  // aapInventoryId //
+	////////////////////
 
 
   /**
-   *  The entity inventoryId
+   *  The entity aapInventoryId
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonSerialize(using = ToStringSerializer.class)
   @JsonInclude(Include.NON_NULL)
-  protected Long inventoryId;
+  protected Long aapInventoryId;
 
   /**
-   * <br> The entity inventoryId
+   * <br> The entity aapInventoryId
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostinventory.HostInventory&fq=entiteVar_enUS_indexed_string:inventoryId">Find the entity inventoryId in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostinventory.HostInventory&fq=entiteVar_enUS_indexed_string:aapInventoryId">Find the entity aapInventoryId in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _inventoryId(Wrap<Long> w);
+  protected abstract void _aapInventoryId(Wrap<Long> w);
 
-  public Long getInventoryId() {
-    return inventoryId;
+  public Long getAapInventoryId() {
+    return aapInventoryId;
   }
 
-  public void setInventoryId(Long inventoryId) {
-    this.inventoryId = inventoryId;
+  public void setAapInventoryId(Long aapInventoryId) {
+    this.aapInventoryId = aapInventoryId;
   }
   @JsonIgnore
-  public void setInventoryId(String o) {
-    this.inventoryId = HostInventory.staticSetInventoryId(siteRequest_, o);
+  public void setAapInventoryId(String o) {
+    this.aapInventoryId = HostInventory.staticSetAapInventoryId(siteRequest_, o);
   }
-  public static Long staticSetInventoryId(SiteRequest siteRequest_, String o) {
+  public static Long staticSetAapInventoryId(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Long.parseLong(o);
     return null;
   }
-  protected HostInventory inventoryIdInit() {
-    Wrap<Long> inventoryIdWrap = new Wrap<Long>().var("inventoryId");
-    if(inventoryId == null) {
-      _inventoryId(inventoryIdWrap);
-      Optional.ofNullable(inventoryIdWrap.getO()).ifPresent(o -> {
-        setInventoryId(o);
+  protected HostInventory aapInventoryIdInit() {
+    Wrap<Long> aapInventoryIdWrap = new Wrap<Long>().var("aapInventoryId");
+    if(aapInventoryId == null) {
+      _aapInventoryId(aapInventoryIdWrap);
+      Optional.ofNullable(aapInventoryIdWrap.getO()).ifPresent(o -> {
+        setAapInventoryId(o);
       });
     }
     return (HostInventory)this;
   }
 
-  public static Long staticSearchInventoryId(SiteRequest siteRequest_, Long o) {
+  public static Long staticSearchAapInventoryId(SiteRequest siteRequest_, Long o) {
     return o;
   }
 
-  public static String staticSearchStrInventoryId(SiteRequest siteRequest_, Long o) {
+  public static String staticSearchStrAapInventoryId(SiteRequest siteRequest_, Long o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqInventoryId(SiteRequest siteRequest_, String o) {
-    return HostInventory.staticSearchInventoryId(siteRequest_, HostInventory.staticSetInventoryId(siteRequest_, o)).toString();
+  public static String staticSearchFqAapInventoryId(SiteRequest siteRequest_, String o) {
+    return HostInventory.staticSearchAapInventoryId(siteRequest_, HostInventory.staticSetAapInventoryId(siteRequest_, o)).toString();
   }
 
-  public Long sqlInventoryId() {
-    return inventoryId;
+  public Long sqlAapInventoryId() {
+    return aapInventoryId;
   }
 
-  public static String staticJsonInventoryId(Long inventoryId) {
-    return Optional.ofNullable(inventoryId).map(v -> v.toString()).orElse(null);
+  public static String staticJsonAapInventoryId(Long aapInventoryId) {
+    return Optional.ofNullable(aapInventoryId).map(v -> v.toString()).orElse(null);
   }
 
 	/////////////////////////////
@@ -630,8 +754,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       try {
         tenantResourceInit();
         inventoryNameInit();
-        inventoryDescriptionInit();
         inventoryIdInit();
+        inventoryResourceInit();
+        inventoryDescriptionInit();
+        aapInventoryIdInit();
         inventoryOrganizationIdInit();
         inventoryKindInit();
         promise2.complete();
@@ -691,10 +817,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return oHostInventory.tenantResource;
       case "inventoryName":
         return oHostInventory.inventoryName;
-      case "inventoryDescription":
-        return oHostInventory.inventoryDescription;
       case "inventoryId":
         return oHostInventory.inventoryId;
+      case "inventoryResource":
+        return oHostInventory.inventoryResource;
+      case "inventoryDescription":
+        return oHostInventory.inventoryDescription;
+      case "aapInventoryId":
+        return oHostInventory.aapInventoryId;
       case "inventoryOrganizationId":
         return oHostInventory.inventoryOrganizationId;
       case "inventoryKind":
@@ -748,10 +878,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSetTenantResource(siteRequest_, v);
     case "inventoryName":
       return HostInventory.staticSetInventoryName(siteRequest_, v);
-    case "inventoryDescription":
-      return HostInventory.staticSetInventoryDescription(siteRequest_, v);
     case "inventoryId":
       return HostInventory.staticSetInventoryId(siteRequest_, v);
+    case "inventoryResource":
+      return HostInventory.staticSetInventoryResource(siteRequest_, v);
+    case "inventoryDescription":
+      return HostInventory.staticSetInventoryDescription(siteRequest_, v);
+    case "aapInventoryId":
+      return HostInventory.staticSetAapInventoryId(siteRequest_, v);
     case "inventoryOrganizationId":
       return HostInventory.staticSetInventoryOrganizationId(siteRequest_, v);
     case "inventoryKind":
@@ -774,10 +908,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchTenantResource(siteRequest_, (String)o);
     case "inventoryName":
       return HostInventory.staticSearchInventoryName(siteRequest_, (String)o);
+    case "inventoryId":
+      return HostInventory.staticSearchInventoryId(siteRequest_, (String)o);
+    case "inventoryResource":
+      return HostInventory.staticSearchInventoryResource(siteRequest_, (String)o);
     case "inventoryDescription":
       return HostInventory.staticSearchInventoryDescription(siteRequest_, (String)o);
-    case "inventoryId":
-      return HostInventory.staticSearchInventoryId(siteRequest_, (Long)o);
+    case "aapInventoryId":
+      return HostInventory.staticSearchAapInventoryId(siteRequest_, (Long)o);
     case "inventoryOrganizationId":
       return HostInventory.staticSearchInventoryOrganizationId(siteRequest_, (Long)o);
     case "inventoryKind":
@@ -800,10 +938,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchStrTenantResource(siteRequest_, (String)o);
     case "inventoryName":
       return HostInventory.staticSearchStrInventoryName(siteRequest_, (String)o);
+    case "inventoryId":
+      return HostInventory.staticSearchStrInventoryId(siteRequest_, (String)o);
+    case "inventoryResource":
+      return HostInventory.staticSearchStrInventoryResource(siteRequest_, (String)o);
     case "inventoryDescription":
       return HostInventory.staticSearchStrInventoryDescription(siteRequest_, (String)o);
-    case "inventoryId":
-      return HostInventory.staticSearchStrInventoryId(siteRequest_, (Long)o);
+    case "aapInventoryId":
+      return HostInventory.staticSearchStrAapInventoryId(siteRequest_, (Long)o);
     case "inventoryOrganizationId":
       return HostInventory.staticSearchStrInventoryOrganizationId(siteRequest_, (Long)o);
     case "inventoryKind":
@@ -826,10 +968,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchFqTenantResource(siteRequest_, o);
     case "inventoryName":
       return HostInventory.staticSearchFqInventoryName(siteRequest_, o);
-    case "inventoryDescription":
-      return HostInventory.staticSearchFqInventoryDescription(siteRequest_, o);
     case "inventoryId":
       return HostInventory.staticSearchFqInventoryId(siteRequest_, o);
+    case "inventoryResource":
+      return HostInventory.staticSearchFqInventoryResource(siteRequest_, o);
+    case "inventoryDescription":
+      return HostInventory.staticSearchFqInventoryDescription(siteRequest_, o);
+    case "aapInventoryId":
+      return HostInventory.staticSearchFqAapInventoryId(siteRequest_, o);
     case "inventoryOrganizationId":
       return HostInventory.staticSearchFqInventoryOrganizationId(siteRequest_, o);
     case "inventoryKind":
@@ -872,19 +1018,31 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         }
         saves.add("inventoryName");
         return val;
+      } else if("inventoryid".equals(varLower)) {
+        if(val instanceof String) {
+          setInventoryId((String)val);
+        }
+        saves.add("inventoryId");
+        return val;
+      } else if("inventoryresource".equals(varLower)) {
+        if(val instanceof String) {
+          setInventoryResource((String)val);
+        }
+        saves.add("inventoryResource");
+        return val;
       } else if("inventorydescription".equals(varLower)) {
         if(val instanceof String) {
           setInventoryDescription((String)val);
         }
         saves.add("inventoryDescription");
         return val;
-      } else if("inventoryid".equals(varLower)) {
+      } else if("aapinventoryid".equals(varLower)) {
         if(val instanceof Long) {
-          setInventoryId((Long)val);
+          setAapInventoryId((Long)val);
         } else {
-          setInventoryId(val == null ? null : val.toString());
+          setAapInventoryId(val == null ? null : val.toString());
         }
-        saves.add("inventoryId");
+        saves.add("aapInventoryId");
         return val;
       } else if("inventoryorganizationid".equals(varLower)) {
         if(val instanceof Long) {
@@ -927,16 +1085,28 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
           oHostInventory.setInventoryName(inventoryName);
       }
 
+      if(saves.contains("inventoryId")) {
+        String inventoryId = (String)doc.get("inventoryId_docvalues_string");
+        if(inventoryId != null)
+          oHostInventory.setInventoryId(inventoryId);
+      }
+
+      if(saves.contains("inventoryResource")) {
+        String inventoryResource = (String)doc.get("inventoryResource_docvalues_string");
+        if(inventoryResource != null)
+          oHostInventory.setInventoryResource(inventoryResource);
+      }
+
       if(saves.contains("inventoryDescription")) {
         String inventoryDescription = (String)doc.get("inventoryDescription_docvalues_string");
         if(inventoryDescription != null)
           oHostInventory.setInventoryDescription(inventoryDescription);
       }
 
-      if(saves.contains("inventoryId")) {
-        Long inventoryId = (Long)doc.get("inventoryId_docvalues_long");
-        if(inventoryId != null)
-          oHostInventory.setInventoryId(inventoryId);
+      if(saves.contains("aapInventoryId")) {
+        Long aapInventoryId = (Long)doc.get("aapInventoryId_docvalues_long");
+        if(aapInventoryId != null)
+          oHostInventory.setAapInventoryId(aapInventoryId);
       }
 
       if(saves.contains("inventoryOrganizationId")) {
@@ -962,11 +1132,17 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     if(inventoryName != null) {
       doc.put("inventoryName_docvalues_string", inventoryName);
     }
+    if(inventoryId != null) {
+      doc.put("inventoryId_docvalues_string", inventoryId);
+    }
+    if(inventoryResource != null) {
+      doc.put("inventoryResource_docvalues_string", inventoryResource);
+    }
     if(inventoryDescription != null) {
       doc.put("inventoryDescription_docvalues_string", inventoryDescription);
     }
-    if(inventoryId != null) {
-      doc.put("inventoryId_docvalues_long", inventoryId);
+    if(aapInventoryId != null) {
+      doc.put("aapInventoryId_docvalues_long", aapInventoryId);
     }
     if(inventoryOrganizationId != null) {
       doc.put("inventoryOrganizationId_docvalues_long", inventoryOrganizationId);
@@ -984,10 +1160,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantResource_docvalues_string";
       case "inventoryName":
         return "inventoryName_docvalues_string";
+      case "inventoryId":
+        return "inventoryId_docvalues_string";
+      case "inventoryResource":
+        return "inventoryResource_docvalues_string";
       case "inventoryDescription":
         return "inventoryDescription_docvalues_string";
-      case "inventoryId":
-        return "inventoryId_docvalues_long";
+      case "aapInventoryId":
+        return "aapInventoryId_docvalues_long";
       case "inventoryOrganizationId":
         return "inventoryOrganizationId_docvalues_long";
       case "inventoryKind":
@@ -1003,10 +1183,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantResource_docvalues_string";
       case "inventoryName":
         return "inventoryName_docvalues_string";
+      case "inventoryId":
+        return "inventoryId_docvalues_string";
+      case "inventoryResource":
+        return "inventoryResource_docvalues_string";
       case "inventoryDescription":
         return "inventoryDescription_docvalues_string";
-      case "inventoryId":
-        return "inventoryId_docvalues_long";
+      case "aapInventoryId":
+        return "aapInventoryId_docvalues_long";
       case "inventoryOrganizationId":
         return "inventoryOrganizationId_docvalues_long";
       case "inventoryKind":
@@ -1022,10 +1206,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantResource";
       case "inventoryName_docvalues_string":
         return "inventoryName";
+      case "inventoryId_docvalues_string":
+        return "inventoryId";
+      case "inventoryResource_docvalues_string":
+        return "inventoryResource";
       case "inventoryDescription_docvalues_string":
         return "inventoryDescription";
-      case "inventoryId_docvalues_long":
-        return "inventoryId";
+      case "aapInventoryId_docvalues_long":
+        return "aapInventoryId";
       case "inventoryOrganizationId_docvalues_long":
         return "inventoryOrganizationId";
       case "inventoryKind_docvalues_string":
@@ -1062,8 +1250,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
 
     oHostInventory.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryName(Optional.ofNullable(doc.get("inventoryName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostInventory.setInventoryId(Optional.ofNullable(doc.get("inventoryId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostInventory.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryDescription(Optional.ofNullable(doc.get("inventoryDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oHostInventory.setInventoryId(Optional.ofNullable(doc.get("inventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oHostInventory.setAapInventoryId(Optional.ofNullable(doc.get("aapInventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryOrganizationId(Optional.ofNullable(doc.get("inventoryOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryKind(Optional.ofNullable(doc.get("inventoryKind_docvalues_string")).map(v -> v.toString()).orElse(null));
 
@@ -1083,10 +1273,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         apiRequest.addVars("tenantResource");
       if(!Objects.equals(inventoryName, original.getInventoryName()))
         apiRequest.addVars("inventoryName");
-      if(!Objects.equals(inventoryDescription, original.getInventoryDescription()))
-        apiRequest.addVars("inventoryDescription");
       if(!Objects.equals(inventoryId, original.getInventoryId()))
         apiRequest.addVars("inventoryId");
+      if(!Objects.equals(inventoryResource, original.getInventoryResource()))
+        apiRequest.addVars("inventoryResource");
+      if(!Objects.equals(inventoryDescription, original.getInventoryDescription()))
+        apiRequest.addVars("inventoryDescription");
+      if(!Objects.equals(aapInventoryId, original.getAapInventoryId()))
+        apiRequest.addVars("aapInventoryId");
       if(!Objects.equals(inventoryOrganizationId, original.getInventoryOrganizationId()))
         apiRequest.addVars("inventoryOrganizationId");
       if(!Objects.equals(inventoryKind, original.getInventoryKind()))
@@ -1104,8 +1298,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryName).map(v -> "inventoryName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(inventoryId).map(v -> "inventoryId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryDescription).map(v -> "inventoryDescription: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(inventoryId).map(v -> "inventoryId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryOrganizationId).map(v -> "inventoryOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryKind).map(v -> "inventoryKind: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
@@ -1120,8 +1316,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   }
   public static final String VAR_tenantResource = "tenantResource";
   public static final String VAR_inventoryName = "inventoryName";
-  public static final String VAR_inventoryDescription = "inventoryDescription";
   public static final String VAR_inventoryId = "inventoryId";
+  public static final String VAR_inventoryResource = "inventoryResource";
+  public static final String VAR_inventoryDescription = "inventoryDescription";
+  public static final String VAR_aapInventoryId = "aapInventoryId";
   public static final String VAR_inventoryOrganizationId = "inventoryOrganizationId";
   public static final String VAR_inventoryKind = "inventoryKind";
 
@@ -1151,14 +1349,16 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
 
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_inventoryName = "inventory name";
+  public static final String DISPLAY_NAME_inventoryId = "inventory ID";
+  public static final String DISPLAY_NAME_inventoryResource = "inventory resource";
   public static final String DISPLAY_NAME_inventoryDescription = "inventory description";
-  public static final String DISPLAY_NAME_inventoryId = "AAP ID";
+  public static final String DISPLAY_NAME_aapInventoryId = "AAP ID";
   public static final String DISPLAY_NAME_inventoryOrganizationId = "AAP organization ID";
   public static final String DISPLAY_NAME_inventoryKind = "AAP kind";
 
   @Override
   public String idForClass() {
-    return inventoryName;
+    return inventoryResource;
   }
 
   @Override
@@ -1210,10 +1410,14 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return DISPLAY_NAME_tenantResource;
     case VAR_inventoryName:
       return DISPLAY_NAME_inventoryName;
-    case VAR_inventoryDescription:
-      return DISPLAY_NAME_inventoryDescription;
     case VAR_inventoryId:
       return DISPLAY_NAME_inventoryId;
+    case VAR_inventoryResource:
+      return DISPLAY_NAME_inventoryResource;
+    case VAR_inventoryDescription:
+      return DISPLAY_NAME_inventoryDescription;
+    case VAR_aapInventoryId:
+      return DISPLAY_NAME_aapInventoryId;
     case VAR_inventoryOrganizationId:
       return DISPLAY_NAME_inventoryOrganizationId;
     case VAR_inventoryKind:
@@ -1231,9 +1435,13 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return "The unique authorization resource for the tenant for multi-tenancy";
     case VAR_inventoryName:
       return "The name of the inventory in AAP. ";
+    case VAR_inventoryId:
+      return "The ID of the inventory in DCM. ";
+    case VAR_inventoryResource:
+      return "The unique authorization resource for the inventory for multi-tenancy";
     case VAR_inventoryDescription:
       return "The description of the inventory in AAP. ";
-    case VAR_inventoryId:
+    case VAR_aapInventoryId:
       return "The Ansible Automation Platform ID of the inventory. ";
     case VAR_inventoryOrganizationId:
       return "The Ansible Automation Platform organization ID of the inventory. ";
@@ -1250,9 +1458,13 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return "String";
     case VAR_inventoryName:
       return "String";
+    case VAR_inventoryId:
+      return "String";
+    case VAR_inventoryResource:
+      return "String";
     case VAR_inventoryDescription:
       return "String";
-    case VAR_inventoryId:
+    case VAR_aapInventoryId:
       return "Long";
     case VAR_inventoryOrganizationId:
       return "Long";
@@ -1284,6 +1496,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return 3;
     case VAR_inventoryDescription:
       return 3;
+    case VAR_inventoryKind:
+      return 3;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1296,7 +1510,9 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     case VAR_inventoryName:
       return 1;
     case VAR_inventoryDescription:
-      return 2;
+      return 3;
+    case VAR_inventoryKind:
+      return 6;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

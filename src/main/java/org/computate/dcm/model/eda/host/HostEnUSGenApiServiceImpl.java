@@ -2,6 +2,8 @@ package org.computate.dcm.model.eda.host;
 
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -126,7 +128,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -139,8 +141,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -163,6 +165,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
@@ -272,8 +280,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       json.put("list", l);
       response200Search(listHost.getRequest(), listHost.getResponse(), json);
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -329,7 +337,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -342,8 +350,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -366,6 +374,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
@@ -447,8 +461,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       SiteRequest siteRequest = listHost.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listHost.getList().stream().findFirst().orElse(null));
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -471,7 +485,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -484,8 +498,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "PATCH"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "PATCH"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -508,6 +522,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
@@ -557,7 +577,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listHost.first());
-                  apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostResource().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketHost", JsonObject.mapFrom(apiRequest).toString());
 
@@ -690,7 +710,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o3 -> o3.getHostName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o3 -> o3.getHostResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(Host.class);
@@ -838,13 +858,36 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
-          case "setHostName":
-              o2.setHostName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Host.VAR_hostName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlHostName());
+          case "setInventoryResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_inventoryResource, HostInventory.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeInventoryResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(Host.class, pk).setToNull(Host.VAR_inventoryResource, HostInventory.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
@@ -854,21 +897,21 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setHostResource":
-              o2.setHostResource(jsonObject.getString(entityVar));
+          case "setAapHostId":
+              o2.setAapHostId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_hostResource + "=$" + num);
+              bSql.append(Host.VAR_aapHostId + "=$" + num);
               num++;
-              bParams.add(o2.sqlHostResource());
+              bParams.add(o2.sqlAapHostId());
             break;
-          case "setInventoryName":
-              o2.setInventoryName(jsonObject.getString(entityVar));
+          case "setHostName":
+              o2.setHostName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_inventoryName + "=$" + num);
+              bSql.append(Host.VAR_hostName + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryName());
+              bParams.add(o2.sqlHostName());
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
@@ -878,13 +921,37 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               num++;
               bParams.add(o2.sqlArchived());
             break;
-          case "setEventSubscriptions":
-              o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+          case "setHostId":
+              o2.setHostId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+              bSql.append(Host.VAR_hostId + "=$" + num);
               num++;
-              bParams.add(o2.sqlEventSubscriptions());
+              bParams.add(o2.sqlHostId());
+            break;
+          case "setHostResource":
+              o2.setHostResource(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_hostResource + "=$" + num);
+              num++;
+              bParams.add(o2.sqlHostResource());
+            break;
+          case "setHostDescription":
+              o2.setHostDescription(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_hostDescription + "=$" + num);
+              num++;
+              bParams.add(o2.sqlHostDescription());
+            break;
+          case "setAapInventoryId":
+              o2.setAapInventoryId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_aapInventoryId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapInventoryId());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
@@ -894,6 +961,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               num++;
               bParams.add(o2.sqlSessionId());
             break;
+          case "setInventoryName":
+              o2.setInventoryName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_inventoryName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryName());
+            break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -901,6 +976,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               bSql.append(Host.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
+            break;
+          case "setEventSubscriptions":
+              o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+              num++;
+              bParams.add(o2.sqlEventSubscriptions());
             break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -986,8 +1069,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1010,7 +1093,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1023,8 +1106,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "POST"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "POST"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1047,6 +1130,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(POST)$").matcher(group);
@@ -1096,6 +1185,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               JsonObject params = new JsonObject();
               params.put("body", siteRequest.getJsonObject());
               params.put("path", new JsonObject());
+              params.put("scopes", scopes2);
               params.put("cookie", siteRequest.getServiceRequest().getParams().getJsonObject("cookie"));
               params.put("header", siteRequest.getServiceRequest().getParams().getJsonObject("header"));
               params.put("form", new JsonObject());
@@ -1212,7 +1302,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     });
   }
 
-  public Future<Host> postHostFuture(SiteRequest siteRequest, Boolean hostName) {
+  public Future<Host> postHostFuture(SiteRequest siteRequest, Boolean hostResource) {
     Promise<Host> promise = Promise.promise();
 
     try {
@@ -1221,7 +1311,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         siteRequest.setSqlConnection(sqlConnection);
         varsHost(siteRequest).onSuccess(a -> {
           createHost(siteRequest).onSuccess(host -> {
-            sqlPOSTHost(host, hostName).onSuccess(b -> {
+            sqlPOSTHost(host, hostResource).onSuccess(b -> {
               persistHost(host, false).onSuccess(c -> {
                 relateHost(host).onSuccess(d -> {
                   indexHost(host).onSuccess(o2 -> {
@@ -1351,14 +1441,25 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
-          case Host.VAR_hostName:
-            o2.setHostName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Host.VAR_hostName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlHostName());
+          case Host.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_inventoryResource, HostInventory.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case Host.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
@@ -1369,23 +1470,23 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case Host.VAR_hostResource:
-            o2.setHostResource(jsonObject.getString(entityVar));
+          case Host.VAR_aapHostId:
+            o2.setAapHostId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_hostResource + "=$" + num);
+            bSql.append(Host.VAR_aapHostId + "=$" + num);
             num++;
-            bParams.add(o2.sqlHostResource());
+            bParams.add(o2.sqlAapHostId());
             break;
-          case Host.VAR_inventoryName:
-            o2.setInventoryName(jsonObject.getString(entityVar));
+          case Host.VAR_hostName:
+            o2.setHostName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_inventoryName + "=$" + num);
+            bSql.append(Host.VAR_hostName + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryName());
+            bParams.add(o2.sqlHostName());
             break;
           case Host.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
@@ -1396,14 +1497,41 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             num++;
             bParams.add(o2.sqlArchived());
             break;
-          case Host.VAR_eventSubscriptions:
-            o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+          case Host.VAR_hostId:
+            o2.setHostId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+            bSql.append(Host.VAR_hostId + "=$" + num);
             num++;
-            bParams.add(o2.sqlEventSubscriptions());
+            bParams.add(o2.sqlHostId());
+            break;
+          case Host.VAR_hostResource:
+            o2.setHostResource(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_hostResource + "=$" + num);
+            num++;
+            bParams.add(o2.sqlHostResource());
+            break;
+          case Host.VAR_hostDescription:
+            o2.setHostDescription(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_hostDescription + "=$" + num);
+            num++;
+            bParams.add(o2.sqlHostDescription());
+            break;
+          case Host.VAR_aapInventoryId:
+            o2.setAapInventoryId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_aapInventoryId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapInventoryId());
             break;
           case Host.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
@@ -1414,6 +1542,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             num++;
             bParams.add(o2.sqlSessionId());
             break;
+          case Host.VAR_inventoryName:
+            o2.setInventoryName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_inventoryName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryName());
+            break;
           case Host.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1422,6 +1559,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             bSql.append(Host.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
+            break;
+          case Host.VAR_eventSubscriptions:
+            o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_eventSubscriptions + "=$" + num);
+            num++;
+            bParams.add(o2.sqlEventSubscriptions());
             break;
           case Host.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -1511,8 +1657,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1535,7 +1681,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1548,8 +1694,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "DELETE"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1572,6 +1718,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
@@ -1752,7 +1904,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteHostFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1882,6 +2034,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
+          case Host.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_inventoryResource, HostInventory.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -1922,8 +2094,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -1946,7 +2118,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -1959,8 +2131,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "PUT"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "PUT"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1983,6 +2155,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(PUT)$").matcher(group);
@@ -2147,14 +2325,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String hostName = Optional.ofNullable(body.getString(Host.VAR_hostName)).orElse(body.getString(Host.VAR_solrId));
+        String hostResource = Optional.ofNullable(body.getString(Host.VAR_hostResource)).orElse(body.getString(Host.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE hostName=$1", Host.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE hostResource=$1", Host.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(hostName))
+              .execute(Tuple.tuple(Arrays.asList(hostResource))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2204,24 +2382,24 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "hostName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "hostResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "hostName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "hostResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getHostName()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getHostResource()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchHostFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import Host {} succeeded, modified Host. ", body.getValue(Host.VAR_hostName));
+                    LOG.debug("Import Host {} succeeded, modified Host. ", body.getValue(Host.VAR_hostResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportHostFuture failed. "), ex);
@@ -2229,7 +2407,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                   });
                 } else {
                   postHostFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import Host {} succeeded, created new Host. ", body.getValue(Host.VAR_hostName));
+                    LOG.debug("Import Host {} succeeded, created new Host. ", body.getValue(Host.VAR_hostResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportHostFuture failed. "), ex);
@@ -2287,8 +2465,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -2312,7 +2490,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2325,8 +2503,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2349,6 +2527,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
@@ -2620,7 +2804,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2633,9 +2817,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostName, "GET"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostResource, "GET"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2658,6 +2842,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
@@ -2905,7 +3095,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -2918,9 +3108,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostName, "GET"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "GET"));
+        form.add("permission", String.format("%s-%s#%s", Host.CLASS_AUTH_RESOURCE, hostResource, "GET"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2943,6 +3133,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(GET)$").matcher(group);
@@ -3191,7 +3387,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
         String HOST = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("HOST");
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
@@ -3204,8 +3400,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Host.CLASS_AUTH_RESOURCE, "PUT"));
-        if(hostName != null)
-          form.add("permission", String.format("%s#%s", hostName, "DELETE"));
+        if(hostResource != null)
+          form.add("permission", String.format("%s#%s", hostResource, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3228,6 +3424,12 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                     return mPermission.find() ? mPermission.group(1) : null;
                   }).filter(v -> v != null).forEach(value -> {
                     fqs.add(String.format("%s:%s", "tenantResource", value));
+                  });
+              groups.stream().map(group -> {
+                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+                    return mPermission.find() ? mPermission.group(1) : null;
+                  }).filter(v -> v != null).forEach(value -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", value));
                   });
               groups.stream().map(group -> {
                     Matcher mPermission = Pattern.compile("^/(.*-?HOST-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
@@ -3408,7 +3610,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getHostResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listHost.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterHostFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3538,6 +3740,26 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
+          case Host.VAR_inventoryResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_inventoryResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(Host.class, pk).set(Host.VAR_inventoryResource, HostInventory.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -3578,8 +3800,8 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     try {
       JsonObject json = new JsonObject();
       if(json == null) {
-        String hostName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostName");
-        String m = String.format("%s %s not found", "host", hostName);
+        String hostResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("hostResource");
+        String m = String.format("%s %s not found", "host", hostResource);
         promise.complete(new ServiceResponse(404
             , m
             , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
@@ -3721,9 +3943,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
         }
       }
 
-      String hostName = serviceRequest.getParams().getJsonObject("path").getString("hostName");
-      if(hostName != null) {
-        searchList.fq("hostName_docvalues_string:" + SearchTool.escapeQueryChars(hostName));
+      String hostResource = serviceRequest.getParams().getJsonObject("path").getString("hostResource");
+      if(hostResource != null) {
+        searchList.fq("hostResource_docvalues_string:" + SearchTool.escapeQueryChars(hostResource));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3918,7 +4140,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, hostName, created, hostResource, inventoryName, archived, eventSubscriptions, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM Host WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, inventoryResource, created, aapHostId, hostName, archived, hostId, hostResource, hostDescription, aapInventoryId, sessionId, inventoryName, userKey, eventSubscriptions, objectTitle, displayPage, editPage, userPage, download FROM Host WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3963,9 +4185,9 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
+          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4105,12 +4327,49 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
                   params.put("cookie", new JsonObject());
                   params.put("path", new JsonObject());
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
                   eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
+
+          if("HostInventory".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<HostInventory> searchList2 = new SearchList<HostInventory>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(HostInventory.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                HostInventory o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-HostInventory", json, new DeliveryOptions().addHeader("action", "patchHostInventoryFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))
@@ -4135,7 +4394,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
           params.put("header", siteRequest.getServiceRequest().getParams().getJsonObject("header"));
           params.put("form", new JsonObject());
           params.put("path", new JsonObject());
-          params.put("scopes", new JsonArray().add("GET").add("PATCH"));
+          params.put("scopes", siteRequest.getScopes());
           JsonObject query = new JsonObject();
           Boolean softCommit = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getBoolean("softCommit")).orElse(null);
           Integer commitWithin = Optional.ofNullable(siteRequest.getServiceRequest().getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getInteger("commitWithin")).orElse(null);
@@ -4185,14 +4444,19 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       o.setSiteRequest_((SiteRequest)siteRequest);
 
       o.persistForClass(Host.VAR_tenantResource, Host.staticSetTenantResource(siteRequest2, (String)result.get(Host.VAR_tenantResource)));
-      o.persistForClass(Host.VAR_hostName, Host.staticSetHostName(siteRequest2, (String)result.get(Host.VAR_hostName)));
+      o.persistForClass(Host.VAR_inventoryResource, Host.staticSetInventoryResource(siteRequest2, (String)result.get(Host.VAR_inventoryResource)));
       o.persistForClass(Host.VAR_created, Host.staticSetCreated(siteRequest2, (String)result.get(Host.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(Host.VAR_hostResource, Host.staticSetHostResource(siteRequest2, (String)result.get(Host.VAR_hostResource)));
-      o.persistForClass(Host.VAR_inventoryName, Host.staticSetInventoryName(siteRequest2, (String)result.get(Host.VAR_inventoryName)));
+      o.persistForClass(Host.VAR_aapHostId, Host.staticSetAapHostId(siteRequest2, (String)result.get(Host.VAR_aapHostId)));
+      o.persistForClass(Host.VAR_hostName, Host.staticSetHostName(siteRequest2, (String)result.get(Host.VAR_hostName)));
       o.persistForClass(Host.VAR_archived, Host.staticSetArchived(siteRequest2, (String)result.get(Host.VAR_archived)));
-      o.persistForClass(Host.VAR_eventSubscriptions, Host.staticSetEventSubscriptions(siteRequest2, (String)result.get(Host.VAR_eventSubscriptions)));
+      o.persistForClass(Host.VAR_hostId, Host.staticSetHostId(siteRequest2, (String)result.get(Host.VAR_hostId)));
+      o.persistForClass(Host.VAR_hostResource, Host.staticSetHostResource(siteRequest2, (String)result.get(Host.VAR_hostResource)));
+      o.persistForClass(Host.VAR_hostDescription, Host.staticSetHostDescription(siteRequest2, (String)result.get(Host.VAR_hostDescription)));
+      o.persistForClass(Host.VAR_aapInventoryId, Host.staticSetAapInventoryId(siteRequest2, (String)result.get(Host.VAR_aapInventoryId)));
       o.persistForClass(Host.VAR_sessionId, Host.staticSetSessionId(siteRequest2, (String)result.get(Host.VAR_sessionId)));
+      o.persistForClass(Host.VAR_inventoryName, Host.staticSetInventoryName(siteRequest2, (String)result.get(Host.VAR_inventoryName)));
       o.persistForClass(Host.VAR_userKey, Host.staticSetUserKey(siteRequest2, (String)result.get(Host.VAR_userKey)));
+      o.persistForClass(Host.VAR_eventSubscriptions, Host.staticSetEventSubscriptions(siteRequest2, (String)result.get(Host.VAR_eventSubscriptions)));
       o.persistForClass(Host.VAR_objectTitle, Host.staticSetObjectTitle(siteRequest2, (String)result.get(Host.VAR_objectTitle)));
       o.persistForClass(Host.VAR_displayPage, Host.staticSetDisplayPage(siteRequest2, (String)result.get(Host.VAR_displayPage)));
       o.persistForClass(Host.VAR_editPage, Host.staticSetEditPage(siteRequest2, (String)result.get(Host.VAR_editPage)));

@@ -1,6 +1,8 @@
 package org.computate.dcm.model.eda.host;
 
+import org.computate.dcm.model.eda.host.Host;
 import java.lang.String;
+import java.lang.Long;
 import java.util.List;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
@@ -491,7 +493,7 @@ public class HostGenPage extends HostGenPageGen<PageLayout> {
    * Initialized: false
   **/
   protected void _result(Wrap<Host> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("hostName")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("hostResource")).orElse(null) != null)
       w.o(searchListHost_.get(0));
   }
 

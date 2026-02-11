@@ -493,7 +493,7 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
    * Initialized: false
   **/
   protected void _result(Wrap<HostInventory> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("inventoryName")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("inventoryResource")).orElse(null) != null)
       w.o(searchListHostInventory_.get(0));
   }
 
@@ -522,11 +522,11 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
     if(result != null && result.getObjectTitle() != null)
       c.o(result.getObjectTitle());
     else if(result != null)
-      c.o("a host inventories");
+      c.o("host inventories");
     else if(searchListHostInventory_ == null || resultCount == 0)
       c.o("no host inventory found");
     else
-      c.o("a host inventories");
+      c.o("host inventories");
   }
 
   @Override

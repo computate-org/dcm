@@ -467,7 +467,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportHostResponse'
-  /en-us/api/host/{hostName}:
+  /en-us/api/host/{hostResource}:
     get:
       operationId: getHost
       x-vertx-event-bus: dcm-enUS-Host
@@ -509,7 +509,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: hostName
+        - name: hostResource
           in: path
           description: >+
           required: true
@@ -563,7 +563,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: hostName
+        - name: hostResource
           in: path
           description: >+
           required: true
@@ -611,7 +611,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETEHostResponse'
-  /en-us/edit/host/{hostName}:
+  /en-us/edit/host/{hostResource}:
     get:
       operationId: editpageHost
       x-vertx-event-bus: dcm-enUS-Host
@@ -653,7 +653,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: hostName
+        - name: hostResource
           in: path
           description: >+
           required: true
@@ -907,7 +907,7 @@ paths:
             text/html; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchPageHostResponse'
-  /en-us/user/host/{hostName}:
+  /en-us/user/host/{hostResource}:
     get:
       operationId: userpageHost
       x-vertx-event-bus: dcm-enUS-Host
@@ -949,7 +949,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: hostName
+        - name: hostResource
           in: path
           description: >+
           required: true
@@ -1426,7 +1426,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportHostInventoryResponse'
-  /en-us/api/host-inventory/{inventoryName}:
+  /en-us/api/host-inventory/{inventoryResource}:
     get:
       operationId: getHostInventory
       x-vertx-event-bus: dcm-enUS-HostInventory
@@ -1468,7 +1468,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: inventoryName
+        - name: inventoryResource
           in: path
           description: >+
           required: true
@@ -1522,7 +1522,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: inventoryName
+        - name: inventoryResource
           in: path
           description: >+
           required: true
@@ -1570,7 +1570,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETEHostInventoryResponse'
-  /en-us/edit/host-inventory/{inventoryName}:
+  /en-us/edit/host-inventory/{inventoryResource}:
     get:
       operationId: editpageHostInventory
       x-vertx-event-bus: dcm-enUS-HostInventory
@@ -1612,7 +1612,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: inventoryName
+        - name: inventoryResource
           in: path
           description: >+
           required: true
@@ -1866,7 +1866,7 @@ paths:
             text/html; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchPageHostInventoryResponse'
-  /en-us/user/host-inventory/{inventoryName}:
+  /en-us/user/host-inventory/{inventoryResource}:
     get:
       operationId: userpageHostInventory
       x-vertx-event-bus: dcm-enUS-HostInventory
@@ -1908,7 +1908,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: inventoryName
+        - name: inventoryResource
           in: path
           description: >+
           required: true
@@ -7713,9 +7713,19 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  inventoryResource:
+                    type: string
+                  aapHostId:
+                    type: string
                   hostName:
                     type: string
+                  hostId:
+                    type: string
                   hostResource:
+                    type: string
+                  hostDescription:
+                    type: string
+                  aapInventoryId:
                     type: string
                   inventoryName:
                     type: string
@@ -7734,6 +7744,20 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setInventoryResource:
+              type: string
+              nullable: true
+            removeInventoryResource:
+              type: string
+            removeAllInventoryResource:
+              type: string
+            setAapHostId:
+              type: string
+              nullable: true
+            removeAapHostId:
+              type: string
+            removeAllAapHostId:
+              type: string
             setHostName:
               type: string
               nullable: true
@@ -7741,12 +7765,33 @@ components:
               type: string
             removeAllHostName:
               type: string
+            setHostId:
+              type: string
+              nullable: true
+            removeHostId:
+              type: string
+            removeAllHostId:
+              type: string
             setHostResource:
               type: string
               nullable: true
             removeHostResource:
               type: string
             removeAllHostResource:
+              type: string
+            setHostDescription:
+              type: string
+              nullable: true
+            removeHostDescription:
+              type: string
+            removeAllHostDescription:
+              type: string
+            setAapInventoryId:
+              type: string
+              nullable: true
+            removeAapInventoryId:
+              type: string
+            removeAllAapInventoryId:
               type: string
             setInventoryName:
               type: string
@@ -7783,6 +7828,20 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setInventoryResource:
+              type: string
+              nullable: true
+            removeInventoryResource:
+              type: string
+            removeAllInventoryResource:
+              type: string
+            setAapHostId:
+              type: string
+              nullable: true
+            removeAapHostId:
+              type: string
+            removeAllAapHostId:
+              type: string
             setHostName:
               type: string
               nullable: true
@@ -7790,12 +7849,33 @@ components:
               type: string
             removeAllHostName:
               type: string
+            setHostId:
+              type: string
+              nullable: true
+            removeHostId:
+              type: string
+            removeAllHostId:
+              type: string
             setHostResource:
               type: string
               nullable: true
             removeHostResource:
               type: string
             removeAllHostResource:
+              type: string
+            setHostDescription:
+              type: string
+              nullable: true
+            removeHostDescription:
+              type: string
+            removeAllHostDescription:
+              type: string
+            setAapInventoryId:
+              type: string
+              nullable: true
+            removeAapInventoryId:
+              type: string
+            removeAllAapInventoryId:
               type: string
             setInventoryName:
               type: string
@@ -7827,9 +7907,19 @@ components:
           properties:
             tenantResource:
               type: string
+            inventoryResource:
+              type: string
+            aapHostId:
+              type: string
             hostName:
               type: string
+            hostId:
+              type: string
             hostResource:
+              type: string
+            hostDescription:
+              type: string
+            aapInventoryId:
               type: string
             inventoryName:
               type: string
@@ -7843,9 +7933,19 @@ components:
           properties:
             tenantResource:
               type: string
+            inventoryResource:
+              type: string
+            aapHostId:
+              type: string
             hostName:
               type: string
+            hostId:
+              type: string
             hostResource:
+              type: string
+            hostDescription:
+              type: string
+            aapInventoryId:
               type: string
             inventoryName:
               type: string
@@ -7859,9 +7959,19 @@ components:
           properties:
             tenantResource:
               type: string
+            inventoryResource:
+              type: string
+            aapHostId:
+              type: string
             hostName:
               type: string
+            hostId:
+              type: string
             hostResource:
+              type: string
+            hostDescription:
+              type: string
+            aapInventoryId:
               type: string
             inventoryName:
               type: string
@@ -7880,9 +7990,19 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  inventoryResource:
+                    type: string
+                  aapHostId:
+                    type: string
                   hostName:
                     type: string
+                  hostId:
+                    type: string
                   hostResource:
+                    type: string
+                  hostDescription:
+                    type: string
+                  aapInventoryId:
                     type: string
                   inventoryName:
                     type: string
@@ -7896,9 +8016,19 @@ components:
           properties:
                   tenantResource:
                     type: string
+                  inventoryResource:
+                    type: string
+                  aapHostId:
+                    type: string
                   hostName:
                     type: string
+                  hostId:
+                    type: string
                   hostResource:
+                    type: string
+                  hostDescription:
+                    type: string
+                  aapInventoryId:
                     type: string
                   inventoryName:
                     type: string
@@ -7912,9 +8042,19 @@ components:
           properties:
             tenantResource:
               type: string
+            inventoryResource:
+              type: string
+            aapHostId:
+              type: string
             hostName:
               type: string
+            hostId:
+              type: string
             hostResource:
+              type: string
+            hostDescription:
+              type: string
+            aapInventoryId:
               type: string
             inventoryName:
               type: string
@@ -7928,9 +8068,19 @@ components:
           properties:
             tenantResource:
               type: string
+            inventoryResource:
+              type: string
+            aapHostId:
+              type: string
             hostName:
               type: string
+            hostId:
+              type: string
             hostResource:
+              type: string
+            hostDescription:
+              type: string
+            aapInventoryId:
               type: string
             inventoryName:
               type: string
@@ -7969,9 +8119,13 @@ components:
                     type: string
                   inventoryName:
                     type: string
+                  inventoryId:
+                    type: string
+                  inventoryResource:
+                    type: string
                   inventoryDescription:
                     type: string
-                  inventoryId:
+                  aapInventoryId:
                     type: string
                   inventoryOrganizationId:
                     type: string
@@ -7995,6 +8149,20 @@ components:
               type: string
             removeAllInventoryName:
               type: string
+            setInventoryId:
+              type: string
+              nullable: true
+            removeInventoryId:
+              type: string
+            removeAllInventoryId:
+              type: string
+            setInventoryResource:
+              type: string
+              nullable: true
+            removeInventoryResource:
+              type: string
+            removeAllInventoryResource:
+              type: string
             setInventoryDescription:
               type: string
               nullable: true
@@ -8002,12 +8170,12 @@ components:
               type: string
             removeAllInventoryDescription:
               type: string
-            setInventoryId:
+            setAapInventoryId:
               type: string
               nullable: true
-            removeInventoryId:
+            removeAapInventoryId:
               type: string
-            removeAllInventoryId:
+            removeAllAapInventoryId:
               type: string
             setInventoryOrganizationId:
               type: string
@@ -8041,6 +8209,20 @@ components:
               type: string
             removeAllInventoryName:
               type: string
+            setInventoryId:
+              type: string
+              nullable: true
+            removeInventoryId:
+              type: string
+            removeAllInventoryId:
+              type: string
+            setInventoryResource:
+              type: string
+              nullable: true
+            removeInventoryResource:
+              type: string
+            removeAllInventoryResource:
+              type: string
             setInventoryDescription:
               type: string
               nullable: true
@@ -8048,12 +8230,12 @@ components:
               type: string
             removeAllInventoryDescription:
               type: string
-            setInventoryId:
+            setAapInventoryId:
               type: string
               nullable: true
-            removeInventoryId:
+            removeAapInventoryId:
               type: string
-            removeAllInventoryId:
+            removeAllAapInventoryId:
               type: string
             setInventoryOrganizationId:
               type: string
@@ -8077,9 +8259,13 @@ components:
               type: string
             inventoryName:
               type: string
+            inventoryId:
+              type: string
+            inventoryResource:
+              type: string
             inventoryDescription:
               type: string
-            inventoryId:
+            aapInventoryId:
               type: string
             inventoryOrganizationId:
               type: string
@@ -8093,9 +8279,13 @@ components:
               type: string
             inventoryName:
               type: string
+            inventoryId:
+              type: string
+            inventoryResource:
+              type: string
             inventoryDescription:
               type: string
-            inventoryId:
+            aapInventoryId:
               type: string
             inventoryOrganizationId:
               type: string
@@ -8109,9 +8299,13 @@ components:
               type: string
             inventoryName:
               type: string
+            inventoryId:
+              type: string
+            inventoryResource:
+              type: string
             inventoryDescription:
               type: string
-            inventoryId:
+            aapInventoryId:
               type: string
             inventoryOrganizationId:
               type: string
@@ -8130,9 +8324,13 @@ components:
                     type: string
                   inventoryName:
                     type: string
+                  inventoryId:
+                    type: string
+                  inventoryResource:
+                    type: string
                   inventoryDescription:
                     type: string
-                  inventoryId:
+                  aapInventoryId:
                     type: string
                   inventoryOrganizationId:
                     type: string
@@ -8146,9 +8344,13 @@ components:
                     type: string
                   inventoryName:
                     type: string
+                  inventoryId:
+                    type: string
+                  inventoryResource:
+                    type: string
                   inventoryDescription:
                     type: string
-                  inventoryId:
+                  aapInventoryId:
                     type: string
                   inventoryOrganizationId:
                     type: string
@@ -8162,9 +8364,13 @@ components:
               type: string
             inventoryName:
               type: string
+            inventoryId:
+              type: string
+            inventoryResource:
+              type: string
             inventoryDescription:
               type: string
-            inventoryId:
+            aapInventoryId:
               type: string
             inventoryOrganizationId:
               type: string
@@ -8178,9 +8384,13 @@ components:
               type: string
             inventoryName:
               type: string
+            inventoryId:
+              type: string
+            inventoryResource:
+              type: string
             inventoryDescription:
               type: string
-            inventoryId:
+            aapInventoryId:
               type: string
             inventoryOrganizationId:
               type: string
