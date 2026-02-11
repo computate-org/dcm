@@ -107,6 +107,21 @@ public class Host extends HostGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
+   * HtmRow: 3
+   * HtmCell: 2
+   * HtmColumn: 1
+   * DisplayName: IP address
+   * Description: The IP address of the host
+   * Required: true
+   */
+  protected void _ipAddress(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
    * DisplayName: host ID
    * Description: The ID of the host in DCM. 
    */

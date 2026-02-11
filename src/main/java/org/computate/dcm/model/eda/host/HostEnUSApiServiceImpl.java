@@ -44,6 +44,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
         JsonObject hostJson = o.getSiteRequest_().getJsonObject();
         String inventoryResource = Optional.ofNullable(hostJson.getString(patch ? "setInventoryResource": "inventoryResource")).orElse(o.getInventoryResource());
         String hostName = Optional.ofNullable(hostJson.getString(patch ? "setHostName": "hostName")).orElse(o.getHostName());
+        String ipAddress = Optional.ofNullable(hostJson.getString(patch ? "setIpAddress": "ipAddress")).orElse(o.getIpAddress());
         String hostId = Optional.ofNullable(hostJson.getString(patch ? "setHostId": "hostId")).orElse(Host.toId(hostName));
         hostJson.put(Host.VAR_hostId, hostId);
         String hostResource = String.format("%s-%s", Host.CLASS_AUTH_RESOURCE, hostId);
@@ -81,22 +82,13 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
 
               JsonObject body = new JsonObject();
               String hostDescription = Optional.ofNullable(hostJson.getString(patch ? "setHostDescription": "hostDescription")).orElse(o.getHostDescription());
-              body.put("name", hostName);
+              body.put("name", ipAddress == null ? hostName : ipAddress);
+              body.put("instance_id", hostName);
               if(hostDescription != null)
-                body.put("description", hostDescription);
+                body.put("description", Optional.ofNullable(hostDescription).orElse(hostName));
 
               if(patch) {
-                webClient.patch(aapPort, aapHostName, aapUri).ssl(aapSsl)
-                    .putHeader("Content-Type", "application/json")
-                    .basicAuthentication(aapUserName, aapPassword)
-                    .sendJsonObject(body)
-                    .expecting(HttpResponseExpectation.SC_OK)
-                    .onSuccess(hostResponse -> {
-                  promise.complete();
-                }).onFailure(ex -> {
-                  LOG.error(String.format("Updating AAP host failed. "), ex);
-                  promise.fail(ex);
-                });
+                promise.complete();
               } else {
                 webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
                     .putHeader("Content-Type", "application/json")
@@ -141,6 +133,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
         JsonObject hostJson = o.getSiteRequest_().getJsonObject();
         String inventoryResource = Optional.ofNullable(hostJson.getString(patch ? "setInventoryResource": "inventoryResource")).orElse(o.getInventoryResource());
         String hostName = Optional.ofNullable(hostJson.getString(patch ? "setHostName": "hostName")).orElse(o.getHostName());
+        String ipAddress = Optional.ofNullable(hostJson.getString(patch ? "setIpAddress": "ipAddress")).orElse(o.getIpAddress());
         String hostId = Optional.ofNullable(hostJson.getString(patch ? "setHostId": "hostId")).orElse(HostInventory.toId(hostName));
         hostJson.put(Host.VAR_hostId, hostId);
         String hostResource = String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, hostId);
@@ -212,8 +205,8 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
   @Override
   public Future<Host> sqlPATCHHost(Host o, Boolean inheritPrimaryKey) {
     Promise<Host> promise = Promise.promise();
-    sensuUpsertHost(o, inheritPrimaryKey, false).onSuccess(a -> {
-      super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
+    sensuUpsertHost(o, inheritPrimaryKey, true).onSuccess(a -> {
+      super.sqlPATCHHost(o, inheritPrimaryKey).onSuccess(o2 -> {
         promise.complete(o2);
       }).onFailure(ex -> {
         promise.fail(ex);
@@ -236,11 +229,11 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
       String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
       String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
-      if(StringUtils.isEmpty(hostName)) {
-        RuntimeException ex = new RuntimeException("Missing host name");
-        LOG.error(ex.getMessage(), ex);
-        promise.fail(ex);
-      } else {
+      // if(StringUtils.isEmpty(hostName)) {
+      //   RuntimeException ex = new RuntimeException("Missing host name");
+      //   LOG.error(ex.getMessage(), ex);
+      //   promise.fail(ex);
+      // } else {
         webClient.delete(aapPort, aapHostName, aapUri).ssl(aapSsl)
             .basicAuthentication(aapUserName, aapPassword)
             .send()
@@ -251,7 +244,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
           LOG.error(String.format("Deleting Sensu host failed. "), ex);
           promise.fail(ex);
         });
-      }
+      // }
     } catch(Exception ex) {
       LOG.error(String.format("Deleting Sensu host failed. "), ex);
       promise.fail(ex);
@@ -262,19 +255,19 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
   public Future<Void> sensuDeleteHost(Host o) {
     Promise<Void> promise = Promise.promise();
     try {
-      String hostName = o.getHostName();
+      String ipAddress = o.getIpAddress();
 
       Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
       String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
       Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
-      String sensuUri = String.format("/api/core/v2/namespaces/default/entities/%s", hostName);
+      String sensuUri = String.format("/api/core/v2/namespaces/default/entities/%s", ipAddress);
       String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
 
-      if(StringUtils.isEmpty(hostName)) {
-        RuntimeException ex = new RuntimeException("Missing host name");
-        LOG.error(ex.getMessage(), ex);
-        promise.fail(ex);
-      } else {
+      // if(StringUtils.isEmpty(hostName)) {
+      //   RuntimeException ex = new RuntimeException("Missing host name");
+      //   LOG.error(ex.getMessage(), ex);
+      //   promise.fail(ex);
+      // } else {
         webClient.delete(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
             .putHeader("Authorization", String.format("Key %s", accessToken))
             .send()
@@ -285,7 +278,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
           LOG.error(String.format("Deleting Sensu host failed. "), ex);
           promise.fail(ex);
         });
-      }
+      // }
     } catch(Exception ex) {
       LOG.error(String.format("Deleting Sensu host failed. "), ex);
       promise.fail(ex);

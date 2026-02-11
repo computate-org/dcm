@@ -414,7 +414,7 @@ KAFKA_PORT: "{{ lookup('env', 'KAFKA_PORT') | default('32000', true) }}"
 # The namespace in OpenShift where Kafka will run. 
 KAFKA_NAMESPACE: "{{ lookup('env', 'KAFKA_NAMESPACE') | default('kafka', true) }}"
 # The Kafka brokers hostname and port. 
-KAFKA_BROKERS: "{{ lookup('env', 'KAFKA_BROKERS') | default('kafka-kafka-bootstrap:9093', true) }}"
+KAFKA_BROKERS: "{{ lookup('env', 'KAFKA_BROKERS') | default('console-openshift-console.apps-crc.testing:32000', true) }}"
 # The Kafka group for receiving messages. 
 KAFKA_GROUP: "{{ lookup('env', 'KAFKA_GROUP') | default('esi-ai-telemetry', true) }}"
 # The Kafka security protocol. 
@@ -589,7 +589,7 @@ SENSU_TOKEN: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENS
 # Whether to use SSL when connecting to the Sensu. 
 SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('false', true) | lower) != 'false' }}"
 # The host name to connect to the Sensu in OpenShift. 
-SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('rhel10', true) }}"
+SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('localhost', true) }}"
 # The default port that the Sensu runs. 
 SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
 

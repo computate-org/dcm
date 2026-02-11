@@ -468,6 +468,68 @@ public abstract class HostGen<DEV> extends BaseModel {
     return hostName;
   }
 
+	///////////////
+  // ipAddress //
+	///////////////
+
+
+  /**
+   *  The entity ipAddress
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String ipAddress;
+
+  /**
+   * <br> The entity ipAddress
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.Host&fq=entiteVar_enUS_indexed_string:ipAddress">Find the entity ipAddress in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _ipAddress(Wrap<String> w);
+
+  public String getIpAddress() {
+    return ipAddress;
+  }
+  public void setIpAddress(String o) {
+    this.ipAddress = Host.staticSetIpAddress(siteRequest_, o);
+  }
+  public static String staticSetIpAddress(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Host ipAddressInit() {
+    Wrap<String> ipAddressWrap = new Wrap<String>().var("ipAddress");
+    if(ipAddress == null) {
+      _ipAddress(ipAddressWrap);
+      Optional.ofNullable(ipAddressWrap.getO()).ifPresent(o -> {
+        setIpAddress(o);
+      });
+    }
+    return (Host)this;
+  }
+
+  public static String staticSearchIpAddress(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrIpAddress(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqIpAddress(SiteRequest siteRequest_, String o) {
+    return Host.staticSearchIpAddress(siteRequest_, Host.staticSetIpAddress(siteRequest_, o)).toString();
+  }
+
+  public String sqlIpAddress() {
+    return ipAddress;
+  }
+
+  public static String staticJsonIpAddress(String ipAddress) {
+    return ipAddress;
+  }
+
 	////////////
   // hostId //
 	////////////
@@ -906,6 +968,7 @@ public abstract class HostGen<DEV> extends BaseModel {
         inventoryResourceInit();
         aapHostIdInit();
         hostNameInit();
+        ipAddressInit();
         hostIdInit();
         hostResourceInit();
         hostDescriptionInit();
@@ -973,6 +1036,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return oHost.aapHostId;
       case "hostName":
         return oHost.hostName;
+      case "ipAddress":
+        return oHost.ipAddress;
       case "hostId":
         return oHost.hostId;
       case "hostResource":
@@ -1044,6 +1109,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSetAapHostId(siteRequest_, v);
     case "hostName":
       return Host.staticSetHostName(siteRequest_, v);
+    case "ipAddress":
+      return Host.staticSetIpAddress(siteRequest_, v);
     case "hostId":
       return Host.staticSetHostId(siteRequest_, v);
     case "hostResource":
@@ -1078,6 +1145,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchAapHostId(siteRequest_, (Long)o);
     case "hostName":
       return Host.staticSearchHostName(siteRequest_, (String)o);
+    case "ipAddress":
+      return Host.staticSearchIpAddress(siteRequest_, (String)o);
     case "hostId":
       return Host.staticSearchHostId(siteRequest_, (String)o);
     case "hostResource":
@@ -1112,6 +1181,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchStrAapHostId(siteRequest_, (Long)o);
     case "hostName":
       return Host.staticSearchStrHostName(siteRequest_, (String)o);
+    case "ipAddress":
+      return Host.staticSearchStrIpAddress(siteRequest_, (String)o);
     case "hostId":
       return Host.staticSearchStrHostId(siteRequest_, (String)o);
     case "hostResource":
@@ -1146,6 +1217,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchFqAapHostId(siteRequest_, o);
     case "hostName":
       return Host.staticSearchFqHostName(siteRequest_, o);
+    case "ipAddress":
+      return Host.staticSearchFqIpAddress(siteRequest_, o);
     case "hostId":
       return Host.staticSearchFqHostId(siteRequest_, o);
     case "hostResource":
@@ -1209,6 +1282,12 @@ public abstract class HostGen<DEV> extends BaseModel {
           setHostName((String)val);
         }
         saves.add("hostName");
+        return val;
+      } else if("ipaddress".equals(varLower)) {
+        if(val instanceof String) {
+          setIpAddress((String)val);
+        }
+        saves.add("ipAddress");
         return val;
       } else if("hostid".equals(varLower)) {
         if(val instanceof String) {
@@ -1291,6 +1370,12 @@ public abstract class HostGen<DEV> extends BaseModel {
           oHost.setHostName(hostName);
       }
 
+      if(saves.contains("ipAddress")) {
+        String ipAddress = (String)doc.get("ipAddress_docvalues_string");
+        if(ipAddress != null)
+          oHost.setIpAddress(ipAddress);
+      }
+
       if(saves.contains("hostId")) {
         String hostId = (String)doc.get("hostId_docvalues_string");
         if(hostId != null)
@@ -1347,6 +1432,9 @@ public abstract class HostGen<DEV> extends BaseModel {
     if(hostName != null) {
       doc.put("hostName_docvalues_string", hostName);
     }
+    if(ipAddress != null) {
+      doc.put("ipAddress_docvalues_string", ipAddress);
+    }
     if(hostId != null) {
       doc.put("hostId_docvalues_string", hostId);
     }
@@ -1383,6 +1471,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "aapHostId_docvalues_long";
       case "hostName":
         return "hostName_docvalues_string";
+      case "ipAddress":
+        return "ipAddress_docvalues_string";
       case "hostId":
         return "hostId_docvalues_string";
       case "hostResource":
@@ -1410,6 +1500,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "aapHostId_docvalues_long";
       case "hostName":
         return "hostName_docvalues_string";
+      case "ipAddress":
+        return "ipAddress_docvalues_string";
       case "hostId":
         return "hostId_docvalues_string";
       case "hostResource":
@@ -1437,6 +1529,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "aapHostId";
       case "hostName_docvalues_string":
         return "hostName";
+      case "ipAddress_docvalues_string":
+        return "ipAddress";
       case "hostId_docvalues_string":
         return "hostId";
       case "hostResource_docvalues_string":
@@ -1483,6 +1577,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     oHost.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setAapHostId(Optional.ofNullable(doc.get("aapHostId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHost.setHostName(Optional.ofNullable(doc.get("hostName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHost.setIpAddress(Optional.ofNullable(doc.get("ipAddress_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setHostId(Optional.ofNullable(doc.get("hostId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setHostResource(Optional.ofNullable(doc.get("hostResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setHostDescription(Optional.ofNullable(doc.get("hostDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1512,6 +1607,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         apiRequest.addVars("aapHostId");
       if(!Objects.equals(hostName, original.getHostName()))
         apiRequest.addVars("hostName");
+      if(!Objects.equals(ipAddress, original.getIpAddress()))
+        apiRequest.addVars("ipAddress");
       if(!Objects.equals(hostId, original.getHostId()))
         apiRequest.addVars("hostId");
       if(!Objects.equals(hostResource, original.getHostResource()))
@@ -1539,6 +1636,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapHostId).map(v -> "aapHostId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(hostName).map(v -> "hostName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(ipAddress).map(v -> "ipAddress: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hostId).map(v -> "hostId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hostResource).map(v -> "hostResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hostDescription).map(v -> "hostDescription: \"" + v + "\"\n" ).orElse(""));
@@ -1559,6 +1657,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static final String VAR_inventoryResource = "inventoryResource";
   public static final String VAR_aapHostId = "aapHostId";
   public static final String VAR_hostName = "hostName";
+  public static final String VAR_ipAddress = "ipAddress";
   public static final String VAR_hostId = "hostId";
   public static final String VAR_hostResource = "hostResource";
   public static final String VAR_hostDescription = "hostDescription";
@@ -1595,6 +1694,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_inventoryResource = "inventory";
   public static final String DISPLAY_NAME_aapHostId = "AAP ID";
   public static final String DISPLAY_NAME_hostName = "Fully Qualified Domain Name";
+  public static final String DISPLAY_NAME_ipAddress = "IP address";
   public static final String DISPLAY_NAME_hostId = "host ID";
   public static final String DISPLAY_NAME_hostResource = "host resource";
   public static final String DISPLAY_NAME_hostDescription = "host description";
@@ -1660,6 +1760,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return DISPLAY_NAME_aapHostId;
     case VAR_hostName:
       return DISPLAY_NAME_hostName;
+    case VAR_ipAddress:
+      return DISPLAY_NAME_ipAddress;
     case VAR_hostId:
       return DISPLAY_NAME_hostId;
     case VAR_hostResource:
@@ -1689,6 +1791,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return "The Ansible Automation Platform ID of the host. ";
     case VAR_hostName:
       return "The computer fully qualified domain name";
+    case VAR_ipAddress:
+      return "The IP address of the host";
     case VAR_hostId:
       return "The ID of the host in DCM. ";
     case VAR_hostResource:
@@ -1716,6 +1820,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return "Long";
     case VAR_hostName:
       return "String";
+    case VAR_ipAddress:
+      return "String";
     case VAR_hostId:
       return "String";
     case VAR_hostResource:
@@ -1739,6 +1845,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return 0;
     case VAR_hostName:
       return 1;
+    case VAR_ipAddress:
+      return 1;
     case VAR_hostDescription:
       return 2;
     case VAR_eventSubscriptions:
@@ -1756,6 +1864,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return 3;
     case VAR_hostName:
       return 3;
+    case VAR_ipAddress:
+      return 3;
     case VAR_hostDescription:
       return 3;
     case VAR_eventSubscriptions:
@@ -1772,6 +1882,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     case VAR_inventoryResource:
       return 1;
     case VAR_hostName:
+      return 2;
+    case VAR_ipAddress:
       return 2;
     case VAR_hostDescription:
       return 3;

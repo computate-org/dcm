@@ -77,12 +77,33 @@ ALTER TABLE Host ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryResource text references HostInventory(inventoryResource);
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapHostId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostName text UNIQUE;
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS ipAddress text UNIQUE;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostId text UNIQUE;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostResource text UNIQUE;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostDescription text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapInventoryId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryName text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS eventSubscriptions text[];
+
+CREATE TABLE IF NOT EXISTS HostCheck();
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS pk bigserial primary key;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS created timestamp with time zone;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS archived boolean;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS sessionId text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS userKey bigint;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS objectTitle text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS displayPage text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS editPage text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS userPage text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS download text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(tenantResource);
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkName text UNIQUE;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkNamespace text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkCommand text;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkInterval integer;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkPublished boolean;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS eventSubscriptions text[];
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS eventHandlers text[];
 
 CREATE TABLE IF NOT EXISTS Project();
 ALTER TABLE Project ADD COLUMN IF NOT EXISTS pk bigserial primary key;

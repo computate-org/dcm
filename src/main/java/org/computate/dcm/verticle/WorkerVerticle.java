@@ -42,15 +42,18 @@ import org.computate.dcm.timezone.TimeZoneEnUSGenApiService;
 import org.computate.dcm.page.SitePage;
 import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
 import org.computate.dcm.page.SitePageEnUSGenApiService;
-import org.computate.dcm.model.eda.host.Host;
-import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
-import org.computate.dcm.model.eda.hostinventory.HostInventory;
-import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSGenApiService;
+import org.computate.dcm.model.eda.host.Host;
+import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
+import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
 import org.computate.dcm.model.k8s.Project;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
@@ -435,12 +438,14 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       initializeApiService(apiTimeZone);
       SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
       initializeApiService(apiSitePage);
-      HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
-      initializeApiService(apiHost);
-      HostInventoryEnUSApiServiceImpl apiHostInventory = new HostInventoryEnUSApiServiceImpl();
-      initializeApiService(apiHostInventory);
       TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
       initializeApiService(apiTenant);
+      HostInventoryEnUSApiServiceImpl apiHostInventory = new HostInventoryEnUSApiServiceImpl();
+      initializeApiService(apiHostInventory);
+      HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
+      initializeApiService(apiHost);
+      HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
+      initializeApiService(apiHostCheck);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
@@ -448,13 +453,15 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
 			apiTimeZone.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TimeZone.CLASS_CANONICAL_NAME, TimeZone.CLASS_SIMPLE_NAME, TimeZone.CLASS_API_ADDRESS_TimeZone, TimeZone.CLASS_AUTH_RESOURCE, "id", "userPage", "download").onSuccess(q1 -> {
 				apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
-					apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostName", "userPage", "download").onSuccess(q3 -> {
-						apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryName", "userPage", "download").onSuccess(q4 -> {
-							apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantId", "userPage", "download").onSuccess(q5 -> {
-								apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q6 -> {
-									apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q7 -> {
-										LOG.info("data import complete");
-										promise.complete();
+					apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantId", "userPage", "download").onSuccess(q3 -> {
+						apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryResource", "userPage", "download").onSuccess(q4 -> {
+							apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostResource", "userPage", "download").onSuccess(q5 -> {
+								apiHostCheck.importTimer(Paths.get(templatePath, "/en-us/user/host-check"), vertx, siteRequest, HostCheck.CLASS_CANONICAL_NAME, HostCheck.CLASS_SIMPLE_NAME, HostCheck.CLASS_API_ADDRESS_HostCheck, HostCheck.CLASS_AUTH_RESOURCE, "checkName", "userPage", "download").onSuccess(q6 -> {
+									apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q7 -> {
+										apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q8 -> {
+											LOG.info("data import complete");
+											promise.complete();
+										}).onFailure(ex -> promise.fail(ex));
 									}).onFailure(ex -> promise.fail(ex));
 								}).onFailure(ex -> promise.fail(ex));
 							}).onFailure(ex -> promise.fail(ex));
