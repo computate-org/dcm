@@ -4,6 +4,8 @@ import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -109,6 +111,7 @@ import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.BooleanUtils;
 import org.computate.vertx.search.list.SearchList;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplatePage;
 
 
 /**
@@ -127,21 +130,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -154,22 +170,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -191,7 +209,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, false, "GET").onSuccess(listJobTemplate -> {
                 response200SearchJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchJobTemplate succeeded. "));
@@ -246,6 +264,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       List<String> fls = listJobTemplate.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listJobTemplate.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -272,15 +291,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       });
       json.put("list", l);
       response200Search(listJobTemplate.getRequest(), listJobTemplate.getResponse(), json);
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -330,21 +341,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -357,22 +381,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -394,7 +420,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, false, "GET").onSuccess(listJobTemplate -> {
                 response200GETJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("getJobTemplate succeeded. "));
@@ -447,15 +473,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     try {
       SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listJobTemplate.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -472,21 +490,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "PATCH"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "PATCH"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -499,22 +530,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PATCH") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -548,7 +581,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, true, "PATCH").onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listJobTemplate.getRequest().getRows());
@@ -558,7 +591,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listJobTemplate.first());
-                  apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
 
@@ -675,7 +708,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             siteRequest.addScopes(scope);
           });
         });
-        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+        searchJobTemplateList(siteRequest, false, true, true, "PATCH").onSuccess(listJobTemplate -> {
           try {
             JobTemplate o = listJobTemplate.first();
             ApiRequest apiRequest = new ApiRequest();
@@ -691,7 +724,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getJobTemplateId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(JobTemplate.class);
@@ -886,13 +919,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlJobTemplateName());
             break;
-          case "setJobTemplateDescription":
-              o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+          case "setJobTemplateId":
+              o2.setJobTemplateId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
               num++;
-              bParams.add(o2.sqlJobTemplateDescription());
+              bParams.add(o2.sqlJobTemplateId());
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
@@ -901,6 +934,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
+            break;
+          case "setJobTemplateDescription":
+              o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+              num++;
+              bParams.add(o2.sqlJobTemplateDescription());
             break;
           case "setJobType":
               o2.setJobType(jsonObject.getString(entityVar));
@@ -911,12 +952,43 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bParams.add(o2.sqlJobType());
             break;
           case "setAnsibleProjectId":
-              o2.setAnsibleProjectId(jsonObject.getString(entityVar));
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeAnsibleProjectId":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "setAnsiblePlaybook":
+              o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_ansibleProjectId + "=$" + num);
+              bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
               num++;
-              bParams.add(o2.sqlAnsibleProjectId());
+              bParams.add(o2.sqlAnsiblePlaybook());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
@@ -926,6 +998,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlSessionId());
             break;
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapOrganizationId());
+            break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -934,6 +1014,30 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlUserKey());
             break;
+          case "setOrganizationId":
+              o2.setOrganizationId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_organizationId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlOrganizationId());
+            break;
+          case "setAapInventoryId":
+              o2.setAapInventoryId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapInventoryId());
+            break;
+          case "setAapProjectId":
+              o2.setAapProjectId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapProjectId());
+            break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -941,6 +1045,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
+            break;
+          case "setAapTemplateId":
+              o2.setAapTemplateId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapTemplateId());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1017,15 +1129,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -1042,21 +1146,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "POST"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "POST"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1069,22 +1186,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("POST") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1245,7 +1364,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     });
   }
 
-  public Future<JobTemplate> postJobTemplateFuture(SiteRequest siteRequest, Boolean jobTemplateName) {
+  public Future<JobTemplate> postJobTemplateFuture(SiteRequest siteRequest, Boolean jobTemplateId) {
     Promise<JobTemplate> promise = Promise.promise();
 
     try {
@@ -1254,7 +1373,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         siteRequest.setSqlConnection(sqlConnection);
         varsJobTemplate(siteRequest).onSuccess(a -> {
           createJobTemplate(siteRequest).onSuccess(jobTemplate -> {
-            sqlPOSTJobTemplate(jobTemplate, jobTemplateName).onSuccess(b -> {
+            sqlPOSTJobTemplate(jobTemplate, jobTemplateId).onSuccess(b -> {
               persistJobTemplate(jobTemplate, false).onSuccess(c -> {
                 relateJobTemplate(jobTemplate).onSuccess(d -> {
                   indexJobTemplate(jobTemplate).onSuccess(o2 -> {
@@ -1422,14 +1541,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlJobTemplateName());
             break;
-          case JobTemplate.VAR_jobTemplateDescription:
-            o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateId:
+            o2.setJobTemplateId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
             num++;
-            bParams.add(o2.sqlJobTemplateDescription());
+            bParams.add(o2.sqlJobTemplateId());
             break;
           case JobTemplate.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
@@ -1439,6 +1558,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
+            break;
+          case JobTemplate.VAR_jobTemplateDescription:
+            o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+            num++;
+            bParams.add(o2.sqlJobTemplateDescription());
             break;
           case JobTemplate.VAR_jobType:
             o2.setJobType(jsonObject.getString(entityVar));
@@ -1450,13 +1578,33 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bParams.add(o2.sqlJobType());
             break;
           case JobTemplate.VAR_ansibleProjectId:
-            o2.setAnsibleProjectId(jsonObject.getString(entityVar));
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case JobTemplate.VAR_ansiblePlaybook:
+            o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_ansibleProjectId + "=$" + num);
+            bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
             num++;
-            bParams.add(o2.sqlAnsibleProjectId());
+            bParams.add(o2.sqlAnsiblePlaybook());
             break;
           case JobTemplate.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
@@ -1467,6 +1615,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlSessionId());
             break;
+          case JobTemplate.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapOrganizationId());
+            break;
           case JobTemplate.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1476,6 +1633,33 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlUserKey());
             break;
+          case JobTemplate.VAR_organizationId:
+            o2.setOrganizationId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_organizationId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlOrganizationId());
+            break;
+          case JobTemplate.VAR_aapInventoryId:
+            o2.setAapInventoryId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapInventoryId());
+            break;
+          case JobTemplate.VAR_aapProjectId:
+            o2.setAapProjectId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapProjectId());
+            break;
           case JobTemplate.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1484,6 +1668,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
+            break;
+          case JobTemplate.VAR_aapTemplateId:
+            o2.setAapTemplateId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapTemplateId());
             break;
           case JobTemplate.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1563,15 +1756,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -1588,21 +1773,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1615,22 +1813,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1664,7 +1864,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, true, "DELETE").onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listJobTemplate.getRequest().getRows());
@@ -1790,7 +1990,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             siteRequest.addScopes(scope);
           });
         });
-        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+        searchJobTemplateList(siteRequest, false, true, true, "DELETE").onSuccess(listJobTemplate -> {
           try {
             JobTemplate o = listJobTemplate.first();
             if(o != null && listJobTemplate.getResponse().getResponse().getNumFound() == 1) {
@@ -1805,7 +2005,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1955,6 +2155,26 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
+          case JobTemplate.VAR_ansibleProjectId:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -1994,15 +2214,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -2019,21 +2231,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "PUT"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "PUT"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2046,22 +2271,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PUT") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2220,14 +2447,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String jobTemplateName = Optional.ofNullable(body.getString(JobTemplate.VAR_jobTemplateName)).orElse(body.getString(JobTemplate.VAR_solrId));
+        String jobTemplateId = Optional.ofNullable(body.getString(JobTemplate.VAR_jobTemplateId)).orElse(body.getString(JobTemplate.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE jobTemplateName=$1", JobTemplate.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE jobTemplateId=$1", JobTemplate.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(jobTemplateName))
+              .execute(Tuple.tuple(Arrays.asList(jobTemplateId))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2277,24 +2504,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "jobTemplateName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "jobTemplateName", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getJobTemplateName()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getJobTemplateId()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchJobTemplateFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import JobTemplate {} succeeded, modified JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateName));
+                    LOG.debug("Import JobTemplate {} succeeded, modified JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
@@ -2302,7 +2529,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                   });
                 } else {
                   postJobTemplateFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import JobTemplate {} succeeded, created new JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateName));
+                    LOG.debug("Import JobTemplate {} succeeded, created new JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
@@ -2359,15 +2586,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -2385,21 +2604,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2412,22 +2644,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2449,7 +2683,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, false, "GET").onSuccess(listJobTemplate -> {
                 response200SearchPageJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchpageJobTemplate succeeded. "));
@@ -2545,8 +2779,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       String pageTemplateUri = templateUriSearchPageJobTemplate(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/job-template/JobTemplateSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
         Map<String, Object> data = new HashMap<>();
         String body = "";
@@ -2591,6 +2829,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
         promise.complete(renderedTemplate);
       } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       }
@@ -2693,22 +2932,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, jobTemplateName, "GET"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2721,22 +2972,23 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
-              //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2758,7 +3010,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, false, "GET").onSuccess(listJobTemplate -> {
                 response200EditPageJobTemplate(listJobTemplate).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("editpageJobTemplate succeeded. "));
@@ -2830,8 +3082,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       String pageTemplateUri = templateUriEditPageJobTemplate(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/job-template/JobTemplateSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
         Map<String, Object> data = new HashMap<>();
         String body = "";
@@ -2876,6 +3132,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
         promise.complete(renderedTemplate);
       } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       }
@@ -2970,291 +3227,6 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     }
   }
 
-  // UserPage //
-
-  @Override
-  public void userpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    Boolean classPublicRead = false;
-    user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
-      try {
-        siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
-        MultiMap form = MultiMap.caseInsensitiveMultiMap();
-        form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
-        form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
-        form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, jobTemplateName, "GET"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "GET"));
-        webClient.post(
-            config.getInteger(ComputateConfigKeys.AUTH_PORT)
-              , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
-              , config.getString(ComputateConfigKeys.AUTH_TOKEN_URI)
-              )
-              .ssl(config.getBoolean(ComputateConfigKeys.AUTH_SSL))
-              .putHeader("Authorization", String.format("Bearer %s", Optional.ofNullable(siteRequest.getUser()).map(u -> u.principal().getString("access_token")).orElse("")))
-              .sendForm(form)
-              .expecting(HttpResponseExpectation.SC_OK)
-        .onComplete(authorizationDecisionResponse -> {
-          try {
-            HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
-                  });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
-                  });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
-                siteRequest.setFilteredScope(true);
-              }
-            }
-            {
-              siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
-              List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, false).onSuccess(listJobTemplate -> {
-                response200UserPageJobTemplate(listJobTemplate).onSuccess(response -> {
-                  eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("userpageJobTemplate succeeded. "));
-                }).onFailure(ex -> {
-                  LOG.error(String.format("userpageJobTemplate failed. "), ex);
-                  error(siteRequest, eventHandler, ex);
-                });
-              }).onFailure(ex -> {
-                LOG.error(String.format("userpageJobTemplate failed. "), ex);
-                error(siteRequest, eventHandler, ex);
-            });
-            }
-          } catch(Exception ex) {
-            LOG.error(String.format("userpageJobTemplate failed. "), ex);
-            error(null, eventHandler, ex);
-          }
-        });
-      } catch(Exception ex) {
-        LOG.error(String.format("userpageJobTemplate failed. "), ex);
-        error(null, eventHandler, ex);
-      }
-    }).onFailure(ex -> {
-      if("Inactive Token".equals(ex.getMessage()) || StringUtils.startsWith(ex.getMessage(), "invalid_grant:")) {
-        try {
-          eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
-        } catch(Exception ex2) {
-          LOG.error(String.format("userpageJobTemplate failed. ", ex2));
-          error(null, eventHandler, ex2);
-        }
-      } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
-        eventHandler.handle(Future.succeededFuture(
-          new ServiceResponse(401, "UNAUTHORIZED",
-            Buffer.buffer().appendString(
-              new JsonObject()
-                .put("errorCode", "401")
-                .put("errorMessage", "SSO Resource Permission check returned DENY")
-                .encodePrettily()
-              ), MultiMap.caseInsensitiveMultiMap()
-              )
-          ));
-      } else {
-        LOG.error(String.format("userpageJobTemplate failed. "), ex);
-        error(null, eventHandler, ex);
-      }
-    });
-  }
-
-  public void userpageJobTemplatePageInit(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<Void> promise) {
-    String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/job-template"));
-    ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
-    ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
-    ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
-    ctx.put("enUSUrlPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
-    ctx.put("enUSUrlDownload", Optional.ofNullable(page.getResult()).map(o -> o.getDownload()));
-
-    promise.complete();
-  }
-
-  public String templateUriUserPageJobTemplate(ServiceRequest serviceRequest, JobTemplate result) {
-    return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
-  }
-  public void templateUserPageJobTemplate(JsonObject ctx, JobTemplatePage page, SearchList<JobTemplate> listJobTemplate, Promise<String> promise) {
-    try {
-      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
-      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      JobTemplate result = listJobTemplate.first();
-      String pageTemplateUri = templateUriUserPageJobTemplate(serviceRequest, result);
-      String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
-      Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
-        String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
-        Map<String, Object> data = new HashMap<>();
-        String body = "";
-        if(template.startsWith("---\n")) {
-          Matcher mMeta = Pattern.compile("---\n([\\w\\W]+?)\n---\n([\\w\\W]+)", Pattern.MULTILINE).matcher(template);
-          if(mMeta.find()) {
-            String meta = mMeta.group(1);
-            body = mMeta.group(2);
-            Yaml yaml = new Yaml();
-            Map<String, Object> map = yaml.load(meta);
-            map.forEach((resultKey, value) -> {
-              if(resultKey.startsWith(metaPrefixResult)) {
-                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
-                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
-                if(val instanceof String) {
-                  String rendered = jinjava.render(val, ctx.getMap());
-                  data.put(key, rendered);
-                } else {
-                  data.put(key, val);
-                }
-              }
-            });
-            map.forEach((resultKey, value) -> {
-              if(resultKey.startsWith(metaPrefixResult)) {
-                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
-                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
-                if(val instanceof String) {
-                  String rendered = jinjava.render(val, ctx.getMap());
-                  data.put(key, rendered);
-                } else {
-                  data.put(key, val);
-                }
-              }
-            });
-          }
-        }
-        org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().build();
-        org.commonmark.node.Node document = parser.parse(body);
-        org.commonmark.renderer.html.HtmlRenderer renderer = org.commonmark.renderer.html.HtmlRenderer.builder().build();
-        String pageExtends =  Optional.ofNullable((String)data.get("extends")).orElse("en-us/Article.htm");
-        String htmTemplate = "{% extends \"" + pageExtends + "\" %}\n{% block htmBodyMiddleArticle %}\n" + renderer.render(document) + "\n{% endblock htmBodyMiddleArticle %}\n";
-        String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
-        promise.complete(renderedTemplate);
-      } else {
-        String renderedTemplate = jinjava.render(template, ctx.getMap());
-        promise.complete(renderedTemplate);
-      }
-    } catch(Exception ex) {
-      LOG.error(String.format("templateUserPageJobTemplate failed. "), ex);
-      ExceptionUtils.rethrow(ex);
-    }
-  }
-  public Future<ServiceResponse> response200UserPageJobTemplate(SearchList<JobTemplate> listJobTemplate) {
-    Promise<ServiceResponse> promise = Promise.promise();
-    try {
-      SiteRequest siteRequest = listJobTemplate.getSiteRequest_(SiteRequest.class);
-      JobTemplatePage page = new JobTemplatePage();
-      MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
-      siteRequest.setRequestHeaders(requestHeaders);
-
-      if(listJobTemplate.size() >= 1)
-        siteRequest.setRequestPk(listJobTemplate.get(0).getPk());
-      page.setSearchListJobTemplate_(listJobTemplate);
-      page.setSiteRequest_(siteRequest);
-      page.setServiceRequest(siteRequest.getServiceRequest());
-      page.setWebClient(webClient);
-      page.setVertx(vertx);
-      page.promiseDeepJobTemplatePage(siteRequest).onSuccess(a -> {
-        try {
-          JsonObject ctx = ConfigKeys.getPageContext(config);
-          ctx.mergeIn(JsonObject.mapFrom(page));
-          Promise<Void> promise1 = Promise.promise();
-          userpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
-          promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateUserPageJobTemplate(ctx, page, listJobTemplate, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
-                promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
-          }).onFailure(ex -> {
-            promise.tryFail(ex);
-          });
-        } catch(Exception ex) {
-          LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
-          promise.tryFail(ex);
-        }
-      }).onFailure(ex -> {
-        promise.tryFail(ex);
-      });
-    } catch(Exception ex) {
-      LOG.error(String.format("response200UserPageJobTemplate failed. "), ex);
-      promise.tryFail(ex);
-    }
-    return promise.future();
-  }
-  public void responsePivotUserPageJobTemplate(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
-    if(pivots != null) {
-      for(SolrResponse.Pivot pivotField : pivots) {
-        String entityIndexed = pivotField.getField();
-        String entityVar = StringUtils.substringBefore(entityIndexed, "_docvalues_");
-        JsonObject pivotJson = new JsonObject();
-        pivotArray.add(pivotJson);
-        pivotJson.put("field", entityVar);
-        pivotJson.put("value", pivotField.getValue());
-        pivotJson.put("count", pivotField.getCount());
-        Collection<SolrResponse.PivotRange> pivotRanges = pivotField.getRanges().values();
-        List<SolrResponse.Pivot> pivotFields2 = pivotField.getPivotList();
-        if(pivotRanges != null) {
-          JsonObject rangeJson = new JsonObject();
-          pivotJson.put("ranges", rangeJson);
-          for(SolrResponse.PivotRange rangeFacet : pivotRanges) {
-            JsonObject rangeFacetJson = new JsonObject();
-            String rangeFacetVar = StringUtils.substringBefore(rangeFacet.getName(), "_docvalues_");
-            rangeJson.put(rangeFacetVar, rangeFacetJson);
-            JsonObject rangeFacetCountsObject = new JsonObject();
-            rangeFacetJson.put("counts", rangeFacetCountsObject);
-            rangeFacet.getCounts().forEach((value, count) -> {
-              rangeFacetCountsObject.put(value, count);
-            });
-          }
-        }
-        if(pivotFields2 != null) {
-          JsonArray pivotArray2 = new JsonArray();
-          pivotJson.put("pivot", pivotArray2);
-          responsePivotUserPageJobTemplate(pivotFields2, pivotArray2);
-        }
-      }
-    }
-  }
-
   // DELETEFilter //
 
   @Override
@@ -3264,21 +3236,34 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
+        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "PUT"));
-        if(jobTemplateName != null)
-          form.add("permission", String.format("%s#%s", jobTemplateName, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(jobTemplateId != null)
+          form.add("permission", String.format("%s#%s", jobTemplateId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3291,22 +3276,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "JOBTEMPLATE".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
                   });
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "inventoryResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3340,7 +3327,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+              searchJobTemplateList(siteRequest, false, true, true, "DELETE").onSuccess(listJobTemplate -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listJobTemplate.getRequest().getRows());
@@ -3466,7 +3453,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             siteRequest.addScopes(scope);
           });
         });
-        searchJobTemplateList(siteRequest, false, true, true).onSuccess(listJobTemplate -> {
+        searchJobTemplateList(siteRequest, false, true, true, "DELETE").onSuccess(listJobTemplate -> {
           try {
             JobTemplate o = listJobTemplate.first();
             if(o != null && listJobTemplate.getResponse().getResponse().getNumFound() == 1) {
@@ -3481,7 +3468,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateName().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3631,6 +3618,26 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
+          case JobTemplate.VAR_ansibleProjectId:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -3670,15 +3677,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String jobTemplateName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateName");
-        String m = String.format("%s %s not found", "job template", jobTemplateName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterJobTemplate failed. "), ex);
       promise.tryFail(ex);
@@ -3789,13 +3788,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     return promise.future();
   }
 
-  public Future<SearchList<JobTemplate>> searchJobTemplateList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
+  public Future<SearchList<JobTemplate>> searchJobTemplateList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, String scope) {
     Promise<SearchList<JobTemplate>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
       SearchList<JobTemplate> searchList = new SearchList<JobTemplate>();
+      searchList.setScope(scope);
       String facetRange = null;
       Date facetRangeStart = null;
       Date facetRangeEnd = null;
@@ -3814,9 +3814,9 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         }
       }
 
-      String jobTemplateName = serviceRequest.getParams().getJsonObject("path").getString("jobTemplateName");
-      if(jobTemplateName != null) {
-        searchList.fq("jobTemplateName_docvalues_string:" + SearchTool.escapeQueryChars(jobTemplateName));
+      String jobTemplateId = serviceRequest.getParams().getJsonObject("path").getString("jobTemplateId");
+      if(jobTemplateId != null) {
+        searchList.fq("jobTemplateId_docvalues_string:" + SearchTool.escapeQueryChars(jobTemplateId));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -4011,7 +4011,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, inventoryResource, created, jobTemplateName, jobTemplateDescription, archived, jobType, ansibleProjectId, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, inventoryResource, created, jobTemplateName, jobTemplateId, archived, jobTemplateDescription, jobType, ansibleProjectId, ansiblePlaybook, sessionId, aapOrganizationId, userKey, organizationId, aapInventoryId, aapProjectId, objectTitle, aapTemplateId, displayPage, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4056,9 +4056,9 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2 UNION SELECT ansibleProjectId as pk2, 'ansibleProjectId' from AnsibleProject where ansibleProjectId=$3")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource())
+          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource(), o.getAnsibleProjectId())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4256,6 +4256,42 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               });
             }));
           }
+
+          if("AnsibleProject".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<AnsibleProject> searchList2 = new SearchList<AnsibleProject>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(AnsibleProject.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                AnsibleProject o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-AnsibleProject", json, new DeliveryOptions().addHeader("action", "patchAnsibleProjectFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {
@@ -4318,13 +4354,20 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       o.persistForClass(JobTemplate.VAR_inventoryResource, JobTemplate.staticSetInventoryResource(siteRequest2, (String)result.get(JobTemplate.VAR_inventoryResource)));
       o.persistForClass(JobTemplate.VAR_created, JobTemplate.staticSetCreated(siteRequest2, (String)result.get(JobTemplate.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateId, JobTemplate.staticSetJobTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateId)));
       o.persistForClass(JobTemplate.VAR_archived, JobTemplate.staticSetArchived(siteRequest2, (String)result.get(JobTemplate.VAR_archived)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
       o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
       o.persistForClass(JobTemplate.VAR_ansibleProjectId, JobTemplate.staticSetAnsibleProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_ansibleProjectId)));
+      o.persistForClass(JobTemplate.VAR_ansiblePlaybook, JobTemplate.staticSetAnsiblePlaybook(siteRequest2, (String)result.get(JobTemplate.VAR_ansiblePlaybook)));
       o.persistForClass(JobTemplate.VAR_sessionId, JobTemplate.staticSetSessionId(siteRequest2, (String)result.get(JobTemplate.VAR_sessionId)));
+      o.persistForClass(JobTemplate.VAR_aapOrganizationId, JobTemplate.staticSetAapOrganizationId(siteRequest2, (String)result.get(JobTemplate.VAR_aapOrganizationId)));
       o.persistForClass(JobTemplate.VAR_userKey, JobTemplate.staticSetUserKey(siteRequest2, (String)result.get(JobTemplate.VAR_userKey)));
+      o.persistForClass(JobTemplate.VAR_organizationId, JobTemplate.staticSetOrganizationId(siteRequest2, (String)result.get(JobTemplate.VAR_organizationId)));
+      o.persistForClass(JobTemplate.VAR_aapInventoryId, JobTemplate.staticSetAapInventoryId(siteRequest2, (String)result.get(JobTemplate.VAR_aapInventoryId)));
+      o.persistForClass(JobTemplate.VAR_aapProjectId, JobTemplate.staticSetAapProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_aapProjectId)));
       o.persistForClass(JobTemplate.VAR_objectTitle, JobTemplate.staticSetObjectTitle(siteRequest2, (String)result.get(JobTemplate.VAR_objectTitle)));
+      o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
       o.persistForClass(JobTemplate.VAR_displayPage, JobTemplate.staticSetDisplayPage(siteRequest2, (String)result.get(JobTemplate.VAR_displayPage)));
       o.persistForClass(JobTemplate.VAR_editPage, JobTemplate.staticSetEditPage(siteRequest2, (String)result.get(JobTemplate.VAR_editPage)));
       o.persistForClass(JobTemplate.VAR_userPage, JobTemplate.staticSetUserPage(siteRequest2, (String)result.get(JobTemplate.VAR_userPage)));

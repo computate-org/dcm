@@ -6,15 +6,14 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 7
+ * Order: 6
  * Description: A job template to be run on a computer in Ansible Automation Platform. 
  * AName: a job template
  * Icon: <i class="fa-duotone fa-regular fa-excavator"></i>
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/job-template
- * EditPageUri: /en-us/edit/job-template/{jobTemplateName}
- * UserPageUri: /en-us/user/job-template/{jobTemplateName}
+ * EditPageUri: /en-us/edit/job-template/{jobTemplateId}
  * ApiUri: /en-us/api/job-template
  * ApiMethod:
  *   Search:
@@ -72,6 +71,7 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * Relate: HostInventory.inventoryResource
    * HtmRow: 3
    * HtmCell: 1
+   * Required: true
    **/
   protected void _inventoryResource(Wrap<String> w) {
   }
@@ -88,9 +88,21 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * Description: The name of the job template (may only contain letters, numbers, periods, colons, and dashes). 
    * Required: true
    * VarName: true
-   * VarId: true
    */
   protected void _jobTemplateName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: job template ID
+   * Description: The ID of the job template in DCM. 
+   * VarId: true
+   */
+  protected void _jobTemplateId(Wrap<String> w) {
+    w.o(toId(jobTemplateName));
   }
 
   /**
@@ -128,11 +140,80 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 5
-   * DisplayName: Ansible project ID
-   * Description: The Ansible project ID in Ansible Automation Platform. 
+   * DisplayName: Ansible project
+   * Description: The Ansible project containing the playbook for this Job Template. 
+   * Relate: AnsibleProject.ansibleProjectId
+   * HtmRowTitleOpen: Ansible details
+   * HtmRow: 4
+   * HtmCell: 0
+   * Required: true
+   **/
+  protected void _ansibleProjectId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: Ansible playbook
+   * Description: The Ansible playbook for this Job Template. 
+   * HtmRow: 4
+   * HtmCell: 1
+   * Required: true
+   **/
+  protected void _ansiblePlaybook(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP organization ID
+   * Description: The ID of the ansible organization in AAP. 
    */
-  protected void _ansibleProjectId(Wrap<Long> w) {
+  protected void _aapOrganizationId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * HtmRow: 3
+   * HtmCell: 4
+   * DisplayName: organization ID
+   * Description: The ID of the ansible organization. 
+   */
+  protected void _organizationId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP inventory ID
+   * Description: The inventory ID in Ansible Automation Platform. 
+   */
+  protected void _aapInventoryId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP project ID
+   * Description: The project ID in Ansible Automation Platform. 
+   */
+  protected void _aapProjectId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP template ID
+   * Description: The template ID in Ansible Automation Platform. 
+   */
+  protected void _aapTemplateId(Wrap<Long> w) {
   }
 }

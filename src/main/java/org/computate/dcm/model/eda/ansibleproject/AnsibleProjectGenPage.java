@@ -1,8 +1,9 @@
-package org.computate.dcm.model.eda.hostinventory;
+package org.computate.dcm.model.eda.ansibleproject;
 
-import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import java.lang.String;
 import java.lang.Long;
+import java.util.List;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -27,7 +28,6 @@ import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
@@ -52,37 +52,37 @@ import java.util.regex.Pattern;
  * Translate: false
  * Generated: true
  **/
-public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
+public class AnsibleProjectGenPage extends AnsibleProjectGenPageGen<PageLayout> {
 
   /**
    * {@inheritDoc}
    * Ignore: true
    **/
-  protected void _searchListHostInventory_(Wrap<SearchList<HostInventory>> w) {
+  protected void _searchListAnsibleProject_(Wrap<SearchList<AnsibleProject>> w) {
   }
 
   @Override
   protected void _pageResponse(Wrap<String> w) {
-    if(searchListHostInventory_ != null)
-      w.o(Optional.ofNullable(searchListHostInventory_.getResponse()).map(response -> JsonObject.mapFrom(response).toString()).orElse(null));
+    if(searchListAnsibleProject_ != null)
+      w.o(Optional.ofNullable(searchListAnsibleProject_.getResponse()).map(response -> JsonObject.mapFrom(response).toString()).orElse(null));
   }
 
   @Override
   protected void _stats(Wrap<SolrResponse.Stats> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getResponse()).map(response -> response.getStats()).orElse(null));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getResponse()).map(response -> response.getStats()).orElse(null));
   }
 
   @Override
   protected void _facetCounts(Wrap<SolrResponse.FacetCounts> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getResponse()).map(response -> response.getFacetCounts()).orElse(null));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getResponse()).map(response -> response.getFacetCounts()).orElse(null));
   }
 
   @Override
   protected void _pagination(JsonObject pagination) {
     JsonArray pages = new JsonArray();
-    Long start = searchListHostInventory_.getStart().longValue();
-    Long rows = searchListHostInventory_.getRows().longValue();
-    Long foundNum = Optional.ofNullable(searchListHostInventory_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListHostInventory_.getList().size()));
+    Long start = searchListAnsibleProject_.getStart().longValue();
+    Long rows = searchListAnsibleProject_.getRows().longValue();
+    Long foundNum = Optional.ofNullable(searchListAnsibleProject_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListAnsibleProject_.getList().size()));
     Long startNum = start + 1L;
     Long endNum = start + rows;
     Long floorMod = (rows == 0L ? 0L : Math.floorMod(foundNum, rows));
@@ -124,12 +124,12 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _varsQ(JsonObject vars) {
-    HostInventory.varsQForClass().forEach(var -> {
+    AnsibleProject.varsQForClass().forEach(var -> {
       JsonObject json = new JsonObject();
       json.put("var", var);
-      json.put("displayName", Optional.ofNullable(HostInventory.displayNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(HostInventory.classSimpleNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("val", Optional.ofNullable(searchListHostInventory_.getRequest().getQuery()).filter(fq -> fq.startsWith(HostInventory.varIndexedHostInventory(var) + ":")).map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
+      json.put("displayName", Optional.ofNullable(AnsibleProject.displayNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(AnsibleProject.classSimpleNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("val", Optional.ofNullable(searchListAnsibleProject_.getRequest().getQuery()).filter(fq -> fq.startsWith(AnsibleProject.varIndexedAnsibleProject(var) + ":")).map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
       vars.put(var, json);
     });
   }
@@ -142,22 +142,22 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
   protected void _varsFq(JsonObject vars) {
     Map<String, SolrResponse.FacetField> facetFields = Optional.ofNullable(facetCounts).map(c -> c.getFacetFields()).map(f -> f.getFacets()).orElse(new HashMap<String,SolrResponse.FacetField>());
     varsFqCount = 0;
-    for(String var : HostInventory.varsFqForClass()) {
-      String varIndexed = HostInventory.varIndexedHostInventory(var);
-      String varStored = HostInventory.varStoredHostInventory(var);
+    for(String var : AnsibleProject.varsFqForClass()) {
+      String varIndexed = AnsibleProject.varIndexedAnsibleProject(var);
+      String varStored = AnsibleProject.varStoredAnsibleProject(var);
       JsonObject json = new JsonObject();
       json.put("var", var);
       json.put("varStored", varStored);
       json.put("varIndexed", varIndexed);
       String type = StringUtils.substringAfterLast(varIndexed, "_");
-      json.put("displayName", Optional.ofNullable(HostInventory.displayNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(HostInventory.classSimpleNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      Object v = searchListHostInventory_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(HostInventory.varIndexedHostInventory(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null);
+      json.put("displayName", Optional.ofNullable(AnsibleProject.displayNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(AnsibleProject.classSimpleNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      Object v = searchListAnsibleProject_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(AnsibleProject.varIndexedAnsibleProject(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null);
       if(v != null) {
         Matcher mFq = Pattern.compile("(\\w+):(.+?(?=(\\)|\\s+OR\\s+|\\s+AND\\s+|$)))").matcher(SearchTool.unescapeQueryChars((String)v));
         StringBuffer sb = new StringBuffer();
         while(mFq.find()) {
-          String entityVar = HostInventory.searchVarHostInventory(varIndexed);
+          String entityVar = AnsibleProject.searchVarAnsibleProject(varIndexed);
           String valueIndexed = mFq.group(2).trim();
           String entityFq = entityVar + ":" + valueIndexed;
           if(var.equals(entityVar))
@@ -237,13 +237,13 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _varsRange(JsonObject vars) {
-    HostInventory.varsRangeForClass().forEach(var -> {
-      String varIndexed = HostInventory.varIndexedHostInventory(var);
+    AnsibleProject.varsRangeForClass().forEach(var -> {
+      String varIndexed = AnsibleProject.varIndexedAnsibleProject(var);
       JsonObject json = new JsonObject();
       json.put("var", var);
-      json.put("displayName", Optional.ofNullable(HostInventory.displayNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("classSimpleName", Optional.ofNullable(HostInventory.classSimpleNameHostInventory(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
-      json.put("val", searchListHostInventory_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(HostInventory.varIndexedHostInventory(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
+      json.put("displayName", Optional.ofNullable(AnsibleProject.displayNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("classSimpleName", Optional.ofNullable(AnsibleProject.classSimpleNameAnsibleProject(var)).map(d -> StringUtils.isBlank(d) ? var : d).orElse(var));
+      json.put("val", searchListAnsibleProject_.getRequest().getFilterQueries().stream().filter(fq -> fq.startsWith(AnsibleProject.varIndexedAnsibleProject(var) + ":")).findFirst().map(s -> SearchTool.unescapeQueryChars(StringUtils.substringAfter(s, ":"))).orElse(null));
       vars.put(var, json);
     });
   }
@@ -254,7 +254,7 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
     JsonObject params = serviceRequest.getParams();
 
     JsonObject queryParams = Optional.ofNullable(serviceRequest).map(ServiceRequest::getParams).map(or -> or.getJsonObject("query")).orElse(new JsonObject());
-    Long num = Optional.ofNullable(searchListHostInventory_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListHostInventory_.getList().size()));
+    Long num = Optional.ofNullable(searchListAnsibleProject_.getResponse()).map(response -> response.getResponse().getNumFound().longValue()).orElse(Long.valueOf(searchListAnsibleProject_.getList().size()));
     String q = "*:*";
     String q1 = "objectText";
     String q2 = "";
@@ -282,28 +282,28 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
     }
     query.put("q", q);
 
-    Long rows1 = Optional.ofNullable(searchListHostInventory_).map(l -> l.getRows()).orElse(10L);
-    Long start1 = Optional.ofNullable(searchListHostInventory_).map(l -> l.getStart()).orElse(1L);
+    Long rows1 = Optional.ofNullable(searchListAnsibleProject_).map(l -> l.getRows()).orElse(10L);
+    Long start1 = Optional.ofNullable(searchListAnsibleProject_).map(l -> l.getStart()).orElse(1L);
     Long start2 = start1 - rows1;
     Long start3 = start1 + rows1;
     Long rows2 = rows1 / 2;
     Long rows3 = rows1 * 2;
     start2 = start2 < 0 ? 0 : start2;
     JsonObject fqs = new JsonObject();
-    for(String fq : Optional.ofNullable(searchListHostInventory_).map(l -> l.getFilterQueries()).orElse(Arrays.asList())) {
+    for(String fq : Optional.ofNullable(searchListAnsibleProject_).map(l -> l.getFilterQueries()).orElse(Arrays.asList())) {
       if(!StringUtils.contains(fq, "(")) {
-        String fq1 = HostInventory.searchVarHostInventory(StringUtils.substringBefore(fq, ":"));
+        String fq1 = AnsibleProject.searchVarAnsibleProject(StringUtils.substringBefore(fq, ":"));
         String fq2 = StringUtils.substringAfter(fq, ":");
         if(!StringUtils.startsWithAny(fq, "classCanonicalNames_", "archived_", "sessionId", "userKeys"))
-          fqs.put(fq1, new JsonObject().put("var", fq1).put("val", fq2).put("displayName", HostInventory.displayNameForClass(fq1)));
+          fqs.put(fq1, new JsonObject().put("var", fq1).put("val", fq2).put("displayName", AnsibleProject.displayNameForClass(fq1)));
         }
       }
     query.put("fq", fqs);
 
     JsonArray sorts = new JsonArray();
-    for(String sort : Optional.ofNullable(searchListHostInventory_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
-      String sort1 = HostInventory.searchVarHostInventory(StringUtils.substringBefore(sort, " "));
-      sorts.add(new JsonObject().put("var", sort1).put("order", StringUtils.substringAfter(sort, " ")).put("displayName", HostInventory.displayNameForClass(sort1)));
+    for(String sort : Optional.ofNullable(searchListAnsibleProject_).map(l -> l.getSorts()).orElse(Arrays.asList())) {
+      String sort1 = AnsibleProject.searchVarAnsibleProject(StringUtils.substringBefore(sort, " "));
+      sorts.add(new JsonObject().put("var", sort1).put("order", StringUtils.substringAfter(sort, " ")).put("displayName", AnsibleProject.displayNameForClass(sort1)));
     }
     query.put("sort", sorts);
   }
@@ -337,31 +337,31 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
   @Override
   protected void _rows(Wrap<Long> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("rows", null) != null)
-      w.o(searchListHostInventory_.getRows());
+      w.o(searchListAnsibleProject_.getRows());
   }
 
   @Override
   protected void _start(Wrap<Long> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("start", null) != null)
-      w.o(searchListHostInventory_.getStart());
+      w.o(searchListAnsibleProject_.getStart());
   }
 
   @Override
   protected void _rangeGap(Wrap<String> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.gap", null) != null)
-      w.o(Optional.ofNullable(searchListHostInventory_.getFacetRangeGap()).orElse(null));
+      w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetRangeGap()).orElse(null));
   }
 
   @Override
   protected void _rangeEnd(Wrap<ZonedDateTime> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.end", null) != null)
-      w.o(Optional.ofNullable(searchListHostInventory_.getFacetRangeEnd()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
+      w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetRangeEnd()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
   }
 
   @Override
   protected void _rangeStart(Wrap<ZonedDateTime> w) {
     if(serviceRequest.getParams().getJsonObject("query").getString("facet.range.start", null) != null)
-      w.o(Optional.ofNullable(searchListHostInventory_.getFacetRangeStart()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
+      w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetRangeStart()).map(s -> TimeTool.parseZonedDateTime(defaultTimeZone, s)).orElse(null));
   }
 
   @Override
@@ -381,27 +381,27 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultRangeVar(Wrap<String> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getFacetRanges()).orElse(Optional.ofNullable(defaultRangeStats).map(s -> Arrays.asList(s.getString("defaultRangeVar"))).orElse(Arrays.asList())).stream().findFirst().map(v -> { if(v.contains("}")) return StringUtils.substringBefore(StringUtils.substringAfterLast(v, "}"), "_"); else return HostInventory.searchVarHostInventory(v); }).orElse("created"));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetRanges()).orElse(Optional.ofNullable(defaultRangeStats).map(s -> Arrays.asList(s.getString("defaultRangeVar"))).orElse(Arrays.asList())).stream().findFirst().map(v -> { if(v.contains("}")) return StringUtils.substringBefore(StringUtils.substringAfterLast(v, "}"), "_"); else return AnsibleProject.searchVarAnsibleProject(v); }).orElse("created"));
   }
 
   @Override
   protected void _defaultFacetSort(Wrap<String> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getFacetSort()).orElse("index"));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetSort()).orElse("index"));
   }
 
   @Override
   protected void _defaultFacetLimit(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getFacetLimit()).orElse(1));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetLimit()).orElse(1));
   }
 
   @Override
   protected void _defaultFacetMinCount(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getFacetMinCount()).orElse(1));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetMinCount()).orElse(1));
   }
 
   @Override
   protected void _defaultPivotMinCount(Wrap<Integer> w) {
-    w.o(Optional.ofNullable(searchListHostInventory_.getFacetPivotMinCount()).orElse(0));
+    w.o(Optional.ofNullable(searchListAnsibleProject_.getFacetPivotMinCount()).orElse(0));
   }
 
   @Override
@@ -417,10 +417,10 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultSortVars(List<String> l) {
-    if(!searchListHostInventory_.getDefaultSort()) {
-      Optional.ofNullable(searchListHostInventory_.getSorts()).orElse(Arrays.asList()).forEach(varSortStr -> {
+    if(!searchListAnsibleProject_.getDefaultSort()) {
+      Optional.ofNullable(searchListAnsibleProject_.getSorts()).orElse(Arrays.asList()).forEach(varSortStr -> {
         String varSortParts[] = varSortStr.split(" ");
-        String varSort = HostInventory.searchVarHostInventory(varSortParts[0]);
+        String varSort = AnsibleProject.searchVarAnsibleProject(varSortParts[0]);
         String varSortDirection = varSortParts[1];
         l.add(String.format("%s %s", varSort, varSortDirection));
       });
@@ -429,14 +429,14 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultFieldListVars(List<String> l) {
-    Optional.ofNullable(searchListHostInventory_.getFields()).orElse(Arrays.asList()).forEach(varStored -> {
+    Optional.ofNullable(searchListAnsibleProject_.getFields()).orElse(Arrays.asList()).forEach(varStored -> {
       String varStored2 = varStored;
       if(StringUtils.contains(varStored2, "}"))
         varStored2 = StringUtils.substringAfterLast(varStored2, "}");
       String[] parts = varStored2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = HostInventory.searchVarHostInventory(part);
+          String var = AnsibleProject.searchVarAnsibleProject(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -446,14 +446,14 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultStatsVars(List<String> l) {
-    Optional.ofNullable(searchListHostInventory_.getStatsFields()).orElse(Arrays.asList()).forEach(varIndexed -> {
+    Optional.ofNullable(searchListAnsibleProject_.getStatsFields()).orElse(Arrays.asList()).forEach(varIndexed -> {
       String varIndexed2 = varIndexed;
       if(StringUtils.contains(varIndexed2, "}"))
         varIndexed2 = StringUtils.substringAfterLast(varIndexed2, "}");
       String[] parts = varIndexed2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = HostInventory.searchVarHostInventory(part);
+          String var = AnsibleProject.searchVarAnsibleProject(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -463,14 +463,14 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _defaultPivotVars(List<String> l) {
-    Optional.ofNullable(searchListHostInventory_.getFacetPivots()).orElse(Arrays.asList()).forEach(facetPivot -> {
+    Optional.ofNullable(searchListAnsibleProject_.getFacetPivots()).orElse(Arrays.asList()).forEach(facetPivot -> {
       String facetPivot2 = facetPivot;
       if(StringUtils.contains(facetPivot2, "}"))
         facetPivot2 = StringUtils.substringAfterLast(facetPivot2, "}");
       String[] parts = facetPivot2.split(",");
       for(String part : parts) {
         if(StringUtils.isNotBlank(part)) {
-          String var = HostInventory.searchVarHostInventory(part);
+          String var = AnsibleProject.searchVarAnsibleProject(part);
           if(StringUtils.isNotBlank(var))
             l.add(var);
         }
@@ -481,20 +481,20 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
   /**
    * {@inheritDoc}
    **/
-  protected void _listHostInventory(JsonArray l) {
-    Optional.ofNullable(searchListHostInventory_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
+  protected void _listAnsibleProject(JsonArray l) {
+    Optional.ofNullable(searchListAnsibleProject_).map(o -> o.getList()).orElse(Arrays.asList()).stream().map(o -> JsonObject.mapFrom(o)).forEach(o -> l.add(o));
   }
 
   protected void _resultCount(Wrap<Integer> w) {
-    w.o(searchListHostInventory_ == null ? 0 : searchListHostInventory_.size());
+    w.o(searchListAnsibleProject_ == null ? 0 : searchListAnsibleProject_.size());
   }
 
   /**
    * Initialized: false
   **/
-  protected void _result(Wrap<HostInventory> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("inventoryResource")).orElse(null) != null)
-      w.o(searchListHostInventory_.get(0));
+  protected void _result(Wrap<AnsibleProject> w) {
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("ansibleProjectId")).orElse(null) != null)
+      w.o(searchListAnsibleProject_.get(0));
   }
 
   protected void _pk(Wrap<Long> w) {
@@ -514,7 +514,7 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _classSimpleName(Wrap<String> w) {
-    w.o("HostInventory");
+    w.o("AnsibleProject");
   }
 
   @Override
@@ -522,27 +522,27 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
     if(result != null && result.getObjectTitle() != null)
       c.o(result.getObjectTitle());
     else if(result != null)
-      c.o("host inventories");
-    else if(searchListHostInventory_ == null || resultCount == 0)
-      c.o("no host inventory found");
+      c.o("ansible projects");
+    else if(searchListAnsibleProject_ == null || resultCount == 0)
+      c.o("no ansible project found");
     else
-      c.o("host inventories");
+      c.o("ansible projects");
   }
 
   @Override
   protected void _classAllName(Wrap<String> w) {
-    w.o("all host inventories");
+    w.o("all ansible projects");
   }
 
   @Override
   protected void _pageUri(Wrap<String> w) {
     if("enUS".equals(lang))
-      w.o("/en-us/search/host-inventory");
+      w.o("/en-us/search/ansible-project");
   }
 
   @Override
   protected void _apiUri(Wrap<String> w) {
-    w.o("/en-us/api/host-inventory");
+    w.o("/en-us/api/ansible-project");
   }
 
   @Override
@@ -552,20 +552,20 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _pageDescription(Wrap<String> c) {
-      c.o("A managed host inventory. ");
+      c.o("A ansible project to be run on a computer in Ansible Automation Platform. ");
   }
 
   @Override
   protected void _pageImageUri(Wrap<String> c) {
-      c.o("/png/en-us/search/host-inventory-999.png");
+      c.o("/png/en-us/search/ansible-project-999.png");
   }
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-duotone fa-regular fa-network-wired\"></i>");
+      c.o("<i class=\"fa-duotone fa-regular fa-excavator\"></i>");
   }
 
-  protected void _pageUriHostInventory(Wrap<String> c) {
-      c.o("/en-us/search/host-inventory");
+  protected void _pageUriAnsibleProject(Wrap<String> c) {
+      c.o("/en-us/search/ansible-project");
   }
 }

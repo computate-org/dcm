@@ -1,29 +1,15 @@
 package org.computate.dcm.model.eda.hostinventory;
 
-import io.vertx.ext.auth.authorization.AuthorizationProvider;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.web.api.service.ServiceRequest;
-import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
-import io.vertx.core.WorkerExecutor;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.sqlclient.Pool;
-
 import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.request.SiteRequest;
-import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
-import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.mqtt.MqttClient;
-import io.vertx.amqp.AmqpSender;
-import io.vertx.rabbitmq.RabbitMQClient;
-import com.hubspot.jinjava.Jinjava;
 
 /**
  * Translate: false

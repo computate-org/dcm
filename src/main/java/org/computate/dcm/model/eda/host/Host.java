@@ -6,7 +6,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 5
+ * Order: 8
  * Description: A managed host computer. 
  * AName: a host
  * Icon: <i class="fa-duotone fa-regular fa-server"></i>

@@ -44,7 +44,6 @@ public interface JobTemplateEnUSGenApiService {
   public void putimportJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void searchpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void editpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
-  public void userpageJobTemplate(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void deletefilterJobTemplate(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void deletefilterJobTemplateFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 }

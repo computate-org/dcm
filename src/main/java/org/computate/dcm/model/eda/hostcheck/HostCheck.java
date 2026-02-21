@@ -6,7 +6,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 6
+ * Order: 9
  * Description: A check to be performed on a computer. 
  * AName: a host check
  * Icon: <i class="fa-duotone fa-regular fa-box-check"></i>
