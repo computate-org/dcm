@@ -3,6 +3,7 @@ package org.computate.dcm.model.eda.tenant;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import java.lang.String;
 import java.lang.Long;
+import java.util.List;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -27,7 +28,6 @@ import java.net.URLDecoder;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
@@ -493,7 +493,7 @@ public class TenantGenPage extends TenantGenPageGen<PageLayout> {
    * Initialized: false
   **/
   protected void _result(Wrap<Tenant> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantId")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantResource")).orElse(null) != null)
       w.o(searchListTenant_.get(0));
   }
 
@@ -562,7 +562,7 @@ public class TenantGenPage extends TenantGenPageGen<PageLayout> {
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-regular fa-buildings\"></i>");
+      c.o("<i class=\"fa-duotone fa-regular fa-buildings\"></i>");
   }
 
   protected void _pageUriTenant(Wrap<String> c) {

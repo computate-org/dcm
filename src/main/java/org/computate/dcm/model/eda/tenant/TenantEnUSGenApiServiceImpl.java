@@ -1,5 +1,7 @@
 package org.computate.dcm.model.eda.tenant;
 
+import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -124,7 +126,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -137,8 +139,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "GET"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -321,7 +323,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -334,8 +336,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "GET"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -456,7 +458,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -469,8 +471,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "PATCH"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "PATCH"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -543,7 +545,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listTenant.first());
-                  apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketTenant", JsonObject.mapFrom(apiRequest).toString());
 
@@ -676,7 +678,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o3 -> o3.getTenantId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o3 -> o3.getTenantResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(Tenant.class);
@@ -881,6 +883,106 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               num++;
               bParams.add(o2.sqlSessionId());
             break;
+          case "setHostInventoryIds":
+            JsonArray setHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            setHostInventoryIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, o.getSolrId(), val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            Optional.ofNullable(o.getHostInventoryIds()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setHostInventoryIdsValues.contains(oVal.toString())).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).setToNull(HostInventory.VAR_tenantResource, Tenant.class, solrId2).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "addAllHostInventoryIds":
+            JsonArray addAllHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            addAllHostInventoryIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, o.getSolrId(), val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "addHostInventoryIds":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, o.getSolrId(), val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeHostInventoryIds":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  sql(siteRequest).update(HostInventory.class, pk2).setToNull(HostInventory.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -989,7 +1091,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1002,8 +1104,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "POST"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "POST"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -1193,7 +1295,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     });
   }
 
-  public Future<Tenant> postTenantFuture(SiteRequest siteRequest, Boolean tenantId) {
+  public Future<Tenant> postTenantFuture(SiteRequest siteRequest, Boolean tenantResource) {
     Promise<Tenant> promise = Promise.promise();
 
     try {
@@ -1202,7 +1304,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         siteRequest.setSqlConnection(sqlConnection);
         varsTenant(siteRequest).onSuccess(a -> {
           createTenant(siteRequest).onSuccess(tenant -> {
-            sqlPOSTTenant(tenant, tenantId).onSuccess(b -> {
+            sqlPOSTTenant(tenant, tenantResource).onSuccess(b -> {
               persistTenant(tenant, false).onSuccess(c -> {
                 relateTenant(tenant).onSuccess(d -> {
                   indexTenant(tenant).onSuccess(o2 -> {
@@ -1411,6 +1513,27 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             num++;
             bParams.add(o2.sqlSessionId());
             break;
+          case Tenant.VAR_hostInventoryIds:
+            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, o.getSolrId(), val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           case Tenant.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1524,7 +1647,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1537,8 +1660,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "DELETE"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -1742,7 +1865,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteTenantFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -1852,6 +1975,27 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
+          case Tenant.VAR_hostInventoryIds:
+            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -1908,7 +2052,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1921,8 +2065,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "PUT"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "PUT"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2110,14 +2254,14 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String tenantId = Optional.ofNullable(body.getString(Tenant.VAR_tenantId)).orElse(body.getString(Tenant.VAR_solrId));
+        String tenantResource = Optional.ofNullable(body.getString(Tenant.VAR_tenantResource)).orElse(body.getString(Tenant.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE tenantId=$1", Tenant.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE tenantResource=$1", Tenant.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(tenantId))
+              .execute(Tuple.tuple(Arrays.asList(tenantResource))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2167,24 +2311,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "tenantId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "tenantId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getTenantId()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getTenantResource()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchTenantFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import Tenant {} succeeded, modified Tenant. ", body.getValue(Tenant.VAR_tenantId));
+                    LOG.debug("Import Tenant {} succeeded, modified Tenant. ", body.getValue(Tenant.VAR_tenantResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportTenantFuture failed. "), ex);
@@ -2192,7 +2336,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                   });
                 } else {
                   postTenantFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import Tenant {} succeeded, created new Tenant. ", body.getValue(Tenant.VAR_tenantId));
+                    LOG.debug("Import Tenant {} succeeded, created new Tenant. ", body.getValue(Tenant.VAR_tenantResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportTenantFuture failed. "), ex);
@@ -2267,7 +2411,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2280,8 +2424,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "GET"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2581,7 +2725,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2594,8 +2738,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "GET"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2871,7 +3015,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
+        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
         String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2884,8 +3028,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantId != null)
-          form.add("permission", String.format("%s#%s", tenantId, "DELETE"));
+        if(tenantResource != null)
+          form.add("permission", String.format("%s#%s", tenantResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -3089,7 +3233,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenant.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterTenantFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3199,6 +3343,27 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
+          case Tenant.VAR_hostInventoryIds:
+            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostInventory");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -3375,9 +3540,9 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         }
       }
 
-      String tenantId = serviceRequest.getParams().getJsonObject("path").getString("tenantId");
-      if(tenantId != null) {
-        searchList.fq("tenantId_docvalues_string:" + SearchTool.escapeQueryChars(tenantId));
+      String tenantResource = serviceRequest.getParams().getJsonObject("path").getString("tenantResource");
+      if(tenantResource != null) {
+        searchList.fq("tenantResource_docvalues_string:" + SearchTool.escapeQueryChars(tenantResource));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3614,7 +3779,33 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
 
   public Future<Void> relateTenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
-    promise.complete();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      SqlConnection sqlConnection = siteRequest.getSqlConnection();
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from HostInventory where tenantResource=$1")
+          .collecting(Collectors.toList())
+          .execute(Tuple.of(o.getTenantResource())
+          ).onSuccess(result -> {
+        try {
+          if(result != null) {
+            for(Row definition : result.value()) {
+              o.relateForClass(definition.getString(1), definition.getValue(0));
+            }
+          }
+          promise.complete();
+        } catch(Exception ex) {
+          LOG.error(String.format("relateTenant failed. "), ex);
+          promise.tryFail(ex);
+        }
+      }).onFailure(ex -> {
+        RuntimeException ex2 = new RuntimeException(ex);
+        LOG.error(String.format("relateTenant failed. "), ex2);
+        promise.tryFail(ex2);
+      });
+    } catch(Exception ex) {
+      LOG.error(String.format("relateTenant failed. "), ex);
+      promise.tryFail(ex);
+    }
     return promise.future();
   }
 
@@ -3719,6 +3910,42 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         for(int i=0; i < solrIds.size(); i++) {
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
+
+          if("HostInventory".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<HostInventory> searchList2 = new SearchList<HostInventory>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(HostInventory.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                HostInventory o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-HostInventory", json, new DeliveryOptions().addHeader("action", "patchHostInventoryFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {

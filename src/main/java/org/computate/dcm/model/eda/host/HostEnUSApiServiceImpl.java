@@ -37,15 +37,8 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
         String hostResource = String.format("%s-%s", Host.CLASS_AUTH_RESOURCE, hostId);
         hostJson.put(Host.VAR_hostResource, hostResource);
 
-        SearchList<HostInventory> searchList = new SearchList<HostInventory>();
-        searchList.setStore(true);
-        searchList.q("*:*");
-        searchList.fq(String.format("inventoryResource_docvalues_string:%s", inventoryResource));
-        searchList.setC(HostInventory.class);
-        searchList.setSiteRequest_(o.getSiteRequest_());
-        searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
+        HostInventory.fq(siteRequest, HostInventory.VAR_inventoryResource, inventoryResource).onSuccess(inventory -> {
           try {
-            HostInventory inventory = searchList.first();
             if(inventory == null) {
               RuntimeException ex = new RuntimeException(String.format("Could not find a matching host inventory %s", inventoryResource));
               LOG.error(ex.getMessage(), ex);

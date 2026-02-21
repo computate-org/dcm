@@ -43,6 +43,8 @@ import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
+import org.computate.vertx.search.list.SearchList;
+import org.computate.search.tool.SearchTool;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.computate.search.response.solr.SolrResponse;
 
@@ -1128,9 +1130,39 @@ public abstract class HostGen<DEV> extends BaseModel {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
+
+  public static Future<Host> fq(SiteRequest siteRequest, String var, Object val) {
+    Promise<Host> promise = Promise.promise();
+    try {
+      if(val == null) {
+        promise.complete();
+      } else {
+        SearchList<Host> searchList = new SearchList<Host>();
+        searchList.setStore(true);
+        searchList.q("*:*");
+        searchList.setC(Host.class);
+        searchList.fq(String.format("%s:", Host.varIndexedHost(var)) + SearchTool.escapeQueryChars(val.toString()));
+        searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+          try {
+            promise.complete(searchList.getList().stream().findFirst().orElse(null));
+          } catch(Throwable ex) {
+            LOG.error("Error while querying thehost", ex);
+            promise.fail(ex);
+          }
+        }).onFailure(ex -> {
+          LOG.error("Error while querying thehost", ex);
+          promise.fail(ex);
+        });
+      }
+    } catch(Throwable ex) {
+      LOG.error("Error while querying thehost", ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHost(entityVar,  siteRequest_, o);

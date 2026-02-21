@@ -260,6 +260,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       List<String> fls = listHostInventory.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listHostInventory.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -286,15 +287,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       });
       json.put("list", l);
       response200Search(listHostInventory.getRequest(), listHostInventory.getResponse(), json);
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -476,15 +469,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       SiteRequest siteRequest = listHostInventory.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listHostInventory.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -883,13 +868,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }));
             });
             break;
-          case "setInventoryName":
-              o2.setInventoryName(jsonObject.getString(entityVar));
+          case "setTenantId":
+              o2.setTenantId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+              bSql.append(HostInventory.VAR_tenantId + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryName());
+              bParams.add(o2.sqlTenantId());
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
@@ -898,6 +883,30 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               bSql.append(HostInventory.VAR_created + "=$" + num);
               num++;
               bParams.add(o2.sqlCreated());
+            break;
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_aapOrganizationId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapOrganizationId());
+            break;
+          case "setInventoryName":
+              o2.setInventoryName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryName());
+            break;
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_archived + "=$" + num);
+              num++;
+              bParams.add(o2.sqlArchived());
             break;
           case "setInventoryId":
               o2.setInventoryId(jsonObject.getString(entityVar));
@@ -915,14 +924,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlInventoryResource());
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_archived + "=$" + num);
-              num++;
-              bParams.add(o2.sqlArchived());
-            break;
           case "setInventoryDescription":
               o2.setInventoryDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -939,13 +940,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlAapInventoryId());
             break;
-          case "setInventoryOrganizationId":
-              o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryOrganizationId + "=$" + num);
+              bSql.append(HostInventory.VAR_sessionId + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryOrganizationId());
+              bParams.add(o2.sqlSessionId());
             break;
           case "setInventoryKind":
               o2.setInventoryKind(jsonObject.getString(entityVar));
@@ -954,14 +955,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
               num++;
               bParams.add(o2.sqlInventoryKind());
-            break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
@@ -1054,15 +1047,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -1436,14 +1421,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }));
             });
             break;
-          case HostInventory.VAR_inventoryName:
-            o2.setInventoryName(jsonObject.getString(entityVar));
+          case HostInventory.VAR_tenantId:
+            o2.setTenantId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+            bSql.append(HostInventory.VAR_tenantId + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryName());
+            bParams.add(o2.sqlTenantId());
             break;
           case HostInventory.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
@@ -1453,6 +1438,33 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             bSql.append(HostInventory.VAR_created + "=$" + num);
             num++;
             bParams.add(o2.sqlCreated());
+            break;
+          case HostInventory.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_aapOrganizationId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapOrganizationId());
+            break;
+          case HostInventory.VAR_inventoryName:
+            o2.setInventoryName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryName());
+            break;
+          case HostInventory.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_archived + "=$" + num);
+            num++;
+            bParams.add(o2.sqlArchived());
             break;
           case HostInventory.VAR_inventoryId:
             o2.setInventoryId(jsonObject.getString(entityVar));
@@ -1472,15 +1484,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlInventoryResource());
             break;
-          case HostInventory.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_archived + "=$" + num);
-            num++;
-            bParams.add(o2.sqlArchived());
-            break;
           case HostInventory.VAR_inventoryDescription:
             o2.setInventoryDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1499,14 +1502,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlAapInventoryId());
             break;
-          case HostInventory.VAR_inventoryOrganizationId:
-            o2.setInventoryOrganizationId(jsonObject.getString(entityVar));
+          case HostInventory.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryOrganizationId + "=$" + num);
+            bSql.append(HostInventory.VAR_sessionId + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryOrganizationId());
+            bParams.add(o2.sqlSessionId());
             break;
           case HostInventory.VAR_inventoryKind:
             o2.setInventoryKind(jsonObject.getString(entityVar));
@@ -1516,15 +1519,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
             num++;
             bParams.add(o2.sqlInventoryKind());
-            break;
-          case HostInventory.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
             break;
           case HostInventory.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
@@ -1622,15 +1616,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -2048,15 +2034,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -2428,15 +2406,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -3790,15 +3760,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String inventoryResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("inventoryResource");
-        String m = String.format("%s %s not found", "host inventory", inventoryResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterHostInventory failed. "), ex);
       promise.tryFail(ex);
@@ -4132,7 +4094,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, inventoryName, created, inventoryId, inventoryResource, archived, inventoryDescription, aapInventoryId, inventoryOrganizationId, inventoryKind, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryName, archived, inventoryId, inventoryResource, inventoryDescription, aapInventoryId, sessionId, inventoryKind, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4400,16 +4362,17 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       o.setSiteRequest_((SiteRequest)siteRequest);
 
       o.persistForClass(HostInventory.VAR_tenantResource, HostInventory.staticSetTenantResource(siteRequest2, (String)result.get(HostInventory.VAR_tenantResource)));
-      o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
+      o.persistForClass(HostInventory.VAR_tenantId, HostInventory.staticSetTenantId(siteRequest2, (String)result.get(HostInventory.VAR_tenantId)));
       o.persistForClass(HostInventory.VAR_created, HostInventory.staticSetCreated(siteRequest2, (String)result.get(HostInventory.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(HostInventory.VAR_aapOrganizationId, HostInventory.staticSetAapOrganizationId(siteRequest2, (String)result.get(HostInventory.VAR_aapOrganizationId)));
+      o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
+      o.persistForClass(HostInventory.VAR_archived, HostInventory.staticSetArchived(siteRequest2, (String)result.get(HostInventory.VAR_archived)));
       o.persistForClass(HostInventory.VAR_inventoryId, HostInventory.staticSetInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryId)));
       o.persistForClass(HostInventory.VAR_inventoryResource, HostInventory.staticSetInventoryResource(siteRequest2, (String)result.get(HostInventory.VAR_inventoryResource)));
-      o.persistForClass(HostInventory.VAR_archived, HostInventory.staticSetArchived(siteRequest2, (String)result.get(HostInventory.VAR_archived)));
       o.persistForClass(HostInventory.VAR_inventoryDescription, HostInventory.staticSetInventoryDescription(siteRequest2, (String)result.get(HostInventory.VAR_inventoryDescription)));
       o.persistForClass(HostInventory.VAR_aapInventoryId, HostInventory.staticSetAapInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_aapInventoryId)));
-      o.persistForClass(HostInventory.VAR_inventoryOrganizationId, HostInventory.staticSetInventoryOrganizationId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryOrganizationId)));
-      o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
       o.persistForClass(HostInventory.VAR_sessionId, HostInventory.staticSetSessionId(siteRequest2, (String)result.get(HostInventory.VAR_sessionId)));
+      o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
       o.persistForClass(HostInventory.VAR_userKey, HostInventory.staticSetUserKey(siteRequest2, (String)result.get(HostInventory.VAR_userKey)));
       o.persistForClass(HostInventory.VAR_objectTitle, HostInventory.staticSetObjectTitle(siteRequest2, (String)result.get(HostInventory.VAR_objectTitle)));
       o.persistForClass(HostInventory.VAR_displayPage, HostInventory.staticSetDisplayPage(siteRequest2, (String)result.get(HostInventory.VAR_displayPage)));

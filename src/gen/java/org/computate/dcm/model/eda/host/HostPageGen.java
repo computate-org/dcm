@@ -245,9 +245,9 @@ public abstract class HostPageGen<DEV> extends HostGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHostPage(entityVar,  siteRequest_, o);

@@ -9,6 +9,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
+import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.request.SiteRequest;
 
 /**
@@ -25,65 +26,70 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
         promise.complete();
       } else {
         JsonObject inventoryJson = o.getSiteRequest_().getJsonObject();
-        String inventoryName = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryName": "inventoryName")).orElse(o.getInventoryName());
-        String inventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryId": "inventoryId")).orElse(HostInventory.toId(inventoryName));
-        inventoryJson.put(HostInventory.VAR_inventoryId, inventoryId);
-        String inventoryResource = String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryId);
-        inventoryJson.put(HostInventory.VAR_inventoryResource, inventoryResource);
-        Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setAapInventoryId": "aapInventoryId")).map(s -> Long.parseLong(s)).orElse(o.getAapInventoryId());
-        String inventoryDescription = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryDescription": "inventoryDescription")).orElse(o.getInventoryDescription());
         String tenantResource = Optional.ofNullable(inventoryJson.getString(patch ? "setTenantResource": "tenantResource")).orElse(o.getTenantResource());
-        String inventoryKind = Optional.ofNullable(Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryKind": "inventoryKind")).orElse(o.getInventoryKind())).orElse("");
-        Long inventoryOrganizationId = Optional.ofNullable(Optional.ofNullable(inventoryJson.getLong(patch ? "setInventoryOrganizationId": "inventoryOrganizationId")).orElse(o.getInventoryOrganizationId())).orElse(1L);
+        Tenant.fq(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+          String inventoryName = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryName": "inventoryName")).orElse(o.getInventoryName());
+          String inventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryId": "inventoryId")).orElse(HostInventory.toId(inventoryName));
+          inventoryJson.put(HostInventory.VAR_inventoryId, inventoryId);
+          String inventoryResource = String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryId);
+          inventoryJson.put(HostInventory.VAR_inventoryResource, inventoryResource);
+          Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(patch ? "setAapInventoryId": "aapInventoryId")).map(s -> Long.parseLong(s)).orElse(o.getAapInventoryId());
+          String inventoryDescription = Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryDescription": "inventoryDescription")).orElse(o.getInventoryDescription());
+          String inventoryKind = Optional.ofNullable(Optional.ofNullable(inventoryJson.getString(patch ? "setInventoryKind": "inventoryKind")).orElse(o.getInventoryKind())).orElse("");
+          Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(inventoryJson.getLong(patch ? "setAapOrganizationId": "aapOrganizationId")).orElse(o.getAapOrganizationId()))
+              .orElse(Optional.ofNullable(tenant).map(t -> t.getAapOrganizationId()).orElse(1L));
+          if(aapOrganizationId != null)
+            inventoryJson.put(HostInventory.VAR_aapOrganizationId, aapOrganizationId.toString());
 
-        Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
-        String aapInventoryName = config.getString(ConfigKeys.AAP_HOST_NAME);
-        Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-        String aapUri = patch ? String.format("/api/controller/v2/inventories/%s/", aapInventoryId) : "/api/controller/v2/inventories/";
-        String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
-        String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+          Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+          String aapInventoryName = config.getString(ConfigKeys.AAP_HOST_NAME);
+          Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+          String aapUri = patch ? String.format("/api/controller/v2/inventories/%s/", aapInventoryId) : "/api/controller/v2/inventories/";
+          String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+          String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
-        JsonObject body = new JsonObject();
-        body.put("name", inventoryName);
-        body.put("kind", inventoryKind);
-        if(inventoryDescription != null)
-          body.put("description", inventoryDescription);
-        body.put("organization", inventoryOrganizationId);
+          JsonObject body = new JsonObject();
+          body.put("name", inventoryName);
+          body.put("kind", inventoryKind);
+          if(inventoryDescription != null)
+            body.put("description", inventoryDescription);
+          body.put("organization", aapOrganizationId);
 
-        if(StringUtils.isEmpty(inventoryName)) {
-          RuntimeException ex = new RuntimeException("Missing inventory name");
-          LOG.error(ex.getMessage(), ex);
-          promise.fail(ex);
-        } else {
-          if(patch) {
-            webClient.patch(aapPort, aapInventoryName, aapUri).ssl(aapSsl)
-                .putHeader("Content-Type", "application/json")
-                .basicAuthentication(aapUserName, aapPassword)
-                .sendJsonObject(body)
-                .expecting(HttpResponseExpectation.SC_OK)
-                .onSuccess(inventoryResponse -> {
-              promise.complete();
-            }).onFailure(ex -> {
-              LOG.error(String.format("Updating AAP inventory failed. "), ex);
-              promise.fail(ex);
-            });
+          if(StringUtils.isEmpty(inventoryName)) {
+            RuntimeException ex = new RuntimeException("Missing inventory name");
+            LOG.error(ex.getMessage(), ex);
+            promise.fail(ex);
           } else {
-            webClient.post(aapPort, aapInventoryName, aapUri).ssl(aapSsl)
-                .putHeader("Content-Type", "application/json")
-                .basicAuthentication(aapUserName, aapPassword)
-                .sendJsonObject(body)
-                .expecting(HttpResponseExpectation.SC_CREATED)
-                .onSuccess(inventoryResponse -> {
-              JsonObject responseBody = inventoryResponse.bodyAsJsonObject();
-              String aapInventoryId2 = responseBody.getString("id");
-              inventoryJson.put(HostInventory.VAR_aapInventoryId, aapInventoryId2);
-              promise.complete();
-            }).onFailure(ex -> {
-              LOG.error(String.format("Updating AAP inventory failed. "), ex);
-              promise.fail(ex);
-            });
+            if(patch) {
+              webClient.patch(aapPort, aapInventoryName, aapUri).ssl(aapSsl)
+                  .putHeader("Content-Type", "application/json")
+                  .basicAuthentication(aapUserName, aapPassword)
+                  .sendJsonObject(body)
+                  .expecting(HttpResponseExpectation.SC_OK)
+                  .onSuccess(inventoryResponse -> {
+                promise.complete();
+              }).onFailure(ex -> {
+                LOG.error(String.format("Updating AAP inventory failed. "), ex);
+                promise.fail(ex);
+              });
+            } else {
+              webClient.post(aapPort, aapInventoryName, aapUri).ssl(aapSsl)
+                  .putHeader("Content-Type", "application/json")
+                  .basicAuthentication(aapUserName, aapPassword)
+                  .sendJsonObject(body)
+                  .expecting(HttpResponseExpectation.SC_CREATED)
+                  .onSuccess(inventoryResponse -> {
+                JsonObject responseBody = inventoryResponse.bodyAsJsonObject();
+                String aapInventoryId2 = responseBody.getString("id");
+                inventoryJson.put(HostInventory.VAR_aapInventoryId, aapInventoryId2);
+                promise.complete();
+              }).onFailure(ex -> {
+                LOG.error(String.format("Updating AAP inventory failed. "), ex);
+                promise.fail(ex);
+              });
+            }
           }
-        }
+        });
       }
     } catch(Exception ex) {
       LOG.error(String.format("Updating AAP inventory failed. "), ex);

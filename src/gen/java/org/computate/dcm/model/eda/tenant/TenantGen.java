@@ -37,10 +37,13 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
 import java.lang.Long;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
-import io.vertx.core.json.JsonArray;
+import org.computate.vertx.search.list.SearchList;
+import org.computate.search.tool.SearchTool;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.computate.search.response.solr.SolrResponse;
 
@@ -171,7 +174,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no tenant found";
   public static final String ApiUri_enUS = "/en-us/api/tenant";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/tenant";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/tenant/{tenantId}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/tenant/{tenantResource}";
   public static final String OfName_enUS = "of tenant";
   public static final String ANameAdjective_enUS = "a tenant";
   public static final String NameAdjectiveSingular_enUS = "tenant";
@@ -179,7 +182,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String Search_enUS_OpenApiUri = "/en-us/api/tenant";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/tenant";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/tenant/{tenantId}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/tenant/{tenantResource}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/tenant/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/tenant/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/tenant";
@@ -188,7 +191,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/tenant";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/tenant";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/tenant/{tenantId}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/tenant/{tenantResource}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/tenant/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/tenant/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/tenant-import";
@@ -197,14 +200,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/tenant";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/tenant";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/tenant";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/tenant/{tenantId}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/tenant/{tenantResource}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/tenant/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/tenant/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/tenant";
   public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/tenant";
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/tenant";
 
-  public static final String Icon = "<i class=\"fa-regular fa-buildings\"></i>";
+  public static final String Icon = "<i class=\"fa-duotone fa-regular fa-buildings\"></i>";
 
 	////////////////
   // tenantName //
@@ -710,6 +713,93 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
   }
 
+	//////////////////////
+  // hostInventoryIds //
+	//////////////////////
+
+
+  /**
+   *  The entity hostInventoryIds
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> hostInventoryIds = new ArrayList<String>();
+
+  /**
+   * <br> The entity hostInventoryIds
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:hostInventoryIds">Find the entity hostInventoryIds in Solr</a>
+   * <br>
+   * @param l is the entity already constructed. 
+   **/
+  protected abstract void _hostInventoryIds(List<String> l);
+
+  public List<String> getHostInventoryIds() {
+    return hostInventoryIds;
+  }
+
+  public void setHostInventoryIds(List<String> hostInventoryIds) {
+    this.hostInventoryIds = hostInventoryIds;
+  }
+  @JsonIgnore
+  public void setHostInventoryIds(String o) {
+    String l = Tenant.staticSetHostInventoryIds(siteRequest_, o);
+    if(l != null)
+      addHostInventoryIds(l);
+  }
+  public static String staticSetHostInventoryIds(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public Tenant addHostInventoryIds(String...objects) {
+    for(String o : objects) {
+      addHostInventoryIds(o);
+    }
+    return (Tenant)this;
+  }
+  public Tenant addHostInventoryIds(String o) {
+    if(o != null)
+      this.hostInventoryIds.add(o);
+    return (Tenant)this;
+  }
+  @JsonIgnore
+  public void setHostInventoryIds(JsonArray objects) {
+    hostInventoryIds.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addHostInventoryIds(o);
+    }
+  }
+  protected Tenant hostInventoryIdsInit() {
+    _hostInventoryIds(hostInventoryIds);
+    return (Tenant)this;
+  }
+
+  public static String staticSearchHostInventoryIds(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrHostInventoryIds(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqHostInventoryIds(SiteRequest siteRequest_, String o) {
+    return Tenant.staticSearchHostInventoryIds(siteRequest_, Tenant.staticSetHostInventoryIds(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlHostInventoryIds() {
+    return hostInventoryIds.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonHostInventoryIds(List<String> hostInventoryIds) {
+    JsonArray a = new JsonArray();
+    hostInventoryIds.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -747,6 +837,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
         hubIdInit();
         clusterNameInit();
         aapOrganizationIdInit();
+        hostInventoryIdsInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -816,6 +907,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return oTenant.clusterName;
       case "aapOrganizationId":
         return oTenant.aapOrganizationId;
+      case "hostInventoryIds":
+        return oTenant.hostInventoryIds;
       default:
         return super.obtainBaseModel(var);
     }
@@ -841,6 +934,11 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public Object relateTenant(String var, Object val) {
     Tenant oTenant = (Tenant)this;
     switch(var) {
+      case "hostInventoryIds":
+        oTenant.addHostInventoryIds((String)val);
+        if(!saves.contains("hostInventoryIds"))
+          saves.add("hostInventoryIds");
+        return val;
       default:
         return super.relateBaseModel(var, val);
     }
@@ -871,14 +969,46 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSetClusterName(siteRequest_, v);
     case "aapOrganizationId":
       return Tenant.staticSetAapOrganizationId(siteRequest_, v);
+    case "hostInventoryIds":
+      return Tenant.staticSetHostInventoryIds(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
+
+  public static Future<Tenant> fq(SiteRequest siteRequest, String var, Object val) {
+    Promise<Tenant> promise = Promise.promise();
+    try {
+      if(val == null) {
+        promise.complete();
+      } else {
+        SearchList<Tenant> searchList = new SearchList<Tenant>();
+        searchList.setStore(true);
+        searchList.q("*:*");
+        searchList.setC(Tenant.class);
+        searchList.fq(String.format("%s:", Tenant.varIndexedTenant(var)) + SearchTool.escapeQueryChars(val.toString()));
+        searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+          try {
+            promise.complete(searchList.getList().stream().findFirst().orElse(null));
+          } catch(Throwable ex) {
+            LOG.error("Error while querying the tenant", ex);
+            promise.fail(ex);
+          }
+        }).onFailure(ex -> {
+          LOG.error("Error while querying the tenant", ex);
+          promise.fail(ex);
+        });
+      }
+    } catch(Throwable ex) {
+      LOG.error("Error while querying the tenant", ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchTenant(entityVar,  siteRequest_, o);
@@ -901,6 +1031,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchClusterName(siteRequest_, (String)o);
     case "aapOrganizationId":
       return Tenant.staticSearchAapOrganizationId(siteRequest_, (Long)o);
+    case "hostInventoryIds":
+      return Tenant.staticSearchHostInventoryIds(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -931,6 +1063,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchStrClusterName(siteRequest_, (String)o);
     case "aapOrganizationId":
       return Tenant.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
+    case "hostInventoryIds":
+      return Tenant.staticSearchStrHostInventoryIds(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -961,6 +1095,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchFqClusterName(siteRequest_, o);
     case "aapOrganizationId":
       return Tenant.staticSearchFqAapOrganizationId(siteRequest_, o);
+    case "hostInventoryIds":
+      return Tenant.staticSearchFqHostInventoryIds(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1101,6 +1237,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
         if(aapOrganizationId != null)
           oTenant.setAapOrganizationId(aapOrganizationId);
       }
+
+      List<String> hostInventoryIds = (List<String>)doc.get("hostInventoryIds_docvalues_strings");
+      if(hostInventoryIds != null)
+        oTenant.hostInventoryIds.addAll(hostInventoryIds);
     }
 
     super.populateBaseModel(doc);
@@ -1131,6 +1271,13 @@ public abstract class TenantGen<DEV> extends BaseModel {
     if(aapOrganizationId != null) {
       doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
     }
+    if(hostInventoryIds != null) {
+      JsonArray l = new JsonArray();
+      doc.put("hostInventoryIds_docvalues_strings", l);
+      for(String o : hostInventoryIds) {
+        l.add(Tenant.staticSearchHostInventoryIds(siteRequest_, o));
+      }
+    }
     super.indexBaseModel(doc);
 
 	}
@@ -1153,6 +1300,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "clusterName_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
+      case "hostInventoryIds":
+        return "hostInventoryIds_docvalues_strings";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1176,6 +1325,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "clusterName_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
+      case "hostInventoryIds":
+        return "hostInventoryIds_docvalues_strings";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1199,6 +1350,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "clusterName";
       case "aapOrganizationId_docvalues_long":
         return "aapOrganizationId";
+      case "hostInventoryIds_docvalues_strings":
+        return "hostInventoryIds";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1237,6 +1390,9 @@ public abstract class TenantGen<DEV> extends BaseModel {
     oTenant.setHubId(Optional.ofNullable(doc.get("hubId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setClusterName(Optional.ofNullable(doc.get("clusterName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    Optional.ofNullable((List<?>)doc.get("hostInventoryIds_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oTenant.addHostInventoryIds(Tenant.staticSetHostInventoryIds(siteRequest, v.toString()));
+    });
 
     super.storeBaseModel(doc);
   }
@@ -1266,6 +1422,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         apiRequest.addVars("clusterName");
       if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
         apiRequest.addVars("aapOrganizationId");
+      if(!Objects.equals(hostInventoryIds, original.getHostInventoryIds()))
+        apiRequest.addVars("hostInventoryIds");
       super.apiRequestBaseModel();
     }
   }
@@ -1285,6 +1443,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(hubId).map(v -> "hubId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(clusterName).map(v -> "clusterName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(hostInventoryIds).map(v -> "hostInventoryIds: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1303,6 +1462,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String VAR_hubId = "hubId";
   public static final String VAR_clusterName = "clusterName";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
+  public static final String VAR_hostInventoryIds = "hostInventoryIds";
 
   public static List<String> varsQForClass() {
     return Tenant.varsQTenant(new ArrayList<String>());
@@ -1343,10 +1503,11 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_hubId = "ACM Hub";
   public static final String DISPLAY_NAME_clusterName = "cluster name";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
+  public static final String DISPLAY_NAME_hostInventoryIds = "host inventories";
 
   @Override
   public String idForClass() {
-    return tenantId;
+    return tenantResource;
   }
 
   @Override
@@ -1410,6 +1571,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return DISPLAY_NAME_clusterName;
     case VAR_aapOrganizationId:
       return DISPLAY_NAME_aapOrganizationId;
+    case VAR_hostInventoryIds:
+      return DISPLAY_NAME_hostInventoryIds;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -1435,6 +1598,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return "The name of this cluster";
     case VAR_aapOrganizationId:
       return "The Ansible Automation Platform ID of the organization. ";
+    case VAR_hostInventoryIds:
+      return "The related host inventories for this tenant. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -1458,6 +1623,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return "String";
     case VAR_aapOrganizationId:
       return "Long";
+    case VAR_hostInventoryIds:
+      return "List";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
     }
@@ -1484,6 +1651,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return 99;
     case VAR_tenantDescription:
       return 3;
+    case VAR_hostInventoryIds:
+      return 4;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1499,6 +1668,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return 1;
     case VAR_tenantDescription:
       return 4;
+    case VAR_hostInventoryIds:
+      return 0;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

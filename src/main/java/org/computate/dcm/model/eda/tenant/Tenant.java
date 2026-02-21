@@ -23,12 +23,12 @@ import io.vertx.pgclient.data.Polygon;
  * Order: 4
  * Description: Tenants are separate organizations sharing the same cloud resources. 
  * AName: a tenant
- * Icon: <i class="fa-regular fa-buildings"></i>
+ * Icon: <i class="fa-duotone fa-regular fa-buildings"></i>
  * MenuDetails: multi-tenancy
  * MenuDetailsOpen: true
  *
  * SearchPageUri: /en-us/search/tenant
- * EditPageUri: /en-us/edit/tenant/{tenantId}
+ * EditPageUri: /en-us/edit/tenant/{tenantResource}
  * ApiUri: /en-us/api/tenant
  * ApiMethod:
  *   Search:
@@ -81,7 +81,6 @@ public class Tenant extends TenantGen<BaseModel> {
    * Description: The ID of this tenant
    * HtmRow: 3
    * HtmCell: 2
-   * VarId: true
    * Facet: true
    * DefaultFacet: true
    **/
@@ -98,6 +97,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * Facet: true
    * AuthorizationResource: TENANT
    * Unique: true
+   * VarId: true
    **/
   protected void _tenantResource(Wrap<String> w) {
     w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
@@ -163,5 +163,18 @@ public class Tenant extends TenantGen<BaseModel> {
    * Description: The Ansible Automation Platform ID of the organization. 
    */
   protected void _aapOrganizationId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: host inventories
+   * Description: The related host inventories for this tenant. 
+   * Relate: HostInventory.tenantResource
+   * HtmRowTitleOpen: relationships
+   * HtmRow: 4
+   * HtmCell: 0
+   **/
+  protected void _hostInventoryIds(List<String> l) {
   }
 }

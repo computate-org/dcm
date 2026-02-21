@@ -2966,6 +2966,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -3529,6 +3530,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
       responses:
         '200':
           description: >+
@@ -3677,6 +3679,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -5153,7 +5156,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportTenantResponse'
-  /en-us/api/tenant/{tenantId}:
+  /en-us/api/tenant/{tenantResource}:
     get:
       operationId: getTenant
       x-vertx-event-bus: dcm-enUS-Tenant
@@ -5195,7 +5198,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: tenantId
+        - name: tenantResource
           in: path
           description: >+
           required: true
@@ -5249,7 +5252,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: tenantId
+        - name: tenantResource
           in: path
           description: >+
           required: true
@@ -5297,7 +5300,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETETenantResponse'
-  /en-us/edit/tenant/{tenantId}:
+  /en-us/edit/tenant/{tenantResource}:
     get:
       operationId: editpageTenant
       x-vertx-event-bus: dcm-enUS-Tenant
@@ -5339,7 +5342,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: tenantId
+        - name: tenantResource
           in: path
           description: >+
           required: true
@@ -11910,6 +11913,10 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryName:
                     type: string
                   inventoryId:
@@ -11919,8 +11926,6 @@ components:
                   inventoryDescription:
                     type: string
                   aapInventoryId:
-                    type: string
-                  inventoryOrganizationId:
                     type: string
                   inventoryKind:
                     type: string
@@ -11934,6 +11939,20 @@ components:
             removeTenantResource:
               type: string
             removeAllTenantResource:
+              type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
               type: string
             setInventoryName:
               type: string
@@ -11969,13 +11988,6 @@ components:
             removeAapInventoryId:
               type: string
             removeAllAapInventoryId:
-              type: string
-            setInventoryOrganizationId:
-              type: string
-              nullable: true
-            removeInventoryOrganizationId:
-              type: string
-            removeAllInventoryOrganizationId:
               type: string
             setInventoryKind:
               type: string
@@ -11995,6 +12007,20 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
             setInventoryName:
               type: string
               nullable: true
@@ -12030,13 +12056,6 @@ components:
               type: string
             removeAllAapInventoryId:
               type: string
-            setInventoryOrganizationId:
-              type: string
-              nullable: true
-            removeInventoryOrganizationId:
-              type: string
-            removeAllInventoryOrganizationId:
-              type: string
             setInventoryKind:
               type: string
               nullable: true
@@ -12050,6 +12069,10 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -12059,8 +12082,6 @@ components:
             inventoryDescription:
               type: string
             aapInventoryId:
-              type: string
-            inventoryOrganizationId:
               type: string
             inventoryKind:
               type: string
@@ -12070,6 +12091,10 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -12079,8 +12104,6 @@ components:
             inventoryDescription:
               type: string
             aapInventoryId:
-              type: string
-            inventoryOrganizationId:
               type: string
             inventoryKind:
               type: string
@@ -12090,6 +12113,10 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -12099,8 +12126,6 @@ components:
             inventoryDescription:
               type: string
             aapInventoryId:
-              type: string
-            inventoryOrganizationId:
               type: string
             inventoryKind:
               type: string
@@ -12115,6 +12140,10 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryName:
                     type: string
                   inventoryId:
@@ -12124,8 +12153,6 @@ components:
                   inventoryDescription:
                     type: string
                   aapInventoryId:
-                    type: string
-                  inventoryOrganizationId:
                     type: string
                   inventoryKind:
                     type: string
@@ -12135,6 +12162,10 @@ components:
           properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryName:
                     type: string
                   inventoryId:
@@ -12145,8 +12176,6 @@ components:
                     type: string
                   aapInventoryId:
                     type: string
-                  inventoryOrganizationId:
-                    type: string
                   inventoryKind:
                     type: string
     GETHostInventoryResponse:
@@ -12154,6 +12183,10 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
               type: string
             inventoryName:
               type: string
@@ -12164,8 +12197,6 @@ components:
             inventoryDescription:
               type: string
             aapInventoryId:
-              type: string
-            inventoryOrganizationId:
               type: string
             inventoryKind:
               type: string
@@ -12175,6 +12206,10 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -12184,8 +12219,6 @@ components:
             inventoryDescription:
               type: string
             aapInventoryId:
-              type: string
-            inventoryOrganizationId:
               type: string
             inventoryKind:
               type: string
@@ -12687,6 +12720,10 @@ components:
                     type: string
                   aapOrganizationId:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     PATCHTenantRequest:
       allOf:
         - type: object
@@ -12747,6 +12784,23 @@ components:
               type: string
             removeAllAapOrganizationId:
               type: string
+            setHostInventoryIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeHostInventoryIds:
+              type: string
+            removeAllHostInventoryIds:
+              type: array
+              items:
+                type: string
+            addHostInventoryIds:
+              type: string
+            addAllHostInventoryIds:
+              type: array
+              items:
+                type: string
     PATCHTenantResponse:
       allOf:
         - type: object
@@ -12807,6 +12861,23 @@ components:
               type: string
             removeAllAapOrganizationId:
               type: string
+            setHostInventoryIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeHostInventoryIds:
+              type: string
+            removeAllHostInventoryIds:
+              type: array
+              items:
+                type: string
+            addHostInventoryIds:
+              type: string
+            addAllHostInventoryIds:
+              type: array
+              items:
+                type: string
     POSTTenantRequest:
       allOf:
         - type: object
@@ -12827,6 +12898,10 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     POSTTenantResponse:
       allOf:
         - type: object
@@ -12847,6 +12922,10 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     DELETEFilterTenantResponse:
       allOf:
         - type: object
@@ -12867,6 +12946,10 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     PUTImportTenantRequest:
       allOf:
         - type: object
@@ -12892,6 +12975,10 @@ components:
                     type: string
                   aapOrganizationId:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     PUTImportTenantResponse:
       allOf:
         - type: object
@@ -12912,6 +12999,10 @@ components:
                     type: string
                   aapOrganizationId:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     GETTenantResponse:
       allOf:
         - type: object
@@ -12932,6 +13023,10 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     DELETETenantResponse:
       allOf:
         - type: object
@@ -12952,6 +13047,10 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     EditPageTenantResponse:
       allOf:
         - type: string

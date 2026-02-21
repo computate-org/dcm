@@ -70,9 +70,31 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant
+   * Facet: true
+   * DefaultFacet: true
+   **/
+  protected void _tenantId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the organization. 
+   */
+  protected void _aapOrganizationId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
    * Unique: true
    * HtmRow: 3
-   * HtmCell: 1
+   * HtmCell: 0
    * HtmColumn: 1
    * HtmRowTitleOpen: inventory details
    * DisplayName: inventory name
@@ -113,7 +135,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 3
-   * HtmCell: 3
+   * HtmCell: 1
    * HtmColumn: 2
    * DisplayName: inventory description
    * Description: The description of the inventory in AAP. 
@@ -136,20 +158,10 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: AAP organization ID
-   * Description: The Ansible Automation Platform organization ID of the inventory. 
-   */
-  protected void _inventoryOrganizationId(Wrap<Long> w) {
-  }
-
-  /**
-   * {@inheritDoc}
-   * DocValues: true
-   * Persist: true
    * DisplayName: AAP kind
    * Description: The Ansible Automation Platform kind of the inventory ("", "smart", "constructed"). 
    * HtmRow: 3
-   * HtmCell: 6
+   * HtmCell: 2
    */
   protected void _inventoryKind(Wrap<String> w) {
     w.o("");

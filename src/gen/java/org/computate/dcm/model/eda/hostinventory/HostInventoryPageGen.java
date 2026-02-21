@@ -245,9 +245,9 @@ public abstract class HostInventoryPageGen<DEV> extends HostInventoryGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHostInventoryPage(entityVar,  siteRequest_, o);

@@ -245,9 +245,9 @@ public abstract class TenantPageGen<DEV> extends TenantGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchTenantPage(entityVar,  siteRequest_, o);
