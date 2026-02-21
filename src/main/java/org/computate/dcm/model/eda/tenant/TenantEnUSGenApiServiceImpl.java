@@ -244,6 +244,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
       List<String> fls = listTenant.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listTenant.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -270,15 +271,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
       });
       json.put("list", l);
       response200Search(listTenant.getRequest(), listTenant.getResponse(), json);
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchTenant failed. "), ex);
       promise.tryFail(ex);
@@ -446,15 +439,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     try {
       SiteRequest siteRequest = listTenant.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listTenant.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETTenant failed. "), ex);
       promise.tryFail(ex);
@@ -856,13 +841,13 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               num++;
               bParams.add(o2.sqlArchived());
             break;
-          case "setDescription":
-              o2.setDescription(jsonObject.getString(entityVar));
+          case "setTenantDescription":
+              o2.setTenantDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Tenant.VAR_description + "=$" + num);
+              bSql.append(Tenant.VAR_tenantDescription + "=$" + num);
               num++;
-              bParams.add(o2.sqlDescription());
+              bParams.add(o2.sqlTenantDescription());
             break;
           case "setHubId":
               o2.setHubId(jsonObject.getString(entityVar));
@@ -879,6 +864,14 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               bSql.append(Tenant.VAR_clusterName + "=$" + num);
               num++;
               bParams.add(o2.sqlClusterName());
+            break;
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Tenant.VAR_aapOrganizationId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapOrganizationId());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
@@ -979,15 +972,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHTenant failed. "), ex);
       promise.tryFail(ex);
@@ -1381,14 +1366,14 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             num++;
             bParams.add(o2.sqlArchived());
             break;
-          case Tenant.VAR_description:
-            o2.setDescription(jsonObject.getString(entityVar));
+          case Tenant.VAR_tenantDescription:
+            o2.setTenantDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Tenant.VAR_description + "=$" + num);
+            bSql.append(Tenant.VAR_tenantDescription + "=$" + num);
             num++;
-            bParams.add(o2.sqlDescription());
+            bParams.add(o2.sqlTenantDescription());
             break;
           case Tenant.VAR_hubId:
             o2.setHubId(jsonObject.getString(entityVar));
@@ -1407,6 +1392,15 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             bSql.append(Tenant.VAR_clusterName + "=$" + num);
             num++;
             bParams.add(o2.sqlClusterName());
+            break;
+          case Tenant.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Tenant.VAR_aapOrganizationId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapOrganizationId());
             break;
           case Tenant.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
@@ -1513,15 +1507,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTTenant failed. "), ex);
       promise.tryFail(ex);
@@ -1905,15 +1891,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETETenant failed. "), ex);
       promise.tryFail(ex);
@@ -2271,15 +2249,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportTenant failed. "), ex);
       promise.tryFail(ex);
@@ -3268,15 +3238,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String tenantId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantId");
-        String m = String.format("%s %s not found", "tenant", tenantId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterTenant failed. "), ex);
       promise.tryFail(ex);
@@ -3610,7 +3572,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantResource, pageId, archived, description, hubId, clusterName, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM Tenant WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantResource, pageId, archived, tenantDescription, hubId, clusterName, aapOrganizationId, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM Tenant WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3821,9 +3783,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
       o.persistForClass(Tenant.VAR_tenantResource, Tenant.staticSetTenantResource(siteRequest2, (String)result.get(Tenant.VAR_tenantResource)));
       o.persistForClass(Tenant.VAR_pageId, Tenant.staticSetPageId(siteRequest2, (String)result.get(Tenant.VAR_pageId)));
       o.persistForClass(Tenant.VAR_archived, Tenant.staticSetArchived(siteRequest2, (String)result.get(Tenant.VAR_archived)));
-      o.persistForClass(Tenant.VAR_description, Tenant.staticSetDescription(siteRequest2, (String)result.get(Tenant.VAR_description)));
+      o.persistForClass(Tenant.VAR_tenantDescription, Tenant.staticSetTenantDescription(siteRequest2, (String)result.get(Tenant.VAR_tenantDescription)));
       o.persistForClass(Tenant.VAR_hubId, Tenant.staticSetHubId(siteRequest2, (String)result.get(Tenant.VAR_hubId)));
       o.persistForClass(Tenant.VAR_clusterName, Tenant.staticSetClusterName(siteRequest2, (String)result.get(Tenant.VAR_clusterName)));
+      o.persistForClass(Tenant.VAR_aapOrganizationId, Tenant.staticSetAapOrganizationId(siteRequest2, (String)result.get(Tenant.VAR_aapOrganizationId)));
       o.persistForClass(Tenant.VAR_sessionId, Tenant.staticSetSessionId(siteRequest2, (String)result.get(Tenant.VAR_sessionId)));
       o.persistForClass(Tenant.VAR_userKey, Tenant.staticSetUserKey(siteRequest2, (String)result.get(Tenant.VAR_userKey)));
       o.persistForClass(Tenant.VAR_objectTitle, Tenant.staticSetObjectTitle(siteRequest2, (String)result.get(Tenant.VAR_objectTitle)));

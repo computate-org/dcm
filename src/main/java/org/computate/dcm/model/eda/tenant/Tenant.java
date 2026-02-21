@@ -42,7 +42,10 @@ import io.vertx.pgclient.data.Polygon;
  *   TenantAdmin:
  *     GET:
  *   Admin:
+ *     POST:
+ *     PATCH:
  *     GET:
+ *     DELETE:
  *   SuperAdmin:
  *     POST:
  *     PATCH:
@@ -65,6 +68,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * HtmRowTitleOpen: tenant details
    * Facet: true
    * VarName: true
+   * Required: true
    **/
   protected void _tenantName(Wrap<String> w) {
   }
@@ -126,7 +130,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * HtmColumn: 3
    * VarDescription: true
    **/
-  protected void _description(Wrap<String> w) {
+  protected void _tenantDescription(Wrap<String> w) {
   }
 
   /**
@@ -150,4 +154,14 @@ public class Tenant extends TenantGen<BaseModel> {
    * DefaultFacet: true
    **/
   protected void _clusterName(Wrap<String> w) {}
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the organization. 
+   */
+  protected void _aapOrganizationId(Wrap<Long> w) {
+  }
 }

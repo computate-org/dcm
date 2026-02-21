@@ -2,6 +2,7 @@ package org.computate.dcm.model.eda.tenant;
 
 import org.computate.dcm.model.eda.tenant.Tenant;
 import java.lang.String;
+import java.lang.Long;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;

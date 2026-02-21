@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
+import java.lang.Long;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -453,66 +454,66 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return pageId;
   }
 
-	/////////////////
-  // description //
-	/////////////////
+	///////////////////////
+  // tenantDescription //
+	///////////////////////
 
 
   /**
-   *  The entity description
+   *  The entity tenantDescription
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String description;
+  protected String tenantDescription;
 
   /**
-   * <br> The entity description
+   * <br> The entity tenantDescription
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:description">Find the entity description in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _description(Wrap<String> w);
+  protected abstract void _tenantDescription(Wrap<String> w);
 
-  public String getDescription() {
-    return description;
+  public String getTenantDescription() {
+    return tenantDescription;
   }
-  public void setDescription(String o) {
-    this.description = Tenant.staticSetDescription(siteRequest_, o);
+  public void setTenantDescription(String o) {
+    this.tenantDescription = Tenant.staticSetTenantDescription(siteRequest_, o);
   }
-  public static String staticSetDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected Tenant descriptionInit() {
-    Wrap<String> descriptionWrap = new Wrap<String>().var("description");
-    if(description == null) {
-      _description(descriptionWrap);
-      Optional.ofNullable(descriptionWrap.getO()).ifPresent(o -> {
-        setDescription(o);
+  protected Tenant tenantDescriptionInit() {
+    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
+    if(tenantDescription == null) {
+      _tenantDescription(tenantDescriptionWrap);
+      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
+        setTenantDescription(o);
       });
     }
     return (Tenant)this;
   }
 
-  public static String staticSearchDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqDescription(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchDescription(siteRequest_, Tenant.staticSetDescription(siteRequest_, o)).toString();
+  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
+    return Tenant.staticSearchTenantDescription(siteRequest_, Tenant.staticSetTenantDescription(siteRequest_, o)).toString();
   }
 
-  public String sqlDescription() {
-    return description;
+  public String sqlTenantDescription() {
+    return tenantDescription;
   }
 
-  public static String staticJsonDescription(String description) {
-    return description;
+  public static String staticJsonTenantDescription(String tenantDescription) {
+    return tenantDescription;
   }
 
 	///////////
@@ -639,6 +640,76 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return clusterName;
   }
 
+	///////////////////////
+  // aapOrganizationId //
+	///////////////////////
+
+
+  /**
+   *  The entity aapOrganizationId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapOrganizationId;
+
+  /**
+   * <br> The entity aapOrganizationId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:aapOrganizationId">Find the entity aapOrganizationId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapOrganizationId(Wrap<Long> w);
+
+  public Long getAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public void setAapOrganizationId(Long aapOrganizationId) {
+    this.aapOrganizationId = aapOrganizationId;
+  }
+  @JsonIgnore
+  public void setAapOrganizationId(String o) {
+    this.aapOrganizationId = Tenant.staticSetAapOrganizationId(siteRequest_, o);
+  }
+  public static Long staticSetAapOrganizationId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected Tenant aapOrganizationIdInit() {
+    Wrap<Long> aapOrganizationIdWrap = new Wrap<Long>().var("aapOrganizationId");
+    if(aapOrganizationId == null) {
+      _aapOrganizationId(aapOrganizationIdWrap);
+      Optional.ofNullable(aapOrganizationIdWrap.getO()).ifPresent(o -> {
+        setAapOrganizationId(o);
+      });
+    }
+    return (Tenant)this;
+  }
+
+  public static Long staticSearchAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapOrganizationId(SiteRequest siteRequest_, String o) {
+    return Tenant.staticSearchAapOrganizationId(siteRequest_, Tenant.staticSetAapOrganizationId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
+    return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -672,9 +743,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
         tenantIdInit();
         tenantResourceInit();
         pageIdInit();
-        descriptionInit();
+        tenantDescriptionInit();
         hubIdInit();
         clusterNameInit();
+        aapOrganizationIdInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -736,12 +808,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return oTenant.tenantResource;
       case "pageId":
         return oTenant.pageId;
-      case "description":
-        return oTenant.description;
+      case "tenantDescription":
+        return oTenant.tenantDescription;
       case "hubId":
         return oTenant.hubId;
       case "clusterName":
         return oTenant.clusterName;
+      case "aapOrganizationId":
+        return oTenant.aapOrganizationId;
       default:
         return super.obtainBaseModel(var);
     }
@@ -789,12 +863,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSetTenantResource(siteRequest_, v);
     case "pageId":
       return Tenant.staticSetPageId(siteRequest_, v);
-    case "description":
-      return Tenant.staticSetDescription(siteRequest_, v);
+    case "tenantDescription":
+      return Tenant.staticSetTenantDescription(siteRequest_, v);
     case "hubId":
       return Tenant.staticSetHubId(siteRequest_, v);
     case "clusterName":
       return Tenant.staticSetClusterName(siteRequest_, v);
+    case "aapOrganizationId":
+      return Tenant.staticSetAapOrganizationId(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
@@ -817,12 +893,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchTenantResource(siteRequest_, (String)o);
     case "pageId":
       return Tenant.staticSearchPageId(siteRequest_, (String)o);
-    case "description":
-      return Tenant.staticSearchDescription(siteRequest_, (String)o);
+    case "tenantDescription":
+      return Tenant.staticSearchTenantDescription(siteRequest_, (String)o);
     case "hubId":
       return Tenant.staticSearchHubId(siteRequest_, (String)o);
     case "clusterName":
       return Tenant.staticSearchClusterName(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return Tenant.staticSearchAapOrganizationId(siteRequest_, (Long)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -845,12 +923,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchStrTenantResource(siteRequest_, (String)o);
     case "pageId":
       return Tenant.staticSearchStrPageId(siteRequest_, (String)o);
-    case "description":
-      return Tenant.staticSearchStrDescription(siteRequest_, (String)o);
+    case "tenantDescription":
+      return Tenant.staticSearchStrTenantDescription(siteRequest_, (String)o);
     case "hubId":
       return Tenant.staticSearchStrHubId(siteRequest_, (String)o);
     case "clusterName":
       return Tenant.staticSearchStrClusterName(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return Tenant.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -873,12 +953,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchFqTenantResource(siteRequest_, o);
     case "pageId":
       return Tenant.staticSearchFqPageId(siteRequest_, o);
-    case "description":
-      return Tenant.staticSearchFqDescription(siteRequest_, o);
+    case "tenantDescription":
+      return Tenant.staticSearchFqTenantDescription(siteRequest_, o);
     case "hubId":
       return Tenant.staticSearchFqHubId(siteRequest_, o);
     case "clusterName":
       return Tenant.staticSearchFqClusterName(siteRequest_, o);
+    case "aapOrganizationId":
+      return Tenant.staticSearchFqAapOrganizationId(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -929,11 +1011,11 @@ public abstract class TenantGen<DEV> extends BaseModel {
         }
         saves.add("pageId");
         return val;
-      } else if("description".equals(varLower)) {
+      } else if("tenantdescription".equals(varLower)) {
         if(val instanceof String) {
-          setDescription((String)val);
+          setTenantDescription((String)val);
         }
-        saves.add("description");
+        saves.add("tenantDescription");
         return val;
       } else if("hubid".equals(varLower)) {
         if(val instanceof String) {
@@ -946,6 +1028,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
           setClusterName((String)val);
         }
         saves.add("clusterName");
+        return val;
+      } else if("aaporganizationid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapOrganizationId((Long)val);
+        } else {
+          setAapOrganizationId(val == null ? null : val.toString());
+        }
+        saves.add("aapOrganizationId");
         return val;
     } else {
       return super.persistBaseModel(var, val);
@@ -988,10 +1078,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
           oTenant.setPageId(pageId);
       }
 
-      if(saves.contains("description")) {
-        String description = (String)doc.get("description_docvalues_string");
-        if(description != null)
-          oTenant.setDescription(description);
+      if(saves.contains("tenantDescription")) {
+        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
+        if(tenantDescription != null)
+          oTenant.setTenantDescription(tenantDescription);
       }
 
       if(saves.contains("hubId")) {
@@ -1004,6 +1094,12 @@ public abstract class TenantGen<DEV> extends BaseModel {
         String clusterName = (String)doc.get("clusterName_docvalues_string");
         if(clusterName != null)
           oTenant.setClusterName(clusterName);
+      }
+
+      if(saves.contains("aapOrganizationId")) {
+        Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
+        if(aapOrganizationId != null)
+          oTenant.setAapOrganizationId(aapOrganizationId);
       }
     }
 
@@ -1023,14 +1119,17 @@ public abstract class TenantGen<DEV> extends BaseModel {
     if(pageId != null) {
       doc.put("pageId_docvalues_string", pageId);
     }
-    if(description != null) {
-      doc.put("description_docvalues_string", description);
+    if(tenantDescription != null) {
+      doc.put("tenantDescription_docvalues_string", tenantDescription);
     }
     if(hubId != null) {
       doc.put("hubId_docvalues_string", hubId);
     }
     if(clusterName != null) {
       doc.put("clusterName_docvalues_string", clusterName);
+    }
+    if(aapOrganizationId != null) {
+      doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
     }
     super.indexBaseModel(doc);
 
@@ -1046,12 +1145,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "tenantResource_docvalues_string";
       case "pageId":
         return "pageId_docvalues_string";
-      case "description":
-        return "description_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
       case "hubId":
         return "hubId_docvalues_string";
       case "clusterName":
         return "clusterName_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1067,12 +1168,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "tenantResource_docvalues_string";
       case "pageId":
         return "pageId_docvalues_string";
-      case "description":
-        return "description_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
       case "hubId":
         return "hubId_docvalues_string";
       case "clusterName":
         return "clusterName_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1088,12 +1191,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "tenantResource";
       case "pageId_docvalues_string":
         return "pageId";
-      case "description_docvalues_string":
-        return "description";
+      case "tenantDescription_docvalues_string":
+        return "tenantDescription";
       case "hubId_docvalues_string":
         return "hubId";
       case "clusterName_docvalues_string":
         return "clusterName";
+      case "aapOrganizationId_docvalues_long":
+        return "aapOrganizationId";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1128,9 +1233,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
     oTenant.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setPageId(Optional.ofNullable(doc.get("pageId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenant.setDescription(Optional.ofNullable(doc.get("description_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenant.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setHubId(Optional.ofNullable(doc.get("hubId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setClusterName(Optional.ofNullable(doc.get("clusterName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenant.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
   }
@@ -1152,12 +1258,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
         apiRequest.addVars("tenantResource");
       if(!Objects.equals(pageId, original.getPageId()))
         apiRequest.addVars("pageId");
-      if(!Objects.equals(description, original.getDescription()))
-        apiRequest.addVars("description");
+      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
+        apiRequest.addVars("tenantDescription");
       if(!Objects.equals(hubId, original.getHubId()))
         apiRequest.addVars("hubId");
       if(!Objects.equals(clusterName, original.getClusterName()))
         apiRequest.addVars("clusterName");
+      if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
+        apiRequest.addVars("aapOrganizationId");
       super.apiRequestBaseModel();
     }
   }
@@ -1173,9 +1281,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(pageId).map(v -> "pageId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(description).map(v -> "description: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hubId).map(v -> "hubId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(clusterName).map(v -> "clusterName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1190,9 +1299,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String VAR_tenantId = "tenantId";
   public static final String VAR_tenantResource = "tenantResource";
   public static final String VAR_pageId = "pageId";
-  public static final String VAR_description = "description";
+  public static final String VAR_tenantDescription = "tenantDescription";
   public static final String VAR_hubId = "hubId";
   public static final String VAR_clusterName = "clusterName";
+  public static final String VAR_aapOrganizationId = "aapOrganizationId";
 
   public static List<String> varsQForClass() {
     return Tenant.varsQTenant(new ArrayList<String>());
@@ -1210,7 +1320,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     vars.add(VAR_tenantId);
     vars.add(VAR_tenantResource);
     vars.add(VAR_pageId);
-    vars.add(VAR_description);
+    vars.add(VAR_tenantDescription);
     vars.add(VAR_hubId);
     vars.add(VAR_clusterName);
     BaseModel.varsFqBaseModel(vars);
@@ -1229,9 +1339,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_tenantId = "tenant ID";
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_pageId = "Page ID";
-  public static final String DISPLAY_NAME_description = "description";
+  public static final String DISPLAY_NAME_tenantDescription = "description";
   public static final String DISPLAY_NAME_hubId = "ACM Hub";
   public static final String DISPLAY_NAME_clusterName = "cluster name";
+  public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
 
   @Override
   public String idForClass() {
@@ -1255,7 +1366,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   @Override
   public String descriptionForClass() {
-    return description;
+    return tenantDescription;
   }
 
   @Override
@@ -1291,12 +1402,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return DISPLAY_NAME_tenantResource;
     case VAR_pageId:
       return DISPLAY_NAME_pageId;
-    case VAR_description:
-      return DISPLAY_NAME_description;
+    case VAR_tenantDescription:
+      return DISPLAY_NAME_tenantDescription;
     case VAR_hubId:
       return DISPLAY_NAME_hubId;
     case VAR_clusterName:
       return DISPLAY_NAME_clusterName;
+    case VAR_aapOrganizationId:
+      return DISPLAY_NAME_aapOrganizationId;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -1314,12 +1427,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return "The unique authorization resource for the tenant for multi-tenancy";
     case VAR_pageId:
       return "The ID for this page. ";
-    case VAR_description:
+    case VAR_tenantDescription:
       return "A description of this tenant";
     case VAR_hubId:
       return "The ID of the ACM Hub for this cluster in Prometheus Keycloak Proxy. ";
     case VAR_clusterName:
       return "The name of this cluster";
+    case VAR_aapOrganizationId:
+      return "The Ansible Automation Platform ID of the organization. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -1335,12 +1450,14 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return "String";
     case VAR_pageId:
       return "String";
-    case VAR_description:
+    case VAR_tenantDescription:
       return "String";
     case VAR_hubId:
       return "String";
     case VAR_clusterName:
       return "String";
+    case VAR_aapOrganizationId:
+      return "Long";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
     }
@@ -1350,7 +1467,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantName:
       return 1;
-    case VAR_description:
+    case VAR_tenantDescription:
       return 3;
       default:
         return BaseModel.htmColumnBaseModel(var);
@@ -1365,7 +1482,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return 3;
     case VAR_pageId:
       return 99;
-    case VAR_description:
+    case VAR_tenantDescription:
       return 3;
       default:
         return BaseModel.htmRowBaseModel(var);
@@ -1380,7 +1497,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return 2;
     case VAR_pageId:
       return 1;
-    case VAR_description:
+    case VAR_tenantDescription:
       return 4;
       default:
         return BaseModel.htmCellBaseModel(var);
