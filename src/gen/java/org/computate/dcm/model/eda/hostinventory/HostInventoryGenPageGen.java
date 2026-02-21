@@ -760,12 +760,19 @@ public abstract class HostInventoryGenPageGen<DEV> extends PageLayout {
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.hostinventory.HostInventoryGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_searchListHostInventory_ = "searchListHostInventory_";
+  public static final String SET_searchListHostInventory_ = "setSearchListHostInventory_";
   public static final String VAR_listHostInventory = "listHostInventory";
+  public static final String SET_listHostInventory = "setListHostInventory";
   public static final String VAR_resultCount = "resultCount";
+  public static final String SET_resultCount = "setResultCount";
   public static final String VAR_result = "result";
+  public static final String SET_result = "setResult";
   public static final String VAR_pk = "pk";
+  public static final String SET_pk = "setPk";
   public static final String VAR_solrId = "solrId";
+  public static final String SET_solrId = "setSolrId";
   public static final String VAR_pageUriHostInventory = "pageUriHostInventory";
+  public static final String SET_pageUriHostInventory = "setPageUriHostInventory";
 
   public static final String DISPLAY_NAME_searchListHostInventory_ = "";
   public static final String DISPLAY_NAME_listHostInventory = "";

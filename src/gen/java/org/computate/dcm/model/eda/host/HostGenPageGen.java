@@ -760,12 +760,19 @@ public abstract class HostGenPageGen<DEV> extends PageLayout {
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.host.HostGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_searchListHost_ = "searchListHost_";
+  public static final String SET_searchListHost_ = "setSearchListHost_";
   public static final String VAR_listHost = "listHost";
+  public static final String SET_listHost = "setListHost";
   public static final String VAR_resultCount = "resultCount";
+  public static final String SET_resultCount = "setResultCount";
   public static final String VAR_result = "result";
+  public static final String SET_result = "setResult";
   public static final String VAR_pk = "pk";
+  public static final String SET_pk = "setPk";
   public static final String VAR_solrId = "solrId";
+  public static final String SET_solrId = "setSolrId";
   public static final String VAR_pageUriHost = "pageUriHost";
+  public static final String SET_pageUriHost = "setPageUriHost";
 
   public static final String DISPLAY_NAME_searchListHost_ = "";
   public static final String DISPLAY_NAME_listHost = "";

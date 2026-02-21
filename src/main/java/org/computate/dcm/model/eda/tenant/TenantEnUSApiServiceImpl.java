@@ -1,39 +1,25 @@
 package org.computate.dcm.model.eda.tenant;
 
-import io.vertx.ext.auth.authorization.AuthorizationProvider;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.core.Vertx;
-import io.vertx.core.WorkerExecutor;
 import io.vertx.core.json.JsonObject;
-import io.vertx.sqlclient.Pool;
-import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
-import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.mqtt.MqttClient;
-import io.vertx.amqp.AmqpSender;
-import io.vertx.rabbitmq.RabbitMQClient;
-import com.hubspot.jinjava.Jinjava;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.request.SiteRequest;
-import org.computate.vertx.search.list.SearchList;
 
 /**
  * Translate: false
  **/
 public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
 
-  public Future<Void> aapUpsertOrganization(Tenant o, Boolean inheritPrimaryKey, Boolean patch) {
-    Promise<Void> promise = Promise.promise();
+  public Future<JsonObject> aapUpsertParams(Tenant o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -41,11 +27,31 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         promise.complete();
       } else {
         JsonObject tenantJson = o.getSiteRequest_().getJsonObject();
-        String tenantName = Optional.ofNullable(tenantJson.getString(patch ? "setTenantName": "tenantName")).orElse(o.getTenantName());
-        String tenantId = Optional.ofNullable(tenantJson.getString(patch ? "setTenantId": "tenantId")).orElse(Tenant.toId(tenantName));
-        tenantJson.put(Tenant.VAR_tenantId, tenantId);
+        String tenantName = Optional.ofNullable(tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantName, patch))).orElse(o.getTenantName());
+        tenantJson.put(Tenant.varJsonTenant(Tenant.VAR_tenantName, patch), tenantName);
+        String tenantDescription = Optional.ofNullable(tenantJson.getString(patch ? "setTenantDescription": "tenantDescription")).orElse(o.getTenantDescription());
+        tenantJson.put(Tenant.varJsonTenant(Tenant.VAR_tenantDescription, patch), tenantDescription);
+        String tenantId = Optional.ofNullable(tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantId, patch))).orElse(Tenant.toId(tenantName));
+        tenantJson.put(Tenant.varJsonTenant(Tenant.VAR_tenantId, patch), tenantId);
         String tenantResource = String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId);
-        tenantJson.put(Tenant.VAR_tenantResource, tenantResource);
+        tenantJson.put(Tenant.varJsonTenant(Tenant.VAR_tenantResource, patch), tenantResource);
+        promise.complete(tenantJson);
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("Updating AAP tenant failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
+  public Future<Void> aapUpsertOrganization(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson) {
+    Promise<Void> promise = Promise.promise();
+    try {
+      if(tenantJson == null) {
+        promise.complete();
+      } else {
+        String tenantName = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantName, patch));
+        String tenantDescription = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantDescription, patch));
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
         String aapTenantName = config.getString(ConfigKeys.AAP_HOST_NAME);
@@ -55,7 +61,6 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
         JsonObject body = new JsonObject();
-        String tenantDescription = Optional.ofNullable(tenantJson.getString(patch ? "setTenantDescription": "tenantDescription")).orElse(o.getTenantDescription());
         body.put("name", tenantName);
         if(tenantDescription != null)
           body.put("description", Optional.ofNullable(tenantDescription).orElse(tenantName));
@@ -86,18 +91,13 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     return promise.future();
   }
 
-  public Future<Void> sensuUpsertNamespace(Tenant o, Boolean inheritPrimaryKey, Boolean patch) {
+  public Future<Void> sensuUpsertNamespace(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson) {
     Promise<Void> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = o.getSiteRequest_();
-      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+      if(tenantJson == null) {
         promise.complete();
       } else {
-        JsonObject tenantJson = o.getSiteRequest_().getJsonObject();
-        String tenantName = Optional.ofNullable(tenantJson.getString(patch ? "setTenantName": "tenantName")).orElse(o.getTenantName());
-        String tenantId = Optional.ofNullable(tenantJson.getString(patch ? "setTenantId": "tenantId")).orElse(Tenant.toId(tenantName));
-        tenantJson.put(Tenant.VAR_tenantId, tenantId);
+        String tenantId = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantId, patch));
 
         Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
         String sensuTenantName = config.getString(ConfigKeys.SENSU_HOST_NAME);
@@ -135,10 +135,14 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
   @Override
   public Future<Tenant> sqlPOSTTenant(Tenant o, Boolean inheritPrimaryKey) {
     Promise<Tenant> promise = Promise.promise();
-    aapUpsertOrganization(o, inheritPrimaryKey, false).onSuccess(a -> {
-      sensuUpsertNamespace(o, inheritPrimaryKey, false).onSuccess(b -> {
-        super.sqlPOSTTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
-          promise.complete(o2);
+    aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(tenantJson -> {
+      aapUpsertOrganization(o, inheritPrimaryKey, false, tenantJson).onSuccess(a -> {
+        sensuUpsertNamespace(o, inheritPrimaryKey, false, tenantJson).onSuccess(b -> {
+          super.sqlPOSTTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
+            promise.complete(o2);
+          }).onFailure(ex -> {
+            promise.fail(ex);
+          });
         }).onFailure(ex -> {
           promise.fail(ex);
         });
@@ -154,9 +158,18 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
   @Override
   public Future<Tenant> sqlPATCHTenant(Tenant o, Boolean inheritPrimaryKey) {
     Promise<Tenant> promise = Promise.promise();
-    sensuUpsertNamespace(o, inheritPrimaryKey, true).onSuccess(a -> {
-      super.sqlPATCHTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
-        promise.complete(o2);
+    aapUpsertParams(o, inheritPrimaryKey, true).onSuccess(tenantJson -> {
+      aapUpsertOrganization(o, inheritPrimaryKey, true, tenantJson).onSuccess(a -> {
+        sensuUpsertNamespace(o, inheritPrimaryKey, true, tenantJson).onSuccess(b -> {
+          super.sqlPATCHTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
+            promise.complete(o2);
+          }).onFailure(ex -> {
+            promise.fail(ex);
+          });
+        }).onFailure(ex -> {
+          LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
         promise.fail(ex);
       });

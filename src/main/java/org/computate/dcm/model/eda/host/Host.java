@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
+import org.computate.dcm.model.eda.tenant.Tenant;
 
 /**
  * Order: 8
@@ -55,12 +56,18 @@ public class Host extends HostGen<BaseModel> {
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
-   * HtmRowTitleOpen: host details
-   * HtmRow: 3
-   * HtmCell: 0
-   * HtmColumn: 0
    **/
   protected void _tenantResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the organization. 
+   */
+  protected void _aapOrganizationId(Wrap<Long> w) {
   }
 
   /**
@@ -70,8 +77,9 @@ public class Host extends HostGen<BaseModel> {
    * Description: The unique authorization resource for the inventory for multi-tenancy
    * AuthorizationResource: HOSTINVENTORY
    * Relate: HostInventory.inventoryResource
+   * HtmRowTitleOpen: inventory details
    * HtmRow: 3
-   * HtmCell: 1
+   * HtmCell: 0
    **/
   protected void _inventoryResource(Wrap<String> w) {
   }
@@ -91,8 +99,8 @@ public class Host extends HostGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
-   * HtmRow: 3
-   * HtmCell: 2
+   * HtmRow: 4
+   * HtmCell: 0
    * HtmColumn: 1
    * DisplayName: Fully Qualified Domain Name
    * Description: The computer fully qualified domain name
@@ -107,8 +115,8 @@ public class Host extends HostGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
-   * HtmRow: 3
-   * HtmCell: 2
+   * HtmRow: 4
+   * HtmCell: 1
    * HtmColumn: 1
    * DisplayName: IP address
    * Description: The IP address of the host
@@ -140,15 +148,15 @@ public class Host extends HostGen<BaseModel> {
    * AuthorizationResource: HOST
    */
   protected void _hostResource(Wrap<String> w) {
-    w.o(String.format("%s-%s", Host.CLASS_AUTH_RESOURCE, hostName));
+    w.o(String.format("%s-%s-%s", tenantResource, Host.CLASS_AUTH_RESOURCE, hostName));
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 3
+   * HtmRow: 4
+   * HtmCell: 2
    * HtmColumn: 2
    * DisplayName: host description
    * Description: The description of the host in AAP. 
@@ -181,8 +189,9 @@ public class Host extends HostGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 5
+   * HtmRowTitleOpen: relationships
+   * HtmRow: 5
+   * HtmCell: 1
    * HtmColumn: 2
    * DisplayName: event subscriptions
    * Description: The list of event subscriptions the host subscribes to. 

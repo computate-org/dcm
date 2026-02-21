@@ -760,12 +760,19 @@ public abstract class TenantGenPageGen<DEV> extends PageLayout {
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.tenant.TenantGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_searchListTenant_ = "searchListTenant_";
+  public static final String SET_searchListTenant_ = "setSearchListTenant_";
   public static final String VAR_listTenant = "listTenant";
+  public static final String SET_listTenant = "setListTenant";
   public static final String VAR_resultCount = "resultCount";
+  public static final String SET_resultCount = "setResultCount";
   public static final String VAR_result = "result";
+  public static final String SET_result = "setResult";
   public static final String VAR_pk = "pk";
+  public static final String SET_pk = "setPk";
   public static final String VAR_solrId = "solrId";
+  public static final String SET_solrId = "setSolrId";
   public static final String VAR_pageUriTenant = "pageUriTenant";
+  public static final String SET_pageUriTenant = "setPageUriTenant";
 
   public static final String DISPLAY_NAME_searchListTenant_ = "";
   public static final String DISPLAY_NAME_listTenant = "";

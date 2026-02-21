@@ -11099,6 +11099,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryResource:
                     type: string
                   aapHostId:
@@ -11131,6 +11133,13 @@ components:
             removeTenantResource:
               type: string
             removeAllTenantResource:
+              type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
               type: string
             setInventoryResource:
               type: string
@@ -11223,6 +11232,13 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
             setInventoryResource:
               type: string
               nullable: true
@@ -11309,6 +11325,8 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
               type: string
             aapHostId:
@@ -11337,6 +11355,8 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
               type: string
             aapHostId:
@@ -11364,6 +11384,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            aapOrganizationId:
               type: string
             inventoryResource:
               type: string
@@ -11398,6 +11420,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryResource:
                     type: string
                   aapHostId:
@@ -11425,6 +11449,8 @@ components:
         - type: object
           properties:
                   tenantResource:
+                    type: string
+                  aapOrganizationId:
                     type: string
                   inventoryResource:
                     type: string
@@ -11454,6 +11480,8 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
               type: string
             aapHostId:
@@ -11481,6 +11509,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            aapOrganizationId:
               type: string
             inventoryResource:
               type: string

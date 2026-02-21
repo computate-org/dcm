@@ -44,6 +44,8 @@ import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
+import org.computate.vertx.search.list.SearchList;
+import org.computate.search.tool.SearchTool;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.computate.search.response.solr.SolrResponse;
 
@@ -1257,9 +1259,39 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
+
+  public static Future<JobTemplate> fq(SiteRequest siteRequest, String var, Object val) {
+    Promise<JobTemplate> promise = Promise.promise();
+    try {
+      if(val == null) {
+        promise.complete();
+      } else {
+        SearchList<JobTemplate> searchList = new SearchList<JobTemplate>();
+        searchList.setStore(true);
+        searchList.q("*:*");
+        searchList.setC(JobTemplate.class);
+        searchList.fq(String.format("%s:", JobTemplate.varIndexedJobTemplate(var)) + SearchTool.escapeQueryChars(val.toString()));
+        searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+          try {
+            promise.complete(searchList.getList().stream().findFirst().orElse(null));
+          } catch(Throwable ex) {
+            LOG.error("Error while querying the job template", ex);
+            promise.fail(ex);
+          }
+        }).onFailure(ex -> {
+          LOG.error("Error while querying the job template", ex);
+          promise.fail(ex);
+        });
+      }
+    } catch(Throwable ex) {
+      LOG.error("Error while querying the job template", ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchJobTemplate(entityVar,  siteRequest_, o);
@@ -1832,18 +1864,31 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return CLASS_API_ADDRESS_JobTemplate;
   }
   public static final String VAR_tenantResource = "tenantResource";
+  public static final String SET_tenantResource = "setTenantResource";
   public static final String VAR_inventoryResource = "inventoryResource";
+  public static final String SET_inventoryResource = "setInventoryResource";
   public static final String VAR_jobTemplateName = "jobTemplateName";
+  public static final String SET_jobTemplateName = "setJobTemplateName";
   public static final String VAR_jobTemplateId = "jobTemplateId";
+  public static final String SET_jobTemplateId = "setJobTemplateId";
   public static final String VAR_jobTemplateDescription = "jobTemplateDescription";
+  public static final String SET_jobTemplateDescription = "setJobTemplateDescription";
   public static final String VAR_jobType = "jobType";
+  public static final String SET_jobType = "setJobType";
   public static final String VAR_ansibleProjectId = "ansibleProjectId";
+  public static final String SET_ansibleProjectId = "setAnsibleProjectId";
   public static final String VAR_ansiblePlaybook = "ansiblePlaybook";
+  public static final String SET_ansiblePlaybook = "setAnsiblePlaybook";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
+  public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_organizationId = "organizationId";
+  public static final String SET_organizationId = "setOrganizationId";
   public static final String VAR_aapInventoryId = "aapInventoryId";
+  public static final String SET_aapInventoryId = "setAapInventoryId";
   public static final String VAR_aapProjectId = "aapProjectId";
+  public static final String SET_aapProjectId = "setAapProjectId";
   public static final String VAR_aapTemplateId = "aapTemplateId";
+  public static final String SET_aapTemplateId = "setAapTemplateId";
 
   public static List<String> varsQForClass() {
     return JobTemplate.varsQJobTemplate(new ArrayList<String>());
@@ -1926,6 +1971,42 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   @Override
   public String enUSStringFormatUrlDownloadForClass() {
     return null;
+  }
+
+  public static String varJsonForClass(String var, Boolean patch) {
+    return JobTemplate.varJsonJobTemplate(var, patch);
+  }
+  public static String varJsonJobTemplate(String var, Boolean patch) {
+    switch(var) {
+    case VAR_tenantResource:
+      return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_inventoryResource:
+      return patch ? SET_inventoryResource : VAR_inventoryResource;
+    case VAR_jobTemplateName:
+      return patch ? SET_jobTemplateName : VAR_jobTemplateName;
+    case VAR_jobTemplateId:
+      return patch ? SET_jobTemplateId : VAR_jobTemplateId;
+    case VAR_jobTemplateDescription:
+      return patch ? SET_jobTemplateDescription : VAR_jobTemplateDescription;
+    case VAR_jobType:
+      return patch ? SET_jobType : VAR_jobType;
+    case VAR_ansibleProjectId:
+      return patch ? SET_ansibleProjectId : VAR_ansibleProjectId;
+    case VAR_ansiblePlaybook:
+      return patch ? SET_ansiblePlaybook : VAR_ansiblePlaybook;
+    case VAR_aapOrganizationId:
+      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
+    case VAR_organizationId:
+      return patch ? SET_organizationId : VAR_organizationId;
+    case VAR_aapInventoryId:
+      return patch ? SET_aapInventoryId : VAR_aapInventoryId;
+    case VAR_aapProjectId:
+      return patch ? SET_aapProjectId : VAR_aapProjectId;
+    case VAR_aapTemplateId:
+      return patch ? SET_aapTemplateId : VAR_aapTemplateId;
+    default:
+      return BaseModel.varJsonBaseModel(var, patch);
+    }
   }
 
   public static String displayNameForClass(String var) {

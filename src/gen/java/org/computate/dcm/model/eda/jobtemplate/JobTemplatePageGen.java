@@ -245,9 +245,9 @@ public abstract class JobTemplatePageGen<DEV> extends JobTemplateGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchJobTemplatePage(entityVar,  siteRequest_, o);

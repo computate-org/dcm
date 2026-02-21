@@ -674,9 +674,9 @@ public abstract class JobTemplateGenPageGen<DEV> extends PageLayout {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchJobTemplateGenPage(entityVar,  siteRequest_, o);
@@ -760,12 +760,19 @@ public abstract class JobTemplateGenPageGen<DEV> extends PageLayout {
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.jobtemplate.JobTemplateGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_searchListJobTemplate_ = "searchListJobTemplate_";
+  public static final String SET_searchListJobTemplate_ = "setSearchListJobTemplate_";
   public static final String VAR_listJobTemplate = "listJobTemplate";
+  public static final String SET_listJobTemplate = "setListJobTemplate";
   public static final String VAR_resultCount = "resultCount";
+  public static final String SET_resultCount = "setResultCount";
   public static final String VAR_result = "result";
+  public static final String SET_result = "setResult";
   public static final String VAR_pk = "pk";
+  public static final String SET_pk = "setPk";
   public static final String VAR_solrId = "solrId";
+  public static final String SET_solrId = "setSolrId";
   public static final String VAR_pageUriJobTemplate = "pageUriJobTemplate";
+  public static final String SET_pageUriJobTemplate = "setPageUriJobTemplate";
 
   public static final String DISPLAY_NAME_searchListJobTemplate_ = "";
   public static final String DISPLAY_NAME_listJobTemplate = "";

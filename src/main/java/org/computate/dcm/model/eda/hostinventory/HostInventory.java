@@ -58,7 +58,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
-   * HtmRowTitleOpen: relations
+   * HtmRowTitleOpen: tenant details
    * HtmRow: 4
    * HtmCell: 0
    * HtmColumn: 0
@@ -93,7 +93,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
-   * HtmRow: 3
+   * HtmRow: 4
    * HtmCell: 0
    * HtmColumn: 1
    * HtmRowTitleOpen: inventory details
@@ -134,7 +134,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
+   * HtmRow: 4
    * HtmCell: 1
    * HtmColumn: 2
    * DisplayName: inventory description
@@ -160,10 +160,23 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * Persist: true
    * DisplayName: AAP kind
    * Description: The Ansible Automation Platform kind of the inventory ("", "smart", "constructed"). 
-   * HtmRow: 3
+   * HtmRow: 4
    * HtmCell: 2
    */
   protected void _inventoryKind(Wrap<String> w) {
     w.o("");
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: hosts
+   * Description: The related hosts for this inventory. 
+   * Relate: Host.inventoryResource
+   * HtmRowTitleOpen: relationships
+   * HtmRow: 5
+   * HtmCell: 0
+   **/
+  protected void _hostInventoryIds(List<String> l) {
   }
 }

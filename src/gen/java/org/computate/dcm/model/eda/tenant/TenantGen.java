@@ -1455,14 +1455,23 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return CLASS_API_ADDRESS_Tenant;
   }
   public static final String VAR_tenantName = "tenantName";
+  public static final String SET_tenantName = "setTenantName";
   public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
   public static final String VAR_tenantResource = "tenantResource";
+  public static final String SET_tenantResource = "setTenantResource";
   public static final String VAR_pageId = "pageId";
+  public static final String SET_pageId = "setPageId";
   public static final String VAR_tenantDescription = "tenantDescription";
+  public static final String SET_tenantDescription = "setTenantDescription";
   public static final String VAR_hubId = "hubId";
+  public static final String SET_hubId = "setHubId";
   public static final String VAR_clusterName = "clusterName";
+  public static final String SET_clusterName = "setClusterName";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
+  public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_hostInventoryIds = "hostInventoryIds";
+  public static final String SET_hostInventoryIds = "setHostInventoryIds";
 
   public static List<String> varsQForClass() {
     return Tenant.varsQTenant(new ArrayList<String>());
@@ -1548,6 +1557,34 @@ public abstract class TenantGen<DEV> extends BaseModel {
   @Override
   public String enUSStringFormatUrlDownloadForClass() {
     return null;
+  }
+
+  public static String varJsonForClass(String var, Boolean patch) {
+    return Tenant.varJsonTenant(var, patch);
+  }
+  public static String varJsonTenant(String var, Boolean patch) {
+    switch(var) {
+    case VAR_tenantName:
+      return patch ? SET_tenantName : VAR_tenantName;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
+    case VAR_tenantResource:
+      return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_pageId:
+      return patch ? SET_pageId : VAR_pageId;
+    case VAR_tenantDescription:
+      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_hubId:
+      return patch ? SET_hubId : VAR_hubId;
+    case VAR_clusterName:
+      return patch ? SET_clusterName : VAR_clusterName;
+    case VAR_aapOrganizationId:
+      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
+    case VAR_hostInventoryIds:
+      return patch ? SET_hostInventoryIds : VAR_hostInventoryIds;
+    default:
+      return BaseModel.varJsonBaseModel(var, patch);
+    }
   }
 
   public static String displayNameForClass(String var) {

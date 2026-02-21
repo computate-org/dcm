@@ -123,6 +123,7 @@ ALTER TABLE Host ADD COLUMN IF NOT EXISTS editPage text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS userPage text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS download text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS tenantResource text references Tenant(tenantResource);
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapOrganizationId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryResource text references HostInventory(inventoryResource);
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapHostId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostName text UNIQUE;
