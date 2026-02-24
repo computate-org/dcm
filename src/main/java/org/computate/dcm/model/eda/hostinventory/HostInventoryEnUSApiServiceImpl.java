@@ -38,6 +38,9 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
+              String tenantId = Optional.ofNullable(Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_tenantId, patch))).orElse(o.getTenantId())).orElse(tenant.getTenantId());
+              inventoryJson.put(HostInventory.varJsonHostInventory(HostInventory.VAR_tenantId, patch), tenantId);
+
               Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(inventoryJson.getLong(HostInventory.varJsonHostInventory(HostInventory.VAR_aapOrganizationId, patch))).orElse(o.getAapOrganizationId()))
                   .orElse(Optional.ofNullable(tenant).map(t -> t.getAapOrganizationId()).orElse(1L));
               inventoryJson.put(HostInventory.varJsonHostInventory(HostInventory.VAR_aapOrganizationId, patch), aapOrganizationId.toString());

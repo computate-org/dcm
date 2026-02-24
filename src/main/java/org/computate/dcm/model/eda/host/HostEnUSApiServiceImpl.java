@@ -46,6 +46,8 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               hostJson.put(Host.varJsonHost(Host.VAR_aapInventoryId, patch), aapInventoryId.toString());
               String tenantResource = Optional.ofNullable(Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_tenantResource, patch))).orElse(o.getTenantResource())).orElse(inventory.getTenantResource());
               hostJson.put(Host.varJsonHost(Host.VAR_tenantResource, patch), tenantResource);
+              String tenantId = Optional.ofNullable(Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_tenantId, patch))).orElse(o.getTenantId())).orElse(inventory.getTenantId());
+              hostJson.put(Host.varJsonHost(Host.VAR_tenantId, patch), tenantId);
               String hostName = Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_hostName, patch))).orElse(o.getHostName());
               hostJson.put(Host.varJsonHost(Host.VAR_hostName, patch), hostName);
               String hostDescription = Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_hostDescription, patch) )).orElse(o.getHostDescription());
@@ -157,13 +159,14 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
       } else {
         String hostName = hostJson.getString(Host.varJsonHost(Host.VAR_hostName, patch));
         String hostId = hostJson.getString(Host.varJsonHost(Host.VAR_hostId, patch));
+        String tenantId = hostJson.getString(Host.varJsonHost(Host.VAR_tenantId, patch));
         hostJson.put(Host.VAR_hostId, hostId);
         JsonArray subscriptions = Optional.ofNullable(hostJson.getJsonArray(patch ? "setEventSubscriptions" : "eventSubscriptions")).orElse(new JsonArray(o.getEventSubscriptions()));
 
         Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
         String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
         Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
-        String sensuUri = String.format("/api/core/v2/namespaces/default/entities/%s", urlEncode(hostName));
+        String sensuUri = String.format("/api/core/v2/namespaces/%s/entities/%s", urlEncode(tenantId), urlEncode(hostName));
         String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
 
         JsonObject body = new JsonObject();
@@ -174,7 +177,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
         body.put("deregistration", new JsonObject());
         JsonObject metadata = new JsonObject();
         metadata.put("name", hostName);
-        metadata.put("namespace", "default");
+        metadata.put("namespace", tenantId);
         metadata.put("labels", null);
         metadata.put("annotations", null);
         body.put("metadata", metadata);
@@ -288,11 +291,12 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
     Promise<Void> promise = Promise.promise();
     try {
       String ipAddress = o.getIpAddress();
+      String tenantId = o.getTenantId();
 
       Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
       String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
       Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
-      String sensuUri = String.format("/api/core/v2/namespaces/default/entities/%s", ipAddress);
+      String sensuUri = String.format("/api/core/v2/namespaces/%s/entities/%s", urlEncode(tenantId), urlEncode(ipAddress));
       String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
 
       // if(StringUtils.isEmpty(hostName)) {

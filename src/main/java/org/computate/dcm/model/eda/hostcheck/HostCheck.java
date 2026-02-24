@@ -55,7 +55,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
-   * HtmRowTitleOpen: host details
+   * HtmRowTitleOpen: tenant details
    * HtmRow: 3
    * HtmCell: 0
    * HtmColumn: 0
@@ -64,12 +64,67 @@ public class HostCheck extends HostCheckGen<BaseModel> {
   }
 
   /**
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant ID
+   * Description: The tenant ID and Sensu namespace for the tenant. 
+   **/
+  protected void _tenantId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP ID
+   * Description: The Ansible Automation Platform ID of the organization. 
+   */
+  protected void _aapOrganizationId(Wrap<Long> w) {
+  }
+
+  /**
+   * DocValues: true
+   * Persist: true
+   * DisplayName: job template
+   * Description: The unique authorization resource for the job template for multi-tenancy
+   * AuthorizationResource: JOBTEMPLATE
+   * Relate: JobTemplate.jobTemplateResource
+   * HtmRowTitleOpen: job template details
+   * HtmRow: 4
+   * HtmCell: 0
+   * HtmColumn: 0
+   **/
+  protected void _jobTemplateResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: job template ID
+   * Description: The ID of the job template in DCM. 
+   */
+  protected void _jobTemplateId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP template ID
+   * Description: The template ID in Ansible Automation Platform. 
+   */
+  protected void _aapTemplateId(Wrap<Long> w) {
+  }
+
+  /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
    * Unique: true
-   * HtmRow: 3
-   * HtmCell: 2
+   * HtmRowTitleOpen: host check details
+   * HtmRow: 5
+   * HtmCell: 0
    * HtmColumn: 1
    * DisplayName: check name
    * Description: The name of the host check (may only contain letters, numbers, periods, colons, and dashes). 
@@ -84,21 +139,36 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 3
-   * DisplayName: check namespace
-   * Description: The namespace of the host check. 
+   * Unique: true
+   * HtmRow: 5
+   * HtmCell: 1
+   * HtmColumn: 2
+   * DisplayName: check description
+   * Description: The descrition of the host check. 
+   * VarDescription: true
    */
-  protected void _checkNamespace(Wrap<String> w) {
-    w.o("default");
+  protected void _checkDescription(Wrap<String> w) {
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 4
+   * HtmRow: 5
+   * HtmCell: 2
+   * DisplayName: check namespace
+   * Description: The namespace of the host check. 
+   */
+  protected void _checkNamespace(Wrap<String> w) {
+    w.o(tenantId);
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * HtmRow: 5
+   * HtmCell: 3
    * DisplayName: check command
    * Description: The bash command to run during the check. 
    * Multiline: true
@@ -110,8 +180,8 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
-   * HtmCell: 5
+   * HtmRow: 5
+   * HtmCell: 4
    * DisplayName: check interval in seconds
    * Description: The check interval in seconds. 
    */
@@ -122,7 +192,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
+   * HtmRow: 5
    * HtmCell: 6
    * DisplayName: check published
    * Description: When disabled the check will not be executed unless explicitly queued. 
@@ -134,9 +204,9 @@ public class HostCheck extends HostCheckGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
+   * HtmRow: 5
    * HtmCell: 7
-   * HtmColumn: 2
+   * HtmColumn: 3
    * DisplayName: event subscriptions
    * Description: The list of event subscriptions the host subscribes to. 
    */
@@ -146,9 +216,9 @@ public class HostCheck extends HostCheckGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * HtmRow: 3
+   * HtmRow: 5
    * HtmCell: 8
-   * HtmColumn: 2
+   * HtmColumn: 4
    * DisplayName: event handlers
    * Description: The list of event handlers the host subscribes to. 
    */

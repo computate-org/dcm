@@ -37,6 +37,8 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import java.lang.Long;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import java.lang.Integer;
 import java.lang.Boolean;
 import io.vertx.core.json.JsonArray;
@@ -276,6 +278,332 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     return tenantResource;
   }
 
+	//////////////
+  // tenantId //
+	//////////////
+
+
+  /**
+   *  The entity tenantId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantId;
+
+  /**
+   * <br> The entity tenantId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantId(Wrap<String> w);
+
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String o) {
+    this.tenantId = HostCheck.staticSetTenantId(siteRequest_, o);
+  }
+  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck tenantIdInit() {
+    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
+    if(tenantId == null) {
+      _tenantId(tenantIdWrap);
+      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
+        setTenantId(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchTenantId(siteRequest_, HostCheck.staticSetTenantId(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantId() {
+    return tenantId;
+  }
+
+  public static String staticJsonTenantId(String tenantId) {
+    return tenantId;
+  }
+
+	///////////////////////
+  // aapOrganizationId //
+	///////////////////////
+
+
+  /**
+   *  The entity aapOrganizationId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapOrganizationId;
+
+  /**
+   * <br> The entity aapOrganizationId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:aapOrganizationId">Find the entity aapOrganizationId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapOrganizationId(Wrap<Long> w);
+
+  public Long getAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public void setAapOrganizationId(Long aapOrganizationId) {
+    this.aapOrganizationId = aapOrganizationId;
+  }
+  @JsonIgnore
+  public void setAapOrganizationId(String o) {
+    this.aapOrganizationId = HostCheck.staticSetAapOrganizationId(siteRequest_, o);
+  }
+  public static Long staticSetAapOrganizationId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected HostCheck aapOrganizationIdInit() {
+    Wrap<Long> aapOrganizationIdWrap = new Wrap<Long>().var("aapOrganizationId");
+    if(aapOrganizationId == null) {
+      _aapOrganizationId(aapOrganizationIdWrap);
+      Optional.ofNullable(aapOrganizationIdWrap.getO()).ifPresent(o -> {
+        setAapOrganizationId(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static Long staticSearchAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapOrganizationId(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchAapOrganizationId(siteRequest_, HostCheck.staticSetAapOrganizationId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
+    return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
+  }
+
+	/////////////////////////
+  // jobTemplateResource //
+	/////////////////////////
+
+
+  /**
+   *  The entity jobTemplateResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String jobTemplateResource;
+
+  /**
+   * <br> The entity jobTemplateResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:jobTemplateResource">Find the entity jobTemplateResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _jobTemplateResource(Wrap<String> w);
+
+  public String getJobTemplateResource() {
+    return jobTemplateResource;
+  }
+  public void setJobTemplateResource(String o) {
+    this.jobTemplateResource = HostCheck.staticSetJobTemplateResource(siteRequest_, o);
+  }
+  public static String staticSetJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck jobTemplateResourceInit() {
+    Wrap<String> jobTemplateResourceWrap = new Wrap<String>().var("jobTemplateResource");
+    if(jobTemplateResource == null) {
+      _jobTemplateResource(jobTemplateResourceWrap);
+      Optional.ofNullable(jobTemplateResourceWrap.getO()).ifPresent(o -> {
+        setJobTemplateResource(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchJobTemplateResource(siteRequest_, HostCheck.staticSetJobTemplateResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlJobTemplateResource() {
+    return jobTemplateResource;
+  }
+
+  public static String staticJsonJobTemplateResource(String jobTemplateResource) {
+    return jobTemplateResource;
+  }
+
+	///////////////////
+  // jobTemplateId //
+	///////////////////
+
+
+  /**
+   *  The entity jobTemplateId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String jobTemplateId;
+
+  /**
+   * <br> The entity jobTemplateId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:jobTemplateId">Find the entity jobTemplateId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _jobTemplateId(Wrap<String> w);
+
+  public String getJobTemplateId() {
+    return jobTemplateId;
+  }
+  public void setJobTemplateId(String o) {
+    this.jobTemplateId = HostCheck.staticSetJobTemplateId(siteRequest_, o);
+  }
+  public static String staticSetJobTemplateId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck jobTemplateIdInit() {
+    Wrap<String> jobTemplateIdWrap = new Wrap<String>().var("jobTemplateId");
+    if(jobTemplateId == null) {
+      _jobTemplateId(jobTemplateIdWrap);
+      Optional.ofNullable(jobTemplateIdWrap.getO()).ifPresent(o -> {
+        setJobTemplateId(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchJobTemplateId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrJobTemplateId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqJobTemplateId(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchJobTemplateId(siteRequest_, HostCheck.staticSetJobTemplateId(siteRequest_, o)).toString();
+  }
+
+  public String sqlJobTemplateId() {
+    return jobTemplateId;
+  }
+
+  public static String staticJsonJobTemplateId(String jobTemplateId) {
+    return jobTemplateId;
+  }
+
+	///////////////////
+  // aapTemplateId //
+	///////////////////
+
+
+  /**
+   *  The entity aapTemplateId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapTemplateId;
+
+  /**
+   * <br> The entity aapTemplateId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:aapTemplateId">Find the entity aapTemplateId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapTemplateId(Wrap<Long> w);
+
+  public Long getAapTemplateId() {
+    return aapTemplateId;
+  }
+
+  public void setAapTemplateId(Long aapTemplateId) {
+    this.aapTemplateId = aapTemplateId;
+  }
+  @JsonIgnore
+  public void setAapTemplateId(String o) {
+    this.aapTemplateId = HostCheck.staticSetAapTemplateId(siteRequest_, o);
+  }
+  public static Long staticSetAapTemplateId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected HostCheck aapTemplateIdInit() {
+    Wrap<Long> aapTemplateIdWrap = new Wrap<Long>().var("aapTemplateId");
+    if(aapTemplateId == null) {
+      _aapTemplateId(aapTemplateIdWrap);
+      Optional.ofNullable(aapTemplateIdWrap.getO()).ifPresent(o -> {
+        setAapTemplateId(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static Long staticSearchAapTemplateId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapTemplateId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapTemplateId(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchAapTemplateId(siteRequest_, HostCheck.staticSetAapTemplateId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapTemplateId() {
+    return aapTemplateId;
+  }
+
+  public static String staticJsonAapTemplateId(Long aapTemplateId) {
+    return Optional.ofNullable(aapTemplateId).map(v -> v.toString()).orElse(null);
+  }
+
 	///////////////
   // checkName //
 	///////////////
@@ -336,6 +664,68 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
 
   public static String staticJsonCheckName(String checkName) {
     return checkName;
+  }
+
+	//////////////////////
+  // checkDescription //
+	//////////////////////
+
+
+  /**
+   *  The entity checkDescription
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String checkDescription;
+
+  /**
+   * <br> The entity checkDescription
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:checkDescription">Find the entity checkDescription in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _checkDescription(Wrap<String> w);
+
+  public String getCheckDescription() {
+    return checkDescription;
+  }
+  public void setCheckDescription(String o) {
+    this.checkDescription = HostCheck.staticSetCheckDescription(siteRequest_, o);
+  }
+  public static String staticSetCheckDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck checkDescriptionInit() {
+    Wrap<String> checkDescriptionWrap = new Wrap<String>().var("checkDescription");
+    if(checkDescription == null) {
+      _checkDescription(checkDescriptionWrap);
+      Optional.ofNullable(checkDescriptionWrap.getO()).ifPresent(o -> {
+        setCheckDescription(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchCheckDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrCheckDescription(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqCheckDescription(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchCheckDescription(siteRequest_, HostCheck.staticSetCheckDescription(siteRequest_, o)).toString();
+  }
+
+  public String sqlCheckDescription() {
+    return checkDescription;
+  }
+
+  public static String staticJsonCheckDescription(String checkDescription) {
+    return checkDescription;
   }
 
 	////////////////////
@@ -803,7 +1193,13 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       Promise<Void> promise2 = Promise.promise();
       try {
         tenantResourceInit();
+        tenantIdInit();
+        aapOrganizationIdInit();
+        jobTemplateResourceInit();
+        jobTemplateIdInit();
+        aapTemplateIdInit();
         checkNameInit();
+        checkDescriptionInit();
         checkNamespaceInit();
         checkCommandInit();
         checkIntervalInit();
@@ -865,8 +1261,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
       case "tenantResource":
         return oHostCheck.tenantResource;
+      case "tenantId":
+        return oHostCheck.tenantId;
+      case "aapOrganizationId":
+        return oHostCheck.aapOrganizationId;
+      case "jobTemplateResource":
+        return oHostCheck.jobTemplateResource;
+      case "jobTemplateId":
+        return oHostCheck.jobTemplateId;
+      case "aapTemplateId":
+        return oHostCheck.aapTemplateId;
       case "checkName":
         return oHostCheck.checkName;
+      case "checkDescription":
+        return oHostCheck.checkDescription;
       case "checkNamespace":
         return oHostCheck.checkNamespace;
       case "checkCommand":
@@ -910,6 +1318,12 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         if(!saves.contains("tenantResource"))
           saves.add("tenantResource");
         return val;
+      case "jobTemplateResource":
+        if(oHostCheck.getJobTemplateResource() == null)
+          oHostCheck.setJobTemplateResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("jobTemplateResource"))
+          saves.add("jobTemplateResource");
+        return val;
       default:
         return super.relateBaseModel(var, val);
     }
@@ -926,8 +1340,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return HostCheck.staticSetTenantResource(siteRequest_, v);
+    case "tenantId":
+      return HostCheck.staticSetTenantId(siteRequest_, v);
+    case "aapOrganizationId":
+      return HostCheck.staticSetAapOrganizationId(siteRequest_, v);
+    case "jobTemplateResource":
+      return HostCheck.staticSetJobTemplateResource(siteRequest_, v);
+    case "jobTemplateId":
+      return HostCheck.staticSetJobTemplateId(siteRequest_, v);
+    case "aapTemplateId":
+      return HostCheck.staticSetAapTemplateId(siteRequest_, v);
     case "checkName":
       return HostCheck.staticSetCheckName(siteRequest_, v);
+    case "checkDescription":
+      return HostCheck.staticSetCheckDescription(siteRequest_, v);
     case "checkNamespace":
       return HostCheck.staticSetCheckNamespace(siteRequest_, v);
     case "checkCommand":
@@ -949,7 +1375,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   // staticSearch //
   //////////////////
 
-  public static Future<HostCheck> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<HostCheck> fqHostCheck(SiteRequest siteRequest, String var, Object val) {
     Promise<HostCheck> promise = Promise.promise();
     try {
       if(val == null) {
@@ -986,8 +1412,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return HostCheck.staticSearchTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return HostCheck.staticSearchTenantId(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return HostCheck.staticSearchAapOrganizationId(siteRequest_, (Long)o);
+    case "jobTemplateResource":
+      return HostCheck.staticSearchJobTemplateResource(siteRequest_, (String)o);
+    case "jobTemplateId":
+      return HostCheck.staticSearchJobTemplateId(siteRequest_, (String)o);
+    case "aapTemplateId":
+      return HostCheck.staticSearchAapTemplateId(siteRequest_, (Long)o);
     case "checkName":
       return HostCheck.staticSearchCheckName(siteRequest_, (String)o);
+    case "checkDescription":
+      return HostCheck.staticSearchCheckDescription(siteRequest_, (String)o);
     case "checkNamespace":
       return HostCheck.staticSearchCheckNamespace(siteRequest_, (String)o);
     case "checkCommand":
@@ -1016,8 +1454,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return HostCheck.staticSearchStrTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return HostCheck.staticSearchStrTenantId(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return HostCheck.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
+    case "jobTemplateResource":
+      return HostCheck.staticSearchStrJobTemplateResource(siteRequest_, (String)o);
+    case "jobTemplateId":
+      return HostCheck.staticSearchStrJobTemplateId(siteRequest_, (String)o);
+    case "aapTemplateId":
+      return HostCheck.staticSearchStrAapTemplateId(siteRequest_, (Long)o);
     case "checkName":
       return HostCheck.staticSearchStrCheckName(siteRequest_, (String)o);
+    case "checkDescription":
+      return HostCheck.staticSearchStrCheckDescription(siteRequest_, (String)o);
     case "checkNamespace":
       return HostCheck.staticSearchStrCheckNamespace(siteRequest_, (String)o);
     case "checkCommand":
@@ -1046,8 +1496,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return HostCheck.staticSearchFqTenantResource(siteRequest_, o);
+    case "tenantId":
+      return HostCheck.staticSearchFqTenantId(siteRequest_, o);
+    case "aapOrganizationId":
+      return HostCheck.staticSearchFqAapOrganizationId(siteRequest_, o);
+    case "jobTemplateResource":
+      return HostCheck.staticSearchFqJobTemplateResource(siteRequest_, o);
+    case "jobTemplateId":
+      return HostCheck.staticSearchFqJobTemplateId(siteRequest_, o);
+    case "aapTemplateId":
+      return HostCheck.staticSearchFqAapTemplateId(siteRequest_, o);
     case "checkName":
       return HostCheck.staticSearchFqCheckName(siteRequest_, o);
+    case "checkDescription":
+      return HostCheck.staticSearchFqCheckDescription(siteRequest_, o);
     case "checkNamespace":
       return HostCheck.staticSearchFqCheckNamespace(siteRequest_, o);
     case "checkCommand":
@@ -1092,11 +1554,51 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         }
         saves.add("tenantResource");
         return val;
+      } else if("tenantid".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantId((String)val);
+        }
+        saves.add("tenantId");
+        return val;
+      } else if("aaporganizationid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapOrganizationId((Long)val);
+        } else {
+          setAapOrganizationId(val == null ? null : val.toString());
+        }
+        saves.add("aapOrganizationId");
+        return val;
+      } else if("jobtemplateresource".equals(varLower)) {
+        if(val instanceof String) {
+          setJobTemplateResource((String)val);
+        }
+        saves.add("jobTemplateResource");
+        return val;
+      } else if("jobtemplateid".equals(varLower)) {
+        if(val instanceof String) {
+          setJobTemplateId((String)val);
+        }
+        saves.add("jobTemplateId");
+        return val;
+      } else if("aaptemplateid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapTemplateId((Long)val);
+        } else {
+          setAapTemplateId(val == null ? null : val.toString());
+        }
+        saves.add("aapTemplateId");
+        return val;
       } else if("checkname".equals(varLower)) {
         if(val instanceof String) {
           setCheckName((String)val);
         }
         saves.add("checkName");
+        return val;
+      } else if("checkdescription".equals(varLower)) {
+        if(val instanceof String) {
+          setCheckDescription((String)val);
+        }
+        saves.add("checkDescription");
         return val;
       } else if("checknamespace".equals(varLower)) {
         if(val instanceof String) {
@@ -1171,10 +1673,44 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       if(tenantResource != null)
         oHostCheck.setTenantResource(tenantResource);
 
+      if(saves.contains("tenantId")) {
+        String tenantId = (String)doc.get("tenantId_docvalues_string");
+        if(tenantId != null)
+          oHostCheck.setTenantId(tenantId);
+      }
+
+      if(saves.contains("aapOrganizationId")) {
+        Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
+        if(aapOrganizationId != null)
+          oHostCheck.setAapOrganizationId(aapOrganizationId);
+      }
+
+      String jobTemplateResource = (String)doc.get("jobTemplateResource_docvalues_string");
+      if(jobTemplateResource != null)
+        oHostCheck.setJobTemplateResource(jobTemplateResource);
+
+      if(saves.contains("jobTemplateId")) {
+        String jobTemplateId = (String)doc.get("jobTemplateId_docvalues_string");
+        if(jobTemplateId != null)
+          oHostCheck.setJobTemplateId(jobTemplateId);
+      }
+
+      if(saves.contains("aapTemplateId")) {
+        Long aapTemplateId = (Long)doc.get("aapTemplateId_docvalues_long");
+        if(aapTemplateId != null)
+          oHostCheck.setAapTemplateId(aapTemplateId);
+      }
+
       if(saves.contains("checkName")) {
         String checkName = (String)doc.get("checkName_docvalues_string");
         if(checkName != null)
           oHostCheck.setCheckName(checkName);
+      }
+
+      if(saves.contains("checkDescription")) {
+        String checkDescription = (String)doc.get("checkDescription_docvalues_string");
+        if(checkDescription != null)
+          oHostCheck.setCheckDescription(checkDescription);
       }
 
       if(saves.contains("checkNamespace")) {
@@ -1227,8 +1763,26 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
+    if(tenantId != null) {
+      doc.put("tenantId_docvalues_string", tenantId);
+    }
+    if(aapOrganizationId != null) {
+      doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
+    }
+    if(jobTemplateResource != null) {
+      doc.put("jobTemplateResource_docvalues_string", jobTemplateResource);
+    }
+    if(jobTemplateId != null) {
+      doc.put("jobTemplateId_docvalues_string", jobTemplateId);
+    }
+    if(aapTemplateId != null) {
+      doc.put("aapTemplateId_docvalues_long", aapTemplateId);
+    }
     if(checkName != null) {
       doc.put("checkName_docvalues_string", checkName);
+    }
+    if(checkDescription != null) {
+      doc.put("checkDescription_docvalues_string", checkDescription);
     }
     if(checkNamespace != null) {
       doc.put("checkNamespace_docvalues_string", checkNamespace);
@@ -1264,8 +1818,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
+      case "jobTemplateResource":
+        return "jobTemplateResource_docvalues_string";
+      case "jobTemplateId":
+        return "jobTemplateId_docvalues_string";
+      case "aapTemplateId":
+        return "aapTemplateId_docvalues_long";
       case "checkName":
         return "checkName_docvalues_string";
+      case "checkDescription":
+        return "checkDescription_docvalues_string";
       case "checkNamespace":
         return "checkNamespace_docvalues_string";
       case "checkCommand":
@@ -1287,8 +1853,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
+      case "jobTemplateResource":
+        return "jobTemplateResource_docvalues_string";
+      case "jobTemplateId":
+        return "jobTemplateId_docvalues_string";
+      case "aapTemplateId":
+        return "aapTemplateId_docvalues_long";
       case "checkName":
         return "checkName_docvalues_string";
+      case "checkDescription":
+        return "checkDescription_docvalues_string";
       case "checkNamespace":
         return "checkNamespace_docvalues_string";
       case "checkCommand":
@@ -1310,8 +1888,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(searchVar) {
       case "tenantResource_docvalues_string":
         return "tenantResource";
+      case "tenantId_docvalues_string":
+        return "tenantId";
+      case "aapOrganizationId_docvalues_long":
+        return "aapOrganizationId";
+      case "jobTemplateResource_docvalues_string":
+        return "jobTemplateResource";
+      case "jobTemplateId_docvalues_string":
+        return "jobTemplateId";
+      case "aapTemplateId_docvalues_long":
+        return "aapTemplateId";
       case "checkName_docvalues_string":
         return "checkName";
+      case "checkDescription_docvalues_string":
+        return "checkDescription";
       case "checkNamespace_docvalues_string":
         return "checkNamespace";
       case "checkCommand_docvalues_string":
@@ -1355,7 +1945,13 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     SiteRequest siteRequest = oHostCheck.getSiteRequest_();
 
     oHostCheck.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setJobTemplateResource(Optional.ofNullable(doc.get("jobTemplateResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setJobTemplateId(Optional.ofNullable(doc.get("jobTemplateId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setAapTemplateId(Optional.ofNullable(doc.get("aapTemplateId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckName(Optional.ofNullable(doc.get("checkName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setCheckDescription(Optional.ofNullable(doc.get("checkDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckNamespace(Optional.ofNullable(doc.get("checkNamespace_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckCommand(Optional.ofNullable(doc.get("checkCommand_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckInterval(Optional.ofNullable(doc.get("checkInterval_docvalues_int")).map(v -> v.toString()).orElse(null));
@@ -1381,8 +1977,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       HostCheck original = (HostCheck)o;
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
+      if(!Objects.equals(tenantId, original.getTenantId()))
+        apiRequest.addVars("tenantId");
+      if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
+        apiRequest.addVars("aapOrganizationId");
+      if(!Objects.equals(jobTemplateResource, original.getJobTemplateResource()))
+        apiRequest.addVars("jobTemplateResource");
+      if(!Objects.equals(jobTemplateId, original.getJobTemplateId()))
+        apiRequest.addVars("jobTemplateId");
+      if(!Objects.equals(aapTemplateId, original.getAapTemplateId()))
+        apiRequest.addVars("aapTemplateId");
       if(!Objects.equals(checkName, original.getCheckName()))
         apiRequest.addVars("checkName");
+      if(!Objects.equals(checkDescription, original.getCheckDescription()))
+        apiRequest.addVars("checkDescription");
       if(!Objects.equals(checkNamespace, original.getCheckNamespace()))
         apiRequest.addVars("checkNamespace");
       if(!Objects.equals(checkCommand, original.getCheckCommand()))
@@ -1407,7 +2015,13 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(jobTemplateResource).map(v -> "jobTemplateResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(jobTemplateId).map(v -> "jobTemplateId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapTemplateId).map(v -> "aapTemplateId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(checkName).map(v -> "checkName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(checkDescription).map(v -> "checkDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkNamespace).map(v -> "checkNamespace: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkCommand).map(v -> "checkCommand: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkInterval).map(v -> "checkInterval: " + v + "\n").orElse(""));
@@ -1426,8 +2040,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   }
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
+  public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
+  public static final String VAR_aapOrganizationId = "aapOrganizationId";
+  public static final String SET_aapOrganizationId = "setAapOrganizationId";
+  public static final String VAR_jobTemplateResource = "jobTemplateResource";
+  public static final String SET_jobTemplateResource = "setJobTemplateResource";
+  public static final String VAR_jobTemplateId = "jobTemplateId";
+  public static final String SET_jobTemplateId = "setJobTemplateId";
+  public static final String VAR_aapTemplateId = "aapTemplateId";
+  public static final String SET_aapTemplateId = "setAapTemplateId";
   public static final String VAR_checkName = "checkName";
   public static final String SET_checkName = "setCheckName";
+  public static final String VAR_checkDescription = "checkDescription";
+  public static final String SET_checkDescription = "setCheckDescription";
   public static final String VAR_checkNamespace = "checkNamespace";
   public static final String SET_checkNamespace = "setCheckNamespace";
   public static final String VAR_checkCommand = "checkCommand";
@@ -1466,7 +2092,13 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   }
 
   public static final String DISPLAY_NAME_tenantResource = "tenant";
+  public static final String DISPLAY_NAME_tenantId = "tenant ID";
+  public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
+  public static final String DISPLAY_NAME_jobTemplateResource = "job template";
+  public static final String DISPLAY_NAME_jobTemplateId = "job template ID";
+  public static final String DISPLAY_NAME_aapTemplateId = "AAP template ID";
   public static final String DISPLAY_NAME_checkName = "check name";
+  public static final String DISPLAY_NAME_checkDescription = "check description";
   public static final String DISPLAY_NAME_checkNamespace = "check namespace";
   public static final String DISPLAY_NAME_checkCommand = "check command";
   public static final String DISPLAY_NAME_checkInterval = "check interval in seconds";
@@ -1495,6 +2127,11 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   }
 
   @Override
+  public String descriptionForClass() {
+    return checkDescription;
+  }
+
+  @Override
   public String enUSStringFormatUrlEditPageForClass() {
     return "%s/en-us/edit/host-check/%s";
   }
@@ -1511,8 +2148,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
+    case VAR_aapOrganizationId:
+      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
+    case VAR_jobTemplateResource:
+      return patch ? SET_jobTemplateResource : VAR_jobTemplateResource;
+    case VAR_jobTemplateId:
+      return patch ? SET_jobTemplateId : VAR_jobTemplateId;
+    case VAR_aapTemplateId:
+      return patch ? SET_aapTemplateId : VAR_aapTemplateId;
     case VAR_checkName:
       return patch ? SET_checkName : VAR_checkName;
+    case VAR_checkDescription:
+      return patch ? SET_checkDescription : VAR_checkDescription;
     case VAR_checkNamespace:
       return patch ? SET_checkNamespace : VAR_checkNamespace;
     case VAR_checkCommand:
@@ -1537,8 +2186,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
+    case VAR_tenantId:
+      return DISPLAY_NAME_tenantId;
+    case VAR_aapOrganizationId:
+      return DISPLAY_NAME_aapOrganizationId;
+    case VAR_jobTemplateResource:
+      return DISPLAY_NAME_jobTemplateResource;
+    case VAR_jobTemplateId:
+      return DISPLAY_NAME_jobTemplateId;
+    case VAR_aapTemplateId:
+      return DISPLAY_NAME_aapTemplateId;
     case VAR_checkName:
       return DISPLAY_NAME_checkName;
+    case VAR_checkDescription:
+      return DISPLAY_NAME_checkDescription;
     case VAR_checkNamespace:
       return DISPLAY_NAME_checkNamespace;
     case VAR_checkCommand:
@@ -1562,8 +2223,20 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
+    case VAR_tenantId:
+      return "The tenant ID and Sensu namespace for the tenant. ";
+    case VAR_aapOrganizationId:
+      return "The Ansible Automation Platform ID of the organization. ";
+    case VAR_jobTemplateResource:
+      return "The unique authorization resource for the job template for multi-tenancy";
+    case VAR_jobTemplateId:
+      return "The ID of the job template in DCM. ";
+    case VAR_aapTemplateId:
+      return "The template ID in Ansible Automation Platform. ";
     case VAR_checkName:
       return "The name of the host check (may only contain letters, numbers, periods, colons, and dashes). ";
+    case VAR_checkDescription:
+      return "The descrition of the host check. ";
     case VAR_checkNamespace:
       return "The namespace of the host check. ";
     case VAR_checkCommand:
@@ -1585,7 +2258,19 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "String";
+    case VAR_tenantId:
+      return "String";
+    case VAR_aapOrganizationId:
+      return "Long";
+    case VAR_jobTemplateResource:
+      return "String";
+    case VAR_jobTemplateId:
+      return "String";
+    case VAR_aapTemplateId:
+      return "Long";
     case VAR_checkName:
+      return "String";
+    case VAR_checkDescription:
       return "String";
     case VAR_checkNamespace:
       return "String";
@@ -1608,12 +2293,16 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 0;
+    case VAR_jobTemplateResource:
+      return 0;
     case VAR_checkName:
       return 1;
+    case VAR_checkDescription:
+      return 2;
     case VAR_eventSubscriptions:
-      return 2;
+      return 3;
     case VAR_eventHandlers:
-      return 2;
+      return 4;
       default:
         return BaseModel.htmColumnBaseModel(var);
     }
@@ -1623,20 +2312,24 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 3;
+    case VAR_jobTemplateResource:
+      return 4;
     case VAR_checkName:
-      return 3;
+      return 5;
+    case VAR_checkDescription:
+      return 5;
     case VAR_checkNamespace:
-      return 3;
+      return 5;
     case VAR_checkCommand:
-      return 3;
+      return 5;
     case VAR_checkInterval:
-      return 3;
+      return 5;
     case VAR_checkPublished:
-      return 3;
+      return 5;
     case VAR_eventSubscriptions:
-      return 3;
+      return 5;
     case VAR_eventHandlers:
-      return 3;
+      return 5;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1646,14 +2339,18 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 0;
+    case VAR_jobTemplateResource:
+      return 0;
     case VAR_checkName:
-      return 2;
+      return 0;
+    case VAR_checkDescription:
+      return 1;
     case VAR_checkNamespace:
-      return 3;
+      return 2;
     case VAR_checkCommand:
-      return 4;
+      return 3;
     case VAR_checkInterval:
-      return 5;
+      return 4;
     case VAR_checkPublished:
       return 6;
     case VAR_eventSubscriptions:

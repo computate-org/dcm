@@ -58,6 +58,8 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch), aapOrganizationId.toString());
                 String tenantResource = Optional.ofNullable(Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch))).orElse(o.getTenantResource())).orElse(inventory.getTenantResource())).orElse(inventory.getTenantResource());
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch), tenantResource);
+                String tenantId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantId, patch))).orElse(o.getTenantId())).orElse(inventory.getTenantId());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantId, patch), tenantId);
                 Long aapProjectId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapProjectId())).orElse(project.getAapProjectId());
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch), Optional.ofNullable(aapProjectId).map(v -> v.toString()).orElse(null));
                 String ansiblePlaybook = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch))).orElse(o.getAnsiblePlaybook());
@@ -126,6 +128,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         body.put("project", aapProjectId);
         body.put("playbook", ansiblePlaybook);
         body.put("organization", aapOrganizationId);
+        body.put("ask_limit_on_launch", true);
         if(jobTemplateDescription != null)
           body.put("description", jobTemplateDescription);
 

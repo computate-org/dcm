@@ -2,6 +2,8 @@ package org.computate.dcm.model.eda.hostcheck;
 
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -148,6 +150,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -171,6 +179,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -346,6 +361,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -369,6 +390,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -482,6 +510,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -505,6 +539,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -829,13 +870,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               }));
             });
             break;
-          case "setCheckName":
-              o2.setCheckName(jsonObject.getString(entityVar));
+          case "setTenantId":
+              o2.setTenantId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostCheck.VAR_checkName + "=$" + num);
+              bSql.append(HostCheck.VAR_tenantId + "=$" + num);
               num++;
-              bParams.add(o2.sqlCheckName());
+              bParams.add(o2.sqlTenantId());
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
@@ -845,21 +886,44 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setCheckNamespace":
-              o2.setCheckNamespace(jsonObject.getString(entityVar));
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostCheck.VAR_checkNamespace + "=$" + num);
+              bSql.append(HostCheck.VAR_aapOrganizationId + "=$" + num);
               num++;
-              bParams.add(o2.sqlCheckNamespace());
+              bParams.add(o2.sqlAapOrganizationId());
             break;
-          case "setCheckCommand":
-              o2.setCheckCommand(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostCheck.VAR_checkCommand + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCheckCommand());
+          case "setJobTemplateResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_jobTemplateResource), JobTemplate.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("JobTemplate");
+                  }
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_jobTemplateResource, JobTemplate.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeJobTemplateResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(HostCheck.class, pk).setToNull(HostCheck.VAR_jobTemplateResource, JobTemplate.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
@@ -868,6 +932,70 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               bSql.append(HostCheck.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
+            break;
+          case "setJobTemplateId":
+              o2.setJobTemplateId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_jobTemplateId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlJobTemplateId());
+            break;
+          case "setAapTemplateId":
+              o2.setAapTemplateId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_aapTemplateId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapTemplateId());
+            break;
+          case "setCheckName":
+              o2.setCheckName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_checkName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCheckName());
+            break;
+          case "setCheckDescription":
+              o2.setCheckDescription(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_checkDescription + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCheckDescription());
+            break;
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_sessionId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlSessionId());
+            break;
+          case "setCheckNamespace":
+              o2.setCheckNamespace(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_checkNamespace + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCheckNamespace());
+            break;
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_userKey + "=$" + num);
+              num++;
+              bParams.add(o2.sqlUserKey());
+            break;
+          case "setCheckCommand":
+              o2.setCheckCommand(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_checkCommand + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCheckCommand());
             break;
           case "setCheckInterval":
               o2.setCheckInterval(jsonObject.getString(entityVar));
@@ -885,38 +1013,6 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               num++;
               bParams.add(o2.sqlCheckPublished());
             break;
-          case "setEventSubscriptions":
-              o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostCheck.VAR_eventSubscriptions + "=$" + num);
-              num++;
-              bParams.add(o2.sqlEventSubscriptions());
-            break;
-          case "setEventHandlers":
-              o2.setEventHandlers(jsonObject.getJsonArray(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostCheck.VAR_eventHandlers + "=$" + num);
-              num++;
-              bParams.add(o2.sqlEventHandlers());
-            break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostCheck.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
-            break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostCheck.VAR_userKey + "=$" + num);
-              num++;
-              bParams.add(o2.sqlUserKey());
-            break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -925,6 +1021,14 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
+          case "setEventSubscriptions":
+              o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_eventSubscriptions + "=$" + num);
+              num++;
+              bParams.add(o2.sqlEventSubscriptions());
+            break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -932,6 +1036,14 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               bSql.append(HostCheck.VAR_displayPage + "=$" + num);
               num++;
               bParams.add(o2.sqlDisplayPage());
+            break;
+          case "setEventHandlers":
+              o2.setEventHandlers(jsonObject.getJsonArray(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostCheck.VAR_eventHandlers + "=$" + num);
+              num++;
+              bParams.add(o2.sqlEventHandlers());
             break;
           case "setEditPage":
               o2.setEditPage(jsonObject.getString(entityVar));
@@ -1039,6 +1151,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1062,6 +1180,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1361,14 +1486,14 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               }));
             });
             break;
-          case HostCheck.VAR_checkName:
-            o2.setCheckName(jsonObject.getString(entityVar));
+          case HostCheck.VAR_tenantId:
+            o2.setTenantId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostCheck.VAR_checkName + "=$" + num);
+            bSql.append(HostCheck.VAR_tenantId + "=$" + num);
             num++;
-            bParams.add(o2.sqlCheckName());
+            bParams.add(o2.sqlTenantId());
             break;
           case HostCheck.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
@@ -1379,23 +1504,34 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case HostCheck.VAR_checkNamespace:
-            o2.setCheckNamespace(jsonObject.getString(entityVar));
+          case HostCheck.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostCheck.VAR_checkNamespace + "=$" + num);
+            bSql.append(HostCheck.VAR_aapOrganizationId + "=$" + num);
             num++;
-            bParams.add(o2.sqlCheckNamespace());
+            bParams.add(o2.sqlAapOrganizationId());
             break;
-          case HostCheck.VAR_checkCommand:
-            o2.setCheckCommand(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostCheck.VAR_checkCommand + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCheckCommand());
+          case HostCheck.VAR_jobTemplateResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_jobTemplateResource), JobTemplate.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("JobTemplate");
+                  }
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_jobTemplateResource, JobTemplate.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case HostCheck.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
@@ -1405,6 +1541,78 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             bSql.append(HostCheck.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
+            break;
+          case HostCheck.VAR_jobTemplateId:
+            o2.setJobTemplateId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_jobTemplateId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlJobTemplateId());
+            break;
+          case HostCheck.VAR_aapTemplateId:
+            o2.setAapTemplateId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_aapTemplateId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapTemplateId());
+            break;
+          case HostCheck.VAR_checkName:
+            o2.setCheckName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_checkName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCheckName());
+            break;
+          case HostCheck.VAR_checkDescription:
+            o2.setCheckDescription(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_checkDescription + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCheckDescription());
+            break;
+          case HostCheck.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_sessionId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlSessionId());
+            break;
+          case HostCheck.VAR_checkNamespace:
+            o2.setCheckNamespace(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_checkNamespace + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCheckNamespace());
+            break;
+          case HostCheck.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_userKey + "=$" + num);
+            num++;
+            bParams.add(o2.sqlUserKey());
+            break;
+          case HostCheck.VAR_checkCommand:
+            o2.setCheckCommand(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_checkCommand + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCheckCommand());
             break;
           case HostCheck.VAR_checkInterval:
             o2.setCheckInterval(jsonObject.getString(entityVar));
@@ -1424,42 +1632,6 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             num++;
             bParams.add(o2.sqlCheckPublished());
             break;
-          case HostCheck.VAR_eventSubscriptions:
-            o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostCheck.VAR_eventSubscriptions + "=$" + num);
-            num++;
-            bParams.add(o2.sqlEventSubscriptions());
-            break;
-          case HostCheck.VAR_eventHandlers:
-            o2.setEventHandlers(jsonObject.getJsonArray(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostCheck.VAR_eventHandlers + "=$" + num);
-            num++;
-            bParams.add(o2.sqlEventHandlers());
-            break;
-          case HostCheck.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostCheck.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
-            break;
-          case HostCheck.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostCheck.VAR_userKey + "=$" + num);
-            num++;
-            bParams.add(o2.sqlUserKey());
-            break;
           case HostCheck.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1469,6 +1641,15 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
+          case HostCheck.VAR_eventSubscriptions:
+            o2.setEventSubscriptions(jsonObject.getJsonArray(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_eventSubscriptions + "=$" + num);
+            num++;
+            bParams.add(o2.sqlEventSubscriptions());
+            break;
           case HostCheck.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1477,6 +1658,15 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             bSql.append(HostCheck.VAR_displayPage + "=$" + num);
             num++;
             bParams.add(o2.sqlDisplayPage());
+            break;
+          case HostCheck.VAR_eventHandlers:
+            o2.setEventHandlers(jsonObject.getJsonArray(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostCheck.VAR_eventHandlers + "=$" + num);
+            num++;
+            bParams.add(o2.sqlEventHandlers());
             break;
           case HostCheck.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
@@ -1586,6 +1776,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1609,6 +1805,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1913,6 +2116,26 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               }));
             });
             break;
+          case HostCheck.VAR_jobTemplateResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_jobTemplateResource), JobTemplate.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("JobTemplate");
+                  }
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_jobTemplateResource, JobTemplate.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -1991,6 +2214,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2014,6 +2243,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2351,6 +2587,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2374,6 +2616,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2666,6 +2915,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2688,6 +2943,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2782,7 +3044,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/host-check/HostCheckSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/host-check/HostCheckEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -2956,6 +3218,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2978,6 +3246,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3072,7 +3347,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/host-check/HostCheckSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "%s.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3247,6 +3522,12 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3270,6 +3551,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3564,6 +3852,26 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                     classes.add("Tenant");
                   }
                   sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case HostCheck.VAR_jobTemplateResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_jobTemplateResource), JobTemplate.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("JobTemplate");
+                  }
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_jobTemplateResource, JobTemplate.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3947,7 +4255,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, checkName, created, checkNamespace, checkCommand, archived, checkInterval, checkPublished, eventSubscriptions, eventHandlers, sessionId, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostCheck WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, jobTemplateResource, archived, jobTemplateId, aapTemplateId, checkName, checkDescription, sessionId, checkNamespace, userKey, checkCommand, checkInterval, checkPublished, objectTitle, eventSubscriptions, displayPage, eventHandlers, editPage, userPage, download FROM HostCheck WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3992,9 +4300,9 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT jobTemplateResource as pk2, 'jobTemplateResource' from JobTemplate where jobTemplateResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
+          .execute(Tuple.of(o.getTenantResource(), o.getJobTemplateResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4156,6 +4464,42 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
               });
             }));
           }
+
+          if("JobTemplate".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<JobTemplate> searchList2 = new SearchList<JobTemplate>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(JobTemplate.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                JobTemplate o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-JobTemplate", json, new DeliveryOptions().addHeader("action", "patchJobTemplateFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {
@@ -4215,19 +4559,25 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       o.setSiteRequest_((SiteRequest)siteRequest);
 
       o.persistForClass(HostCheck.VAR_tenantResource, HostCheck.staticSetTenantResource(siteRequest2, (String)result.get(HostCheck.VAR_tenantResource)));
-      o.persistForClass(HostCheck.VAR_checkName, HostCheck.staticSetCheckName(siteRequest2, (String)result.get(HostCheck.VAR_checkName)));
+      o.persistForClass(HostCheck.VAR_tenantId, HostCheck.staticSetTenantId(siteRequest2, (String)result.get(HostCheck.VAR_tenantId)));
       o.persistForClass(HostCheck.VAR_created, HostCheck.staticSetCreated(siteRequest2, (String)result.get(HostCheck.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(HostCheck.VAR_checkNamespace, HostCheck.staticSetCheckNamespace(siteRequest2, (String)result.get(HostCheck.VAR_checkNamespace)));
-      o.persistForClass(HostCheck.VAR_checkCommand, HostCheck.staticSetCheckCommand(siteRequest2, (String)result.get(HostCheck.VAR_checkCommand)));
+      o.persistForClass(HostCheck.VAR_aapOrganizationId, HostCheck.staticSetAapOrganizationId(siteRequest2, (String)result.get(HostCheck.VAR_aapOrganizationId)));
+      o.persistForClass(HostCheck.VAR_jobTemplateResource, HostCheck.staticSetJobTemplateResource(siteRequest2, (String)result.get(HostCheck.VAR_jobTemplateResource)));
       o.persistForClass(HostCheck.VAR_archived, HostCheck.staticSetArchived(siteRequest2, (String)result.get(HostCheck.VAR_archived)));
+      o.persistForClass(HostCheck.VAR_jobTemplateId, HostCheck.staticSetJobTemplateId(siteRequest2, (String)result.get(HostCheck.VAR_jobTemplateId)));
+      o.persistForClass(HostCheck.VAR_aapTemplateId, HostCheck.staticSetAapTemplateId(siteRequest2, (String)result.get(HostCheck.VAR_aapTemplateId)));
+      o.persistForClass(HostCheck.VAR_checkName, HostCheck.staticSetCheckName(siteRequest2, (String)result.get(HostCheck.VAR_checkName)));
+      o.persistForClass(HostCheck.VAR_checkDescription, HostCheck.staticSetCheckDescription(siteRequest2, (String)result.get(HostCheck.VAR_checkDescription)));
+      o.persistForClass(HostCheck.VAR_sessionId, HostCheck.staticSetSessionId(siteRequest2, (String)result.get(HostCheck.VAR_sessionId)));
+      o.persistForClass(HostCheck.VAR_checkNamespace, HostCheck.staticSetCheckNamespace(siteRequest2, (String)result.get(HostCheck.VAR_checkNamespace)));
+      o.persistForClass(HostCheck.VAR_userKey, HostCheck.staticSetUserKey(siteRequest2, (String)result.get(HostCheck.VAR_userKey)));
+      o.persistForClass(HostCheck.VAR_checkCommand, HostCheck.staticSetCheckCommand(siteRequest2, (String)result.get(HostCheck.VAR_checkCommand)));
       o.persistForClass(HostCheck.VAR_checkInterval, HostCheck.staticSetCheckInterval(siteRequest2, (String)result.get(HostCheck.VAR_checkInterval)));
       o.persistForClass(HostCheck.VAR_checkPublished, HostCheck.staticSetCheckPublished(siteRequest2, (String)result.get(HostCheck.VAR_checkPublished)));
-      o.persistForClass(HostCheck.VAR_eventSubscriptions, HostCheck.staticSetEventSubscriptions(siteRequest2, (String)result.get(HostCheck.VAR_eventSubscriptions)));
-      o.persistForClass(HostCheck.VAR_eventHandlers, HostCheck.staticSetEventHandlers(siteRequest2, (String)result.get(HostCheck.VAR_eventHandlers)));
-      o.persistForClass(HostCheck.VAR_sessionId, HostCheck.staticSetSessionId(siteRequest2, (String)result.get(HostCheck.VAR_sessionId)));
-      o.persistForClass(HostCheck.VAR_userKey, HostCheck.staticSetUserKey(siteRequest2, (String)result.get(HostCheck.VAR_userKey)));
       o.persistForClass(HostCheck.VAR_objectTitle, HostCheck.staticSetObjectTitle(siteRequest2, (String)result.get(HostCheck.VAR_objectTitle)));
+      o.persistForClass(HostCheck.VAR_eventSubscriptions, HostCheck.staticSetEventSubscriptions(siteRequest2, (String)result.get(HostCheck.VAR_eventSubscriptions)));
       o.persistForClass(HostCheck.VAR_displayPage, HostCheck.staticSetDisplayPage(siteRequest2, (String)result.get(HostCheck.VAR_displayPage)));
+      o.persistForClass(HostCheck.VAR_eventHandlers, HostCheck.staticSetEventHandlers(siteRequest2, (String)result.get(HostCheck.VAR_eventHandlers)));
       o.persistForClass(HostCheck.VAR_editPage, HostCheck.staticSetEditPage(siteRequest2, (String)result.get(HostCheck.VAR_editPage)));
       o.persistForClass(HostCheck.VAR_userPage, HostCheck.staticSetUserPage(siteRequest2, (String)result.get(HostCheck.VAR_userPage)));
       o.persistForClass(HostCheck.VAR_download, HostCheck.staticSetDownload(siteRequest2, (String)result.get(HostCheck.VAR_download)));

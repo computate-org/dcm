@@ -11132,6 +11132,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
                   aapOrganizationId:
                     type: string
                   inventoryResource:
@@ -11166,6 +11168,13 @@ components:
             removeTenantResource:
               type: string
             removeAllTenantResource:
+              type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
               type: string
             setAapOrganizationId:
               type: string
@@ -11265,6 +11274,13 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
             setAapOrganizationId:
               type: string
               nullable: true
@@ -11358,6 +11374,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -11388,6 +11406,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -11417,6 +11437,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            tenantId:
               type: string
             aapOrganizationId:
               type: string
@@ -11453,6 +11475,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
                   aapOrganizationId:
                     type: string
                   inventoryResource:
@@ -11482,6 +11506,8 @@ components:
         - type: object
           properties:
                   tenantResource:
+                    type: string
+                  tenantId:
                     type: string
                   aapOrganizationId:
                     type: string
@@ -11513,6 +11539,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -11542,6 +11570,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            tenantId:
               type: string
             aapOrganizationId:
               type: string
@@ -11596,7 +11626,19 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
+                  jobTemplateResource:
+                    type: string
+                  jobTemplateId:
+                    type: string
+                  aapTemplateId:
+                    type: string
                   checkName:
+                    type: string
+                  checkDescription:
                     type: string
                   checkNamespace:
                     type: string
@@ -11625,12 +11667,54 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
+            setJobTemplateResource:
+              type: string
+              nullable: true
+            removeJobTemplateResource:
+              type: string
+            removeAllJobTemplateResource:
+              type: string
+            setJobTemplateId:
+              type: string
+              nullable: true
+            removeJobTemplateId:
+              type: string
+            removeAllJobTemplateId:
+              type: string
+            setAapTemplateId:
+              type: string
+              nullable: true
+            removeAapTemplateId:
+              type: string
+            removeAllAapTemplateId:
+              type: string
             setCheckName:
               type: string
               nullable: true
             removeCheckName:
               type: string
             removeAllCheckName:
+              type: string
+            setCheckDescription:
+              type: string
+              nullable: true
+            removeCheckDescription:
+              type: string
+            removeAllCheckDescription:
               type: string
             setCheckNamespace:
               type: string
@@ -11705,12 +11789,54 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
+            setJobTemplateResource:
+              type: string
+              nullable: true
+            removeJobTemplateResource:
+              type: string
+            removeAllJobTemplateResource:
+              type: string
+            setJobTemplateId:
+              type: string
+              nullable: true
+            removeJobTemplateId:
+              type: string
+            removeAllJobTemplateId:
+              type: string
+            setAapTemplateId:
+              type: string
+              nullable: true
+            removeAapTemplateId:
+              type: string
+            removeAllAapTemplateId:
+              type: string
             setCheckName:
               type: string
               nullable: true
             removeCheckName:
               type: string
             removeAllCheckName:
+              type: string
+            setCheckDescription:
+              type: string
+              nullable: true
+            removeCheckDescription:
+              type: string
+            removeAllCheckDescription:
               type: string
             setCheckNamespace:
               type: string
@@ -11780,7 +11906,19 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
+            jobTemplateResource:
+              type: string
+            jobTemplateId:
+              type: string
+            aapTemplateId:
+              type: string
             checkName:
+              type: string
+            checkDescription:
               type: string
             checkNamespace:
               type: string
@@ -11804,7 +11942,19 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
+            jobTemplateResource:
+              type: string
+            jobTemplateId:
+              type: string
+            aapTemplateId:
+              type: string
             checkName:
+              type: string
+            checkDescription:
               type: string
             checkNamespace:
               type: string
@@ -11828,7 +11978,19 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
+            jobTemplateResource:
+              type: string
+            jobTemplateId:
+              type: string
+            aapTemplateId:
+              type: string
             checkName:
+              type: string
+            checkDescription:
               type: string
             checkNamespace:
               type: string
@@ -11857,7 +12019,19 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
+                  jobTemplateResource:
+                    type: string
+                  jobTemplateId:
+                    type: string
+                  aapTemplateId:
+                    type: string
                   checkName:
+                    type: string
+                  checkDescription:
                     type: string
                   checkNamespace:
                     type: string
@@ -11881,7 +12055,19 @@ components:
           properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
+                  aapOrganizationId:
+                    type: string
+                  jobTemplateResource:
+                    type: string
+                  jobTemplateId:
+                    type: string
+                  aapTemplateId:
+                    type: string
                   checkName:
+                    type: string
+                  checkDescription:
                     type: string
                   checkNamespace:
                     type: string
@@ -11905,7 +12091,19 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
+            jobTemplateResource:
+              type: string
+            jobTemplateId:
+              type: string
+            aapTemplateId:
+              type: string
             checkName:
+              type: string
+            checkDescription:
               type: string
             checkNamespace:
               type: string
@@ -11929,7 +12127,19 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
+            aapOrganizationId:
+              type: string
+            jobTemplateResource:
+              type: string
+            jobTemplateId:
+              type: string
+            aapTemplateId:
+              type: string
             checkName:
+              type: string
+            checkDescription:
               type: string
             checkNamespace:
               type: string
@@ -12380,6 +12590,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
                   aapOrganizationId:
                     type: string
                   inventoryResource:
@@ -12414,6 +12626,13 @@ components:
             removeTenantResource:
               type: string
             removeAllTenantResource:
+              type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
               type: string
             setAapOrganizationId:
               type: string
@@ -12510,6 +12729,13 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
             setAapOrganizationId:
               type: string
               nullable: true
@@ -12600,6 +12826,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -12630,6 +12858,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -12659,6 +12889,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            tenantId:
               type: string
             aapOrganizationId:
               type: string
@@ -12695,6 +12927,8 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  tenantId:
+                    type: string
                   aapOrganizationId:
                     type: string
                   inventoryResource:
@@ -12724,6 +12958,8 @@ components:
         - type: object
           properties:
                   tenantResource:
+                    type: string
+                  tenantId:
                     type: string
                   aapOrganizationId:
                     type: string
@@ -12755,6 +12991,8 @@ components:
           properties:
             tenantResource:
               type: string
+            tenantId:
+              type: string
             aapOrganizationId:
               type: string
             inventoryResource:
@@ -12784,6 +13022,8 @@ components:
         - type: object
           properties:
             tenantResource:
+              type: string
+            tenantId:
               type: string
             aapOrganizationId:
               type: string

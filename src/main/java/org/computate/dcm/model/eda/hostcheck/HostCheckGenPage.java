@@ -2,6 +2,7 @@ package org.computate.dcm.model.eda.hostcheck;
 
 import org.computate.dcm.model.eda.hostcheck.HostCheck;
 import java.lang.String;
+import java.lang.Long;
 import java.lang.Integer;
 import java.lang.Boolean;
 import java.util.List;

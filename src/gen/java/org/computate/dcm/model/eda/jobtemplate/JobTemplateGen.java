@@ -274,6 +274,68 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return tenantResource;
   }
 
+	//////////////
+  // tenantId //
+	//////////////
+
+
+  /**
+   *  The entity tenantId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantId;
+
+  /**
+   * <br> The entity tenantId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantId(Wrap<String> w);
+
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String o) {
+    this.tenantId = JobTemplate.staticSetTenantId(siteRequest_, o);
+  }
+  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected JobTemplate tenantIdInit() {
+    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
+    if(tenantId == null) {
+      _tenantId(tenantIdWrap);
+      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
+        setTenantId(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchTenantId(siteRequest_, JobTemplate.staticSetTenantId(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantId() {
+    return tenantId;
+  }
+
+  public static String staticJsonTenantId(String tenantId) {
+    return tenantId;
+  }
+
 	///////////////////////
   // aapOrganizationId //
 	///////////////////////
@@ -1080,6 +1142,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       Promise<Void> promise2 = Promise.promise();
       try {
         tenantResourceInit();
+        tenantIdInit();
         aapOrganizationIdInit();
         inventoryResourceInit();
         aapInventoryIdInit();
@@ -1147,6 +1210,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
       case "tenantResource":
         return oJobTemplate.tenantResource;
+      case "tenantId":
+        return oJobTemplate.tenantId;
       case "aapOrganizationId":
         return oJobTemplate.aapOrganizationId;
       case "inventoryResource":
@@ -1230,6 +1295,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSetTenantResource(siteRequest_, v);
+    case "tenantId":
+      return JobTemplate.staticSetTenantId(siteRequest_, v);
     case "aapOrganizationId":
       return JobTemplate.staticSetAapOrganizationId(siteRequest_, v);
     case "inventoryResource":
@@ -1300,6 +1367,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return JobTemplate.staticSearchTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return JobTemplate.staticSearchAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
@@ -1340,6 +1409,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchStrTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return JobTemplate.staticSearchStrTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return JobTemplate.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
@@ -1380,6 +1451,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchFqTenantResource(siteRequest_, o);
+    case "tenantId":
+      return JobTemplate.staticSearchFqTenantId(siteRequest_, o);
     case "aapOrganizationId":
       return JobTemplate.staticSearchFqAapOrganizationId(siteRequest_, o);
     case "inventoryResource":
@@ -1435,6 +1508,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           setTenantResource((String)val);
         }
         saves.add("tenantResource");
+        return val;
+      } else if("tenantid".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantId((String)val);
+        }
+        saves.add("tenantId");
         return val;
       } else if("aaporganizationid".equals(varLower)) {
         if(val instanceof Long) {
@@ -1537,6 +1616,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       if(tenantResource != null)
         oJobTemplate.setTenantResource(tenantResource);
 
+      if(saves.contains("tenantId")) {
+        String tenantId = (String)doc.get("tenantId_docvalues_string");
+        if(tenantId != null)
+          oJobTemplate.setTenantId(tenantId);
+      }
+
       if(saves.contains("aapOrganizationId")) {
         Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
         if(aapOrganizationId != null)
@@ -1613,6 +1698,9 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
+    if(tenantId != null) {
+      doc.put("tenantId_docvalues_string", tenantId);
+    }
     if(aapOrganizationId != null) {
       doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
     }
@@ -1657,6 +1745,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
@@ -1690,6 +1780,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
@@ -1723,6 +1815,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(searchVar) {
       case "tenantResource_docvalues_string":
         return "tenantResource";
+      case "tenantId_docvalues_string":
+        return "tenantId";
       case "aapOrganizationId_docvalues_long":
         return "aapOrganizationId";
       case "inventoryResource_docvalues_string":
@@ -1778,6 +1872,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     SiteRequest siteRequest = oJobTemplate.getSiteRequest_();
 
     oJobTemplate.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapInventoryId(Optional.ofNullable(doc.get("aapInventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
@@ -1805,6 +1900,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       JobTemplate original = (JobTemplate)o;
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
+      if(!Objects.equals(tenantId, original.getTenantId()))
+        apiRequest.addVars("tenantId");
       if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
         apiRequest.addVars("aapOrganizationId");
       if(!Objects.equals(inventoryResource, original.getInventoryResource()))
@@ -1841,6 +1938,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
@@ -1865,6 +1963,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   }
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
+  public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
   public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_inventoryResource = "inventoryResource";
@@ -1915,6 +2015,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   }
 
   public static final String DISPLAY_NAME_tenantResource = "tenant";
+  public static final String DISPLAY_NAME_tenantId = "tenant ID";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP organization ID";
   public static final String DISPLAY_NAME_inventoryResource = "inventory";
   public static final String DISPLAY_NAME_aapInventoryId = "AAP inventory ID";
@@ -1965,6 +2066,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
     case VAR_aapOrganizationId:
       return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
     case VAR_inventoryResource:
@@ -2001,6 +2104,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
+    case VAR_tenantId:
+      return DISPLAY_NAME_tenantId;
     case VAR_aapOrganizationId:
       return DISPLAY_NAME_aapOrganizationId;
     case VAR_inventoryResource:
@@ -2036,6 +2141,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
+    case VAR_tenantId:
+      return "The tenant ID and Sensu namespace for the tenant. ";
     case VAR_aapOrganizationId:
       return "The ID of the ansible organization in AAP. ";
     case VAR_inventoryResource:
@@ -2068,6 +2175,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static String classSimpleNameJobTemplate(String var) {
     switch(var) {
     case VAR_tenantResource:
+      return "String";
+    case VAR_tenantId:
       return "String";
     case VAR_aapOrganizationId:
       return "Long";

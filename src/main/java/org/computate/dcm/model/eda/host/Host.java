@@ -61,6 +61,15 @@ public class Host extends HostGen<BaseModel> {
   }
 
   /**
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant ID
+   * Description: The tenant ID and Sensu namespace for the tenant. 
+   **/
+  protected void _tenantId(Wrap<String> w) {
+  }
+
+  /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true

@@ -276,6 +276,68 @@ public abstract class HostGen<DEV> extends BaseModel {
     return tenantResource;
   }
 
+	//////////////
+  // tenantId //
+	//////////////
+
+
+  /**
+   *  The entity tenantId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantId;
+
+  /**
+   * <br> The entity tenantId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.Host&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantId(Wrap<String> w);
+
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String o) {
+    this.tenantId = Host.staticSetTenantId(siteRequest_, o);
+  }
+  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Host tenantIdInit() {
+    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
+    if(tenantId == null) {
+      _tenantId(tenantIdWrap);
+      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
+        setTenantId(o);
+      });
+    }
+    return (Host)this;
+  }
+
+  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
+    return Host.staticSearchTenantId(siteRequest_, Host.staticSetTenantId(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantId() {
+    return tenantId;
+  }
+
+  public static String staticJsonTenantId(String tenantId) {
+    return tenantId;
+  }
+
 	///////////////////////
   // aapOrganizationId //
 	///////////////////////
@@ -1037,6 +1099,7 @@ public abstract class HostGen<DEV> extends BaseModel {
       Promise<Void> promise2 = Promise.promise();
       try {
         tenantResourceInit();
+        tenantIdInit();
         aapOrganizationIdInit();
         inventoryResourceInit();
         aapHostIdInit();
@@ -1103,6 +1166,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(var) {
       case "tenantResource":
         return oHost.tenantResource;
+      case "tenantId":
+        return oHost.tenantId;
       case "aapOrganizationId":
         return oHost.aapOrganizationId;
       case "inventoryResource":
@@ -1178,6 +1243,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return Host.staticSetTenantResource(siteRequest_, v);
+    case "tenantId":
+      return Host.staticSetTenantId(siteRequest_, v);
     case "aapOrganizationId":
       return Host.staticSetAapOrganizationId(siteRequest_, v);
     case "inventoryResource":
@@ -1209,7 +1276,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   // staticSearch //
   //////////////////
 
-  public static Future<Host> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<Host> fqHost(SiteRequest siteRequest, String var, Object val) {
     Promise<Host> promise = Promise.promise();
     try {
       if(val == null) {
@@ -1246,6 +1313,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return Host.staticSearchTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return Host.staticSearchTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return Host.staticSearchAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
@@ -1284,6 +1353,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return Host.staticSearchStrTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return Host.staticSearchStrTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return Host.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
@@ -1322,6 +1393,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return Host.staticSearchFqTenantResource(siteRequest_, o);
+    case "tenantId":
+      return Host.staticSearchFqTenantId(siteRequest_, o);
     case "aapOrganizationId":
       return Host.staticSearchFqAapOrganizationId(siteRequest_, o);
     case "inventoryResource":
@@ -1375,6 +1448,12 @@ public abstract class HostGen<DEV> extends BaseModel {
           setTenantResource((String)val);
         }
         saves.add("tenantResource");
+        return val;
+      } else if("tenantid".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantId((String)val);
+        }
+        saves.add("tenantId");
         return val;
       } else if("aaporganizationid".equals(varLower)) {
         if(val instanceof Long) {
@@ -1475,6 +1554,12 @@ public abstract class HostGen<DEV> extends BaseModel {
       if(tenantResource != null)
         oHost.setTenantResource(tenantResource);
 
+      if(saves.contains("tenantId")) {
+        String tenantId = (String)doc.get("tenantId_docvalues_string");
+        if(tenantId != null)
+          oHost.setTenantId(tenantId);
+      }
+
       if(saves.contains("aapOrganizationId")) {
         Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
         if(aapOrganizationId != null)
@@ -1550,6 +1635,9 @@ public abstract class HostGen<DEV> extends BaseModel {
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
+    if(tenantId != null) {
+      doc.put("tenantId_docvalues_string", tenantId);
+    }
     if(aapOrganizationId != null) {
       doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
     }
@@ -1595,6 +1683,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
@@ -1626,6 +1716,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
@@ -1657,6 +1749,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(searchVar) {
       case "tenantResource_docvalues_string":
         return "tenantResource";
+      case "tenantId_docvalues_string":
+        return "tenantId";
       case "aapOrganizationId_docvalues_long":
         return "aapOrganizationId";
       case "inventoryResource_docvalues_string":
@@ -1710,6 +1804,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     SiteRequest siteRequest = oHost.getSiteRequest_();
 
     oHost.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHost.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHost.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHost.setAapHostId(Optional.ofNullable(doc.get("aapHostId_docvalues_long")).map(v -> v.toString()).orElse(null));
@@ -1738,6 +1833,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       Host original = (Host)o;
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
+      if(!Objects.equals(tenantId, original.getTenantId()))
+        apiRequest.addVars("tenantId");
       if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
         apiRequest.addVars("aapOrganizationId");
       if(!Objects.equals(inventoryResource, original.getInventoryResource()))
@@ -1772,6 +1869,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapHostId).map(v -> "aapHostId: " + v + "\n").orElse(""));
@@ -1795,6 +1893,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
+  public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
   public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_inventoryResource = "inventoryResource";
@@ -1844,6 +1944,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
 
   public static final String DISPLAY_NAME_tenantResource = "tenant";
+  public static final String DISPLAY_NAME_tenantId = "tenant ID";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
   public static final String DISPLAY_NAME_inventoryResource = "inventory";
   public static final String DISPLAY_NAME_aapHostId = "AAP ID";
@@ -1898,6 +1999,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
     case VAR_aapOrganizationId:
       return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
     case VAR_inventoryResource:
@@ -1932,6 +2035,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
+    case VAR_tenantId:
+      return DISPLAY_NAME_tenantId;
     case VAR_aapOrganizationId:
       return DISPLAY_NAME_aapOrganizationId;
     case VAR_inventoryResource:
@@ -1965,6 +2070,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
+    case VAR_tenantId:
+      return "The tenant ID and Sensu namespace for the tenant. ";
     case VAR_aapOrganizationId:
       return "The Ansible Automation Platform ID of the organization. ";
     case VAR_inventoryResource:
@@ -1995,6 +2102,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static String classSimpleNameHost(String var) {
     switch(var) {
     case VAR_tenantResource:
+      return "String";
+    case VAR_tenantId:
       return "String";
     case VAR_aapOrganizationId:
       return "Long";
