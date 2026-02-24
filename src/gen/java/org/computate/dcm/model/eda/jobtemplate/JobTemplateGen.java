@@ -37,9 +37,9 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import java.lang.Long;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
-import java.lang.Long;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -176,7 +176,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no job template found";
   public static final String ApiUri_enUS = "/en-us/api/job-template";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/job-template";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/job-template/{jobTemplateId}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/job-template/{jobTemplateResource}";
   public static final String OfName_enUS = "of job template";
   public static final String ANameAdjective_enUS = "a job template";
   public static final String NameAdjectiveSingular_enUS = "job template";
@@ -184,7 +184,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String Search_enUS_OpenApiUri = "/en-us/api/job-template";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/job-template";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/job-template";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/job-template/{jobTemplateId}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/job-template/{jobTemplateResource}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/job-template/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/job-template/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/job-template";
@@ -193,7 +193,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/job-template";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/job-template";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/job-template";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/job-template/{jobTemplateId}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/job-template/{jobTemplateResource}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/job-template/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/job-template/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/job-template-import";
@@ -202,7 +202,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/job-template";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/job-template";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/job-template";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/job-template/{jobTemplateId}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/job-template/{jobTemplateResource}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/job-template/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/job-template/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/job-template";
@@ -275,6 +275,76 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   }
 
 	///////////////////////
+  // aapOrganizationId //
+	///////////////////////
+
+
+  /**
+   *  The entity aapOrganizationId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapOrganizationId;
+
+  /**
+   * <br> The entity aapOrganizationId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapOrganizationId">Find the entity aapOrganizationId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapOrganizationId(Wrap<Long> w);
+
+  public Long getAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public void setAapOrganizationId(Long aapOrganizationId) {
+    this.aapOrganizationId = aapOrganizationId;
+  }
+  @JsonIgnore
+  public void setAapOrganizationId(String o) {
+    this.aapOrganizationId = JobTemplate.staticSetAapOrganizationId(siteRequest_, o);
+  }
+  public static Long staticSetAapOrganizationId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected JobTemplate aapOrganizationIdInit() {
+    Wrap<Long> aapOrganizationIdWrap = new Wrap<Long>().var("aapOrganizationId");
+    if(aapOrganizationId == null) {
+      _aapOrganizationId(aapOrganizationIdWrap);
+      Optional.ofNullable(aapOrganizationIdWrap.getO()).ifPresent(o -> {
+        setAapOrganizationId(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static Long staticSearchAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapOrganizationId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapOrganizationId(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAapOrganizationId(siteRequest_, JobTemplate.staticSetAapOrganizationId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapOrganizationId() {
+    return aapOrganizationId;
+  }
+
+  public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
+    return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
+  }
+
+	///////////////////////
   // inventoryResource //
 	///////////////////////
 
@@ -334,6 +404,270 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
 
   public static String staticJsonInventoryResource(String inventoryResource) {
     return inventoryResource;
+  }
+
+	////////////////////
+  // aapInventoryId //
+	////////////////////
+
+
+  /**
+   *  The entity aapInventoryId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapInventoryId;
+
+  /**
+   * <br> The entity aapInventoryId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapInventoryId">Find the entity aapInventoryId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapInventoryId(Wrap<Long> w);
+
+  public Long getAapInventoryId() {
+    return aapInventoryId;
+  }
+
+  public void setAapInventoryId(Long aapInventoryId) {
+    this.aapInventoryId = aapInventoryId;
+  }
+  @JsonIgnore
+  public void setAapInventoryId(String o) {
+    this.aapInventoryId = JobTemplate.staticSetAapInventoryId(siteRequest_, o);
+  }
+  public static Long staticSetAapInventoryId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected JobTemplate aapInventoryIdInit() {
+    Wrap<Long> aapInventoryIdWrap = new Wrap<Long>().var("aapInventoryId");
+    if(aapInventoryId == null) {
+      _aapInventoryId(aapInventoryIdWrap);
+      Optional.ofNullable(aapInventoryIdWrap.getO()).ifPresent(o -> {
+        setAapInventoryId(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static Long staticSearchAapInventoryId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapInventoryId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapInventoryId(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAapInventoryId(siteRequest_, JobTemplate.staticSetAapInventoryId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapInventoryId() {
+    return aapInventoryId;
+  }
+
+  public static String staticJsonAapInventoryId(Long aapInventoryId) {
+    return Optional.ofNullable(aapInventoryId).map(v -> v.toString()).orElse(null);
+  }
+
+	////////////////////////////
+  // ansibleProjectResource //
+	////////////////////////////
+
+
+  /**
+   *  The entity ansibleProjectResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String ansibleProjectResource;
+
+  /**
+   * <br> The entity ansibleProjectResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:ansibleProjectResource">Find the entity ansibleProjectResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _ansibleProjectResource(Wrap<String> w);
+
+  public String getAnsibleProjectResource() {
+    return ansibleProjectResource;
+  }
+  public void setAnsibleProjectResource(String o) {
+    this.ansibleProjectResource = JobTemplate.staticSetAnsibleProjectResource(siteRequest_, o);
+  }
+  public static String staticSetAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected JobTemplate ansibleProjectResourceInit() {
+    Wrap<String> ansibleProjectResourceWrap = new Wrap<String>().var("ansibleProjectResource");
+    if(ansibleProjectResource == null) {
+      _ansibleProjectResource(ansibleProjectResourceWrap);
+      Optional.ofNullable(ansibleProjectResourceWrap.getO()).ifPresent(o -> {
+        setAnsibleProjectResource(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAnsibleProjectResource(siteRequest_, JobTemplate.staticSetAnsibleProjectResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlAnsibleProjectResource() {
+    return ansibleProjectResource;
+  }
+
+  public static String staticJsonAnsibleProjectResource(String ansibleProjectResource) {
+    return ansibleProjectResource;
+  }
+
+	//////////////////
+  // aapProjectId //
+	//////////////////
+
+
+  /**
+   *  The entity aapProjectId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapProjectId;
+
+  /**
+   * <br> The entity aapProjectId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapProjectId">Find the entity aapProjectId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapProjectId(Wrap<Long> w);
+
+  public Long getAapProjectId() {
+    return aapProjectId;
+  }
+
+  public void setAapProjectId(Long aapProjectId) {
+    this.aapProjectId = aapProjectId;
+  }
+  @JsonIgnore
+  public void setAapProjectId(String o) {
+    this.aapProjectId = JobTemplate.staticSetAapProjectId(siteRequest_, o);
+  }
+  public static Long staticSetAapProjectId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected JobTemplate aapProjectIdInit() {
+    Wrap<Long> aapProjectIdWrap = new Wrap<Long>().var("aapProjectId");
+    if(aapProjectId == null) {
+      _aapProjectId(aapProjectIdWrap);
+      Optional.ofNullable(aapProjectIdWrap.getO()).ifPresent(o -> {
+        setAapProjectId(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static Long staticSearchAapProjectId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapProjectId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapProjectId(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAapProjectId(siteRequest_, JobTemplate.staticSetAapProjectId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapProjectId() {
+    return aapProjectId;
+  }
+
+  public static String staticJsonAapProjectId(Long aapProjectId) {
+    return Optional.ofNullable(aapProjectId).map(v -> v.toString()).orElse(null);
+  }
+
+	/////////////////////
+  // ansiblePlaybook //
+	/////////////////////
+
+
+  /**
+   *  The entity ansiblePlaybook
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String ansiblePlaybook;
+
+  /**
+   * <br> The entity ansiblePlaybook
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:ansiblePlaybook">Find the entity ansiblePlaybook in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _ansiblePlaybook(Wrap<String> w);
+
+  public String getAnsiblePlaybook() {
+    return ansiblePlaybook;
+  }
+  public void setAnsiblePlaybook(String o) {
+    this.ansiblePlaybook = JobTemplate.staticSetAnsiblePlaybook(siteRequest_, o);
+  }
+  public static String staticSetAnsiblePlaybook(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected JobTemplate ansiblePlaybookInit() {
+    Wrap<String> ansiblePlaybookWrap = new Wrap<String>().var("ansiblePlaybook");
+    if(ansiblePlaybook == null) {
+      _ansiblePlaybook(ansiblePlaybookWrap);
+      Optional.ofNullable(ansiblePlaybookWrap.getO()).ifPresent(o -> {
+        setAnsiblePlaybook(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchAnsiblePlaybook(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsiblePlaybook(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsiblePlaybook(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAnsiblePlaybook(siteRequest_, JobTemplate.staticSetAnsiblePlaybook(siteRequest_, o)).toString();
+  }
+
+  public String sqlAnsiblePlaybook() {
+    return ansiblePlaybook;
+  }
+
+  public static String staticJsonAnsiblePlaybook(String ansiblePlaybook) {
+    return ansiblePlaybook;
   }
 
 	/////////////////////
@@ -460,6 +794,68 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return jobTemplateId;
   }
 
+	/////////////////////////
+  // jobTemplateResource //
+	/////////////////////////
+
+
+  /**
+   *  The entity jobTemplateResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String jobTemplateResource;
+
+  /**
+   * <br> The entity jobTemplateResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:jobTemplateResource">Find the entity jobTemplateResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _jobTemplateResource(Wrap<String> w);
+
+  public String getJobTemplateResource() {
+    return jobTemplateResource;
+  }
+  public void setJobTemplateResource(String o) {
+    this.jobTemplateResource = JobTemplate.staticSetJobTemplateResource(siteRequest_, o);
+  }
+  public static String staticSetJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected JobTemplate jobTemplateResourceInit() {
+    Wrap<String> jobTemplateResourceWrap = new Wrap<String>().var("jobTemplateResource");
+    if(jobTemplateResource == null) {
+      _jobTemplateResource(jobTemplateResourceWrap);
+      Optional.ofNullable(jobTemplateResourceWrap.getO()).ifPresent(o -> {
+        setJobTemplateResource(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqJobTemplateResource(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchJobTemplateResource(siteRequest_, JobTemplate.staticSetJobTemplateResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlJobTemplateResource() {
+    return jobTemplateResource;
+  }
+
+  public static String staticJsonJobTemplateResource(String jobTemplateResource) {
+    return jobTemplateResource;
+  }
+
 	////////////////////////////
   // jobTemplateDescription //
 	////////////////////////////
@@ -584,402 +980,6 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return jobType;
   }
 
-	//////////////////////
-  // ansibleProjectId //
-	//////////////////////
-
-
-  /**
-   *  The entity ansibleProjectId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String ansibleProjectId;
-
-  /**
-   * <br> The entity ansibleProjectId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:ansibleProjectId">Find the entity ansibleProjectId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _ansibleProjectId(Wrap<String> w);
-
-  public String getAnsibleProjectId() {
-    return ansibleProjectId;
-  }
-  public void setAnsibleProjectId(String o) {
-    this.ansibleProjectId = JobTemplate.staticSetAnsibleProjectId(siteRequest_, o);
-  }
-  public static String staticSetAnsibleProjectId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected JobTemplate ansibleProjectIdInit() {
-    Wrap<String> ansibleProjectIdWrap = new Wrap<String>().var("ansibleProjectId");
-    if(ansibleProjectId == null) {
-      _ansibleProjectId(ansibleProjectIdWrap);
-      Optional.ofNullable(ansibleProjectIdWrap.getO()).ifPresent(o -> {
-        setAnsibleProjectId(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static String staticSearchAnsibleProjectId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrAnsibleProjectId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqAnsibleProjectId(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchAnsibleProjectId(siteRequest_, JobTemplate.staticSetAnsibleProjectId(siteRequest_, o)).toString();
-  }
-
-  public String sqlAnsibleProjectId() {
-    return ansibleProjectId;
-  }
-
-  public static String staticJsonAnsibleProjectId(String ansibleProjectId) {
-    return ansibleProjectId;
-  }
-
-	/////////////////////
-  // ansiblePlaybook //
-	/////////////////////
-
-
-  /**
-   *  The entity ansiblePlaybook
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String ansiblePlaybook;
-
-  /**
-   * <br> The entity ansiblePlaybook
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:ansiblePlaybook">Find the entity ansiblePlaybook in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _ansiblePlaybook(Wrap<String> w);
-
-  public String getAnsiblePlaybook() {
-    return ansiblePlaybook;
-  }
-  public void setAnsiblePlaybook(String o) {
-    this.ansiblePlaybook = JobTemplate.staticSetAnsiblePlaybook(siteRequest_, o);
-  }
-  public static String staticSetAnsiblePlaybook(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected JobTemplate ansiblePlaybookInit() {
-    Wrap<String> ansiblePlaybookWrap = new Wrap<String>().var("ansiblePlaybook");
-    if(ansiblePlaybook == null) {
-      _ansiblePlaybook(ansiblePlaybookWrap);
-      Optional.ofNullable(ansiblePlaybookWrap.getO()).ifPresent(o -> {
-        setAnsiblePlaybook(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static String staticSearchAnsiblePlaybook(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrAnsiblePlaybook(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqAnsiblePlaybook(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchAnsiblePlaybook(siteRequest_, JobTemplate.staticSetAnsiblePlaybook(siteRequest_, o)).toString();
-  }
-
-  public String sqlAnsiblePlaybook() {
-    return ansiblePlaybook;
-  }
-
-  public static String staticJsonAnsiblePlaybook(String ansiblePlaybook) {
-    return ansiblePlaybook;
-  }
-
-	///////////////////////
-  // aapOrganizationId //
-	///////////////////////
-
-
-  /**
-   *  The entity aapOrganizationId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonSerialize(using = ToStringSerializer.class)
-  @JsonInclude(Include.NON_NULL)
-  protected Long aapOrganizationId;
-
-  /**
-   * <br> The entity aapOrganizationId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapOrganizationId">Find the entity aapOrganizationId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _aapOrganizationId(Wrap<Long> w);
-
-  public Long getAapOrganizationId() {
-    return aapOrganizationId;
-  }
-
-  public void setAapOrganizationId(Long aapOrganizationId) {
-    this.aapOrganizationId = aapOrganizationId;
-  }
-  @JsonIgnore
-  public void setAapOrganizationId(String o) {
-    this.aapOrganizationId = JobTemplate.staticSetAapOrganizationId(siteRequest_, o);
-  }
-  public static Long staticSetAapOrganizationId(SiteRequest siteRequest_, String o) {
-    if(NumberUtils.isParsable(o))
-      return Long.parseLong(o);
-    return null;
-  }
-  protected JobTemplate aapOrganizationIdInit() {
-    Wrap<Long> aapOrganizationIdWrap = new Wrap<Long>().var("aapOrganizationId");
-    if(aapOrganizationId == null) {
-      _aapOrganizationId(aapOrganizationIdWrap);
-      Optional.ofNullable(aapOrganizationIdWrap.getO()).ifPresent(o -> {
-        setAapOrganizationId(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static Long staticSearchAapOrganizationId(SiteRequest siteRequest_, Long o) {
-    return o;
-  }
-
-  public static String staticSearchStrAapOrganizationId(SiteRequest siteRequest_, Long o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqAapOrganizationId(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchAapOrganizationId(siteRequest_, JobTemplate.staticSetAapOrganizationId(siteRequest_, o)).toString();
-  }
-
-  public Long sqlAapOrganizationId() {
-    return aapOrganizationId;
-  }
-
-  public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
-    return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
-  }
-
-	////////////////////
-  // organizationId //
-	////////////////////
-
-
-  /**
-   *  The entity organizationId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String organizationId;
-
-  /**
-   * <br> The entity organizationId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:organizationId">Find the entity organizationId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _organizationId(Wrap<String> w);
-
-  public String getOrganizationId() {
-    return organizationId;
-  }
-  public void setOrganizationId(String o) {
-    this.organizationId = JobTemplate.staticSetOrganizationId(siteRequest_, o);
-  }
-  public static String staticSetOrganizationId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected JobTemplate organizationIdInit() {
-    Wrap<String> organizationIdWrap = new Wrap<String>().var("organizationId");
-    if(organizationId == null) {
-      _organizationId(organizationIdWrap);
-      Optional.ofNullable(organizationIdWrap.getO()).ifPresent(o -> {
-        setOrganizationId(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static String staticSearchOrganizationId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrOrganizationId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqOrganizationId(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchOrganizationId(siteRequest_, JobTemplate.staticSetOrganizationId(siteRequest_, o)).toString();
-  }
-
-  public String sqlOrganizationId() {
-    return organizationId;
-  }
-
-  public static String staticJsonOrganizationId(String organizationId) {
-    return organizationId;
-  }
-
-	////////////////////
-  // aapInventoryId //
-	////////////////////
-
-
-  /**
-   *  The entity aapInventoryId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonSerialize(using = ToStringSerializer.class)
-  @JsonInclude(Include.NON_NULL)
-  protected Long aapInventoryId;
-
-  /**
-   * <br> The entity aapInventoryId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapInventoryId">Find the entity aapInventoryId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _aapInventoryId(Wrap<Long> w);
-
-  public Long getAapInventoryId() {
-    return aapInventoryId;
-  }
-
-  public void setAapInventoryId(Long aapInventoryId) {
-    this.aapInventoryId = aapInventoryId;
-  }
-  @JsonIgnore
-  public void setAapInventoryId(String o) {
-    this.aapInventoryId = JobTemplate.staticSetAapInventoryId(siteRequest_, o);
-  }
-  public static Long staticSetAapInventoryId(SiteRequest siteRequest_, String o) {
-    if(NumberUtils.isParsable(o))
-      return Long.parseLong(o);
-    return null;
-  }
-  protected JobTemplate aapInventoryIdInit() {
-    Wrap<Long> aapInventoryIdWrap = new Wrap<Long>().var("aapInventoryId");
-    if(aapInventoryId == null) {
-      _aapInventoryId(aapInventoryIdWrap);
-      Optional.ofNullable(aapInventoryIdWrap.getO()).ifPresent(o -> {
-        setAapInventoryId(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static Long staticSearchAapInventoryId(SiteRequest siteRequest_, Long o) {
-    return o;
-  }
-
-  public static String staticSearchStrAapInventoryId(SiteRequest siteRequest_, Long o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqAapInventoryId(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchAapInventoryId(siteRequest_, JobTemplate.staticSetAapInventoryId(siteRequest_, o)).toString();
-  }
-
-  public Long sqlAapInventoryId() {
-    return aapInventoryId;
-  }
-
-  public static String staticJsonAapInventoryId(Long aapInventoryId) {
-    return Optional.ofNullable(aapInventoryId).map(v -> v.toString()).orElse(null);
-  }
-
-	//////////////////
-  // aapProjectId //
-	//////////////////
-
-
-  /**
-   *  The entity aapProjectId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonSerialize(using = ToStringSerializer.class)
-  @JsonInclude(Include.NON_NULL)
-  protected Long aapProjectId;
-
-  /**
-   * <br> The entity aapProjectId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapProjectId">Find the entity aapProjectId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _aapProjectId(Wrap<Long> w);
-
-  public Long getAapProjectId() {
-    return aapProjectId;
-  }
-
-  public void setAapProjectId(Long aapProjectId) {
-    this.aapProjectId = aapProjectId;
-  }
-  @JsonIgnore
-  public void setAapProjectId(String o) {
-    this.aapProjectId = JobTemplate.staticSetAapProjectId(siteRequest_, o);
-  }
-  public static Long staticSetAapProjectId(SiteRequest siteRequest_, String o) {
-    if(NumberUtils.isParsable(o))
-      return Long.parseLong(o);
-    return null;
-  }
-  protected JobTemplate aapProjectIdInit() {
-    Wrap<Long> aapProjectIdWrap = new Wrap<Long>().var("aapProjectId");
-    if(aapProjectId == null) {
-      _aapProjectId(aapProjectIdWrap);
-      Optional.ofNullable(aapProjectIdWrap.getO()).ifPresent(o -> {
-        setAapProjectId(o);
-      });
-    }
-    return (JobTemplate)this;
-  }
-
-  public static Long staticSearchAapProjectId(SiteRequest siteRequest_, Long o) {
-    return o;
-  }
-
-  public static String staticSearchStrAapProjectId(SiteRequest siteRequest_, Long o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqAapProjectId(SiteRequest siteRequest_, String o) {
-    return JobTemplate.staticSearchAapProjectId(siteRequest_, JobTemplate.staticSetAapProjectId(siteRequest_, o)).toString();
-  }
-
-  public Long sqlAapProjectId() {
-    return aapProjectId;
-  }
-
-  public static String staticJsonAapProjectId(Long aapProjectId) {
-    return Optional.ofNullable(aapProjectId).map(v -> v.toString()).orElse(null);
-  }
-
 	///////////////////
   // aapTemplateId //
 	///////////////////
@@ -1080,17 +1080,17 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       Promise<Void> promise2 = Promise.promise();
       try {
         tenantResourceInit();
+        aapOrganizationIdInit();
         inventoryResourceInit();
+        aapInventoryIdInit();
+        ansibleProjectResourceInit();
+        aapProjectIdInit();
+        ansiblePlaybookInit();
         jobTemplateNameInit();
         jobTemplateIdInit();
+        jobTemplateResourceInit();
         jobTemplateDescriptionInit();
         jobTypeInit();
-        ansibleProjectIdInit();
-        ansiblePlaybookInit();
-        aapOrganizationIdInit();
-        organizationIdInit();
-        aapInventoryIdInit();
-        aapProjectIdInit();
         aapTemplateIdInit();
         promise2.complete();
       } catch(Exception ex) {
@@ -1147,28 +1147,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
       case "tenantResource":
         return oJobTemplate.tenantResource;
+      case "aapOrganizationId":
+        return oJobTemplate.aapOrganizationId;
       case "inventoryResource":
         return oJobTemplate.inventoryResource;
+      case "aapInventoryId":
+        return oJobTemplate.aapInventoryId;
+      case "ansibleProjectResource":
+        return oJobTemplate.ansibleProjectResource;
+      case "aapProjectId":
+        return oJobTemplate.aapProjectId;
+      case "ansiblePlaybook":
+        return oJobTemplate.ansiblePlaybook;
       case "jobTemplateName":
         return oJobTemplate.jobTemplateName;
       case "jobTemplateId":
         return oJobTemplate.jobTemplateId;
+      case "jobTemplateResource":
+        return oJobTemplate.jobTemplateResource;
       case "jobTemplateDescription":
         return oJobTemplate.jobTemplateDescription;
       case "jobType":
         return oJobTemplate.jobType;
-      case "ansibleProjectId":
-        return oJobTemplate.ansibleProjectId;
-      case "ansiblePlaybook":
-        return oJobTemplate.ansiblePlaybook;
-      case "aapOrganizationId":
-        return oJobTemplate.aapOrganizationId;
-      case "organizationId":
-        return oJobTemplate.organizationId;
-      case "aapInventoryId":
-        return oJobTemplate.aapInventoryId;
-      case "aapProjectId":
-        return oJobTemplate.aapProjectId;
       case "aapTemplateId":
         return oJobTemplate.aapTemplateId;
       default:
@@ -1208,11 +1208,11 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         if(!saves.contains("inventoryResource"))
           saves.add("inventoryResource");
         return val;
-      case "ansibleProjectId":
-        if(oJobTemplate.getAnsibleProjectId() == null)
-          oJobTemplate.setAnsibleProjectId(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
-        if(!saves.contains("ansibleProjectId"))
-          saves.add("ansibleProjectId");
+      case "ansibleProjectResource":
+        if(oJobTemplate.getAnsibleProjectResource() == null)
+          oJobTemplate.setAnsibleProjectResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("ansibleProjectResource"))
+          saves.add("ansibleProjectResource");
         return val;
       default:
         return super.relateBaseModel(var, val);
@@ -1230,28 +1230,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSetTenantResource(siteRequest_, v);
+    case "aapOrganizationId":
+      return JobTemplate.staticSetAapOrganizationId(siteRequest_, v);
     case "inventoryResource":
       return JobTemplate.staticSetInventoryResource(siteRequest_, v);
+    case "aapInventoryId":
+      return JobTemplate.staticSetAapInventoryId(siteRequest_, v);
+    case "ansibleProjectResource":
+      return JobTemplate.staticSetAnsibleProjectResource(siteRequest_, v);
+    case "aapProjectId":
+      return JobTemplate.staticSetAapProjectId(siteRequest_, v);
+    case "ansiblePlaybook":
+      return JobTemplate.staticSetAnsiblePlaybook(siteRequest_, v);
     case "jobTemplateName":
       return JobTemplate.staticSetJobTemplateName(siteRequest_, v);
     case "jobTemplateId":
       return JobTemplate.staticSetJobTemplateId(siteRequest_, v);
+    case "jobTemplateResource":
+      return JobTemplate.staticSetJobTemplateResource(siteRequest_, v);
     case "jobTemplateDescription":
       return JobTemplate.staticSetJobTemplateDescription(siteRequest_, v);
     case "jobType":
       return JobTemplate.staticSetJobType(siteRequest_, v);
-    case "ansibleProjectId":
-      return JobTemplate.staticSetAnsibleProjectId(siteRequest_, v);
-    case "ansiblePlaybook":
-      return JobTemplate.staticSetAnsiblePlaybook(siteRequest_, v);
-    case "aapOrganizationId":
-      return JobTemplate.staticSetAapOrganizationId(siteRequest_, v);
-    case "organizationId":
-      return JobTemplate.staticSetOrganizationId(siteRequest_, v);
-    case "aapInventoryId":
-      return JobTemplate.staticSetAapInventoryId(siteRequest_, v);
-    case "aapProjectId":
-      return JobTemplate.staticSetAapProjectId(siteRequest_, v);
     case "aapTemplateId":
       return JobTemplate.staticSetAapTemplateId(siteRequest_, v);
       default:
@@ -1263,7 +1263,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   // staticSearch //
   //////////////////
 
-  public static Future<JobTemplate> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<JobTemplate> fqJobTemplate(SiteRequest siteRequest, String var, Object val) {
     Promise<JobTemplate> promise = Promise.promise();
     try {
       if(val == null) {
@@ -1300,28 +1300,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchTenantResource(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return JobTemplate.staticSearchAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
       return JobTemplate.staticSearchInventoryResource(siteRequest_, (String)o);
+    case "aapInventoryId":
+      return JobTemplate.staticSearchAapInventoryId(siteRequest_, (Long)o);
+    case "ansibleProjectResource":
+      return JobTemplate.staticSearchAnsibleProjectResource(siteRequest_, (String)o);
+    case "aapProjectId":
+      return JobTemplate.staticSearchAapProjectId(siteRequest_, (Long)o);
+    case "ansiblePlaybook":
+      return JobTemplate.staticSearchAnsiblePlaybook(siteRequest_, (String)o);
     case "jobTemplateName":
       return JobTemplate.staticSearchJobTemplateName(siteRequest_, (String)o);
     case "jobTemplateId":
       return JobTemplate.staticSearchJobTemplateId(siteRequest_, (String)o);
+    case "jobTemplateResource":
+      return JobTemplate.staticSearchJobTemplateResource(siteRequest_, (String)o);
     case "jobTemplateDescription":
       return JobTemplate.staticSearchJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchJobType(siteRequest_, (String)o);
-    case "ansibleProjectId":
-      return JobTemplate.staticSearchAnsibleProjectId(siteRequest_, (String)o);
-    case "ansiblePlaybook":
-      return JobTemplate.staticSearchAnsiblePlaybook(siteRequest_, (String)o);
-    case "aapOrganizationId":
-      return JobTemplate.staticSearchAapOrganizationId(siteRequest_, (Long)o);
-    case "organizationId":
-      return JobTemplate.staticSearchOrganizationId(siteRequest_, (String)o);
-    case "aapInventoryId":
-      return JobTemplate.staticSearchAapInventoryId(siteRequest_, (Long)o);
-    case "aapProjectId":
-      return JobTemplate.staticSearchAapProjectId(siteRequest_, (Long)o);
     case "aapTemplateId":
       return JobTemplate.staticSearchAapTemplateId(siteRequest_, (Long)o);
       default:
@@ -1340,28 +1340,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchStrTenantResource(siteRequest_, (String)o);
+    case "aapOrganizationId":
+      return JobTemplate.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
     case "inventoryResource":
       return JobTemplate.staticSearchStrInventoryResource(siteRequest_, (String)o);
+    case "aapInventoryId":
+      return JobTemplate.staticSearchStrAapInventoryId(siteRequest_, (Long)o);
+    case "ansibleProjectResource":
+      return JobTemplate.staticSearchStrAnsibleProjectResource(siteRequest_, (String)o);
+    case "aapProjectId":
+      return JobTemplate.staticSearchStrAapProjectId(siteRequest_, (Long)o);
+    case "ansiblePlaybook":
+      return JobTemplate.staticSearchStrAnsiblePlaybook(siteRequest_, (String)o);
     case "jobTemplateName":
       return JobTemplate.staticSearchStrJobTemplateName(siteRequest_, (String)o);
     case "jobTemplateId":
       return JobTemplate.staticSearchStrJobTemplateId(siteRequest_, (String)o);
+    case "jobTemplateResource":
+      return JobTemplate.staticSearchStrJobTemplateResource(siteRequest_, (String)o);
     case "jobTemplateDescription":
       return JobTemplate.staticSearchStrJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchStrJobType(siteRequest_, (String)o);
-    case "ansibleProjectId":
-      return JobTemplate.staticSearchStrAnsibleProjectId(siteRequest_, (String)o);
-    case "ansiblePlaybook":
-      return JobTemplate.staticSearchStrAnsiblePlaybook(siteRequest_, (String)o);
-    case "aapOrganizationId":
-      return JobTemplate.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
-    case "organizationId":
-      return JobTemplate.staticSearchStrOrganizationId(siteRequest_, (String)o);
-    case "aapInventoryId":
-      return JobTemplate.staticSearchStrAapInventoryId(siteRequest_, (Long)o);
-    case "aapProjectId":
-      return JobTemplate.staticSearchStrAapProjectId(siteRequest_, (Long)o);
     case "aapTemplateId":
       return JobTemplate.staticSearchStrAapTemplateId(siteRequest_, (Long)o);
       default:
@@ -1380,28 +1380,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return JobTemplate.staticSearchFqTenantResource(siteRequest_, o);
+    case "aapOrganizationId":
+      return JobTemplate.staticSearchFqAapOrganizationId(siteRequest_, o);
     case "inventoryResource":
       return JobTemplate.staticSearchFqInventoryResource(siteRequest_, o);
+    case "aapInventoryId":
+      return JobTemplate.staticSearchFqAapInventoryId(siteRequest_, o);
+    case "ansibleProjectResource":
+      return JobTemplate.staticSearchFqAnsibleProjectResource(siteRequest_, o);
+    case "aapProjectId":
+      return JobTemplate.staticSearchFqAapProjectId(siteRequest_, o);
+    case "ansiblePlaybook":
+      return JobTemplate.staticSearchFqAnsiblePlaybook(siteRequest_, o);
     case "jobTemplateName":
       return JobTemplate.staticSearchFqJobTemplateName(siteRequest_, o);
     case "jobTemplateId":
       return JobTemplate.staticSearchFqJobTemplateId(siteRequest_, o);
+    case "jobTemplateResource":
+      return JobTemplate.staticSearchFqJobTemplateResource(siteRequest_, o);
     case "jobTemplateDescription":
       return JobTemplate.staticSearchFqJobTemplateDescription(siteRequest_, o);
     case "jobType":
       return JobTemplate.staticSearchFqJobType(siteRequest_, o);
-    case "ansibleProjectId":
-      return JobTemplate.staticSearchFqAnsibleProjectId(siteRequest_, o);
-    case "ansiblePlaybook":
-      return JobTemplate.staticSearchFqAnsiblePlaybook(siteRequest_, o);
-    case "aapOrganizationId":
-      return JobTemplate.staticSearchFqAapOrganizationId(siteRequest_, o);
-    case "organizationId":
-      return JobTemplate.staticSearchFqOrganizationId(siteRequest_, o);
-    case "aapInventoryId":
-      return JobTemplate.staticSearchFqAapInventoryId(siteRequest_, o);
-    case "aapProjectId":
-      return JobTemplate.staticSearchFqAapProjectId(siteRequest_, o);
     case "aapTemplateId":
       return JobTemplate.staticSearchFqAapTemplateId(siteRequest_, o);
       default:
@@ -1436,11 +1436,47 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         }
         saves.add("tenantResource");
         return val;
+      } else if("aaporganizationid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapOrganizationId((Long)val);
+        } else {
+          setAapOrganizationId(val == null ? null : val.toString());
+        }
+        saves.add("aapOrganizationId");
+        return val;
       } else if("inventoryresource".equals(varLower)) {
         if(val instanceof String) {
           setInventoryResource((String)val);
         }
         saves.add("inventoryResource");
+        return val;
+      } else if("aapinventoryid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapInventoryId((Long)val);
+        } else {
+          setAapInventoryId(val == null ? null : val.toString());
+        }
+        saves.add("aapInventoryId");
+        return val;
+      } else if("ansibleprojectresource".equals(varLower)) {
+        if(val instanceof String) {
+          setAnsibleProjectResource((String)val);
+        }
+        saves.add("ansibleProjectResource");
+        return val;
+      } else if("aapprojectid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapProjectId((Long)val);
+        } else {
+          setAapProjectId(val == null ? null : val.toString());
+        }
+        saves.add("aapProjectId");
+        return val;
+      } else if("ansibleplaybook".equals(varLower)) {
+        if(val instanceof String) {
+          setAnsiblePlaybook((String)val);
+        }
+        saves.add("ansiblePlaybook");
         return val;
       } else if("jobtemplatename".equals(varLower)) {
         if(val instanceof String) {
@@ -1454,6 +1490,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         }
         saves.add("jobTemplateId");
         return val;
+      } else if("jobtemplateresource".equals(varLower)) {
+        if(val instanceof String) {
+          setJobTemplateResource((String)val);
+        }
+        saves.add("jobTemplateResource");
+        return val;
       } else if("jobtemplatedescription".equals(varLower)) {
         if(val instanceof String) {
           setJobTemplateDescription((String)val);
@@ -1465,48 +1507,6 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           setJobType((String)val);
         }
         saves.add("jobType");
-        return val;
-      } else if("ansibleprojectid".equals(varLower)) {
-        if(val instanceof String) {
-          setAnsibleProjectId((String)val);
-        }
-        saves.add("ansibleProjectId");
-        return val;
-      } else if("ansibleplaybook".equals(varLower)) {
-        if(val instanceof String) {
-          setAnsiblePlaybook((String)val);
-        }
-        saves.add("ansiblePlaybook");
-        return val;
-      } else if("aaporganizationid".equals(varLower)) {
-        if(val instanceof Long) {
-          setAapOrganizationId((Long)val);
-        } else {
-          setAapOrganizationId(val == null ? null : val.toString());
-        }
-        saves.add("aapOrganizationId");
-        return val;
-      } else if("organizationid".equals(varLower)) {
-        if(val instanceof String) {
-          setOrganizationId((String)val);
-        }
-        saves.add("organizationId");
-        return val;
-      } else if("aapinventoryid".equals(varLower)) {
-        if(val instanceof Long) {
-          setAapInventoryId((Long)val);
-        } else {
-          setAapInventoryId(val == null ? null : val.toString());
-        }
-        saves.add("aapInventoryId");
-        return val;
-      } else if("aapprojectid".equals(varLower)) {
-        if(val instanceof Long) {
-          setAapProjectId((Long)val);
-        } else {
-          setAapProjectId(val == null ? null : val.toString());
-        }
-        saves.add("aapProjectId");
         return val;
       } else if("aaptemplateid".equals(varLower)) {
         if(val instanceof Long) {
@@ -1537,9 +1537,37 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       if(tenantResource != null)
         oJobTemplate.setTenantResource(tenantResource);
 
+      if(saves.contains("aapOrganizationId")) {
+        Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
+        if(aapOrganizationId != null)
+          oJobTemplate.setAapOrganizationId(aapOrganizationId);
+      }
+
       String inventoryResource = (String)doc.get("inventoryResource_docvalues_string");
       if(inventoryResource != null)
         oJobTemplate.setInventoryResource(inventoryResource);
+
+      if(saves.contains("aapInventoryId")) {
+        Long aapInventoryId = (Long)doc.get("aapInventoryId_docvalues_long");
+        if(aapInventoryId != null)
+          oJobTemplate.setAapInventoryId(aapInventoryId);
+      }
+
+      String ansibleProjectResource = (String)doc.get("ansibleProjectResource_docvalues_string");
+      if(ansibleProjectResource != null)
+        oJobTemplate.setAnsibleProjectResource(ansibleProjectResource);
+
+      if(saves.contains("aapProjectId")) {
+        Long aapProjectId = (Long)doc.get("aapProjectId_docvalues_long");
+        if(aapProjectId != null)
+          oJobTemplate.setAapProjectId(aapProjectId);
+      }
+
+      if(saves.contains("ansiblePlaybook")) {
+        String ansiblePlaybook = (String)doc.get("ansiblePlaybook_docvalues_string");
+        if(ansiblePlaybook != null)
+          oJobTemplate.setAnsiblePlaybook(ansiblePlaybook);
+      }
 
       if(saves.contains("jobTemplateName")) {
         String jobTemplateName = (String)doc.get("jobTemplateName_docvalues_string");
@@ -1553,6 +1581,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           oJobTemplate.setJobTemplateId(jobTemplateId);
       }
 
+      if(saves.contains("jobTemplateResource")) {
+        String jobTemplateResource = (String)doc.get("jobTemplateResource_docvalues_string");
+        if(jobTemplateResource != null)
+          oJobTemplate.setJobTemplateResource(jobTemplateResource);
+      }
+
       if(saves.contains("jobTemplateDescription")) {
         String jobTemplateDescription = (String)doc.get("jobTemplateDescription_docvalues_string");
         if(jobTemplateDescription != null)
@@ -1563,40 +1597,6 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         String jobType = (String)doc.get("jobType_docvalues_string");
         if(jobType != null)
           oJobTemplate.setJobType(jobType);
-      }
-
-      String ansibleProjectId = (String)doc.get("ansibleProjectId_docvalues_string");
-      if(ansibleProjectId != null)
-        oJobTemplate.setAnsibleProjectId(ansibleProjectId);
-
-      if(saves.contains("ansiblePlaybook")) {
-        String ansiblePlaybook = (String)doc.get("ansiblePlaybook_docvalues_string");
-        if(ansiblePlaybook != null)
-          oJobTemplate.setAnsiblePlaybook(ansiblePlaybook);
-      }
-
-      if(saves.contains("aapOrganizationId")) {
-        Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
-        if(aapOrganizationId != null)
-          oJobTemplate.setAapOrganizationId(aapOrganizationId);
-      }
-
-      if(saves.contains("organizationId")) {
-        String organizationId = (String)doc.get("organizationId_docvalues_string");
-        if(organizationId != null)
-          oJobTemplate.setOrganizationId(organizationId);
-      }
-
-      if(saves.contains("aapInventoryId")) {
-        Long aapInventoryId = (Long)doc.get("aapInventoryId_docvalues_long");
-        if(aapInventoryId != null)
-          oJobTemplate.setAapInventoryId(aapInventoryId);
-      }
-
-      if(saves.contains("aapProjectId")) {
-        Long aapProjectId = (Long)doc.get("aapProjectId_docvalues_long");
-        if(aapProjectId != null)
-          oJobTemplate.setAapProjectId(aapProjectId);
       }
 
       if(saves.contains("aapTemplateId")) {
@@ -1613,8 +1613,23 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
+    if(aapOrganizationId != null) {
+      doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
+    }
     if(inventoryResource != null) {
       doc.put("inventoryResource_docvalues_string", inventoryResource);
+    }
+    if(aapInventoryId != null) {
+      doc.put("aapInventoryId_docvalues_long", aapInventoryId);
+    }
+    if(ansibleProjectResource != null) {
+      doc.put("ansibleProjectResource_docvalues_string", ansibleProjectResource);
+    }
+    if(aapProjectId != null) {
+      doc.put("aapProjectId_docvalues_long", aapProjectId);
+    }
+    if(ansiblePlaybook != null) {
+      doc.put("ansiblePlaybook_docvalues_string", ansiblePlaybook);
     }
     if(jobTemplateName != null) {
       doc.put("jobTemplateName_docvalues_string", jobTemplateName);
@@ -1622,29 +1637,14 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(jobTemplateId != null) {
       doc.put("jobTemplateId_docvalues_string", jobTemplateId);
     }
+    if(jobTemplateResource != null) {
+      doc.put("jobTemplateResource_docvalues_string", jobTemplateResource);
+    }
     if(jobTemplateDescription != null) {
       doc.put("jobTemplateDescription_docvalues_string", jobTemplateDescription);
     }
     if(jobType != null) {
       doc.put("jobType_docvalues_string", jobType);
-    }
-    if(ansibleProjectId != null) {
-      doc.put("ansibleProjectId_docvalues_string", ansibleProjectId);
-    }
-    if(ansiblePlaybook != null) {
-      doc.put("ansiblePlaybook_docvalues_string", ansiblePlaybook);
-    }
-    if(aapOrganizationId != null) {
-      doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
-    }
-    if(organizationId != null) {
-      doc.put("organizationId_docvalues_string", organizationId);
-    }
-    if(aapInventoryId != null) {
-      doc.put("aapInventoryId_docvalues_long", aapInventoryId);
-    }
-    if(aapProjectId != null) {
-      doc.put("aapProjectId_docvalues_long", aapProjectId);
     }
     if(aapTemplateId != null) {
       doc.put("aapTemplateId_docvalues_long", aapTemplateId);
@@ -1657,28 +1657,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
         return "inventoryResource_docvalues_string";
+      case "aapInventoryId":
+        return "aapInventoryId_docvalues_long";
+      case "ansibleProjectResource":
+        return "ansibleProjectResource_docvalues_string";
+      case "aapProjectId":
+        return "aapProjectId_docvalues_long";
+      case "ansiblePlaybook":
+        return "ansiblePlaybook_docvalues_string";
       case "jobTemplateName":
         return "jobTemplateName_docvalues_string";
       case "jobTemplateId":
         return "jobTemplateId_docvalues_string";
+      case "jobTemplateResource":
+        return "jobTemplateResource_docvalues_string";
       case "jobTemplateDescription":
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
-      case "ansibleProjectId":
-        return "ansibleProjectId_docvalues_string";
-      case "ansiblePlaybook":
-        return "ansiblePlaybook_docvalues_string";
-      case "aapOrganizationId":
-        return "aapOrganizationId_docvalues_long";
-      case "organizationId":
-        return "organizationId_docvalues_string";
-      case "aapInventoryId":
-        return "aapInventoryId_docvalues_long";
-      case "aapProjectId":
-        return "aapProjectId_docvalues_long";
       case "aapTemplateId":
         return "aapTemplateId_docvalues_long";
       default:
@@ -1690,28 +1690,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "aapOrganizationId":
+        return "aapOrganizationId_docvalues_long";
       case "inventoryResource":
         return "inventoryResource_docvalues_string";
+      case "aapInventoryId":
+        return "aapInventoryId_docvalues_long";
+      case "ansibleProjectResource":
+        return "ansibleProjectResource_docvalues_string";
+      case "aapProjectId":
+        return "aapProjectId_docvalues_long";
+      case "ansiblePlaybook":
+        return "ansiblePlaybook_docvalues_string";
       case "jobTemplateName":
         return "jobTemplateName_docvalues_string";
       case "jobTemplateId":
         return "jobTemplateId_docvalues_string";
+      case "jobTemplateResource":
+        return "jobTemplateResource_docvalues_string";
       case "jobTemplateDescription":
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
-      case "ansibleProjectId":
-        return "ansibleProjectId_docvalues_string";
-      case "ansiblePlaybook":
-        return "ansiblePlaybook_docvalues_string";
-      case "aapOrganizationId":
-        return "aapOrganizationId_docvalues_long";
-      case "organizationId":
-        return "organizationId_docvalues_string";
-      case "aapInventoryId":
-        return "aapInventoryId_docvalues_long";
-      case "aapProjectId":
-        return "aapProjectId_docvalues_long";
       case "aapTemplateId":
         return "aapTemplateId_docvalues_long";
       default:
@@ -1723,28 +1723,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(searchVar) {
       case "tenantResource_docvalues_string":
         return "tenantResource";
+      case "aapOrganizationId_docvalues_long":
+        return "aapOrganizationId";
       case "inventoryResource_docvalues_string":
         return "inventoryResource";
+      case "aapInventoryId_docvalues_long":
+        return "aapInventoryId";
+      case "ansibleProjectResource_docvalues_string":
+        return "ansibleProjectResource";
+      case "aapProjectId_docvalues_long":
+        return "aapProjectId";
+      case "ansiblePlaybook_docvalues_string":
+        return "ansiblePlaybook";
       case "jobTemplateName_docvalues_string":
         return "jobTemplateName";
       case "jobTemplateId_docvalues_string":
         return "jobTemplateId";
+      case "jobTemplateResource_docvalues_string":
+        return "jobTemplateResource";
       case "jobTemplateDescription_docvalues_string":
         return "jobTemplateDescription";
       case "jobType_docvalues_string":
         return "jobType";
-      case "ansibleProjectId_docvalues_string":
-        return "ansibleProjectId";
-      case "ansiblePlaybook_docvalues_string":
-        return "ansiblePlaybook";
-      case "aapOrganizationId_docvalues_long":
-        return "aapOrganizationId";
-      case "organizationId_docvalues_string":
-        return "organizationId";
-      case "aapInventoryId_docvalues_long":
-        return "aapInventoryId";
-      case "aapProjectId_docvalues_long":
-        return "aapProjectId";
       case "aapTemplateId_docvalues_long":
         return "aapTemplateId";
       default:
@@ -1778,17 +1778,17 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     SiteRequest siteRequest = oJobTemplate.getSiteRequest_();
 
     oJobTemplate.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAapInventoryId(Optional.ofNullable(doc.get("aapInventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAnsibleProjectResource(Optional.ofNullable(doc.get("ansibleProjectResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAapProjectId(Optional.ofNullable(doc.get("aapProjectId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAnsiblePlaybook(Optional.ofNullable(doc.get("ansiblePlaybook_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobTemplateName(Optional.ofNullable(doc.get("jobTemplateName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobTemplateId(Optional.ofNullable(doc.get("jobTemplateId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setJobTemplateResource(Optional.ofNullable(doc.get("jobTemplateResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobTemplateDescription(Optional.ofNullable(doc.get("jobTemplateDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobType(Optional.ofNullable(doc.get("jobType_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setAnsibleProjectId(Optional.ofNullable(doc.get("ansibleProjectId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setAnsiblePlaybook(Optional.ofNullable(doc.get("ansiblePlaybook_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setOrganizationId(Optional.ofNullable(doc.get("organizationId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setAapInventoryId(Optional.ofNullable(doc.get("aapInventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
-    oJobTemplate.setAapProjectId(Optional.ofNullable(doc.get("aapProjectId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapTemplateId(Optional.ofNullable(doc.get("aapTemplateId_docvalues_long")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
@@ -1805,28 +1805,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       JobTemplate original = (JobTemplate)o;
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
+      if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
+        apiRequest.addVars("aapOrganizationId");
       if(!Objects.equals(inventoryResource, original.getInventoryResource()))
         apiRequest.addVars("inventoryResource");
+      if(!Objects.equals(aapInventoryId, original.getAapInventoryId()))
+        apiRequest.addVars("aapInventoryId");
+      if(!Objects.equals(ansibleProjectResource, original.getAnsibleProjectResource()))
+        apiRequest.addVars("ansibleProjectResource");
+      if(!Objects.equals(aapProjectId, original.getAapProjectId()))
+        apiRequest.addVars("aapProjectId");
+      if(!Objects.equals(ansiblePlaybook, original.getAnsiblePlaybook()))
+        apiRequest.addVars("ansiblePlaybook");
       if(!Objects.equals(jobTemplateName, original.getJobTemplateName()))
         apiRequest.addVars("jobTemplateName");
       if(!Objects.equals(jobTemplateId, original.getJobTemplateId()))
         apiRequest.addVars("jobTemplateId");
+      if(!Objects.equals(jobTemplateResource, original.getJobTemplateResource()))
+        apiRequest.addVars("jobTemplateResource");
       if(!Objects.equals(jobTemplateDescription, original.getJobTemplateDescription()))
         apiRequest.addVars("jobTemplateDescription");
       if(!Objects.equals(jobType, original.getJobType()))
         apiRequest.addVars("jobType");
-      if(!Objects.equals(ansibleProjectId, original.getAnsibleProjectId()))
-        apiRequest.addVars("ansibleProjectId");
-      if(!Objects.equals(ansiblePlaybook, original.getAnsiblePlaybook()))
-        apiRequest.addVars("ansiblePlaybook");
-      if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
-        apiRequest.addVars("aapOrganizationId");
-      if(!Objects.equals(organizationId, original.getOrganizationId()))
-        apiRequest.addVars("organizationId");
-      if(!Objects.equals(aapInventoryId, original.getAapInventoryId()))
-        apiRequest.addVars("aapInventoryId");
-      if(!Objects.equals(aapProjectId, original.getAapProjectId()))
-        apiRequest.addVars("aapProjectId");
       if(!Objects.equals(aapTemplateId, original.getAapTemplateId()))
         apiRequest.addVars("aapTemplateId");
       super.apiRequestBaseModel();
@@ -1841,17 +1841,17 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(ansibleProjectResource).map(v -> "ansibleProjectResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapProjectId).map(v -> "aapProjectId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(ansiblePlaybook).map(v -> "ansiblePlaybook: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateName).map(v -> "jobTemplateName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateId).map(v -> "jobTemplateId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(jobTemplateResource).map(v -> "jobTemplateResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateDescription).map(v -> "jobTemplateDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobType).map(v -> "jobType: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(ansibleProjectId).map(v -> "ansibleProjectId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(ansiblePlaybook).map(v -> "ansiblePlaybook: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
-    sb.append(Optional.ofNullable(organizationId).map(v -> "organizationId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
-    sb.append(Optional.ofNullable(aapProjectId).map(v -> "aapProjectId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(aapTemplateId).map(v -> "aapTemplateId: " + v + "\n").orElse(""));
     return sb.toString();
   }
@@ -1865,28 +1865,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   }
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
+  public static final String VAR_aapOrganizationId = "aapOrganizationId";
+  public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_inventoryResource = "inventoryResource";
   public static final String SET_inventoryResource = "setInventoryResource";
+  public static final String VAR_aapInventoryId = "aapInventoryId";
+  public static final String SET_aapInventoryId = "setAapInventoryId";
+  public static final String VAR_ansibleProjectResource = "ansibleProjectResource";
+  public static final String SET_ansibleProjectResource = "setAnsibleProjectResource";
+  public static final String VAR_aapProjectId = "aapProjectId";
+  public static final String SET_aapProjectId = "setAapProjectId";
+  public static final String VAR_ansiblePlaybook = "ansiblePlaybook";
+  public static final String SET_ansiblePlaybook = "setAnsiblePlaybook";
   public static final String VAR_jobTemplateName = "jobTemplateName";
   public static final String SET_jobTemplateName = "setJobTemplateName";
   public static final String VAR_jobTemplateId = "jobTemplateId";
   public static final String SET_jobTemplateId = "setJobTemplateId";
+  public static final String VAR_jobTemplateResource = "jobTemplateResource";
+  public static final String SET_jobTemplateResource = "setJobTemplateResource";
   public static final String VAR_jobTemplateDescription = "jobTemplateDescription";
   public static final String SET_jobTemplateDescription = "setJobTemplateDescription";
   public static final String VAR_jobType = "jobType";
   public static final String SET_jobType = "setJobType";
-  public static final String VAR_ansibleProjectId = "ansibleProjectId";
-  public static final String SET_ansibleProjectId = "setAnsibleProjectId";
-  public static final String VAR_ansiblePlaybook = "ansiblePlaybook";
-  public static final String SET_ansiblePlaybook = "setAnsiblePlaybook";
-  public static final String VAR_aapOrganizationId = "aapOrganizationId";
-  public static final String SET_aapOrganizationId = "setAapOrganizationId";
-  public static final String VAR_organizationId = "organizationId";
-  public static final String SET_organizationId = "setOrganizationId";
-  public static final String VAR_aapInventoryId = "aapInventoryId";
-  public static final String SET_aapInventoryId = "setAapInventoryId";
-  public static final String VAR_aapProjectId = "aapProjectId";
-  public static final String SET_aapProjectId = "setAapProjectId";
   public static final String VAR_aapTemplateId = "aapTemplateId";
   public static final String SET_aapTemplateId = "setAapTemplateId";
 
@@ -1915,22 +1915,22 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   }
 
   public static final String DISPLAY_NAME_tenantResource = "tenant";
+  public static final String DISPLAY_NAME_aapOrganizationId = "AAP organization ID";
   public static final String DISPLAY_NAME_inventoryResource = "inventory";
+  public static final String DISPLAY_NAME_aapInventoryId = "AAP inventory ID";
+  public static final String DISPLAY_NAME_ansibleProjectResource = "Ansible project";
+  public static final String DISPLAY_NAME_aapProjectId = "AAP project ID";
+  public static final String DISPLAY_NAME_ansiblePlaybook = "Ansible playbook";
   public static final String DISPLAY_NAME_jobTemplateName = "job template name";
   public static final String DISPLAY_NAME_jobTemplateId = "job template ID";
+  public static final String DISPLAY_NAME_jobTemplateResource = "job template resource";
   public static final String DISPLAY_NAME_jobTemplateDescription = "job template description";
   public static final String DISPLAY_NAME_jobType = "job type";
-  public static final String DISPLAY_NAME_ansibleProjectId = "Ansible project";
-  public static final String DISPLAY_NAME_ansiblePlaybook = "Ansible playbook";
-  public static final String DISPLAY_NAME_aapOrganizationId = "AAP organization ID";
-  public static final String DISPLAY_NAME_organizationId = "organization ID";
-  public static final String DISPLAY_NAME_aapInventoryId = "AAP inventory ID";
-  public static final String DISPLAY_NAME_aapProjectId = "AAP project ID";
   public static final String DISPLAY_NAME_aapTemplateId = "AAP template ID";
 
   @Override
   public String idForClass() {
-    return jobTemplateId;
+    return jobTemplateResource;
   }
 
   @Override
@@ -1958,21 +1958,6 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return "%s/en-us/edit/job-template/%s";
   }
 
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String varJsonForClass(String var, Boolean patch) {
     return JobTemplate.varJsonJobTemplate(var, patch);
   }
@@ -1980,28 +1965,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_aapOrganizationId:
+      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
     case VAR_inventoryResource:
       return patch ? SET_inventoryResource : VAR_inventoryResource;
+    case VAR_aapInventoryId:
+      return patch ? SET_aapInventoryId : VAR_aapInventoryId;
+    case VAR_ansibleProjectResource:
+      return patch ? SET_ansibleProjectResource : VAR_ansibleProjectResource;
+    case VAR_aapProjectId:
+      return patch ? SET_aapProjectId : VAR_aapProjectId;
+    case VAR_ansiblePlaybook:
+      return patch ? SET_ansiblePlaybook : VAR_ansiblePlaybook;
     case VAR_jobTemplateName:
       return patch ? SET_jobTemplateName : VAR_jobTemplateName;
     case VAR_jobTemplateId:
       return patch ? SET_jobTemplateId : VAR_jobTemplateId;
+    case VAR_jobTemplateResource:
+      return patch ? SET_jobTemplateResource : VAR_jobTemplateResource;
     case VAR_jobTemplateDescription:
       return patch ? SET_jobTemplateDescription : VAR_jobTemplateDescription;
     case VAR_jobType:
       return patch ? SET_jobType : VAR_jobType;
-    case VAR_ansibleProjectId:
-      return patch ? SET_ansibleProjectId : VAR_ansibleProjectId;
-    case VAR_ansiblePlaybook:
-      return patch ? SET_ansiblePlaybook : VAR_ansiblePlaybook;
-    case VAR_aapOrganizationId:
-      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
-    case VAR_organizationId:
-      return patch ? SET_organizationId : VAR_organizationId;
-    case VAR_aapInventoryId:
-      return patch ? SET_aapInventoryId : VAR_aapInventoryId;
-    case VAR_aapProjectId:
-      return patch ? SET_aapProjectId : VAR_aapProjectId;
     case VAR_aapTemplateId:
       return patch ? SET_aapTemplateId : VAR_aapTemplateId;
     default:
@@ -2016,28 +2001,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
+    case VAR_aapOrganizationId:
+      return DISPLAY_NAME_aapOrganizationId;
     case VAR_inventoryResource:
       return DISPLAY_NAME_inventoryResource;
+    case VAR_aapInventoryId:
+      return DISPLAY_NAME_aapInventoryId;
+    case VAR_ansibleProjectResource:
+      return DISPLAY_NAME_ansibleProjectResource;
+    case VAR_aapProjectId:
+      return DISPLAY_NAME_aapProjectId;
+    case VAR_ansiblePlaybook:
+      return DISPLAY_NAME_ansiblePlaybook;
     case VAR_jobTemplateName:
       return DISPLAY_NAME_jobTemplateName;
     case VAR_jobTemplateId:
       return DISPLAY_NAME_jobTemplateId;
+    case VAR_jobTemplateResource:
+      return DISPLAY_NAME_jobTemplateResource;
     case VAR_jobTemplateDescription:
       return DISPLAY_NAME_jobTemplateDescription;
     case VAR_jobType:
       return DISPLAY_NAME_jobType;
-    case VAR_ansibleProjectId:
-      return DISPLAY_NAME_ansibleProjectId;
-    case VAR_ansiblePlaybook:
-      return DISPLAY_NAME_ansiblePlaybook;
-    case VAR_aapOrganizationId:
-      return DISPLAY_NAME_aapOrganizationId;
-    case VAR_organizationId:
-      return DISPLAY_NAME_organizationId;
-    case VAR_aapInventoryId:
-      return DISPLAY_NAME_aapInventoryId;
-    case VAR_aapProjectId:
-      return DISPLAY_NAME_aapProjectId;
     case VAR_aapTemplateId:
       return DISPLAY_NAME_aapTemplateId;
     default:
@@ -2051,28 +2036,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
+    case VAR_aapOrganizationId:
+      return "The ID of the ansible organization in AAP. ";
     case VAR_inventoryResource:
       return "The unique authorization resource for the inventory for multi-tenancy";
+    case VAR_aapInventoryId:
+      return "The inventory ID in Ansible Automation Platform. ";
+    case VAR_ansibleProjectResource:
+      return "The Ansible project containing the playbook for this Job Template. ";
+    case VAR_aapProjectId:
+      return "The project ID in Ansible Automation Platform. ";
+    case VAR_ansiblePlaybook:
+      return "The Ansible playbook for this Job Template. ";
     case VAR_jobTemplateName:
       return "The name of the job template (may only contain letters, numbers, periods, colons, and dashes). ";
     case VAR_jobTemplateId:
       return "The ID of the job template in DCM. ";
+    case VAR_jobTemplateResource:
+      return "The unique authorization resource for the job template for multi-tenancy";
     case VAR_jobTemplateDescription:
       return "The description of the job template. ";
     case VAR_jobType:
       return "The job type of the job template. ";
-    case VAR_ansibleProjectId:
-      return "The Ansible project containing the playbook for this Job Template. ";
-    case VAR_ansiblePlaybook:
-      return "The Ansible playbook for this Job Template. ";
-    case VAR_aapOrganizationId:
-      return "The ID of the ansible organization in AAP. ";
-    case VAR_organizationId:
-      return "The ID of the ansible organization. ";
-    case VAR_aapInventoryId:
-      return "The inventory ID in Ansible Automation Platform. ";
-    case VAR_aapProjectId:
-      return "The project ID in Ansible Automation Platform. ";
     case VAR_aapTemplateId:
       return "The template ID in Ansible Automation Platform. ";
       default:
@@ -2084,28 +2069,28 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "String";
+    case VAR_aapOrganizationId:
+      return "Long";
     case VAR_inventoryResource:
+      return "String";
+    case VAR_aapInventoryId:
+      return "Long";
+    case VAR_ansibleProjectResource:
+      return "String";
+    case VAR_aapProjectId:
+      return "Long";
+    case VAR_ansiblePlaybook:
       return "String";
     case VAR_jobTemplateName:
       return "String";
     case VAR_jobTemplateId:
       return "String";
+    case VAR_jobTemplateResource:
+      return "String";
     case VAR_jobTemplateDescription:
       return "String";
     case VAR_jobType:
       return "String";
-    case VAR_ansibleProjectId:
-      return "String";
-    case VAR_ansiblePlaybook:
-      return "String";
-    case VAR_aapOrganizationId:
-      return "Long";
-    case VAR_organizationId:
-      return "String";
-    case VAR_aapInventoryId:
-      return "Long";
-    case VAR_aapProjectId:
-      return "Long";
     case VAR_aapTemplateId:
       return "Long";
       default:
@@ -2128,22 +2113,18 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
 
   public static Integer htmRowJobTemplate(String var) {
     switch(var) {
-    case VAR_tenantResource:
-      return 3;
     case VAR_inventoryResource:
       return 3;
-    case VAR_jobTemplateName:
-      return 3;
-    case VAR_jobTemplateDescription:
-      return 3;
-    case VAR_jobType:
-      return 3;
-    case VAR_ansibleProjectId:
+    case VAR_ansibleProjectResource:
       return 4;
     case VAR_ansiblePlaybook:
-      return 4;
-    case VAR_organizationId:
-      return 3;
+      return 5;
+    case VAR_jobTemplateName:
+      return 5;
+    case VAR_jobTemplateDescription:
+      return 5;
+    case VAR_jobType:
+      return 5;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -2151,22 +2132,18 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
 
   public static Integer htmCellJobTemplate(String var) {
     switch(var) {
-    case VAR_tenantResource:
-      return 0;
     case VAR_inventoryResource:
-      return 1;
-    case VAR_jobTemplateName:
-      return 2;
-    case VAR_jobTemplateDescription:
-      return 3;
-    case VAR_jobType:
-      return 4;
-    case VAR_ansibleProjectId:
+      return 0;
+    case VAR_ansibleProjectResource:
       return 0;
     case VAR_ansiblePlaybook:
+      return 0;
+    case VAR_jobTemplateName:
       return 1;
-    case VAR_organizationId:
-      return 4;
+    case VAR_jobTemplateDescription:
+      return 2;
+    case VAR_jobType:
+      return 3;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

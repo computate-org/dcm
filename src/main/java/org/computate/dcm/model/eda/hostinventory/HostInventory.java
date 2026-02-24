@@ -59,7 +59,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
    * HtmRowTitleOpen: tenant details
-   * HtmRow: 4
+   * HtmRow: 3
    * HtmCell: 0
    * HtmColumn: 0
    **/
@@ -127,7 +127,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * AuthorizationResource: HOSTINVENTORY
    */
   protected void _inventoryResource(Wrap<String> w) {
-    w.o(String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryName));
+    w.o(String.format("%s-%s-%s", tenantResource, HostInventory.CLASS_AUTH_RESOURCE, inventoryId));
   }
 
   /**

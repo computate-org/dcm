@@ -43,6 +43,8 @@ import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
+import org.computate.vertx.search.list.SearchList;
+import org.computate.search.tool.SearchTool;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.computate.search.response.solr.SolrResponse;
 
@@ -943,9 +945,39 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
+
+  public static Future<HostCheck> fq(SiteRequest siteRequest, String var, Object val) {
+    Promise<HostCheck> promise = Promise.promise();
+    try {
+      if(val == null) {
+        promise.complete();
+      } else {
+        SearchList<HostCheck> searchList = new SearchList<HostCheck>();
+        searchList.setStore(true);
+        searchList.q("*:*");
+        searchList.setC(HostCheck.class);
+        searchList.fq(String.format("%s:", HostCheck.varIndexedHostCheck(var)) + SearchTool.escapeQueryChars(val.toString()));
+        searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+          try {
+            promise.complete(searchList.getList().stream().findFirst().orElse(null));
+          } catch(Throwable ex) {
+            LOG.error("Error while querying thehost check", ex);
+            promise.fail(ex);
+          }
+        }).onFailure(ex -> {
+          LOG.error("Error while querying thehost check", ex);
+          promise.fail(ex);
+        });
+      }
+    } catch(Throwable ex) {
+      LOG.error("Error while querying thehost check", ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHostCheck(entityVar,  siteRequest_, o);
@@ -1393,13 +1425,21 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     return CLASS_API_ADDRESS_HostCheck;
   }
   public static final String VAR_tenantResource = "tenantResource";
+  public static final String SET_tenantResource = "setTenantResource";
   public static final String VAR_checkName = "checkName";
+  public static final String SET_checkName = "setCheckName";
   public static final String VAR_checkNamespace = "checkNamespace";
+  public static final String SET_checkNamespace = "setCheckNamespace";
   public static final String VAR_checkCommand = "checkCommand";
+  public static final String SET_checkCommand = "setCheckCommand";
   public static final String VAR_checkInterval = "checkInterval";
+  public static final String SET_checkInterval = "setCheckInterval";
   public static final String VAR_checkPublished = "checkPublished";
+  public static final String SET_checkPublished = "setCheckPublished";
   public static final String VAR_eventSubscriptions = "eventSubscriptions";
+  public static final String SET_eventSubscriptions = "setEventSubscriptions";
   public static final String VAR_eventHandlers = "eventHandlers";
+  public static final String SET_eventHandlers = "setEventHandlers";
 
   public static List<String> varsQForClass() {
     return HostCheck.varsQHostCheck(new ArrayList<String>());
@@ -1455,18 +1495,8 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   }
 
   @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
   public String enUSStringFormatUrlEditPageForClass() {
     return "%s/en-us/edit/host-check/%s";
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
   }
 
   @Override
@@ -1474,9 +1504,30 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     return "%s/en-us/user/host-check/%s";
   }
 
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
+  public static String varJsonForClass(String var, Boolean patch) {
+    return HostCheck.varJsonHostCheck(var, patch);
+  }
+  public static String varJsonHostCheck(String var, Boolean patch) {
+    switch(var) {
+    case VAR_tenantResource:
+      return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_checkName:
+      return patch ? SET_checkName : VAR_checkName;
+    case VAR_checkNamespace:
+      return patch ? SET_checkNamespace : VAR_checkNamespace;
+    case VAR_checkCommand:
+      return patch ? SET_checkCommand : VAR_checkCommand;
+    case VAR_checkInterval:
+      return patch ? SET_checkInterval : VAR_checkInterval;
+    case VAR_checkPublished:
+      return patch ? SET_checkPublished : VAR_checkPublished;
+    case VAR_eventSubscriptions:
+      return patch ? SET_eventSubscriptions : VAR_eventSubscriptions;
+    case VAR_eventHandlers:
+      return patch ? SET_eventHandlers : VAR_eventHandlers;
+    default:
+      return BaseModel.varJsonBaseModel(var, patch);
+    }
   }
 
   public static String displayNameForClass(String var) {

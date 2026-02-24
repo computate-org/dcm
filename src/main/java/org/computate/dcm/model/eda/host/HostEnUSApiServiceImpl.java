@@ -31,7 +31,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
       } else {
         JsonObject hostJson = o.getSiteRequest_().getJsonObject();
         String inventoryResource = Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_inventoryResource, patch))).orElse(o.getInventoryResource());
-        HostInventory.fq(siteRequest, HostInventory.VAR_inventoryResource, inventoryResource).onSuccess(inventory -> {
+        HostInventory.fqHostInventory(siteRequest, HostInventory.VAR_inventoryResource, inventoryResource).onSuccess(inventory -> {
           try {
             if(inventory == null) {
               RuntimeException ex = new RuntimeException(String.format("Could not find a matching host inventory %s", inventoryResource));

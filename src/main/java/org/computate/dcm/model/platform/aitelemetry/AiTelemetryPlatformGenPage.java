@@ -526,6 +526,11 @@ public class AiTelemetryPlatformGenPage extends AiTelemetryPlatformGenPageGen<Pa
   }
 
   @Override
+  protected void _classAllName(Wrap<String> w) {
+    w.o("all AI Telemetry developers");
+  }
+
+  @Override
   protected void _pageUri(Wrap<String> w) {
     if("enUS".equals(lang))
       w.o("/en-us/search/ai-telemetry-platform");

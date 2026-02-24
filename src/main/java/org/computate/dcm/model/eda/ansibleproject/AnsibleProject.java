@@ -18,7 +18,7 @@ import org.computate.dcm.model.BaseModel;
  * MenuDetailsOpen: true
  * 
  * SearchPageUri: /en-us/search/ansible-project
- * EditPageUri: /en-us/edit/ansible-project/{ansibleProjectId}
+ * EditPageUri: /en-us/edit/ansible-project/{ansibleProjectResource}
  * ApiUri: /en-us/api/ansible-project
  * ApiMethod:
  *   Search:
@@ -60,7 +60,7 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
-   * HtmRowTitleOpen: relationship details
+   * HtmRowTitleOpen: tenant details
    * HtmRow: 3
    * HtmCell: 0
    * HtmColumn: 0
@@ -72,23 +72,22 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: AAP organization ID
-   * Description: The ID of the ansible organization in AAP. 
-   */
-  protected void _aapOrganizationId(Wrap<Long> w) {
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant
+   * Facet: true
+   * DefaultFacet: true
+   **/
+  protected void _tenantId(Wrap<String> w) {
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * Unique: true
-   * HtmRow: 3
-   * HtmCell: 1
-   * DisplayName: organization ID
-   * Description: The ID of the ansible organization. 
+   * DisplayName: AAP organization ID
+   * Description: The ID of the ansible organization in AAP. 
    */
-  protected void _organizationId(Wrap<String> w) {
+  protected void _aapOrganizationId(Wrap<Long> w) {
   }
 
   /**
@@ -157,12 +156,25 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
-   * DisplayName: Ansib project ID
+   * DisplayName: Ansible project ID
    * Description: The ID of the Ansible project in DCM. 
-   * VarId: true
    */
   protected void _ansibleProjectId(Wrap<String> w) {
     w.o(toId(ansibleProjectName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: project resource
+   * Description: The unique authorization resource for the Ansible project for multi-tenancy
+   * VarId: true
+   * AuthorizationResource: ANSIBLEPROJECT
+   */
+  protected void _ansibleProjectResource(Wrap<String> w) {
+    w.o(String.format("%s-%s-%s", tenantResource, AnsibleProject.CLASS_AUTH_RESOURCE, ansibleProjectId));
   }
 
   /**
@@ -195,10 +207,10 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    * DocValues: true
    * DisplayName: job templates
    * Description: The related job templates for this Ansible project. 
-   * Relate: JobTemplate.ansibleProjectId
+   * Relate: JobTemplate.ansibleProjectResource
    * HtmRow: 4
    * HtmCell: 2
    **/
-  protected void _jobTemplateIds(List<String> l) {
+  protected void _jobTemplateResources(List<String> l) {
   }
 }

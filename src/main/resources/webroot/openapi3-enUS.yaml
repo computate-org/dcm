@@ -144,6 +144,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -467,7 +468,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportAnsibleProjectResponse'
-  /en-us/api/ansible-project/{ansibleProjectId}:
+  /en-us/api/ansible-project/{ansibleProjectResource}:
     get:
       operationId: getAnsibleProject
       x-vertx-event-bus: dcm-enUS-AnsibleProject
@@ -509,7 +510,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: ansibleProjectId
+        - name: ansibleProjectResource
           in: path
           description: >+
           required: true
@@ -563,7 +564,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: ansibleProjectId
+        - name: ansibleProjectResource
           in: path
           description: >+
           required: true
@@ -611,7 +612,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETEAnsibleProjectResponse'
-  /en-us/edit/ansible-project/{ansibleProjectId}:
+  /en-us/edit/ansible-project/{ansibleProjectResource}:
     get:
       operationId: editpageAnsibleProject
       x-vertx-event-bus: dcm-enUS-AnsibleProject
@@ -653,7 +654,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: ansibleProjectId
+        - name: ansibleProjectResource
           in: path
           description: >+
           required: true
@@ -707,6 +708,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
       responses:
         '200':
           description: >+
@@ -855,6 +857,7 @@ paths:
             type: array
             items:
               type: string
+            default: ["tenantId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -4251,7 +4254,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportJobTemplateResponse'
-  /en-us/api/job-template/{jobTemplateId}:
+  /en-us/api/job-template/{jobTemplateResource}:
     get:
       operationId: getJobTemplate
       x-vertx-event-bus: dcm-enUS-JobTemplate
@@ -4293,7 +4296,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: jobTemplateId
+        - name: jobTemplateResource
           in: path
           description: >+
           required: true
@@ -4347,7 +4350,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: jobTemplateId
+        - name: jobTemplateResource
           in: path
           description: >+
           required: true
@@ -4395,7 +4398,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETEJobTemplateResponse'
-  /en-us/edit/job-template/{jobTemplateId}:
+  /en-us/edit/job-template/{jobTemplateResource}:
     get:
       operationId: editpageJobTemplate
       x-vertx-event-bus: dcm-enUS-JobTemplate
@@ -4437,7 +4440,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: jobTemplateId
+        - name: jobTemplateResource
           in: path
           description: >+
           required: true
@@ -10668,9 +10671,9 @@ components:
                 properties:
                   tenantResource:
                     type: string
-                  aapOrganizationId:
+                  tenantId:
                     type: string
-                  organizationId:
+                  aapOrganizationId:
                     type: string
                   sourceControlType:
                     type: string
@@ -10682,11 +10685,13 @@ components:
                     type: string
                   ansibleProjectId:
                     type: string
+                  ansibleProjectResource:
+                    type: string
                   aapProjectId:
                     type: string
                   ansibleProjectDescription:
                     type: string
-                  jobTemplateIds:
+                  jobTemplateResources:
                     type: array
                     items:
                       type: string
@@ -10701,19 +10706,19 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
             setAapOrganizationId:
               type: string
               nullable: true
             removeAapOrganizationId:
               type: string
             removeAllAapOrganizationId:
-              type: string
-            setOrganizationId:
-              type: string
-              nullable: true
-            removeOrganizationId:
-              type: string
-            removeAllOrganizationId:
               type: string
             setSourceControlType:
               type: string
@@ -10750,6 +10755,13 @@ components:
               type: string
             removeAllAnsibleProjectId:
               type: string
+            setAnsibleProjectResource:
+              type: string
+              nullable: true
+            removeAnsibleProjectResource:
+              type: string
+            removeAllAnsibleProjectResource:
+              type: string
             setAapProjectId:
               type: string
               nullable: true
@@ -10764,20 +10776,20 @@ components:
               type: string
             removeAllAnsibleProjectDescription:
               type: string
-            setJobTemplateIds:
+            setJobTemplateResources:
               type: array
               nullable: true
               items:
                 type: string
-            removeJobTemplateIds:
+            removeJobTemplateResources:
               type: string
-            removeAllJobTemplateIds:
+            removeAllJobTemplateResources:
               type: array
               items:
                 type: string
-            addJobTemplateIds:
+            addJobTemplateResources:
               type: string
-            addAllJobTemplateIds:
+            addAllJobTemplateResources:
               type: array
               items:
                 type: string
@@ -10792,19 +10804,19 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
             setAapOrganizationId:
               type: string
               nullable: true
             removeAapOrganizationId:
               type: string
             removeAllAapOrganizationId:
-              type: string
-            setOrganizationId:
-              type: string
-              nullable: true
-            removeOrganizationId:
-              type: string
-            removeAllOrganizationId:
               type: string
             setSourceControlType:
               type: string
@@ -10841,6 +10853,13 @@ components:
               type: string
             removeAllAnsibleProjectId:
               type: string
+            setAnsibleProjectResource:
+              type: string
+              nullable: true
+            removeAnsibleProjectResource:
+              type: string
+            removeAllAnsibleProjectResource:
+              type: string
             setAapProjectId:
               type: string
               nullable: true
@@ -10855,20 +10874,20 @@ components:
               type: string
             removeAllAnsibleProjectDescription:
               type: string
-            setJobTemplateIds:
+            setJobTemplateResources:
               type: array
               nullable: true
               items:
                 type: string
-            removeJobTemplateIds:
+            removeJobTemplateResources:
               type: string
-            removeAllJobTemplateIds:
+            removeAllJobTemplateResources:
               type: array
               items:
                 type: string
-            addJobTemplateIds:
+            addJobTemplateResources:
               type: string
-            addAllJobTemplateIds:
+            addAllJobTemplateResources:
               type: array
               items:
                 type: string
@@ -10878,9 +10897,9 @@ components:
           properties:
             tenantResource:
               type: string
-            aapOrganizationId:
+            tenantId:
               type: string
-            organizationId:
+            aapOrganizationId:
               type: string
             sourceControlType:
               type: string
@@ -10892,11 +10911,13 @@ components:
               type: string
             ansibleProjectId:
               type: string
+            ansibleProjectResource:
+              type: string
             aapProjectId:
               type: string
             ansibleProjectDescription:
               type: string
-            jobTemplateIds:
+            jobTemplateResources:
               type: array
               items:
                 type: string
@@ -10906,9 +10927,9 @@ components:
           properties:
             tenantResource:
               type: string
-            aapOrganizationId:
+            tenantId:
               type: string
-            organizationId:
+            aapOrganizationId:
               type: string
             sourceControlType:
               type: string
@@ -10920,11 +10941,13 @@ components:
               type: string
             ansibleProjectId:
               type: string
+            ansibleProjectResource:
+              type: string
             aapProjectId:
               type: string
             ansibleProjectDescription:
               type: string
-            jobTemplateIds:
+            jobTemplateResources:
               type: array
               items:
                 type: string
@@ -10934,9 +10957,9 @@ components:
           properties:
             tenantResource:
               type: string
-            aapOrganizationId:
+            tenantId:
               type: string
-            organizationId:
+            aapOrganizationId:
               type: string
             sourceControlType:
               type: string
@@ -10948,11 +10971,13 @@ components:
               type: string
             ansibleProjectId:
               type: string
+            ansibleProjectResource:
+              type: string
             aapProjectId:
               type: string
             ansibleProjectDescription:
               type: string
-            jobTemplateIds:
+            jobTemplateResources:
               type: array
               items:
                 type: string
@@ -10967,9 +10992,9 @@ components:
                 properties:
                   tenantResource:
                     type: string
-                  aapOrganizationId:
+                  tenantId:
                     type: string
-                  organizationId:
+                  aapOrganizationId:
                     type: string
                   sourceControlType:
                     type: string
@@ -10981,11 +11006,13 @@ components:
                     type: string
                   ansibleProjectId:
                     type: string
+                  ansibleProjectResource:
+                    type: string
                   aapProjectId:
                     type: string
                   ansibleProjectDescription:
                     type: string
-                  jobTemplateIds:
+                  jobTemplateResources:
                     type: array
                     items:
                       type: string
@@ -10995,9 +11022,9 @@ components:
           properties:
                   tenantResource:
                     type: string
-                  aapOrganizationId:
+                  tenantId:
                     type: string
-                  organizationId:
+                  aapOrganizationId:
                     type: string
                   sourceControlType:
                     type: string
@@ -11009,11 +11036,13 @@ components:
                     type: string
                   ansibleProjectId:
                     type: string
+                  ansibleProjectResource:
+                    type: string
                   aapProjectId:
                     type: string
                   ansibleProjectDescription:
                     type: string
-                  jobTemplateIds:
+                  jobTemplateResources:
                     type: array
                     items:
                       type: string
@@ -11023,9 +11052,9 @@ components:
           properties:
             tenantResource:
               type: string
-            aapOrganizationId:
+            tenantId:
               type: string
-            organizationId:
+            aapOrganizationId:
               type: string
             sourceControlType:
               type: string
@@ -11037,11 +11066,13 @@ components:
               type: string
             ansibleProjectId:
               type: string
+            ansibleProjectResource:
+              type: string
             aapProjectId:
               type: string
             ansibleProjectDescription:
               type: string
-            jobTemplateIds:
+            jobTemplateResources:
               type: array
               items:
                 type: string
@@ -11051,9 +11082,9 @@ components:
           properties:
             tenantResource:
               type: string
-            aapOrganizationId:
+            tenantId:
               type: string
-            organizationId:
+            aapOrganizationId:
               type: string
             sourceControlType:
               type: string
@@ -11065,11 +11096,13 @@ components:
               type: string
             ansibleProjectId:
               type: string
+            ansibleProjectResource:
+              type: string
             aapProjectId:
               type: string
             ansibleProjectDescription:
               type: string
-            jobTemplateIds:
+            jobTemplateResources:
               type: array
               items:
                 type: string
@@ -11959,6 +11992,10 @@ components:
                     type: string
                   inventoryKind:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     PATCHHostInventoryRequest:
       allOf:
         - type: object
@@ -12026,6 +12063,23 @@ components:
               type: string
             removeAllInventoryKind:
               type: string
+            setHostInventoryIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeHostInventoryIds:
+              type: string
+            removeAllHostInventoryIds:
+              type: array
+              items:
+                type: string
+            addHostInventoryIds:
+              type: string
+            addAllHostInventoryIds:
+              type: array
+              items:
+                type: string
     PATCHHostInventoryResponse:
       allOf:
         - type: object
@@ -12093,6 +12147,23 @@ components:
               type: string
             removeAllInventoryKind:
               type: string
+            setHostInventoryIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeHostInventoryIds:
+              type: string
+            removeAllHostInventoryIds:
+              type: array
+              items:
+                type: string
+            addHostInventoryIds:
+              type: string
+            addAllHostInventoryIds:
+              type: array
+              items:
+                type: string
     POSTHostInventoryRequest:
       allOf:
         - type: object
@@ -12115,6 +12186,10 @@ components:
               type: string
             inventoryKind:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     POSTHostInventoryResponse:
       allOf:
         - type: object
@@ -12137,6 +12212,10 @@ components:
               type: string
             inventoryKind:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     DELETEFilterHostInventoryResponse:
       allOf:
         - type: object
@@ -12159,6 +12238,10 @@ components:
               type: string
             inventoryKind:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     PUTImportHostInventoryRequest:
       allOf:
         - type: object
@@ -12186,6 +12269,10 @@ components:
                     type: string
                   inventoryKind:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     PUTImportHostInventoryResponse:
       allOf:
         - type: object
@@ -12208,6 +12295,10 @@ components:
                     type: string
                   inventoryKind:
                     type: string
+                  hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
     GETHostInventoryResponse:
       allOf:
         - type: object
@@ -12230,6 +12321,10 @@ components:
               type: string
             inventoryKind:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     DELETEHostInventoryResponse:
       allOf:
         - type: object
@@ -12252,6 +12347,10 @@ components:
               type: string
             inventoryKind:
               type: string
+            hostInventoryIds:
+              type: array
+              items:
+                type: string
     EditPageHostInventoryResponse:
       allOf:
         - type: string
@@ -12281,27 +12380,27 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryResource:
+                    type: string
+                  aapInventoryId:
+                    type: string
+                  ansibleProjectResource:
+                    type: string
+                  aapProjectId:
+                    type: string
+                  ansiblePlaybook:
                     type: string
                   jobTemplateName:
                     type: string
                   jobTemplateId:
                     type: string
+                  jobTemplateResource:
+                    type: string
                   jobTemplateDescription:
                     type: string
                   jobType:
-                    type: string
-                  ansibleProjectId:
-                    type: string
-                  ansiblePlaybook:
-                    type: string
-                  aapOrganizationId:
-                    type: string
-                  organizationId:
-                    type: string
-                  aapInventoryId:
-                    type: string
-                  aapProjectId:
                     type: string
                   aapTemplateId:
                     type: string
@@ -12316,12 +12415,47 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
             setInventoryResource:
               type: string
               nullable: true
             removeInventoryResource:
               type: string
             removeAllInventoryResource:
+              type: string
+            setAapInventoryId:
+              type: string
+              nullable: true
+            removeAapInventoryId:
+              type: string
+            removeAllAapInventoryId:
+              type: string
+            setAnsibleProjectResource:
+              type: string
+              nullable: true
+            removeAnsibleProjectResource:
+              type: string
+            removeAllAnsibleProjectResource:
+              type: string
+            setAapProjectId:
+              type: string
+              nullable: true
+            removeAapProjectId:
+              type: string
+            removeAllAapProjectId:
+              type: string
+            setAnsiblePlaybook:
+              type: string
+              nullable: true
+            removeAnsiblePlaybook:
+              type: string
+            removeAllAnsiblePlaybook:
               type: string
             setJobTemplateName:
               type: string
@@ -12337,6 +12471,13 @@ components:
               type: string
             removeAllJobTemplateId:
               type: string
+            setJobTemplateResource:
+              type: string
+              nullable: true
+            removeJobTemplateResource:
+              type: string
+            removeAllJobTemplateResource:
+              type: string
             setJobTemplateDescription:
               type: string
               nullable: true
@@ -12350,48 +12491,6 @@ components:
             removeJobType:
               type: string
             removeAllJobType:
-              type: string
-            setAnsibleProjectId:
-              type: string
-              nullable: true
-            removeAnsibleProjectId:
-              type: string
-            removeAllAnsibleProjectId:
-              type: string
-            setAnsiblePlaybook:
-              type: string
-              nullable: true
-            removeAnsiblePlaybook:
-              type: string
-            removeAllAnsiblePlaybook:
-              type: string
-            setAapOrganizationId:
-              type: string
-              nullable: true
-            removeAapOrganizationId:
-              type: string
-            removeAllAapOrganizationId:
-              type: string
-            setOrganizationId:
-              type: string
-              nullable: true
-            removeOrganizationId:
-              type: string
-            removeAllOrganizationId:
-              type: string
-            setAapInventoryId:
-              type: string
-              nullable: true
-            removeAapInventoryId:
-              type: string
-            removeAllAapInventoryId:
-              type: string
-            setAapProjectId:
-              type: string
-              nullable: true
-            removeAapProjectId:
-              type: string
-            removeAllAapProjectId:
               type: string
             setAapTemplateId:
               type: string
@@ -12411,12 +12510,47 @@ components:
               type: string
             removeAllTenantResource:
               type: string
+            setAapOrganizationId:
+              type: string
+              nullable: true
+            removeAapOrganizationId:
+              type: string
+            removeAllAapOrganizationId:
+              type: string
             setInventoryResource:
               type: string
               nullable: true
             removeInventoryResource:
               type: string
             removeAllInventoryResource:
+              type: string
+            setAapInventoryId:
+              type: string
+              nullable: true
+            removeAapInventoryId:
+              type: string
+            removeAllAapInventoryId:
+              type: string
+            setAnsibleProjectResource:
+              type: string
+              nullable: true
+            removeAnsibleProjectResource:
+              type: string
+            removeAllAnsibleProjectResource:
+              type: string
+            setAapProjectId:
+              type: string
+              nullable: true
+            removeAapProjectId:
+              type: string
+            removeAllAapProjectId:
+              type: string
+            setAnsiblePlaybook:
+              type: string
+              nullable: true
+            removeAnsiblePlaybook:
+              type: string
+            removeAllAnsiblePlaybook:
               type: string
             setJobTemplateName:
               type: string
@@ -12432,6 +12566,13 @@ components:
               type: string
             removeAllJobTemplateId:
               type: string
+            setJobTemplateResource:
+              type: string
+              nullable: true
+            removeJobTemplateResource:
+              type: string
+            removeAllJobTemplateResource:
+              type: string
             setJobTemplateDescription:
               type: string
               nullable: true
@@ -12446,48 +12587,6 @@ components:
               type: string
             removeAllJobType:
               type: string
-            setAnsibleProjectId:
-              type: string
-              nullable: true
-            removeAnsibleProjectId:
-              type: string
-            removeAllAnsibleProjectId:
-              type: string
-            setAnsiblePlaybook:
-              type: string
-              nullable: true
-            removeAnsiblePlaybook:
-              type: string
-            removeAllAnsiblePlaybook:
-              type: string
-            setAapOrganizationId:
-              type: string
-              nullable: true
-            removeAapOrganizationId:
-              type: string
-            removeAllAapOrganizationId:
-              type: string
-            setOrganizationId:
-              type: string
-              nullable: true
-            removeOrganizationId:
-              type: string
-            removeAllOrganizationId:
-              type: string
-            setAapInventoryId:
-              type: string
-              nullable: true
-            removeAapInventoryId:
-              type: string
-            removeAllAapInventoryId:
-              type: string
-            setAapProjectId:
-              type: string
-              nullable: true
-            removeAapProjectId:
-              type: string
-            removeAllAapProjectId:
-              type: string
             setAapTemplateId:
               type: string
               nullable: true
@@ -12501,27 +12600,27 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
+              type: string
+            aapInventoryId:
+              type: string
+            ansibleProjectResource:
+              type: string
+            aapProjectId:
+              type: string
+            ansiblePlaybook:
               type: string
             jobTemplateName:
               type: string
             jobTemplateId:
               type: string
+            jobTemplateResource:
+              type: string
             jobTemplateDescription:
               type: string
             jobType:
-              type: string
-            ansibleProjectId:
-              type: string
-            ansiblePlaybook:
-              type: string
-            aapOrganizationId:
-              type: string
-            organizationId:
-              type: string
-            aapInventoryId:
-              type: string
-            aapProjectId:
               type: string
             aapTemplateId:
               type: string
@@ -12531,27 +12630,27 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
+              type: string
+            aapInventoryId:
+              type: string
+            ansibleProjectResource:
+              type: string
+            aapProjectId:
+              type: string
+            ansiblePlaybook:
               type: string
             jobTemplateName:
               type: string
             jobTemplateId:
               type: string
+            jobTemplateResource:
+              type: string
             jobTemplateDescription:
               type: string
             jobType:
-              type: string
-            ansibleProjectId:
-              type: string
-            ansiblePlaybook:
-              type: string
-            aapOrganizationId:
-              type: string
-            organizationId:
-              type: string
-            aapInventoryId:
-              type: string
-            aapProjectId:
               type: string
             aapTemplateId:
               type: string
@@ -12561,27 +12660,27 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
+              type: string
+            aapInventoryId:
+              type: string
+            ansibleProjectResource:
+              type: string
+            aapProjectId:
+              type: string
+            ansiblePlaybook:
               type: string
             jobTemplateName:
               type: string
             jobTemplateId:
               type: string
+            jobTemplateResource:
+              type: string
             jobTemplateDescription:
               type: string
             jobType:
-              type: string
-            ansibleProjectId:
-              type: string
-            ansiblePlaybook:
-              type: string
-            aapOrganizationId:
-              type: string
-            organizationId:
-              type: string
-            aapInventoryId:
-              type: string
-            aapProjectId:
               type: string
             aapTemplateId:
               type: string
@@ -12596,27 +12695,27 @@ components:
                 properties:
                   tenantResource:
                     type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryResource:
+                    type: string
+                  aapInventoryId:
+                    type: string
+                  ansibleProjectResource:
+                    type: string
+                  aapProjectId:
+                    type: string
+                  ansiblePlaybook:
                     type: string
                   jobTemplateName:
                     type: string
                   jobTemplateId:
                     type: string
+                  jobTemplateResource:
+                    type: string
                   jobTemplateDescription:
                     type: string
                   jobType:
-                    type: string
-                  ansibleProjectId:
-                    type: string
-                  ansiblePlaybook:
-                    type: string
-                  aapOrganizationId:
-                    type: string
-                  organizationId:
-                    type: string
-                  aapInventoryId:
-                    type: string
-                  aapProjectId:
                     type: string
                   aapTemplateId:
                     type: string
@@ -12626,27 +12725,27 @@ components:
           properties:
                   tenantResource:
                     type: string
+                  aapOrganizationId:
+                    type: string
                   inventoryResource:
+                    type: string
+                  aapInventoryId:
+                    type: string
+                  ansibleProjectResource:
+                    type: string
+                  aapProjectId:
+                    type: string
+                  ansiblePlaybook:
                     type: string
                   jobTemplateName:
                     type: string
                   jobTemplateId:
                     type: string
+                  jobTemplateResource:
+                    type: string
                   jobTemplateDescription:
                     type: string
                   jobType:
-                    type: string
-                  ansibleProjectId:
-                    type: string
-                  ansiblePlaybook:
-                    type: string
-                  aapOrganizationId:
-                    type: string
-                  organizationId:
-                    type: string
-                  aapInventoryId:
-                    type: string
-                  aapProjectId:
                     type: string
                   aapTemplateId:
                     type: string
@@ -12656,27 +12755,27 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
+              type: string
+            aapInventoryId:
+              type: string
+            ansibleProjectResource:
+              type: string
+            aapProjectId:
+              type: string
+            ansiblePlaybook:
               type: string
             jobTemplateName:
               type: string
             jobTemplateId:
               type: string
+            jobTemplateResource:
+              type: string
             jobTemplateDescription:
               type: string
             jobType:
-              type: string
-            ansibleProjectId:
-              type: string
-            ansiblePlaybook:
-              type: string
-            aapOrganizationId:
-              type: string
-            organizationId:
-              type: string
-            aapInventoryId:
-              type: string
-            aapProjectId:
               type: string
             aapTemplateId:
               type: string
@@ -12686,27 +12785,27 @@ components:
           properties:
             tenantResource:
               type: string
+            aapOrganizationId:
+              type: string
             inventoryResource:
+              type: string
+            aapInventoryId:
+              type: string
+            ansibleProjectResource:
+              type: string
+            aapProjectId:
+              type: string
+            ansiblePlaybook:
               type: string
             jobTemplateName:
               type: string
             jobTemplateId:
               type: string
+            jobTemplateResource:
+              type: string
             jobTemplateDescription:
               type: string
             jobType:
-              type: string
-            ansibleProjectId:
-              type: string
-            ansiblePlaybook:
-              type: string
-            aapOrganizationId:
-              type: string
-            organizationId:
-              type: string
-            aapInventoryId:
-              type: string
-            aapProjectId:
               type: string
             aapTemplateId:
               type: string
@@ -12751,6 +12850,10 @@ components:
                   aapOrganizationId:
                     type: string
                   hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
+                  ansibleProjectIds:
                     type: array
                     items:
                       type: string
@@ -12831,6 +12934,23 @@ components:
               type: array
               items:
                 type: string
+            setAnsibleProjectIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeAnsibleProjectIds:
+              type: string
+            removeAllAnsibleProjectIds:
+              type: array
+              items:
+                type: string
+            addAnsibleProjectIds:
+              type: string
+            addAllAnsibleProjectIds:
+              type: array
+              items:
+                type: string
     PATCHTenantResponse:
       allOf:
         - type: object
@@ -12908,6 +13028,23 @@ components:
               type: array
               items:
                 type: string
+            setAnsibleProjectIds:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeAnsibleProjectIds:
+              type: string
+            removeAllAnsibleProjectIds:
+              type: array
+              items:
+                type: string
+            addAnsibleProjectIds:
+              type: string
+            addAllAnsibleProjectIds:
+              type: array
+              items:
+                type: string
     POSTTenantRequest:
       allOf:
         - type: object
@@ -12929,6 +13066,10 @@ components:
             aapOrganizationId:
               type: string
             hostInventoryIds:
+              type: array
+              items:
+                type: string
+            ansibleProjectIds:
               type: array
               items:
                 type: string
@@ -12956,6 +13097,10 @@ components:
               type: array
               items:
                 type: string
+            ansibleProjectIds:
+              type: array
+              items:
+                type: string
     DELETEFilterTenantResponse:
       allOf:
         - type: object
@@ -12977,6 +13122,10 @@ components:
             aapOrganizationId:
               type: string
             hostInventoryIds:
+              type: array
+              items:
+                type: string
+            ansibleProjectIds:
               type: array
               items:
                 type: string
@@ -13009,6 +13158,10 @@ components:
                     type: array
                     items:
                       type: string
+                  ansibleProjectIds:
+                    type: array
+                    items:
+                      type: string
     PUTImportTenantResponse:
       allOf:
         - type: object
@@ -13030,6 +13183,10 @@ components:
                   aapOrganizationId:
                     type: string
                   hostInventoryIds:
+                    type: array
+                    items:
+                      type: string
+                  ansibleProjectIds:
                     type: array
                     items:
                       type: string
@@ -13057,6 +13214,10 @@ components:
               type: array
               items:
                 type: string
+            ansibleProjectIds:
+              type: array
+              items:
+                type: string
     DELETETenantResponse:
       allOf:
         - type: object
@@ -13078,6 +13239,10 @@ components:
             aapOrganizationId:
               type: string
             hostInventoryIds:
+              type: array
+              items:
+                type: string
+            ansibleProjectIds:
               type: array
               items:
                 type: string

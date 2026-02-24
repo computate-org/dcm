@@ -302,51 +302,6 @@ public abstract class HostPageGen<DEV> extends HostGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return HostPage.displayNameHostPage(var);
   }
@@ -354,71 +309,6 @@ public abstract class HostPageGen<DEV> extends HostGenPage {
     switch(var) {
     default:
       return HostGenPage.displayNameHostGenPage(var);
-    }
-  }
-
-  public static String descriptionHostPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return HostGenPage.descriptionHostGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.classSimpleNameHostGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.htmColumnHostGenPage(var);
-    }
-  }
-
-  public static Integer htmRowHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.htmRowHostGenPage(var);
-    }
-  }
-
-  public static Integer htmCellHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.htmCellHostGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.lengthMinHostGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.lengthMaxHostGenPage(var);
-    }
-  }
-
-  public static Integer maxHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.maxHostGenPage(var);
-    }
-  }
-
-  public static Integer minHostPage(String var) {
-    switch(var) {
-      default:
-        return HostGenPage.minHostGenPage(var);
     }
   }
 }

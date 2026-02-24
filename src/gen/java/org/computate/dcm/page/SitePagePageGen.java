@@ -98,15 +98,21 @@ import io.vertx.core.json.JsonArray;
  * <h2>AName.enUS: null</h2>
  * <p>
  * Delete the class SitePagePage in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.page.SitePagePage&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.page.SitePagePage&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the package org.computate.dcm.page in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.page&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.page&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the project dcm in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * Generated: true
  **/
@@ -239,9 +245,9 @@ public abstract class SitePagePageGen<DEV> extends SitePageGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchSitePagePage(entityVar,  siteRequest_, o);
@@ -296,51 +302,6 @@ public abstract class SitePagePageGen<DEV> extends SitePageGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return SitePagePage.displayNameSitePagePage(var);
   }
@@ -348,71 +309,6 @@ public abstract class SitePagePageGen<DEV> extends SitePageGenPage {
     switch(var) {
     default:
       return SitePageGenPage.displayNameSitePageGenPage(var);
-    }
-  }
-
-  public static String descriptionSitePagePage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return SitePageGenPage.descriptionSitePageGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.classSimpleNameSitePageGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.htmColumnSitePageGenPage(var);
-    }
-  }
-
-  public static Integer htmRowSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.htmRowSitePageGenPage(var);
-    }
-  }
-
-  public static Integer htmCellSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.htmCellSitePageGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.lengthMinSitePageGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.lengthMaxSitePageGenPage(var);
-    }
-  }
-
-  public static Integer maxSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.maxSitePageGenPage(var);
-    }
-  }
-
-  public static Integer minSitePagePage(String var) {
-    switch(var) {
-      default:
-        return SitePageGenPage.minSitePageGenPage(var);
     }
   }
 }

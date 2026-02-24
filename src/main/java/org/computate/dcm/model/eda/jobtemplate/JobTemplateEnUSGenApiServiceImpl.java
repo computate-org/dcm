@@ -130,7 +130,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -144,8 +144,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -154,6 +154,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -188,6 +194,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -341,7 +354,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -355,8 +368,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -365,6 +378,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -399,6 +418,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -490,7 +516,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -504,8 +530,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "PATCH"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "PATCH"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -514,6 +540,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -548,6 +580,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -591,7 +630,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listJobTemplate.first());
-                  apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateResource().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketJobTemplate", JsonObject.mapFrom(apiRequest).toString());
 
@@ -724,7 +763,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getJobTemplateId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getJobTemplateResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(JobTemplate.class);
@@ -872,6 +911,22 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapOrganizationId());
+            break;
+          case "setCreated":
+              o2.setCreated(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_created + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCreated());
+            break;
           case "setInventoryResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
@@ -903,13 +958,68 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
-          case "setCreated":
-              o2.setCreated(jsonObject.getString(entityVar));
+          case "setAapInventoryId":
+              o2.setAapInventoryId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_created + "=$" + num);
+              bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
               num++;
-              bParams.add(o2.sqlCreated());
+              bParams.add(o2.sqlAapInventoryId());
+            break;
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_archived + "=$" + num);
+              num++;
+              bParams.add(o2.sqlArchived());
+            break;
+          case "setAnsibleProjectResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectResource), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeAnsibleProjectResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "setAapProjectId":
+              o2.setAapProjectId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapProjectId());
+            break;
+          case "setAnsiblePlaybook":
+              o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAnsiblePlaybook());
             break;
           case "setJobTemplateName":
               o2.setJobTemplateName(jsonObject.getString(entityVar));
@@ -919,6 +1029,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlJobTemplateName());
             break;
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlSessionId());
+            break;
           case "setJobTemplateId":
               o2.setJobTemplateId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -927,13 +1045,21 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlJobTemplateId());
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_archived + "=$" + num);
+              bSql.append(JobTemplate.VAR_userKey + "=$" + num);
               num++;
-              bParams.add(o2.sqlArchived());
+              bParams.add(o2.sqlUserKey());
+            break;
+          case "setJobTemplateResource":
+              o2.setJobTemplateResource(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
+              num++;
+              bParams.add(o2.sqlJobTemplateResource());
             break;
           case "setJobTemplateDescription":
               o2.setJobTemplateDescription(jsonObject.getString(entityVar));
@@ -950,93 +1076,6 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_jobType + "=$" + num);
               num++;
               bParams.add(o2.sqlJobType());
-            break;
-          case "setAnsibleProjectId":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, solrId2, val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "removeAnsibleProjectId":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
-              futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null).onSuccess(a -> {
-                  promise2.complete();
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "setAnsiblePlaybook":
-              o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAnsiblePlaybook());
-            break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
-            break;
-          case "setAapOrganizationId":
-              o2.setAapOrganizationId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAapOrganizationId());
-            break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_userKey + "=$" + num);
-              num++;
-              bParams.add(o2.sqlUserKey());
-            break;
-          case "setOrganizationId":
-              o2.setOrganizationId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_organizationId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlOrganizationId());
-            break;
-          case "setAapInventoryId":
-              o2.setAapInventoryId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAapInventoryId());
-            break;
-          case "setAapProjectId":
-              o2.setAapProjectId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAapProjectId());
             break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -1146,7 +1185,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1160,8 +1199,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "POST"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "POST"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -1170,6 +1209,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(POST)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1204,6 +1249,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1364,7 +1416,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     });
   }
 
-  public Future<JobTemplate> postJobTemplateFuture(SiteRequest siteRequest, Boolean jobTemplateId) {
+  public Future<JobTemplate> postJobTemplateFuture(SiteRequest siteRequest, Boolean jobTemplateResource) {
     Promise<JobTemplate> promise = Promise.promise();
 
     try {
@@ -1373,7 +1425,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         siteRequest.setSqlConnection(sqlConnection);
         varsJobTemplate(siteRequest).onSuccess(a -> {
           createJobTemplate(siteRequest).onSuccess(jobTemplate -> {
-            sqlPOSTJobTemplate(jobTemplate, jobTemplateId).onSuccess(b -> {
+            sqlPOSTJobTemplate(jobTemplate, jobTemplateResource).onSuccess(b -> {
               persistJobTemplate(jobTemplate, false).onSuccess(c -> {
                 relateJobTemplate(jobTemplate).onSuccess(d -> {
                   indexJobTemplate(jobTemplate).onSuccess(o2 -> {
@@ -1503,6 +1555,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
+          case JobTemplate.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapOrganizationId());
+            break;
+          case JobTemplate.VAR_created:
+            o2.setCreated(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_created + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCreated());
+            break;
           case JobTemplate.VAR_inventoryResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
@@ -1523,14 +1593,61 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
-          case JobTemplate.VAR_created:
-            o2.setCreated(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_aapInventoryId:
+            o2.setAapInventoryId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_created + "=$" + num);
+            bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
             num++;
-            bParams.add(o2.sqlCreated());
+            bParams.add(o2.sqlAapInventoryId());
+            break;
+          case JobTemplate.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_archived + "=$" + num);
+            num++;
+            bParams.add(o2.sqlArchived());
+            break;
+          case JobTemplate.VAR_ansibleProjectResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectResource), AnsibleProject.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("AnsibleProject");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case JobTemplate.VAR_aapProjectId:
+            o2.setAapProjectId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapProjectId());
+            break;
+          case JobTemplate.VAR_ansiblePlaybook:
+            o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAnsiblePlaybook());
             break;
           case JobTemplate.VAR_jobTemplateName:
             o2.setJobTemplateName(jsonObject.getString(entityVar));
@@ -1541,6 +1658,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlJobTemplateName());
             break;
+          case JobTemplate.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlSessionId());
+            break;
           case JobTemplate.VAR_jobTemplateId:
             o2.setJobTemplateId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1550,14 +1676,23 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlJobTemplateId());
             break;
-          case JobTemplate.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_archived + "=$" + num);
+            bSql.append(JobTemplate.VAR_userKey + "=$" + num);
             num++;
-            bParams.add(o2.sqlArchived());
+            bParams.add(o2.sqlUserKey());
+            break;
+          case JobTemplate.VAR_jobTemplateResource:
+            o2.setJobTemplateResource(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
+            num++;
+            bParams.add(o2.sqlJobTemplateResource());
             break;
           case JobTemplate.VAR_jobTemplateDescription:
             o2.setJobTemplateDescription(jsonObject.getString(entityVar));
@@ -1576,89 +1711,6 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_jobType + "=$" + num);
             num++;
             bParams.add(o2.sqlJobType());
-            break;
-          case JobTemplate.VAR_ansibleProjectId:
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, solrId2, val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case JobTemplate.VAR_ansiblePlaybook:
-            o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAnsiblePlaybook());
-            break;
-          case JobTemplate.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
-            break;
-          case JobTemplate.VAR_aapOrganizationId:
-            o2.setAapOrganizationId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_aapOrganizationId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAapOrganizationId());
-            break;
-          case JobTemplate.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_userKey + "=$" + num);
-            num++;
-            bParams.add(o2.sqlUserKey());
-            break;
-          case JobTemplate.VAR_organizationId:
-            o2.setOrganizationId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_organizationId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlOrganizationId());
-            break;
-          case JobTemplate.VAR_aapInventoryId:
-            o2.setAapInventoryId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_aapInventoryId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAapInventoryId());
-            break;
-          case JobTemplate.VAR_aapProjectId:
-            o2.setAapProjectId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_aapProjectId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAapProjectId());
             break;
           case JobTemplate.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -1773,7 +1825,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1787,8 +1839,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "DELETE"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -1797,6 +1849,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1831,6 +1889,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2005,7 +2070,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -2155,16 +2220,16 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
-          case JobTemplate.VAR_ansibleProjectId:
+          case JobTemplate.VAR_ansibleProjectResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectResource), AnsibleProject.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("AnsibleProject");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2231,7 +2296,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2245,8 +2310,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "PUT"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "PUT"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2255,6 +2320,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(PUT)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2289,6 +2360,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2447,14 +2525,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String jobTemplateId = Optional.ofNullable(body.getString(JobTemplate.VAR_jobTemplateId)).orElse(body.getString(JobTemplate.VAR_solrId));
+        String jobTemplateResource = Optional.ofNullable(body.getString(JobTemplate.VAR_jobTemplateResource)).orElse(body.getString(JobTemplate.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE jobTemplateId=$1", JobTemplate.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE jobTemplateResource=$1", JobTemplate.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(jobTemplateId))
+              .execute(Tuple.tuple(Arrays.asList(jobTemplateResource))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2504,24 +2582,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "jobTemplateId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "jobTemplateId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "jobTemplateResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getJobTemplateId()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getJobTemplateResource()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchJobTemplateFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import JobTemplate {} succeeded, modified JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateId));
+                    LOG.debug("Import JobTemplate {} succeeded, modified JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
@@ -2529,7 +2607,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                   });
                 } else {
                   postJobTemplateFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import JobTemplate {} succeeded, created new JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateId));
+                    LOG.debug("Import JobTemplate {} succeeded, created new JobTemplate. ", body.getValue(JobTemplate.VAR_jobTemplateResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportJobTemplateFuture failed. "), ex);
@@ -2604,7 +2682,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2618,8 +2696,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2628,6 +2706,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2662,6 +2746,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2932,7 +3023,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2946,8 +3037,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "GET"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2956,6 +3047,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2989,6 +3086,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3083,7 +3187,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/job-template/JobTemplateSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/job-template/JobTemplateEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3236,7 +3340,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String jobTemplateId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateId");
+        String jobTemplateResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("jobTemplateResource");
         String JOBTEMPLATE = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("JOBTEMPLATE");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -3250,8 +3354,8 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(jobTemplateId != null)
-          form.add("permission", String.format("%s#%s", jobTemplateId, "DELETE"));
+        if(jobTemplateResource != null)
+          form.add("permission", String.format("%s#%s", jobTemplateResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -3260,6 +3364,12 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?JOBTEMPLATE-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3294,6 +3404,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(JOBTEMPLATE-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "jobTemplateResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3468,7 +3585,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getJobTemplateResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listJobTemplate.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterJobTemplateFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3618,16 +3735,16 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               }));
             });
             break;
-          case JobTemplate.VAR_ansibleProjectId:
+          case JobTemplate.VAR_ansibleProjectResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectId), AnsibleProject.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_ansibleProjectResource), AnsibleProject.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("AnsibleProject");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3814,9 +3931,9 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
         }
       }
 
-      String jobTemplateId = serviceRequest.getParams().getJsonObject("path").getString("jobTemplateId");
-      if(jobTemplateId != null) {
-        searchList.fq("jobTemplateId_docvalues_string:" + SearchTool.escapeQueryChars(jobTemplateId));
+      String jobTemplateResource = serviceRequest.getParams().getJsonObject("path").getString("jobTemplateResource");
+      if(jobTemplateResource != null) {
+        searchList.fq("jobTemplateResource_docvalues_string:" + SearchTool.escapeQueryChars(jobTemplateResource));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -4011,7 +4128,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, inventoryResource, created, jobTemplateName, jobTemplateId, archived, jobTemplateDescription, jobType, ansibleProjectId, ansiblePlaybook, sessionId, aapOrganizationId, userKey, organizationId, aapInventoryId, aapProjectId, objectTitle, aapTemplateId, displayPage, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, aapOrganizationId, created, inventoryResource, aapInventoryId, archived, ansibleProjectResource, aapProjectId, ansiblePlaybook, jobTemplateName, sessionId, jobTemplateId, userKey, jobTemplateResource, jobTemplateDescription, jobType, objectTitle, aapTemplateId, displayPage, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4056,9 +4173,9 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2 UNION SELECT ansibleProjectId as pk2, 'ansibleProjectId' from AnsibleProject where ansibleProjectId=$3")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from HostInventory where inventoryResource=$2 UNION SELECT ansibleProjectResource as pk2, 'ansibleProjectResource' from AnsibleProject where ansibleProjectResource=$3")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource(), o.getAnsibleProjectId())
+          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource(), o.getAnsibleProjectResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4351,21 +4468,21 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       o.setSiteRequest_((SiteRequest)siteRequest);
 
       o.persistForClass(JobTemplate.VAR_tenantResource, JobTemplate.staticSetTenantResource(siteRequest2, (String)result.get(JobTemplate.VAR_tenantResource)));
-      o.persistForClass(JobTemplate.VAR_inventoryResource, JobTemplate.staticSetInventoryResource(siteRequest2, (String)result.get(JobTemplate.VAR_inventoryResource)));
+      o.persistForClass(JobTemplate.VAR_aapOrganizationId, JobTemplate.staticSetAapOrganizationId(siteRequest2, (String)result.get(JobTemplate.VAR_aapOrganizationId)));
       o.persistForClass(JobTemplate.VAR_created, JobTemplate.staticSetCreated(siteRequest2, (String)result.get(JobTemplate.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateId, JobTemplate.staticSetJobTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateId)));
+      o.persistForClass(JobTemplate.VAR_inventoryResource, JobTemplate.staticSetInventoryResource(siteRequest2, (String)result.get(JobTemplate.VAR_inventoryResource)));
+      o.persistForClass(JobTemplate.VAR_aapInventoryId, JobTemplate.staticSetAapInventoryId(siteRequest2, (String)result.get(JobTemplate.VAR_aapInventoryId)));
       o.persistForClass(JobTemplate.VAR_archived, JobTemplate.staticSetArchived(siteRequest2, (String)result.get(JobTemplate.VAR_archived)));
+      o.persistForClass(JobTemplate.VAR_ansibleProjectResource, JobTemplate.staticSetAnsibleProjectResource(siteRequest2, (String)result.get(JobTemplate.VAR_ansibleProjectResource)));
+      o.persistForClass(JobTemplate.VAR_aapProjectId, JobTemplate.staticSetAapProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_aapProjectId)));
+      o.persistForClass(JobTemplate.VAR_ansiblePlaybook, JobTemplate.staticSetAnsiblePlaybook(siteRequest2, (String)result.get(JobTemplate.VAR_ansiblePlaybook)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
+      o.persistForClass(JobTemplate.VAR_sessionId, JobTemplate.staticSetSessionId(siteRequest2, (String)result.get(JobTemplate.VAR_sessionId)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateId, JobTemplate.staticSetJobTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateId)));
+      o.persistForClass(JobTemplate.VAR_userKey, JobTemplate.staticSetUserKey(siteRequest2, (String)result.get(JobTemplate.VAR_userKey)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateResource, JobTemplate.staticSetJobTemplateResource(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateResource)));
       o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
       o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
-      o.persistForClass(JobTemplate.VAR_ansibleProjectId, JobTemplate.staticSetAnsibleProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_ansibleProjectId)));
-      o.persistForClass(JobTemplate.VAR_ansiblePlaybook, JobTemplate.staticSetAnsiblePlaybook(siteRequest2, (String)result.get(JobTemplate.VAR_ansiblePlaybook)));
-      o.persistForClass(JobTemplate.VAR_sessionId, JobTemplate.staticSetSessionId(siteRequest2, (String)result.get(JobTemplate.VAR_sessionId)));
-      o.persistForClass(JobTemplate.VAR_aapOrganizationId, JobTemplate.staticSetAapOrganizationId(siteRequest2, (String)result.get(JobTemplate.VAR_aapOrganizationId)));
-      o.persistForClass(JobTemplate.VAR_userKey, JobTemplate.staticSetUserKey(siteRequest2, (String)result.get(JobTemplate.VAR_userKey)));
-      o.persistForClass(JobTemplate.VAR_organizationId, JobTemplate.staticSetOrganizationId(siteRequest2, (String)result.get(JobTemplate.VAR_organizationId)));
-      o.persistForClass(JobTemplate.VAR_aapInventoryId, JobTemplate.staticSetAapInventoryId(siteRequest2, (String)result.get(JobTemplate.VAR_aapInventoryId)));
-      o.persistForClass(JobTemplate.VAR_aapProjectId, JobTemplate.staticSetAapProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_aapProjectId)));
       o.persistForClass(JobTemplate.VAR_objectTitle, JobTemplate.staticSetObjectTitle(siteRequest2, (String)result.get(JobTemplate.VAR_objectTitle)));
       o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
       o.persistForClass(JobTemplate.VAR_displayPage, JobTemplate.staticSetDisplayPage(siteRequest2, (String)result.get(JobTemplate.VAR_displayPage)));

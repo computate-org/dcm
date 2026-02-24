@@ -245,9 +245,9 @@ public abstract class AnsibleProjectPageGen<DEV> extends AnsibleProjectGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchAnsibleProjectPage(entityVar,  siteRequest_, o);
@@ -302,51 +302,6 @@ public abstract class AnsibleProjectPageGen<DEV> extends AnsibleProjectGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return AnsibleProjectPage.displayNameAnsibleProjectPage(var);
   }
@@ -354,71 +309,6 @@ public abstract class AnsibleProjectPageGen<DEV> extends AnsibleProjectGenPage {
     switch(var) {
     default:
       return AnsibleProjectGenPage.displayNameAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static String descriptionAnsibleProjectPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.descriptionAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.classSimpleNameAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.htmColumnAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer htmRowAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.htmRowAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer htmCellAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.htmCellAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.lengthMinAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.lengthMaxAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer maxAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.maxAnsibleProjectGenPage(var);
-    }
-  }
-
-  public static Integer minAnsibleProjectPage(String var) {
-    switch(var) {
-      default:
-        return AnsibleProjectGenPage.minAnsibleProjectGenPage(var);
     }
   }
 }

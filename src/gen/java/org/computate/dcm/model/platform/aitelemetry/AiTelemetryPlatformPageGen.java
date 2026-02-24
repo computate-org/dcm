@@ -98,15 +98,21 @@ import io.vertx.core.json.JsonArray;
  * <h2>AName.enUS: null</h2>
  * <p>
  * Delete the class AiTelemetryPlatformPage in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformPage&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformPage&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the package org.computate.dcm.model.platform.aitelemetry in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.platform.aitelemetry&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.platform.aitelemetry&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * <p>
  * Delete  the project dcm in Solr: 
- * curl -k 'https://solr.apps-crc.testing/update?commitWithin=1000&overwrite=true&wt=json' -X POST -H 'Content-type: text/xml' --data-raw '&lt;add&gt;&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;&lt;/add&gt;'
+ * <pre>
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;siteNom_indexed_string:dcm&lt;/query&gt;&lt;/delete&gt;'
+ * </pre>
  * </p>
  * Generated: true
  **/
@@ -239,9 +245,9 @@ public abstract class AiTelemetryPlatformPageGen<DEV> extends AiTelemetryPlatfor
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchAiTelemetryPlatformPage(entityVar,  siteRequest_, o);
@@ -296,51 +302,6 @@ public abstract class AiTelemetryPlatformPageGen<DEV> extends AiTelemetryPlatfor
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return AiTelemetryPlatformPage.displayNameAiTelemetryPlatformPage(var);
   }
@@ -348,71 +309,6 @@ public abstract class AiTelemetryPlatformPageGen<DEV> extends AiTelemetryPlatfor
     switch(var) {
     default:
       return AiTelemetryPlatformGenPage.displayNameAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static String descriptionAiTelemetryPlatformPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.descriptionAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.classSimpleNameAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.htmColumnAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer htmRowAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.htmRowAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer htmCellAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.htmCellAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.lengthMinAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.lengthMaxAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer maxAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.maxAiTelemetryPlatformGenPage(var);
-    }
-  }
-
-  public static Integer minAiTelemetryPlatformPage(String var) {
-    switch(var) {
-      default:
-        return AiTelemetryPlatformGenPage.minAiTelemetryPlatformGenPage(var);
     }
   }
 }

@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -170,9 +171,9 @@ public class BaseModel extends BaseModelGen<Object> implements ComputateBaseMode
       s = Normalizer.normalize(s, Normalizer.Form.NFD);
       s = StringUtils.lowerCase(s);
       s = StringUtils.trim(s);
-      s = StringUtils.replacePattern(s, "\\s{1,}", "-");
-      s = StringUtils.replacePattern(s, "[^\\w-]", "");
-      s = StringUtils.replacePattern(s, "-{2,}", "-");
+      s = RegExUtils.replacePattern(s, "[\\s_]{1,}", "-");
+      s = RegExUtils.replacePattern(s, "[^\\w-]", "");
+      s = RegExUtils.replacePattern(s, "-{2,}", "-");
     }
 
     return s;

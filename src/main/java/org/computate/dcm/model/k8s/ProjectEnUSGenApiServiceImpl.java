@@ -126,19 +126,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -151,16 +158,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -182,7 +190,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, false).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, false, "GET").onSuccess(listProject -> {
                 response200SearchProject(listProject).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchProject succeeded. "));
@@ -237,6 +245,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       List<String> fls = listProject.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listProject.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -263,15 +272,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       });
       json.put("list", l);
       response200Search(listProject.getRequest(), listProject.getResponse(), json);
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchProject failed. "), ex);
       promise.tryFail(ex);
@@ -323,19 +324,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -348,16 +356,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -379,7 +388,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, false).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, false, "GET").onSuccess(listProject -> {
                 response200GETProject(listProject).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("getProject succeeded. "));
@@ -432,15 +441,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     try {
       SiteRequest siteRequest = listProject.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listProject.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETProject failed. "), ex);
       promise.tryFail(ex);
@@ -459,19 +460,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "PATCH"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -484,16 +492,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PATCH") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -527,7 +536,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, true, "PATCH").onSuccess(listProject -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listProject.getRequest().getRows());
@@ -654,7 +663,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             siteRequest.addScopes(scope);
           });
         });
-        searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+        searchProjectList(siteRequest, false, true, true, "PATCH").onSuccess(listProject -> {
           try {
             Project o = listProject.first();
             ApiRequest apiRequest = new ApiRequest();
@@ -819,14 +828,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlDescription());
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Project.VAR_archived + "=$" + num);
-              num++;
-              bParams.add(o2.sqlArchived());
-            break;
           case "setGpuEnabled":
               o2.setGpuEnabled(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -834,6 +835,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               bSql.append(Project.VAR_gpuEnabled + "=$" + num);
               num++;
               bParams.add(o2.sqlGpuEnabled());
+            break;
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Project.VAR_archived + "=$" + num);
+              num++;
+              bParams.add(o2.sqlArchived());
             break;
           case "setPodRestartCount":
               o2.setPodRestartCount(jsonObject.getString(entityVar));
@@ -859,14 +868,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlPodTerminatingCount());
             break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Project.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
-            break;
           case "setPodsTerminating":
               o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
               if(bParams.size() > 0)
@@ -875,13 +876,13 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlPodsTerminating());
             break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Project.VAR_userKey + "=$" + num);
+              bSql.append(Project.VAR_sessionId + "=$" + num);
               num++;
-              bParams.add(o2.sqlUserKey());
+              bParams.add(o2.sqlSessionId());
             break;
           case "setFullPvcsCount":
               o2.setFullPvcsCount(jsonObject.getString(entityVar));
@@ -890,6 +891,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
               num++;
               bParams.add(o2.sqlFullPvcsCount());
+            break;
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Project.VAR_userKey + "=$" + num);
+              num++;
+              bParams.add(o2.sqlUserKey());
             break;
           case "setFullPvcs":
               o2.setFullPvcs(jsonObject.getJsonArray(entityVar));
@@ -990,15 +999,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHProject failed. "), ex);
       promise.tryFail(ex);
@@ -1017,19 +1018,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "POST"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1042,16 +1050,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("POST") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(POST)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1367,15 +1376,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlDescription());
             break;
-          case Project.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Project.VAR_archived + "=$" + num);
-            num++;
-            bParams.add(o2.sqlArchived());
-            break;
           case Project.VAR_gpuEnabled:
             o2.setGpuEnabled(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1384,6 +1384,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             bSql.append(Project.VAR_gpuEnabled + "=$" + num);
             num++;
             bParams.add(o2.sqlGpuEnabled());
+            break;
+          case Project.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Project.VAR_archived + "=$" + num);
+            num++;
+            bParams.add(o2.sqlArchived());
             break;
           case Project.VAR_podRestartCount:
             o2.setPodRestartCount(jsonObject.getString(entityVar));
@@ -1412,15 +1421,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlPodTerminatingCount());
             break;
-          case Project.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Project.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
-            break;
           case Project.VAR_podsTerminating:
             o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
             if(bParams.size() > 0) {
@@ -1430,14 +1430,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlPodsTerminating());
             break;
-          case Project.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
+          case Project.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Project.VAR_userKey + "=$" + num);
+            bSql.append(Project.VAR_sessionId + "=$" + num);
             num++;
-            bParams.add(o2.sqlUserKey());
+            bParams.add(o2.sqlSessionId());
             break;
           case Project.VAR_fullPvcsCount:
             o2.setFullPvcsCount(jsonObject.getString(entityVar));
@@ -1447,6 +1447,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
             num++;
             bParams.add(o2.sqlFullPvcsCount());
+            break;
+          case Project.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Project.VAR_userKey + "=$" + num);
+            num++;
+            bParams.add(o2.sqlUserKey());
             break;
           case Project.VAR_fullPvcs:
             o2.setFullPvcs(jsonObject.getJsonArray(entityVar));
@@ -1553,15 +1562,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTProject failed. "), ex);
       promise.tryFail(ex);
@@ -1580,19 +1581,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1605,16 +1613,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1648,7 +1657,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, true, "DELETE").onSuccess(listProject -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listProject.getRequest().getRows());
@@ -1774,7 +1783,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             siteRequest.addScopes(scope);
           });
         });
-        searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+        searchProjectList(siteRequest, false, true, true, "DELETE").onSuccess(listProject -> {
           try {
             Project o = listProject.first();
             if(o != null && listProject.getResponse().getResponse().getNumFound() == 1) {
@@ -1938,15 +1947,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEProject failed. "), ex);
       promise.tryFail(ex);
@@ -1965,19 +1966,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "PUT"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1990,16 +1998,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PUT") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2297,15 +2306,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportProject failed. "), ex);
       promise.tryFail(ex);
@@ -2325,19 +2326,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2350,16 +2358,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2381,7 +2390,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, false).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, false, "GET").onSuccess(listProject -> {
                 response200SearchPageProject(listProject).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchpageProject succeeded. "));
@@ -2477,8 +2486,12 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       String pageTemplateUri = templateUriSearchPageProject(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/project/ProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
         Map<String, Object> data = new HashMap<>();
         String body = "";
@@ -2523,6 +2536,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
         promise.complete(renderedTemplate);
       } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       }
@@ -2627,20 +2641,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Project.CLASS_AUTH_RESOURCE, projectResource, "GET"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2653,16 +2673,16 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
-              //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2684,7 +2704,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, false).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, false, "GET").onSuccess(listProject -> {
                 response200EditPageProject(listProject).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("editpageProject succeeded. "));
@@ -2756,8 +2776,12 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       String pageTemplateUri = templateUriEditPageProject(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/project/ProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
         Map<String, Object> data = new HashMap<>();
         String body = "";
@@ -2802,6 +2826,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
         promise.complete(renderedTemplate);
       } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       }
@@ -2906,20 +2931,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", Project.CLASS_AUTH_RESOURCE, projectResource, "GET"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2932,16 +2963,16 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
-              //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2963,7 +2994,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, false).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, false, "GET").onSuccess(listProject -> {
                 response200UserPageProject(listProject).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("userpageProject succeeded. "));
@@ -3035,8 +3066,12 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       String pageTemplateUri = templateUriUserPageProject(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
-      if(pageTemplateUri.endsWith(".md")) {
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/project/ProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
         Map<String, Object> data = new HashMap<>();
         String body = "";
@@ -3081,6 +3116,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
         promise.complete(renderedTemplate);
       } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       }
@@ -3186,19 +3222,26 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         siteRequest.setLang("enUS");
         String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
         String PROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("PROJECT");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PATCH"));
         form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", Project.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3211,16 +3254,17 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "PROJECT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "projectResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(PROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3254,7 +3298,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+              searchProjectList(siteRequest, false, true, true, "DELETE").onSuccess(listProject -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listProject.getRequest().getRows());
@@ -3380,7 +3424,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             siteRequest.addScopes(scope);
           });
         });
-        searchProjectList(siteRequest, false, true, true).onSuccess(listProject -> {
+        searchProjectList(siteRequest, false, true, true, "DELETE").onSuccess(listProject -> {
           try {
             Project o = listProject.first();
             if(o != null && listProject.getResponse().getResponse().getNumFound() == 1) {
@@ -3544,15 +3588,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String projectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("projectResource");
-        String m = String.format("%s %s not found", "project", projectResource);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterProject failed. "), ex);
       promise.tryFail(ex);
@@ -3663,13 +3699,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
     return promise.future();
   }
 
-  public Future<SearchList<Project>> searchProjectList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
+  public Future<SearchList<Project>> searchProjectList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, String scope) {
     Promise<SearchList<Project>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
       SearchList<Project> searchList = new SearchList<Project>();
+      searchList.setScope(scope);
       String facetRange = null;
       Date facetRangeStart = null;
       Date facetRangeEnd = null;
@@ -3885,7 +3922,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT projectName, projectResource, created, description, archived, gpuEnabled, podRestartCount, podsRestarting, podTerminatingCount, sessionId, podsTerminating, userKey, fullPvcsCount, fullPvcs, namespaceTerminating, objectTitle, displayPage, editPage, userPage, download FROM Project WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT projectName, projectResource, created, description, gpuEnabled, archived, podRestartCount, podsRestarting, podTerminatingCount, podsTerminating, sessionId, fullPvcsCount, userKey, fullPvcs, namespaceTerminating, objectTitle, displayPage, editPage, userPage, download FROM Project WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4094,15 +4131,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       o.persistForClass(Project.VAR_projectResource, Project.staticSetProjectResource(siteRequest2, (String)result.get(Project.VAR_projectResource)));
       o.persistForClass(Project.VAR_created, Project.staticSetCreated(siteRequest2, (String)result.get(Project.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(Project.VAR_description, Project.staticSetDescription(siteRequest2, (String)result.get(Project.VAR_description)));
-      o.persistForClass(Project.VAR_archived, Project.staticSetArchived(siteRequest2, (String)result.get(Project.VAR_archived)));
       o.persistForClass(Project.VAR_gpuEnabled, Project.staticSetGpuEnabled(siteRequest2, (String)result.get(Project.VAR_gpuEnabled)));
+      o.persistForClass(Project.VAR_archived, Project.staticSetArchived(siteRequest2, (String)result.get(Project.VAR_archived)));
       o.persistForClass(Project.VAR_podRestartCount, Project.staticSetPodRestartCount(siteRequest2, (String)result.get(Project.VAR_podRestartCount)));
       o.persistForClass(Project.VAR_podsRestarting, Project.staticSetPodsRestarting(siteRequest2, (String)result.get(Project.VAR_podsRestarting)));
       o.persistForClass(Project.VAR_podTerminatingCount, Project.staticSetPodTerminatingCount(siteRequest2, (String)result.get(Project.VAR_podTerminatingCount)));
-      o.persistForClass(Project.VAR_sessionId, Project.staticSetSessionId(siteRequest2, (String)result.get(Project.VAR_sessionId)));
       o.persistForClass(Project.VAR_podsTerminating, Project.staticSetPodsTerminating(siteRequest2, (String)result.get(Project.VAR_podsTerminating)));
-      o.persistForClass(Project.VAR_userKey, Project.staticSetUserKey(siteRequest2, (String)result.get(Project.VAR_userKey)));
+      o.persistForClass(Project.VAR_sessionId, Project.staticSetSessionId(siteRequest2, (String)result.get(Project.VAR_sessionId)));
       o.persistForClass(Project.VAR_fullPvcsCount, Project.staticSetFullPvcsCount(siteRequest2, (String)result.get(Project.VAR_fullPvcsCount)));
+      o.persistForClass(Project.VAR_userKey, Project.staticSetUserKey(siteRequest2, (String)result.get(Project.VAR_userKey)));
       o.persistForClass(Project.VAR_fullPvcs, Project.staticSetFullPvcs(siteRequest2, (String)result.get(Project.VAR_fullPvcs)));
       o.persistForClass(Project.VAR_namespaceTerminating, Project.staticSetNamespaceTerminating(siteRequest2, (String)result.get(Project.VAR_namespaceTerminating)));
       o.persistForClass(Project.VAR_objectTitle, Project.staticSetObjectTitle(siteRequest2, (String)result.get(Project.VAR_objectTitle)));

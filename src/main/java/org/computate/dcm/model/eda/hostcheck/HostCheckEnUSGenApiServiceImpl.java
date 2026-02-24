@@ -247,6 +247,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       List<String> fls = listHostCheck.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listHostCheck.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -273,15 +274,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       });
       json.put("list", l);
       response200Search(listHostCheck.getRequest(), listHostCheck.getResponse(), json);
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -450,15 +443,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     try {
       SiteRequest siteRequest = listHostCheck.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listHostCheck.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -1015,15 +1000,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -1570,15 +1547,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -1983,15 +1952,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -2350,15 +2311,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportHostCheck failed. "), ex);
       promise.tryFail(ex);
@@ -3660,15 +3613,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String checkName = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("checkName");
-        String m = String.format("%s %s not found", "host check", checkName);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterHostCheck failed. "), ex);
       promise.tryFail(ex);

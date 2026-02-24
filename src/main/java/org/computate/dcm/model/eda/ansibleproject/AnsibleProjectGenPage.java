@@ -493,7 +493,7 @@ public class AnsibleProjectGenPage extends AnsibleProjectGenPageGen<PageLayout> 
    * Initialized: false
   **/
   protected void _result(Wrap<AnsibleProject> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("ansibleProjectId")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("ansibleProjectResource")).orElse(null) != null)
       w.o(searchListAnsibleProject_.get(0));
   }
 

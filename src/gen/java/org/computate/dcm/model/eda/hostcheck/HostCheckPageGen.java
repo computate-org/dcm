@@ -245,9 +245,9 @@ public abstract class HostCheckPageGen<DEV> extends HostCheckGenPage {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHostCheckPage(entityVar,  siteRequest_, o);
@@ -302,51 +302,6 @@ public abstract class HostCheckPageGen<DEV> extends HostCheckGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return HostCheckPage.displayNameHostCheckPage(var);
   }
@@ -354,71 +309,6 @@ public abstract class HostCheckPageGen<DEV> extends HostCheckGenPage {
     switch(var) {
     default:
       return HostCheckGenPage.displayNameHostCheckGenPage(var);
-    }
-  }
-
-  public static String descriptionHostCheckPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return HostCheckGenPage.descriptionHostCheckGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.classSimpleNameHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.htmColumnHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer htmRowHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.htmRowHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer htmCellHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.htmCellHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.lengthMinHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.lengthMaxHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer maxHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.maxHostCheckGenPage(var);
-    }
-  }
-
-  public static Integer minHostCheckPage(String var) {
-    switch(var) {
-      default:
-        return HostCheckGenPage.minHostCheckGenPage(var);
     }
   }
 }

@@ -19,8 +19,8 @@ import org.computate.vertx.search.list.SearchList;
  **/
 public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceImpl {
 
-  public Future<Void> aapUpsertJobTemplate(JobTemplate o, Boolean inheritPrimaryKey, Boolean patch) {
-    Promise<Void> promise = Promise.promise();
+  public Future<JsonObject> aapUpsertParams(JobTemplate o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -28,132 +28,141 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         promise.complete();
       } else {
         JsonObject jobTemplateJson = o.getSiteRequest_().getJsonObject();
-        // String tenantResource = Optional.ofNullable(jobTemplateJson.getString(patch ? "setTenantResource": "tenantResource")).orElse(o.getTenantResource());
-        String inventoryResource = Optional.ofNullable(jobTemplateJson.getString(patch ? "setInventoryResource": "inventoryResource")).orElse(o.getInventoryResource());
-        String jobTemplateName = Optional.ofNullable(jobTemplateJson.getString(patch ? "setJobTemplateName": "jobTemplateName")).orElse(o.getJobTemplateName());
-        String jobTemplateId = Optional.ofNullable(jobTemplateJson.getString(patch ? "setJobTemplateId": "jobTemplateId")).orElse(JobTemplate.toId(jobTemplateName));
-        String jobType = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(patch ? "setJobType": "jobType")).orElse(o.getJobType())).orElse("run");
-        Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getLong(patch ? "setAapOrganizationId": "aapOrganizationId")).orElse(o.getAapOrganizationId())).orElse(1L);
-        String organizationId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(patch ? "setOrganizationId": "organizationId")).orElse(o.getOrganizationId())).orElse("");
-        jobTemplateJson.put(JobTemplate.VAR_jobType, jobType);
-        String ansibleProjectId = Optional.ofNullable(jobTemplateJson.getString(patch ? "setAnsibleProjectId": "ansibleProjectId")).orElse(o.getAnsibleProjectId());
-        String ansiblePlaybook = Optional.ofNullable(jobTemplateJson.getString(patch ? "setAnsiblePlaybook": "ansiblePlaybook")).orElse(o.getAnsiblePlaybook());
-        jobTemplateJson.put(JobTemplate.VAR_jobTemplateId, jobTemplateId);
-        Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(patch ? "setAapTemplateId": "aapTemplateId")).map(s -> Long.parseLong(s)).orElse(o.getAapTemplateId());
-        String jobTemplateDescription = Optional.ofNullable(jobTemplateJson.getString(patch ? "setJobTemplateDescription": "templateDescription")).orElse(o.getJobTemplateDescription());
+        String inventoryResource = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_inventoryResource, patch))).orElse(o.getInventoryResource());
+        HostInventory.fqHostInventory(siteRequest, HostInventory.VAR_inventoryResource, inventoryResource).onSuccess(inventory -> {
+          String ansibleProjectResource = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansibleProjectResource, patch))).orElse(o.getAnsibleProjectResource());
+          jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansibleProjectResource, patch), ansibleProjectResource);
 
-
-        SearchList<HostInventory> inventorySearchList = new SearchList<HostInventory>();
-        inventorySearchList.setStore(true);
-        inventorySearchList.q("*:*");
-        inventorySearchList.fq(String.format("inventoryResource_docvalues_string:%s", inventoryResource));
-        inventorySearchList.setC(HostInventory.class);
-        inventorySearchList.setSiteRequest_(o.getSiteRequest_());
-        inventorySearchList.promiseDeepForClass(siteRequest).onSuccess(inventorySearchList2 -> {
-          try {
-            HostInventory inventory = inventorySearchList.first();
-            if(inventory == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching host inventory %s", inventoryResource));
-              LOG.error(ex.getMessage(), ex);
+          AnsibleProject.fqAnsibleProject(siteRequest, AnsibleProject.VAR_ansibleProjectResource, ansibleProjectResource).onSuccess(project -> {
+            try {
+              if(inventory == null) {
+                RuntimeException ex = new RuntimeException(String.format("Could not find a matching host inventory %s", inventoryResource));
+                LOG.error(ex.getMessage(), ex);
+                promise.fail(ex);
+              } else if(inventory.getAapInventoryId() == null) {
+                RuntimeException ex = new RuntimeException(String.format("The host inventory %s doesn't have an AAP Inventory ID number", inventoryResource));
+                LOG.error(ex.getMessage(), ex);
+                promise.fail(ex);
+              } else if(project == null) {
+                RuntimeException ex = new RuntimeException(String.format("Could not find a matching host inventory %s", inventoryResource));
+                LOG.error(ex.getMessage(), ex);
+                promise.fail(ex);
+              } else if(project.getAapProjectId() == null) {
+                RuntimeException ex = new RuntimeException(String.format("The Ansible project %s doesn't have an AAP Project ID number", ansibleProjectResource));
+                LOG.error(ex.getMessage(), ex);
+                promise.fail(ex);
+              } else {
+                Long aapInventoryId = inventory.getAapInventoryId();
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapInventoryId, patch), aapInventoryId.toString());
+                Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getLong(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch))).orElse(o.getAapOrganizationId())).orElse(inventory.getAapOrganizationId());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch), aapOrganizationId.toString());
+                String tenantResource = Optional.ofNullable(Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch))).orElse(o.getTenantResource())).orElse(inventory.getTenantResource())).orElse(inventory.getTenantResource());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch), tenantResource);
+                Long aapProjectId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapProjectId())).orElse(project.getAapProjectId());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch), Optional.ofNullable(aapProjectId).map(v -> v.toString()).orElse(null));
+                String ansiblePlaybook = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch))).orElse(o.getAnsiblePlaybook());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch), ansiblePlaybook);
+                String jobTemplateName = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch))).orElse(o.getJobTemplateName())).orElse(Optional.ofNullable(ansiblePlaybook).map(s -> StringUtils.substringBeforeLast(s, ".")).orElse(null));
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch), jobTemplateName);
+                String jobTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateId, patch))).orElse(JobTemplate.toId(jobTemplateName));
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateId, patch), jobTemplateId);
+                String jobTemplateResource = String.format("%s-%s-%s", tenantResource, JobTemplate.CLASS_AUTH_RESOURCE, jobTemplateId);
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
+                String jobType = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch))).orElse(o.getJobType())).orElse("run");
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch), jobType);
+                Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapTemplateId());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch), Optional.ofNullable(aapTemplateId).map(v -> v.toString()).orElse(null));
+                String jobTemplateDescription = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch))).orElse(o.getJobTemplateDescription());
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch), jobTemplateDescription);
+                promise.complete(jobTemplateJson);
+              }
+            } catch(Exception ex) {
+              LOG.error(String.format("Updating Sensu host failed. "), ex);
               promise.fail(ex);
-            } else if(inventory.getAapInventoryId() == null) {
-              RuntimeException ex = new RuntimeException(String.format("The host inventory %s doesn't have an AAP Inventory ID number", inventoryResource));
-              LOG.error(ex.getMessage(), ex);
-              promise.fail(ex);
-            } else {
-              Long aapInventoryId = inventory.getAapInventoryId();
-              jobTemplateJson.put(JobTemplate.VAR_aapInventoryId, aapInventoryId.toString());
-
-              SearchList<AnsibleProject> projectSearchList = new SearchList<AnsibleProject>();
-              projectSearchList.setStore(true);
-              projectSearchList.q("*:*");
-              projectSearchList.fq(String.format("ansibleProjectId_docvalues_string:%s", ansibleProjectId));
-              projectSearchList.setC(AnsibleProject.class);
-              projectSearchList.setSiteRequest_(o.getSiteRequest_());
-              projectSearchList.promiseDeepForClass(siteRequest).onSuccess(projectSearchList2 -> {
-                try {
-                  AnsibleProject project = projectSearchList.first();
-                  if(project == null) {
-                    RuntimeException ex = new RuntimeException(String.format("Could not find a matching Ansible project %s", ansibleProjectId));
-                    LOG.error(ex.getMessage(), ex);
-                    promise.fail(ex);
-                  } else if(project.getAapProjectId() == null) {
-                    RuntimeException ex = new RuntimeException(String.format("The Ansible project %s doesn't have an AAP project ID number", ansibleProjectId));
-                    LOG.error(ex.getMessage(), ex);
-                    promise.fail(ex);
-                  } else {
-                    Long aapProjectId = project.getAapProjectId();
-
-                    Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
-                    String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
-                    Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-                    String aapUri = patch ? String.format("/api/controller/v2/job_templates/%s/", aapTemplateId) : "/api/controller/v2/job_templates/";
-                    String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
-                    String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
-                    jobTemplateJson.put(JobTemplate.VAR_aapProjectId, aapProjectId.toString());
-
-                    JsonObject body = new JsonObject();
-                    body.put("name", jobTemplateName);
-                    body.put("job_type", jobType);
-                    body.put("inventory", aapInventoryId);
-                    body.put("project", aapProjectId);
-                    body.put("playbook", ansiblePlaybook);
-                    body.put("organization", aapOrganizationId);
-                    if(jobTemplateDescription != null)
-                      body.put("description", jobTemplateDescription);
-
-                    if(StringUtils.isEmpty(jobTemplateName)) {
-                      RuntimeException ex = new RuntimeException("Missing template name");
-                      LOG.error(ex.getMessage(), ex);
-                      promise.fail(ex);
-                    } else {
-                      if(patch) {
-                        webClient.patch(aapPort, aapHostName, aapUri).ssl(aapSsl)
-                            .putHeader("Content-Type", "application/json")
-                            .basicAuthentication(aapUserName, aapPassword)
-                            .sendJsonObject(body)
-                            .expecting(HttpResponseExpectation.SC_OK)
-                            .onSuccess(templateResponse -> {
-                          promise.complete();
-                        }).onFailure(ex -> {
-                          LOG.error(String.format("Updating AAP template failed. "), ex);
-                          promise.fail(ex);
-                        });
-                      } else {
-                        webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
-                            .putHeader("Content-Type", "application/json")
-                            .basicAuthentication(aapUserName, aapPassword)
-                            .sendJsonObject(body)
-                            .expecting(HttpResponseExpectation.SC_CREATED)
-                            .onSuccess(templateResponse -> {
-                          JsonObject responseBody = templateResponse.bodyAsJsonObject();
-                          Long aapTemplateId2 = responseBody.getLong("id");
-                          jobTemplateJson.put(JobTemplate.VAR_aapTemplateId, aapTemplateId2.toString());
-                          promise.complete();
-                        }).onFailure(ex -> {
-                          LOG.error(String.format("Updating AAP template failed. "), ex);
-                          promise.fail(ex);
-                        });
-                      }
-                    }
-                  }
-                } catch(Exception ex) {
-                  LOG.error(String.format("Updating Sensu host failed. "), ex);
-                  promise.fail(ex);
-                }
-              }).onFailure(ex -> {
-                LOG.error(String.format("search JobTemplate failed. "), ex);
-                promise.tryFail(ex);
-              });
             }
-          } catch(Exception ex) {
-            LOG.error(String.format("Updating Sensu host failed. "), ex);
-            promise.fail(ex);
-          }
+          }).onFailure(ex -> {
+            promise.tryFail(ex);
+          });
         }).onFailure(ex -> {
-          LOG.error(String.format("search JobTemplate failed. "), ex);
           promise.tryFail(ex);
         });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("Updating AAP host failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
+  public Future<Void> aapUpsertJobTemplate(JobTemplate o, Boolean inheritPrimaryKey, Boolean patch, JsonObject jobTemplateJson) {
+    Promise<Void> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        Long aapProjectId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch))).map(t -> Long.parseLong(t)).orElse(null);
+        Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch))).map(t -> Long.parseLong(t)).orElse(null);
+        Long aapOrganizationId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch))).map(t -> Long.parseLong(t)).orElse(null);
+        Long aapInventoryId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapInventoryId, patch))).map(t -> Long.parseLong(t)).orElse(null);
+        String ansiblePlaybook = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch));
+        String jobTemplateName = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch))).orElse(ansiblePlaybook);
+        String jobTemplateDescription = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch));
+        String jobType = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch));
+
+        Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+        String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+        Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+        String aapUri = patch ? String.format("/api/controller/v2/job_templates/%s/", aapTemplateId) : "/api/controller/v2/job_templates/";
+        String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+        String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+        jobTemplateJson.put(JobTemplate.VAR_aapProjectId, aapProjectId.toString());
+
+        JsonObject body = new JsonObject();
+        body.put("name", jobTemplateName);
+        body.put("job_type", jobType);
+        body.put("inventory", aapInventoryId);
+        body.put("project", aapProjectId);
+        body.put("playbook", ansiblePlaybook);
+        body.put("organization", aapOrganizationId);
+        if(jobTemplateDescription != null)
+          body.put("description", jobTemplateDescription);
+
+        if(StringUtils.isEmpty(jobTemplateName)) {
+          RuntimeException ex = new RuntimeException("Missing template name");
+          LOG.error(ex.getMessage(), ex);
+          promise.fail(ex);
+        } else {
+          if(patch) {
+            webClient.patch(aapPort, aapHostName, aapUri).ssl(aapSsl)
+                .putHeader("Content-Type", "application/json")
+                .basicAuthentication(aapUserName, aapPassword)
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_OK)
+                .onSuccess(templateResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating AAP template failed. "), ex);
+              promise.fail(ex);
+            });
+          } else {
+            webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
+                .putHeader("Content-Type", "application/json")
+                .basicAuthentication(aapUserName, aapPassword)
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_CREATED)
+                .onSuccess(templateResponse -> {
+              JsonObject responseBody = templateResponse.bodyAsJsonObject();
+              Long aapTemplateId2 = responseBody.getLong("id");
+              jobTemplateJson.put(JobTemplate.VAR_aapTemplateId, aapTemplateId2.toString());
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating AAP template failed. "), ex);
+              promise.fail(ex);
+            });
+          }
+        }
       }
     } catch(Exception ex) {
       LOG.error(String.format("Updating AAP template failed. "), ex);
@@ -165,9 +174,13 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
   @Override
   public Future<JobTemplate> sqlPOSTJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
     Promise<JobTemplate> promise = Promise.promise();
-    aapUpsertJobTemplate(o, inheritPrimaryKey, false).onSuccess(a -> {
-      super.sqlPOSTJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
-        promise.complete(o2);
+    aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(jobTemplateJson -> {
+      aapUpsertJobTemplate(o, inheritPrimaryKey, false, jobTemplateJson).onSuccess(a -> {
+        super.sqlPOSTJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
+          promise.complete(o2);
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
         promise.fail(ex);
       });
@@ -180,9 +193,13 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
   @Override
   public Future<JobTemplate> sqlPATCHJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
     Promise<JobTemplate> promise = Promise.promise();
-    aapUpsertJobTemplate(o, inheritPrimaryKey, true).onSuccess(a -> {
-      super.sqlPATCHJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
-        promise.complete(o2);
+    aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(jobTemplateJson -> {
+      aapUpsertJobTemplate(o, inheritPrimaryKey, true, jobTemplateJson).onSuccess(a -> {
+        super.sqlPATCHJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
+          promise.complete(o2);
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
         promise.fail(ex);
       });

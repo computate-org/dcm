@@ -128,7 +128,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -142,10 +142,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "GET"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -173,6 +179,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -326,7 +339,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -340,10 +353,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "GET"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -371,6 +390,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -462,7 +488,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -476,10 +502,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "PATCH"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "PATCH"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -507,6 +539,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -550,7 +589,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listAnsibleProject.first());
-                  apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectId().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectResource().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketAnsibleProject", JsonObject.mapFrom(apiRequest).toString());
 
@@ -683,7 +722,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o3 -> o3.getAnsibleProjectId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o3 -> o3.getAnsibleProjectResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listAnsibleProject.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(AnsibleProject.class);
@@ -831,13 +870,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case "setAapOrganizationId":
-              o2.setAapOrganizationId(jsonObject.getString(entityVar));
+          case "setTenantId":
+              o2.setTenantId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(AnsibleProject.VAR_aapOrganizationId + "=$" + num);
+              bSql.append(AnsibleProject.VAR_tenantId + "=$" + num);
               num++;
-              bParams.add(o2.sqlAapOrganizationId());
+              bParams.add(o2.sqlTenantId());
             break;
           case "setCreated":
               o2.setCreated(jsonObject.getString(entityVar));
@@ -847,13 +886,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setOrganizationId":
-              o2.setOrganizationId(jsonObject.getString(entityVar));
+          case "setAapOrganizationId":
+              o2.setAapOrganizationId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(AnsibleProject.VAR_organizationId + "=$" + num);
+              bSql.append(AnsibleProject.VAR_aapOrganizationId + "=$" + num);
               num++;
-              bParams.add(o2.sqlOrganizationId());
+              bParams.add(o2.sqlAapOrganizationId());
             break;
           case "setSourceControlType":
               o2.setSourceControlType(jsonObject.getString(entityVar));
@@ -911,13 +950,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlSessionId());
             break;
-          case "setAapProjectId":
-              o2.setAapProjectId(jsonObject.getString(entityVar));
+          case "setAnsibleProjectResource":
+              o2.setAnsibleProjectResource(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(AnsibleProject.VAR_aapProjectId + "=$" + num);
+              bSql.append(AnsibleProject.VAR_ansibleProjectResource + "=$" + num);
               num++;
-              bParams.add(o2.sqlAapProjectId());
+              bParams.add(o2.sqlAnsibleProjectResource());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
@@ -927,6 +966,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlUserKey());
             break;
+          case "setAapProjectId":
+              o2.setAapProjectId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(AnsibleProject.VAR_aapProjectId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapProjectId());
+            break;
           case "setAnsibleProjectDescription":
               o2.setAnsibleProjectDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -935,18 +982,18 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlAnsibleProjectDescription());
             break;
-          case "setJobTemplateIds":
-            JsonArray setJobTemplateIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setJobTemplateIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+          case "setJobTemplateResources":
+            JsonArray setJobTemplateResourcesValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            setJobTemplateResourcesValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -956,38 +1003,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                 });
               }));
             });
-            Optional.ofNullable(o.getJobTemplateIds()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setJobTemplateIdsValues.contains(oVal.toString())).forEach(val -> {
+            Optional.ofNullable(o.getJobTemplateResources()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setJobTemplateResourcesValues.contains(oVal.toString())).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).setToNull(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, solrId2).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAllJobTemplateIds":
-            JsonArray addAllJobTemplateIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllJobTemplateIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("JobTemplate");
-                  }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).setToNull(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, solrId2).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -998,17 +1023,39 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case "addJobTemplateIds":
+          case "addAllJobTemplateResources":
+            JsonArray addAllJobTemplateResourcesValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            addAllJobTemplateResourcesValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+              futures2.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("JobTemplate");
+                  }
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "addJobTemplateResources":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1019,12 +1066,12 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case "removeJobTemplateIds":
+          case "removeJobTemplateResources":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  sql(siteRequest).update(JobTemplate.class, pk2).setToNull(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).setToNull(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1135,7 +1182,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1149,10 +1196,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "POST"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "POST"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(POST)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1180,6 +1233,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1340,7 +1400,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     });
   }
 
-  public Future<AnsibleProject> postAnsibleProjectFuture(SiteRequest siteRequest, Boolean ansibleProjectId) {
+  public Future<AnsibleProject> postAnsibleProjectFuture(SiteRequest siteRequest, Boolean ansibleProjectResource) {
     Promise<AnsibleProject> promise = Promise.promise();
 
     try {
@@ -1349,7 +1409,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         siteRequest.setSqlConnection(sqlConnection);
         varsAnsibleProject(siteRequest).onSuccess(a -> {
           createAnsibleProject(siteRequest).onSuccess(ansibleProject -> {
-            sqlPOSTAnsibleProject(ansibleProject, ansibleProjectId).onSuccess(b -> {
+            sqlPOSTAnsibleProject(ansibleProject, ansibleProjectResource).onSuccess(b -> {
               persistAnsibleProject(ansibleProject, false).onSuccess(c -> {
                 relateAnsibleProject(ansibleProject).onSuccess(d -> {
                   indexAnsibleProject(ansibleProject).onSuccess(o2 -> {
@@ -1479,14 +1539,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case AnsibleProject.VAR_aapOrganizationId:
-            o2.setAapOrganizationId(jsonObject.getString(entityVar));
+          case AnsibleProject.VAR_tenantId:
+            o2.setTenantId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(AnsibleProject.VAR_aapOrganizationId + "=$" + num);
+            bSql.append(AnsibleProject.VAR_tenantId + "=$" + num);
             num++;
-            bParams.add(o2.sqlAapOrganizationId());
+            bParams.add(o2.sqlTenantId());
             break;
           case AnsibleProject.VAR_created:
             o2.setCreated(jsonObject.getString(entityVar));
@@ -1497,14 +1557,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case AnsibleProject.VAR_organizationId:
-            o2.setOrganizationId(jsonObject.getString(entityVar));
+          case AnsibleProject.VAR_aapOrganizationId:
+            o2.setAapOrganizationId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(AnsibleProject.VAR_organizationId + "=$" + num);
+            bSql.append(AnsibleProject.VAR_aapOrganizationId + "=$" + num);
             num++;
-            bParams.add(o2.sqlOrganizationId());
+            bParams.add(o2.sqlAapOrganizationId());
             break;
           case AnsibleProject.VAR_sourceControlType:
             o2.setSourceControlType(jsonObject.getString(entityVar));
@@ -1569,14 +1629,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case AnsibleProject.VAR_aapProjectId:
-            o2.setAapProjectId(jsonObject.getString(entityVar));
+          case AnsibleProject.VAR_ansibleProjectResource:
+            o2.setAnsibleProjectResource(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(AnsibleProject.VAR_aapProjectId + "=$" + num);
+            bSql.append(AnsibleProject.VAR_ansibleProjectResource + "=$" + num);
             num++;
-            bParams.add(o2.sqlAapProjectId());
+            bParams.add(o2.sqlAnsibleProjectResource());
             break;
           case AnsibleProject.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
@@ -1587,6 +1647,15 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlUserKey());
             break;
+          case AnsibleProject.VAR_aapProjectId:
+            o2.setAapProjectId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(AnsibleProject.VAR_aapProjectId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapProjectId());
+            break;
           case AnsibleProject.VAR_ansibleProjectDescription:
             o2.setAnsibleProjectDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1596,17 +1665,17 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlAnsibleProjectDescription());
             break;
-          case AnsibleProject.VAR_jobTemplateIds:
+          case AnsibleProject.VAR_jobTemplateResources:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, o.getSolrId(), val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1721,7 +1790,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1735,10 +1804,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "DELETE"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1766,6 +1841,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1940,7 +2022,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteAnsibleProjectFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -2070,17 +2152,17 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case AnsibleProject.VAR_jobTemplateIds:
+          case AnsibleProject.VAR_jobTemplateResources:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2147,7 +2229,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2161,10 +2243,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "PUT"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "PUT"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2192,6 +2280,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2350,14 +2445,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String ansibleProjectId = Optional.ofNullable(body.getString(AnsibleProject.VAR_ansibleProjectId)).orElse(body.getString(AnsibleProject.VAR_solrId));
+        String ansibleProjectResource = Optional.ofNullable(body.getString(AnsibleProject.VAR_ansibleProjectResource)).orElse(body.getString(AnsibleProject.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE ansibleProjectId=$1", AnsibleProject.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE ansibleProjectResource=$1", AnsibleProject.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(ansibleProjectId))
+              .execute(Tuple.tuple(Arrays.asList(ansibleProjectResource))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2407,24 +2502,24 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "ansibleProjectId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "ansibleProjectResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "ansibleProjectId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "ansibleProjectResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getAnsibleProjectId()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getAnsibleProjectResource()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchAnsibleProjectFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import AnsibleProject {} succeeded, modified AnsibleProject. ", body.getValue(AnsibleProject.VAR_ansibleProjectId));
+                    LOG.debug("Import AnsibleProject {} succeeded, modified AnsibleProject. ", body.getValue(AnsibleProject.VAR_ansibleProjectResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportAnsibleProjectFuture failed. "), ex);
@@ -2432,7 +2527,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   });
                 } else {
                   postAnsibleProjectFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import AnsibleProject {} succeeded, created new AnsibleProject. ", body.getValue(AnsibleProject.VAR_ansibleProjectId));
+                    LOG.debug("Import AnsibleProject {} succeeded, created new AnsibleProject. ", body.getValue(AnsibleProject.VAR_ansibleProjectResource));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportAnsibleProjectFuture failed. "), ex);
@@ -2507,7 +2602,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2521,10 +2616,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "GET"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2552,6 +2653,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2822,7 +2930,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2836,10 +2944,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "GET"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "GET"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2866,6 +2980,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2960,7 +3081,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ansible-project/AnsibleProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/ansible-project/AnsibleProjectEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3113,7 +3234,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String ansibleProjectId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectId");
+        String ansibleProjectResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ansibleProjectResource");
         String ANSIBLEPROJECT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("ANSIBLEPROJECT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -3127,10 +3248,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(ansibleProjectId != null)
-          form.add("permission", String.format("%s#%s", ansibleProjectId, "DELETE"));
+        if(ansibleProjectResource != null)
+          form.add("permission", String.format("%s#%s", ansibleProjectResource, "DELETE"));
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?ANSIBLEPROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3158,6 +3285,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  });
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(ANSIBLEPROJECT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "ansibleProjectResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3332,7 +3466,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectId().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getAnsibleProjectResource().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listAnsibleProject.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterAnsibleProjectFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3462,17 +3596,17 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case AnsibleProject.VAR_jobTemplateIds:
+          case AnsibleProject.VAR_jobTemplateResources:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectId), JobTemplate.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(JobTemplate.varIndexedJobTemplate(JobTemplate.VAR_ansibleProjectResource), JobTemplate.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("JobTemplate");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectId, AnsibleProject.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk2).set(JobTemplate.VAR_ansibleProjectResource, AnsibleProject.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3659,9 +3793,9 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         }
       }
 
-      String ansibleProjectId = serviceRequest.getParams().getJsonObject("path").getString("ansibleProjectId");
-      if(ansibleProjectId != null) {
-        searchList.fq("ansibleProjectId_docvalues_string:" + SearchTool.escapeQueryChars(ansibleProjectId));
+      String ansibleProjectResource = serviceRequest.getParams().getJsonObject("path").getString("ansibleProjectResource");
+      if(ansibleProjectResource != null) {
+        searchList.fq("ansibleProjectResource_docvalues_string:" + SearchTool.escapeQueryChars(ansibleProjectResource));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3856,7 +3990,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, aapOrganizationId, created, organizationId, sourceControlType, archived, sourceControlUrl, sourceControlBranch, ansibleProjectName, ansibleProjectId, sessionId, aapProjectId, userKey, ansibleProjectDescription, objectTitle, displayPage, editPage, userPage, download FROM AnsibleProject WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, sourceControlType, archived, sourceControlUrl, sourceControlBranch, ansibleProjectName, ansibleProjectId, sessionId, ansibleProjectResource, userKey, aapProjectId, ansibleProjectDescription, objectTitle, displayPage, editPage, userPage, download FROM AnsibleProject WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3901,9 +4035,9 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT ansibleProjectId as pk1, 'ansibleProjectId' from JobTemplate where ansibleProjectId=$2")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT ansibleProjectResource as pk1, 'ansibleProjectResource' from JobTemplate where ansibleProjectResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource(), o.getAnsibleProjectId())
+          .execute(Tuple.of(o.getTenantResource(), o.getAnsibleProjectResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4160,9 +4294,9 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       o.setSiteRequest_((SiteRequest)siteRequest);
 
       o.persistForClass(AnsibleProject.VAR_tenantResource, AnsibleProject.staticSetTenantResource(siteRequest2, (String)result.get(AnsibleProject.VAR_tenantResource)));
-      o.persistForClass(AnsibleProject.VAR_aapOrganizationId, AnsibleProject.staticSetAapOrganizationId(siteRequest2, (String)result.get(AnsibleProject.VAR_aapOrganizationId)));
+      o.persistForClass(AnsibleProject.VAR_tenantId, AnsibleProject.staticSetTenantId(siteRequest2, (String)result.get(AnsibleProject.VAR_tenantId)));
       o.persistForClass(AnsibleProject.VAR_created, AnsibleProject.staticSetCreated(siteRequest2, (String)result.get(AnsibleProject.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(AnsibleProject.VAR_organizationId, AnsibleProject.staticSetOrganizationId(siteRequest2, (String)result.get(AnsibleProject.VAR_organizationId)));
+      o.persistForClass(AnsibleProject.VAR_aapOrganizationId, AnsibleProject.staticSetAapOrganizationId(siteRequest2, (String)result.get(AnsibleProject.VAR_aapOrganizationId)));
       o.persistForClass(AnsibleProject.VAR_sourceControlType, AnsibleProject.staticSetSourceControlType(siteRequest2, (String)result.get(AnsibleProject.VAR_sourceControlType)));
       o.persistForClass(AnsibleProject.VAR_archived, AnsibleProject.staticSetArchived(siteRequest2, (String)result.get(AnsibleProject.VAR_archived)));
       o.persistForClass(AnsibleProject.VAR_sourceControlUrl, AnsibleProject.staticSetSourceControlUrl(siteRequest2, (String)result.get(AnsibleProject.VAR_sourceControlUrl)));
@@ -4170,8 +4304,9 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       o.persistForClass(AnsibleProject.VAR_ansibleProjectName, AnsibleProject.staticSetAnsibleProjectName(siteRequest2, (String)result.get(AnsibleProject.VAR_ansibleProjectName)));
       o.persistForClass(AnsibleProject.VAR_ansibleProjectId, AnsibleProject.staticSetAnsibleProjectId(siteRequest2, (String)result.get(AnsibleProject.VAR_ansibleProjectId)));
       o.persistForClass(AnsibleProject.VAR_sessionId, AnsibleProject.staticSetSessionId(siteRequest2, (String)result.get(AnsibleProject.VAR_sessionId)));
-      o.persistForClass(AnsibleProject.VAR_aapProjectId, AnsibleProject.staticSetAapProjectId(siteRequest2, (String)result.get(AnsibleProject.VAR_aapProjectId)));
+      o.persistForClass(AnsibleProject.VAR_ansibleProjectResource, AnsibleProject.staticSetAnsibleProjectResource(siteRequest2, (String)result.get(AnsibleProject.VAR_ansibleProjectResource)));
       o.persistForClass(AnsibleProject.VAR_userKey, AnsibleProject.staticSetUserKey(siteRequest2, (String)result.get(AnsibleProject.VAR_userKey)));
+      o.persistForClass(AnsibleProject.VAR_aapProjectId, AnsibleProject.staticSetAapProjectId(siteRequest2, (String)result.get(AnsibleProject.VAR_aapProjectId)));
       o.persistForClass(AnsibleProject.VAR_ansibleProjectDescription, AnsibleProject.staticSetAnsibleProjectDescription(siteRequest2, (String)result.get(AnsibleProject.VAR_ansibleProjectDescription)));
       o.persistForClass(AnsibleProject.VAR_objectTitle, AnsibleProject.staticSetObjectTitle(siteRequest2, (String)result.get(AnsibleProject.VAR_objectTitle)));
       o.persistForClass(AnsibleProject.VAR_displayPage, AnsibleProject.staticSetDisplayPage(siteRequest2, (String)result.get(AnsibleProject.VAR_displayPage)));

@@ -1066,7 +1066,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   // staticSearch //
   //////////////////
 
-  public static Future<HostInventory> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<HostInventory> fqHostInventory(SiteRequest siteRequest, String var, Object val) {
     Promise<HostInventory> promise = Promise.promise();
     try {
       if(val == null) {
@@ -1659,18 +1659,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   }
 
   @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
   public String enUSStringFormatUrlUserPageForClass() {
     return "%s/en-us/user/host-inventory/%s";
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
   }
 
   public static String varJsonForClass(String var, Boolean patch) {
@@ -1805,7 +1795,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static Integer htmRowHostInventory(String var) {
     switch(var) {
     case VAR_tenantResource:
-      return 4;
+      return 3;
     case VAR_inventoryName:
       return 4;
     case VAR_inventoryDescription:

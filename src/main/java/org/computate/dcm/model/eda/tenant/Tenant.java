@@ -177,4 +177,16 @@ public class Tenant extends TenantGen<BaseModel> {
    **/
   protected void _hostInventoryIds(List<String> l) {
   }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: Ansible projects
+   * Description: The related Ansible projects for this tenant. 
+   * Relate: AnsibleProject.tenantResource
+   * HtmRow: 4
+   * HtmCell: 0
+   **/
+  protected void _ansibleProjectIds(List<String> l) {
+  }
 }

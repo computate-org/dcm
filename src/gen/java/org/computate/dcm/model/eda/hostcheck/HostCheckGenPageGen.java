@@ -674,9 +674,9 @@ public abstract class HostCheckGenPageGen<DEV> extends PageLayout {
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchHostCheckGenPage(entityVar,  siteRequest_, o);
@@ -760,12 +760,19 @@ public abstract class HostCheckGenPageGen<DEV> extends PageLayout {
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.hostcheck.HostCheckGenPage";
   public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_searchListHostCheck_ = "searchListHostCheck_";
+  public static final String SET_searchListHostCheck_ = "setSearchListHostCheck_";
   public static final String VAR_listHostCheck = "listHostCheck";
+  public static final String SET_listHostCheck = "setListHostCheck";
   public static final String VAR_resultCount = "resultCount";
+  public static final String SET_resultCount = "setResultCount";
   public static final String VAR_result = "result";
+  public static final String SET_result = "setResult";
   public static final String VAR_pk = "pk";
+  public static final String SET_pk = "setPk";
   public static final String VAR_solrId = "solrId";
+  public static final String SET_solrId = "setSolrId";
   public static final String VAR_pageUriHostCheck = "pageUriHostCheck";
+  public static final String SET_pageUriHostCheck = "setPageUriHostCheck";
 
   public static final String DISPLAY_NAME_searchListHostCheck_ = "";
   public static final String DISPLAY_NAME_listHostCheck = "";
@@ -774,51 +781,6 @@ public abstract class HostCheckGenPageGen<DEV> extends PageLayout {
   public static final String DISPLAY_NAME_pk = "";
   public static final String DISPLAY_NAME_solrId = "";
   public static final String DISPLAY_NAME_pageUriHostCheck = "";
-
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
 
   public static String displayNameForClass(String var) {
     return HostCheckGenPage.displayNameHostCheckGenPage(var);
@@ -841,85 +803,6 @@ public abstract class HostCheckGenPageGen<DEV> extends PageLayout {
       return DISPLAY_NAME_pageUriHostCheck;
     default:
       return PageLayout.displayNamePageLayout(var);
-    }
-  }
-
-  public static String descriptionHostCheckGenPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return PageLayout.descriptionPageLayout(var);
-    }
-  }
-
-  public static String classSimpleNameHostCheckGenPage(String var) {
-    switch(var) {
-    case VAR_searchListHostCheck_:
-      return "SearchList";
-    case VAR_listHostCheck:
-      return "JsonArray";
-    case VAR_resultCount:
-      return "Integer";
-    case VAR_result:
-      return "HostCheck";
-    case VAR_pk:
-      return "Long";
-    case VAR_solrId:
-      return "String";
-    case VAR_pageUriHostCheck:
-      return "String";
-      default:
-        return PageLayout.classSimpleNamePageLayout(var);
-    }
-  }
-
-  public static Integer htmColumnHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.htmColumnPageLayout(var);
-    }
-  }
-
-  public static Integer htmRowHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.htmRowPageLayout(var);
-    }
-  }
-
-  public static Integer htmCellHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.htmCellPageLayout(var);
-    }
-  }
-
-  public static Integer lengthMinHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.lengthMinPageLayout(var);
-    }
-  }
-
-  public static Integer lengthMaxHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.lengthMaxPageLayout(var);
-    }
-  }
-
-  public static Integer maxHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.maxPageLayout(var);
-    }
-  }
-
-  public static Integer minHostCheckGenPage(String var) {
-    switch(var) {
-      default:
-        return PageLayout.minPageLayout(var);
     }
   }
 }

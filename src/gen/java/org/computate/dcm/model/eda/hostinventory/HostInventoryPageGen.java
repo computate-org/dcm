@@ -302,51 +302,6 @@ public abstract class HostInventoryPageGen<DEV> extends HostInventoryGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return HostInventoryPage.displayNameHostInventoryPage(var);
   }
@@ -354,71 +309,6 @@ public abstract class HostInventoryPageGen<DEV> extends HostInventoryGenPage {
     switch(var) {
     default:
       return HostInventoryGenPage.displayNameHostInventoryGenPage(var);
-    }
-  }
-
-  public static String descriptionHostInventoryPage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return HostInventoryGenPage.descriptionHostInventoryGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.classSimpleNameHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.htmColumnHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer htmRowHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.htmRowHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer htmCellHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.htmCellHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.lengthMinHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.lengthMaxHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer maxHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.maxHostInventoryGenPage(var);
-    }
-  }
-
-  public static Integer minHostInventoryPage(String var) {
-    switch(var) {
-      default:
-        return HostInventoryGenPage.minHostInventoryGenPage(var);
     }
   }
 }

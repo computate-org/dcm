@@ -43,6 +43,8 @@ import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
+import org.computate.vertx.search.list.SearchList;
+import org.computate.search.tool.SearchTool;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.computate.search.response.solr.SolrResponse;
 
@@ -173,7 +175,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no ansible project found";
   public static final String ApiUri_enUS = "/en-us/api/ansible-project";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/ansible-project";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/ansible-project/{ansibleProjectId}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/ansible-project/{ansibleProjectResource}";
   public static final String OfName_enUS = "of ansible project";
   public static final String ANameAdjective_enUS = "an ansible project";
   public static final String NameAdjectiveSingular_enUS = "ansible project";
@@ -181,7 +183,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String Search_enUS_OpenApiUri = "/en-us/api/ansible-project";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/ansible-project";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/ansible-project";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/ansible-project/{ansibleProjectId}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/ansible-project/{ansibleProjectResource}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/ansible-project/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/ansible-project/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/ansible-project";
@@ -190,7 +192,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/ansible-project";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/ansible-project";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/ansible-project";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/ansible-project/{ansibleProjectId}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/ansible-project/{ansibleProjectResource}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/ansible-project/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/ansible-project/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/ansible-project-import";
@@ -199,7 +201,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/ansible-project";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/ansible-project";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/ansible-project";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/ansible-project/{ansibleProjectId}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/ansible-project/{ansibleProjectResource}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/ansible-project/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/ansible-project/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/ansible-project";
@@ -271,6 +273,68 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return tenantResource;
   }
 
+	//////////////
+  // tenantId //
+	//////////////
+
+
+  /**
+   *  The entity tenantId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantId;
+
+  /**
+   * <br> The entity tenantId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantId(Wrap<String> w);
+
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String o) {
+    this.tenantId = AnsibleProject.staticSetTenantId(siteRequest_, o);
+  }
+  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected AnsibleProject tenantIdInit() {
+    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
+    if(tenantId == null) {
+      _tenantId(tenantIdWrap);
+      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
+        setTenantId(o);
+      });
+    }
+    return (AnsibleProject)this;
+  }
+
+  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
+    return AnsibleProject.staticSearchTenantId(siteRequest_, AnsibleProject.staticSetTenantId(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantId() {
+    return tenantId;
+  }
+
+  public static String staticJsonTenantId(String tenantId) {
+    return tenantId;
+  }
+
 	///////////////////////
   // aapOrganizationId //
 	///////////////////////
@@ -339,68 +403,6 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
 
   public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
     return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
-  }
-
-	////////////////////
-  // organizationId //
-	////////////////////
-
-
-  /**
-   *  The entity organizationId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String organizationId;
-
-  /**
-   * <br> The entity organizationId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:organizationId">Find the entity organizationId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _organizationId(Wrap<String> w);
-
-  public String getOrganizationId() {
-    return organizationId;
-  }
-  public void setOrganizationId(String o) {
-    this.organizationId = AnsibleProject.staticSetOrganizationId(siteRequest_, o);
-  }
-  public static String staticSetOrganizationId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected AnsibleProject organizationIdInit() {
-    Wrap<String> organizationIdWrap = new Wrap<String>().var("organizationId");
-    if(organizationId == null) {
-      _organizationId(organizationIdWrap);
-      Optional.ofNullable(organizationIdWrap.getO()).ifPresent(o -> {
-        setOrganizationId(o);
-      });
-    }
-    return (AnsibleProject)this;
-  }
-
-  public static String staticSearchOrganizationId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrOrganizationId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqOrganizationId(SiteRequest siteRequest_, String o) {
-    return AnsibleProject.staticSearchOrganizationId(siteRequest_, AnsibleProject.staticSetOrganizationId(siteRequest_, o)).toString();
-  }
-
-  public String sqlOrganizationId() {
-    return organizationId;
-  }
-
-  public static String staticJsonOrganizationId(String organizationId) {
-    return organizationId;
   }
 
 	///////////////////////
@@ -713,6 +715,68 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return ansibleProjectId;
   }
 
+	////////////////////////////
+  // ansibleProjectResource //
+	////////////////////////////
+
+
+  /**
+   *  The entity ansibleProjectResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String ansibleProjectResource;
+
+  /**
+   * <br> The entity ansibleProjectResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:ansibleProjectResource">Find the entity ansibleProjectResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _ansibleProjectResource(Wrap<String> w);
+
+  public String getAnsibleProjectResource() {
+    return ansibleProjectResource;
+  }
+  public void setAnsibleProjectResource(String o) {
+    this.ansibleProjectResource = AnsibleProject.staticSetAnsibleProjectResource(siteRequest_, o);
+  }
+  public static String staticSetAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected AnsibleProject ansibleProjectResourceInit() {
+    Wrap<String> ansibleProjectResourceWrap = new Wrap<String>().var("ansibleProjectResource");
+    if(ansibleProjectResource == null) {
+      _ansibleProjectResource(ansibleProjectResourceWrap);
+      Optional.ofNullable(ansibleProjectResourceWrap.getO()).ifPresent(o -> {
+        setAnsibleProjectResource(o);
+      });
+    }
+    return (AnsibleProject)this;
+  }
+
+  public static String staticSearchAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsibleProjectResource(SiteRequest siteRequest_, String o) {
+    return AnsibleProject.staticSearchAnsibleProjectResource(siteRequest_, AnsibleProject.staticSetAnsibleProjectResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlAnsibleProjectResource() {
+    return ansibleProjectResource;
+  }
+
+  public static String staticJsonAnsibleProjectResource(String ansibleProjectResource) {
+    return ansibleProjectResource;
+  }
+
 	//////////////////
   // aapProjectId //
 	//////////////////
@@ -845,90 +909,90 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return ansibleProjectDescription;
   }
 
-	////////////////////
-  // jobTemplateIds //
-	////////////////////
+	//////////////////////////
+  // jobTemplateResources //
+	//////////////////////////
 
 
   /**
-   *  The entity jobTemplateIds
+   *  The entity jobTemplateResources
    *	 It is constructed before being initialized with the constructor by default. 
    */
   @JsonProperty
   @JsonFormat(shape = JsonFormat.Shape.ARRAY)
   @JsonInclude(Include.NON_NULL)
-  protected List<String> jobTemplateIds = new ArrayList<String>();
+  protected List<String> jobTemplateResources = new ArrayList<String>();
 
   /**
-   * <br> The entity jobTemplateIds
+   * <br> The entity jobTemplateResources
    *  It is constructed before being initialized with the constructor by default. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:jobTemplateIds">Find the entity jobTemplateIds in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:jobTemplateResources">Find the entity jobTemplateResources in Solr</a>
    * <br>
    * @param l is the entity already constructed. 
    **/
-  protected abstract void _jobTemplateIds(List<String> l);
+  protected abstract void _jobTemplateResources(List<String> l);
 
-  public List<String> getJobTemplateIds() {
-    return jobTemplateIds;
+  public List<String> getJobTemplateResources() {
+    return jobTemplateResources;
   }
 
-  public void setJobTemplateIds(List<String> jobTemplateIds) {
-    this.jobTemplateIds = jobTemplateIds;
+  public void setJobTemplateResources(List<String> jobTemplateResources) {
+    this.jobTemplateResources = jobTemplateResources;
   }
   @JsonIgnore
-  public void setJobTemplateIds(String o) {
-    String l = AnsibleProject.staticSetJobTemplateIds(siteRequest_, o);
+  public void setJobTemplateResources(String o) {
+    String l = AnsibleProject.staticSetJobTemplateResources(siteRequest_, o);
     if(l != null)
-      addJobTemplateIds(l);
+      addJobTemplateResources(l);
   }
-  public static String staticSetJobTemplateIds(SiteRequest siteRequest_, String o) {
+  public static String staticSetJobTemplateResources(SiteRequest siteRequest_, String o) {
     return o;
   }
-  public AnsibleProject addJobTemplateIds(String...objects) {
+  public AnsibleProject addJobTemplateResources(String...objects) {
     for(String o : objects) {
-      addJobTemplateIds(o);
+      addJobTemplateResources(o);
     }
     return (AnsibleProject)this;
   }
-  public AnsibleProject addJobTemplateIds(String o) {
+  public AnsibleProject addJobTemplateResources(String o) {
     if(o != null)
-      this.jobTemplateIds.add(o);
+      this.jobTemplateResources.add(o);
     return (AnsibleProject)this;
   }
   @JsonIgnore
-  public void setJobTemplateIds(JsonArray objects) {
-    jobTemplateIds.clear();
+  public void setJobTemplateResources(JsonArray objects) {
+    jobTemplateResources.clear();
     if(objects == null)
       return;
     for(int i = 0; i < objects.size(); i++) {
       String o = objects.getString(i);
-      addJobTemplateIds(o);
+      addJobTemplateResources(o);
     }
   }
-  protected AnsibleProject jobTemplateIdsInit() {
-    _jobTemplateIds(jobTemplateIds);
+  protected AnsibleProject jobTemplateResourcesInit() {
+    _jobTemplateResources(jobTemplateResources);
     return (AnsibleProject)this;
   }
 
-  public static String staticSearchJobTemplateIds(SiteRequest siteRequest_, String o) {
+  public static String staticSearchJobTemplateResources(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrJobTemplateIds(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrJobTemplateResources(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqJobTemplateIds(SiteRequest siteRequest_, String o) {
-    return AnsibleProject.staticSearchJobTemplateIds(siteRequest_, AnsibleProject.staticSetJobTemplateIds(siteRequest_, o)).toString();
+  public static String staticSearchFqJobTemplateResources(SiteRequest siteRequest_, String o) {
+    return AnsibleProject.staticSearchJobTemplateResources(siteRequest_, AnsibleProject.staticSetJobTemplateResources(siteRequest_, o)).toString();
   }
 
-  public String[] sqlJobTemplateIds() {
-    return jobTemplateIds.stream().map(v -> (String)v).toArray(String[]::new);
+  public String[] sqlJobTemplateResources() {
+    return jobTemplateResources.stream().map(v -> (String)v).toArray(String[]::new);
   }
 
-  public static JsonArray staticJsonJobTemplateIds(List<String> jobTemplateIds) {
+  public static JsonArray staticJsonJobTemplateResources(List<String> jobTemplateResources) {
     JsonArray a = new JsonArray();
-    jobTemplateIds.stream().forEach(v -> a.add(v.toString()));
+    jobTemplateResources.stream().forEach(v -> a.add(v.toString()));
     return a;
   }
 
@@ -962,16 +1026,17 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       Promise<Void> promise2 = Promise.promise();
       try {
         tenantResourceInit();
+        tenantIdInit();
         aapOrganizationIdInit();
-        organizationIdInit();
         sourceControlTypeInit();
         sourceControlUrlInit();
         sourceControlBranchInit();
         ansibleProjectNameInit();
         ansibleProjectIdInit();
+        ansibleProjectResourceInit();
         aapProjectIdInit();
         ansibleProjectDescriptionInit();
-        jobTemplateIdsInit();
+        jobTemplateResourcesInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1027,10 +1092,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
       case "tenantResource":
         return oAnsibleProject.tenantResource;
+      case "tenantId":
+        return oAnsibleProject.tenantId;
       case "aapOrganizationId":
         return oAnsibleProject.aapOrganizationId;
-      case "organizationId":
-        return oAnsibleProject.organizationId;
       case "sourceControlType":
         return oAnsibleProject.sourceControlType;
       case "sourceControlUrl":
@@ -1041,12 +1106,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return oAnsibleProject.ansibleProjectName;
       case "ansibleProjectId":
         return oAnsibleProject.ansibleProjectId;
+      case "ansibleProjectResource":
+        return oAnsibleProject.ansibleProjectResource;
       case "aapProjectId":
         return oAnsibleProject.aapProjectId;
       case "ansibleProjectDescription":
         return oAnsibleProject.ansibleProjectDescription;
-      case "jobTemplateIds":
-        return oAnsibleProject.jobTemplateIds;
+      case "jobTemplateResources":
+        return oAnsibleProject.jobTemplateResources;
       default:
         return super.obtainBaseModel(var);
     }
@@ -1078,10 +1145,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         if(!saves.contains("tenantResource"))
           saves.add("tenantResource");
         return val;
-      case "jobTemplateIds":
-        oAnsibleProject.addJobTemplateIds((String)val);
-        if(!saves.contains("jobTemplateIds"))
-          saves.add("jobTemplateIds");
+      case "jobTemplateResources":
+        oAnsibleProject.addJobTemplateResources((String)val);
+        if(!saves.contains("jobTemplateResources"))
+          saves.add("jobTemplateResources");
         return val;
       default:
         return super.relateBaseModel(var, val);
@@ -1099,10 +1166,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return AnsibleProject.staticSetTenantResource(siteRequest_, v);
+    case "tenantId":
+      return AnsibleProject.staticSetTenantId(siteRequest_, v);
     case "aapOrganizationId":
       return AnsibleProject.staticSetAapOrganizationId(siteRequest_, v);
-    case "organizationId":
-      return AnsibleProject.staticSetOrganizationId(siteRequest_, v);
     case "sourceControlType":
       return AnsibleProject.staticSetSourceControlType(siteRequest_, v);
     case "sourceControlUrl":
@@ -1113,20 +1180,52 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSetAnsibleProjectName(siteRequest_, v);
     case "ansibleProjectId":
       return AnsibleProject.staticSetAnsibleProjectId(siteRequest_, v);
+    case "ansibleProjectResource":
+      return AnsibleProject.staticSetAnsibleProjectResource(siteRequest_, v);
     case "aapProjectId":
       return AnsibleProject.staticSetAapProjectId(siteRequest_, v);
     case "ansibleProjectDescription":
       return AnsibleProject.staticSetAnsibleProjectDescription(siteRequest_, v);
-    case "jobTemplateIds":
-      return AnsibleProject.staticSetJobTemplateIds(siteRequest_, v);
+    case "jobTemplateResources":
+      return AnsibleProject.staticSetJobTemplateResources(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
   }
 
-  ////////////////
+  //////////////////
   // staticSearch //
-  ////////////////
+  //////////////////
+
+  public static Future<AnsibleProject> fqAnsibleProject(SiteRequest siteRequest, String var, Object val) {
+    Promise<AnsibleProject> promise = Promise.promise();
+    try {
+      if(val == null) {
+        promise.complete();
+      } else {
+        SearchList<AnsibleProject> searchList = new SearchList<AnsibleProject>();
+        searchList.setStore(true);
+        searchList.q("*:*");
+        searchList.setC(AnsibleProject.class);
+        searchList.fq(String.format("%s:", AnsibleProject.varIndexedAnsibleProject(var)) + SearchTool.escapeQueryChars(val.toString()));
+        searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
+          try {
+            promise.complete(searchList.getList().stream().findFirst().orElse(null));
+          } catch(Throwable ex) {
+            LOG.error("Error while querying theansible project", ex);
+            promise.fail(ex);
+          }
+        }).onFailure(ex -> {
+          LOG.error("Error while querying theansible project", ex);
+          promise.fail(ex);
+        });
+      }
+    } catch(Throwable ex) {
+      LOG.error("Error while querying theansible project", ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
     return staticSearchAnsibleProject(entityVar,  siteRequest_, o);
@@ -1135,10 +1234,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return AnsibleProject.staticSearchTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return AnsibleProject.staticSearchTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return AnsibleProject.staticSearchAapOrganizationId(siteRequest_, (Long)o);
-    case "organizationId":
-      return AnsibleProject.staticSearchOrganizationId(siteRequest_, (String)o);
     case "sourceControlType":
       return AnsibleProject.staticSearchSourceControlType(siteRequest_, (String)o);
     case "sourceControlUrl":
@@ -1149,12 +1248,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchAnsibleProjectName(siteRequest_, (String)o);
     case "ansibleProjectId":
       return AnsibleProject.staticSearchAnsibleProjectId(siteRequest_, (String)o);
+    case "ansibleProjectResource":
+      return AnsibleProject.staticSearchAnsibleProjectResource(siteRequest_, (String)o);
     case "aapProjectId":
       return AnsibleProject.staticSearchAapProjectId(siteRequest_, (Long)o);
     case "ansibleProjectDescription":
       return AnsibleProject.staticSearchAnsibleProjectDescription(siteRequest_, (String)o);
-    case "jobTemplateIds":
-      return AnsibleProject.staticSearchJobTemplateIds(siteRequest_, (String)o);
+    case "jobTemplateResources":
+      return AnsibleProject.staticSearchJobTemplateResources(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1171,10 +1272,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return AnsibleProject.staticSearchStrTenantResource(siteRequest_, (String)o);
+    case "tenantId":
+      return AnsibleProject.staticSearchStrTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return AnsibleProject.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
-    case "organizationId":
-      return AnsibleProject.staticSearchStrOrganizationId(siteRequest_, (String)o);
     case "sourceControlType":
       return AnsibleProject.staticSearchStrSourceControlType(siteRequest_, (String)o);
     case "sourceControlUrl":
@@ -1185,12 +1286,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchStrAnsibleProjectName(siteRequest_, (String)o);
     case "ansibleProjectId":
       return AnsibleProject.staticSearchStrAnsibleProjectId(siteRequest_, (String)o);
+    case "ansibleProjectResource":
+      return AnsibleProject.staticSearchStrAnsibleProjectResource(siteRequest_, (String)o);
     case "aapProjectId":
       return AnsibleProject.staticSearchStrAapProjectId(siteRequest_, (Long)o);
     case "ansibleProjectDescription":
       return AnsibleProject.staticSearchStrAnsibleProjectDescription(siteRequest_, (String)o);
-    case "jobTemplateIds":
-      return AnsibleProject.staticSearchStrJobTemplateIds(siteRequest_, (String)o);
+    case "jobTemplateResources":
+      return AnsibleProject.staticSearchStrJobTemplateResources(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1207,10 +1310,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
     case "tenantResource":
       return AnsibleProject.staticSearchFqTenantResource(siteRequest_, o);
+    case "tenantId":
+      return AnsibleProject.staticSearchFqTenantId(siteRequest_, o);
     case "aapOrganizationId":
       return AnsibleProject.staticSearchFqAapOrganizationId(siteRequest_, o);
-    case "organizationId":
-      return AnsibleProject.staticSearchFqOrganizationId(siteRequest_, o);
     case "sourceControlType":
       return AnsibleProject.staticSearchFqSourceControlType(siteRequest_, o);
     case "sourceControlUrl":
@@ -1221,12 +1324,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchFqAnsibleProjectName(siteRequest_, o);
     case "ansibleProjectId":
       return AnsibleProject.staticSearchFqAnsibleProjectId(siteRequest_, o);
+    case "ansibleProjectResource":
+      return AnsibleProject.staticSearchFqAnsibleProjectResource(siteRequest_, o);
     case "aapProjectId":
       return AnsibleProject.staticSearchFqAapProjectId(siteRequest_, o);
     case "ansibleProjectDescription":
       return AnsibleProject.staticSearchFqAnsibleProjectDescription(siteRequest_, o);
-    case "jobTemplateIds":
-      return AnsibleProject.staticSearchFqJobTemplateIds(siteRequest_, o);
+    case "jobTemplateResources":
+      return AnsibleProject.staticSearchFqJobTemplateResources(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1259,6 +1364,12 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         }
         saves.add("tenantResource");
         return val;
+      } else if("tenantid".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantId((String)val);
+        }
+        saves.add("tenantId");
+        return val;
       } else if("aaporganizationid".equals(varLower)) {
         if(val instanceof Long) {
           setAapOrganizationId((Long)val);
@@ -1266,12 +1377,6 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
           setAapOrganizationId(val == null ? null : val.toString());
         }
         saves.add("aapOrganizationId");
-        return val;
-      } else if("organizationid".equals(varLower)) {
-        if(val instanceof String) {
-          setOrganizationId((String)val);
-        }
-        saves.add("organizationId");
         return val;
       } else if("sourcecontroltype".equals(varLower)) {
         if(val instanceof String) {
@@ -1302,6 +1407,12 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
           setAnsibleProjectId((String)val);
         }
         saves.add("ansibleProjectId");
+        return val;
+      } else if("ansibleprojectresource".equals(varLower)) {
+        if(val instanceof String) {
+          setAnsibleProjectResource((String)val);
+        }
+        saves.add("ansibleProjectResource");
         return val;
       } else if("aapprojectid".equals(varLower)) {
         if(val instanceof Long) {
@@ -1338,16 +1449,16 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       if(tenantResource != null)
         oAnsibleProject.setTenantResource(tenantResource);
 
+      if(saves.contains("tenantId")) {
+        String tenantId = (String)doc.get("tenantId_docvalues_string");
+        if(tenantId != null)
+          oAnsibleProject.setTenantId(tenantId);
+      }
+
       if(saves.contains("aapOrganizationId")) {
         Long aapOrganizationId = (Long)doc.get("aapOrganizationId_docvalues_long");
         if(aapOrganizationId != null)
           oAnsibleProject.setAapOrganizationId(aapOrganizationId);
-      }
-
-      if(saves.contains("organizationId")) {
-        String organizationId = (String)doc.get("organizationId_docvalues_string");
-        if(organizationId != null)
-          oAnsibleProject.setOrganizationId(organizationId);
       }
 
       if(saves.contains("sourceControlType")) {
@@ -1380,6 +1491,12 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
           oAnsibleProject.setAnsibleProjectId(ansibleProjectId);
       }
 
+      if(saves.contains("ansibleProjectResource")) {
+        String ansibleProjectResource = (String)doc.get("ansibleProjectResource_docvalues_string");
+        if(ansibleProjectResource != null)
+          oAnsibleProject.setAnsibleProjectResource(ansibleProjectResource);
+      }
+
       if(saves.contains("aapProjectId")) {
         Long aapProjectId = (Long)doc.get("aapProjectId_docvalues_long");
         if(aapProjectId != null)
@@ -1392,9 +1509,9 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
           oAnsibleProject.setAnsibleProjectDescription(ansibleProjectDescription);
       }
 
-      List<String> jobTemplateIds = (List<String>)doc.get("jobTemplateIds_docvalues_strings");
-      if(jobTemplateIds != null)
-        oAnsibleProject.jobTemplateIds.addAll(jobTemplateIds);
+      List<String> jobTemplateResources = (List<String>)doc.get("jobTemplateResources_docvalues_strings");
+      if(jobTemplateResources != null)
+        oAnsibleProject.jobTemplateResources.addAll(jobTemplateResources);
     }
 
     super.populateBaseModel(doc);
@@ -1404,11 +1521,11 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
+    if(tenantId != null) {
+      doc.put("tenantId_docvalues_string", tenantId);
+    }
     if(aapOrganizationId != null) {
       doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
-    }
-    if(organizationId != null) {
-      doc.put("organizationId_docvalues_string", organizationId);
     }
     if(sourceControlType != null) {
       doc.put("sourceControlType_docvalues_string", sourceControlType);
@@ -1425,17 +1542,20 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     if(ansibleProjectId != null) {
       doc.put("ansibleProjectId_docvalues_string", ansibleProjectId);
     }
+    if(ansibleProjectResource != null) {
+      doc.put("ansibleProjectResource_docvalues_string", ansibleProjectResource);
+    }
     if(aapProjectId != null) {
       doc.put("aapProjectId_docvalues_long", aapProjectId);
     }
     if(ansibleProjectDescription != null) {
       doc.put("ansibleProjectDescription_docvalues_string", ansibleProjectDescription);
     }
-    if(jobTemplateIds != null) {
+    if(jobTemplateResources != null) {
       JsonArray l = new JsonArray();
-      doc.put("jobTemplateIds_docvalues_strings", l);
-      for(String o : jobTemplateIds) {
-        l.add(AnsibleProject.staticSearchJobTemplateIds(siteRequest_, o));
+      doc.put("jobTemplateResources_docvalues_strings", l);
+      for(String o : jobTemplateResources) {
+        l.add(AnsibleProject.staticSearchJobTemplateResources(siteRequest_, o));
       }
     }
     super.indexBaseModel(doc);
@@ -1446,10 +1566,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
-      case "organizationId":
-        return "organizationId_docvalues_string";
       case "sourceControlType":
         return "sourceControlType_docvalues_string";
       case "sourceControlUrl":
@@ -1460,12 +1580,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectName_docvalues_string";
       case "ansibleProjectId":
         return "ansibleProjectId_docvalues_string";
+      case "ansibleProjectResource":
+        return "ansibleProjectResource_docvalues_string";
       case "aapProjectId":
         return "aapProjectId_docvalues_long";
       case "ansibleProjectDescription":
         return "ansibleProjectDescription_docvalues_string";
-      case "jobTemplateIds":
-        return "jobTemplateIds_docvalues_strings";
+      case "jobTemplateResources":
+        return "jobTemplateResources_docvalues_strings";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1475,10 +1597,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(entityVar) {
       case "tenantResource":
         return "tenantResource_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
-      case "organizationId":
-        return "organizationId_docvalues_string";
       case "sourceControlType":
         return "sourceControlType_docvalues_string";
       case "sourceControlUrl":
@@ -1489,12 +1611,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectName_docvalues_string";
       case "ansibleProjectId":
         return "ansibleProjectId_docvalues_string";
+      case "ansibleProjectResource":
+        return "ansibleProjectResource_docvalues_string";
       case "aapProjectId":
         return "aapProjectId_docvalues_long";
       case "ansibleProjectDescription":
         return "ansibleProjectDescription_docvalues_string";
-      case "jobTemplateIds":
-        return "jobTemplateIds_docvalues_strings";
+      case "jobTemplateResources":
+        return "jobTemplateResources_docvalues_strings";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1504,10 +1628,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(searchVar) {
       case "tenantResource_docvalues_string":
         return "tenantResource";
+      case "tenantId_docvalues_string":
+        return "tenantId";
       case "aapOrganizationId_docvalues_long":
         return "aapOrganizationId";
-      case "organizationId_docvalues_string":
-        return "organizationId";
       case "sourceControlType_docvalues_string":
         return "sourceControlType";
       case "sourceControlUrl_docvalues_string":
@@ -1518,12 +1642,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectName";
       case "ansibleProjectId_docvalues_string":
         return "ansibleProjectId";
+      case "ansibleProjectResource_docvalues_string":
+        return "ansibleProjectResource";
       case "aapProjectId_docvalues_long":
         return "aapProjectId";
       case "ansibleProjectDescription_docvalues_string":
         return "ansibleProjectDescription";
-      case "jobTemplateIds_docvalues_strings":
-        return "jobTemplateIds";
+      case "jobTemplateResources_docvalues_strings":
+        return "jobTemplateResources";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1555,17 +1681,18 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     SiteRequest siteRequest = oAnsibleProject.getSiteRequest_();
 
     oAnsibleProject.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oAnsibleProject.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
-    oAnsibleProject.setOrganizationId(Optional.ofNullable(doc.get("organizationId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setSourceControlType(Optional.ofNullable(doc.get("sourceControlType_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setSourceControlUrl(Optional.ofNullable(doc.get("sourceControlUrl_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setSourceControlBranch(Optional.ofNullable(doc.get("sourceControlBranch_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setAnsibleProjectName(Optional.ofNullable(doc.get("ansibleProjectName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setAnsibleProjectId(Optional.ofNullable(doc.get("ansibleProjectId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oAnsibleProject.setAnsibleProjectResource(Optional.ofNullable(doc.get("ansibleProjectResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setAapProjectId(Optional.ofNullable(doc.get("aapProjectId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oAnsibleProject.setAnsibleProjectDescription(Optional.ofNullable(doc.get("ansibleProjectDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
-    Optional.ofNullable((List<?>)doc.get("jobTemplateIds_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
-      oAnsibleProject.addJobTemplateIds(AnsibleProject.staticSetJobTemplateIds(siteRequest, v.toString()));
+    Optional.ofNullable((List<?>)doc.get("jobTemplateResources_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oAnsibleProject.addJobTemplateResources(AnsibleProject.staticSetJobTemplateResources(siteRequest, v.toString()));
     });
 
     super.storeBaseModel(doc);
@@ -1582,10 +1709,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       AnsibleProject original = (AnsibleProject)o;
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
+      if(!Objects.equals(tenantId, original.getTenantId()))
+        apiRequest.addVars("tenantId");
       if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
         apiRequest.addVars("aapOrganizationId");
-      if(!Objects.equals(organizationId, original.getOrganizationId()))
-        apiRequest.addVars("organizationId");
       if(!Objects.equals(sourceControlType, original.getSourceControlType()))
         apiRequest.addVars("sourceControlType");
       if(!Objects.equals(sourceControlUrl, original.getSourceControlUrl()))
@@ -1596,12 +1723,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         apiRequest.addVars("ansibleProjectName");
       if(!Objects.equals(ansibleProjectId, original.getAnsibleProjectId()))
         apiRequest.addVars("ansibleProjectId");
+      if(!Objects.equals(ansibleProjectResource, original.getAnsibleProjectResource()))
+        apiRequest.addVars("ansibleProjectResource");
       if(!Objects.equals(aapProjectId, original.getAapProjectId()))
         apiRequest.addVars("aapProjectId");
       if(!Objects.equals(ansibleProjectDescription, original.getAnsibleProjectDescription()))
         apiRequest.addVars("ansibleProjectDescription");
-      if(!Objects.equals(jobTemplateIds, original.getJobTemplateIds()))
-        apiRequest.addVars("jobTemplateIds");
+      if(!Objects.equals(jobTemplateResources, original.getJobTemplateResources()))
+        apiRequest.addVars("jobTemplateResources");
       super.apiRequestBaseModel();
     }
   }
@@ -1614,16 +1743,17 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
-    sb.append(Optional.ofNullable(organizationId).map(v -> "organizationId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(sourceControlType).map(v -> "sourceControlType: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(sourceControlUrl).map(v -> "sourceControlUrl: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(sourceControlBranch).map(v -> "sourceControlBranch: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(ansibleProjectName).map(v -> "ansibleProjectName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(ansibleProjectId).map(v -> "ansibleProjectId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(ansibleProjectResource).map(v -> "ansibleProjectResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapProjectId).map(v -> "aapProjectId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(ansibleProjectDescription).map(v -> "ansibleProjectDescription: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(jobTemplateIds).map(v -> "jobTemplateIds: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(jobTemplateResources).map(v -> "jobTemplateResources: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1635,16 +1765,29 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return CLASS_API_ADDRESS_AnsibleProject;
   }
   public static final String VAR_tenantResource = "tenantResource";
+  public static final String SET_tenantResource = "setTenantResource";
+  public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
-  public static final String VAR_organizationId = "organizationId";
+  public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_sourceControlType = "sourceControlType";
+  public static final String SET_sourceControlType = "setSourceControlType";
   public static final String VAR_sourceControlUrl = "sourceControlUrl";
+  public static final String SET_sourceControlUrl = "setSourceControlUrl";
   public static final String VAR_sourceControlBranch = "sourceControlBranch";
+  public static final String SET_sourceControlBranch = "setSourceControlBranch";
   public static final String VAR_ansibleProjectName = "ansibleProjectName";
+  public static final String SET_ansibleProjectName = "setAnsibleProjectName";
   public static final String VAR_ansibleProjectId = "ansibleProjectId";
+  public static final String SET_ansibleProjectId = "setAnsibleProjectId";
+  public static final String VAR_ansibleProjectResource = "ansibleProjectResource";
+  public static final String SET_ansibleProjectResource = "setAnsibleProjectResource";
   public static final String VAR_aapProjectId = "aapProjectId";
+  public static final String SET_aapProjectId = "setAapProjectId";
   public static final String VAR_ansibleProjectDescription = "ansibleProjectDescription";
-  public static final String VAR_jobTemplateIds = "jobTemplateIds";
+  public static final String SET_ansibleProjectDescription = "setAnsibleProjectDescription";
+  public static final String VAR_jobTemplateResources = "jobTemplateResources";
+  public static final String SET_jobTemplateResources = "setJobTemplateResources";
 
   public static List<String> varsQForClass() {
     return AnsibleProject.varsQAnsibleProject(new ArrayList<String>());
@@ -1658,6 +1801,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return AnsibleProject.varsFqAnsibleProject(new ArrayList<String>());
   }
   public static List<String> varsFqAnsibleProject(List<String> vars) {
+    vars.add(VAR_tenantId);
     BaseModel.varsFqBaseModel(vars);
     return vars;
   }
@@ -1671,20 +1815,21 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   }
 
   public static final String DISPLAY_NAME_tenantResource = "tenant";
+  public static final String DISPLAY_NAME_tenantId = "tenant ID";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP organization ID";
-  public static final String DISPLAY_NAME_organizationId = "organization ID";
   public static final String DISPLAY_NAME_sourceControlType = "source control type";
   public static final String DISPLAY_NAME_sourceControlUrl = "source control URL";
   public static final String DISPLAY_NAME_sourceControlBranch = "source control branch";
   public static final String DISPLAY_NAME_ansibleProjectName = "ansible project name";
-  public static final String DISPLAY_NAME_ansibleProjectId = "Ansib project ID";
+  public static final String DISPLAY_NAME_ansibleProjectId = "Ansible project ID";
+  public static final String DISPLAY_NAME_ansibleProjectResource = "project resource";
   public static final String DISPLAY_NAME_aapProjectId = "AAP project ID";
   public static final String DISPLAY_NAME_ansibleProjectDescription = "ansible project description";
-  public static final String DISPLAY_NAME_jobTemplateIds = "job templates";
+  public static final String DISPLAY_NAME_jobTemplateResources = "job templates";
 
   @Override
   public String idForClass() {
-    return ansibleProjectId;
+    return ansibleProjectResource;
   }
 
   @Override
@@ -1712,19 +1857,38 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return "%s/en-us/edit/ansible-project/%s";
   }
 
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
+  public static String varJsonForClass(String var, Boolean patch) {
+    return AnsibleProject.varJsonAnsibleProject(var, patch);
   }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
+  public static String varJsonAnsibleProject(String var, Boolean patch) {
+    switch(var) {
+    case VAR_tenantResource:
+      return patch ? SET_tenantResource : VAR_tenantResource;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
+    case VAR_aapOrganizationId:
+      return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
+    case VAR_sourceControlType:
+      return patch ? SET_sourceControlType : VAR_sourceControlType;
+    case VAR_sourceControlUrl:
+      return patch ? SET_sourceControlUrl : VAR_sourceControlUrl;
+    case VAR_sourceControlBranch:
+      return patch ? SET_sourceControlBranch : VAR_sourceControlBranch;
+    case VAR_ansibleProjectName:
+      return patch ? SET_ansibleProjectName : VAR_ansibleProjectName;
+    case VAR_ansibleProjectId:
+      return patch ? SET_ansibleProjectId : VAR_ansibleProjectId;
+    case VAR_ansibleProjectResource:
+      return patch ? SET_ansibleProjectResource : VAR_ansibleProjectResource;
+    case VAR_aapProjectId:
+      return patch ? SET_aapProjectId : VAR_aapProjectId;
+    case VAR_ansibleProjectDescription:
+      return patch ? SET_ansibleProjectDescription : VAR_ansibleProjectDescription;
+    case VAR_jobTemplateResources:
+      return patch ? SET_jobTemplateResources : VAR_jobTemplateResources;
+    default:
+      return BaseModel.varJsonBaseModel(var, patch);
+    }
   }
 
   public static String displayNameForClass(String var) {
@@ -1734,10 +1898,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
+    case VAR_tenantId:
+      return DISPLAY_NAME_tenantId;
     case VAR_aapOrganizationId:
       return DISPLAY_NAME_aapOrganizationId;
-    case VAR_organizationId:
-      return DISPLAY_NAME_organizationId;
     case VAR_sourceControlType:
       return DISPLAY_NAME_sourceControlType;
     case VAR_sourceControlUrl:
@@ -1748,12 +1912,14 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return DISPLAY_NAME_ansibleProjectName;
     case VAR_ansibleProjectId:
       return DISPLAY_NAME_ansibleProjectId;
+    case VAR_ansibleProjectResource:
+      return DISPLAY_NAME_ansibleProjectResource;
     case VAR_aapProjectId:
       return DISPLAY_NAME_aapProjectId;
     case VAR_ansibleProjectDescription:
       return DISPLAY_NAME_ansibleProjectDescription;
-    case VAR_jobTemplateIds:
-      return DISPLAY_NAME_jobTemplateIds;
+    case VAR_jobTemplateResources:
+      return DISPLAY_NAME_jobTemplateResources;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -1765,10 +1931,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
+    case VAR_tenantId:
+      return "The ID of this tenant";
     case VAR_aapOrganizationId:
       return "The ID of the ansible organization in AAP. ";
-    case VAR_organizationId:
-      return "The ID of the ansible organization. ";
     case VAR_sourceControlType:
       return "The type of source source control to use. ";
     case VAR_sourceControlUrl:
@@ -1779,11 +1945,13 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return "The name of the ansible project (may only contain letters, numbers, periods, colons, and dashes). ";
     case VAR_ansibleProjectId:
       return "The ID of the Ansible project in DCM. ";
+    case VAR_ansibleProjectResource:
+      return "The unique authorization resource for the Ansible project for multi-tenancy";
     case VAR_aapProjectId:
       return "The Ansible project ID in Ansible Automation Platform. ";
     case VAR_ansibleProjectDescription:
       return "The description of the ansible project. ";
-    case VAR_jobTemplateIds:
+    case VAR_jobTemplateResources:
       return "The related job templates for this Ansible project. ";
       default:
         return BaseModel.descriptionBaseModel(var);
@@ -1794,10 +1962,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return "String";
+    case VAR_tenantId:
+      return "String";
     case VAR_aapOrganizationId:
       return "Long";
-    case VAR_organizationId:
-      return "String";
     case VAR_sourceControlType:
       return "String";
     case VAR_sourceControlUrl:
@@ -1808,11 +1976,13 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return "String";
     case VAR_ansibleProjectId:
       return "String";
+    case VAR_ansibleProjectResource:
+      return "String";
     case VAR_aapProjectId:
       return "Long";
     case VAR_ansibleProjectDescription:
       return "String";
-    case VAR_jobTemplateIds:
+    case VAR_jobTemplateResources:
       return "List";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
@@ -1836,8 +2006,6 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 3;
-    case VAR_organizationId:
-      return 3;
     case VAR_sourceControlType:
       return 4;
     case VAR_sourceControlUrl:
@@ -1848,7 +2016,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return 5;
     case VAR_ansibleProjectDescription:
       return 4;
-    case VAR_jobTemplateIds:
+    case VAR_jobTemplateResources:
       return 4;
       default:
         return BaseModel.htmRowBaseModel(var);
@@ -1859,8 +2027,6 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 0;
-    case VAR_organizationId:
-      return 1;
     case VAR_sourceControlType:
       return 0;
     case VAR_sourceControlUrl:
@@ -1871,7 +2037,7 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return 0;
     case VAR_ansibleProjectDescription:
       return 1;
-    case VAR_jobTemplateIds:
+    case VAR_jobTemplateResources:
       return 2;
       default:
         return BaseModel.htmCellBaseModel(var);

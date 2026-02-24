@@ -61,6 +61,8 @@ import org.computate.vertx.config.ComputateConfigKeys;
 import io.vertx.ext.reactivestreams.ReactiveReadStream;
 import io.vertx.ext.reactivestreams.ReactiveWriteStream;
 import io.vertx.core.MultiMap;
+import org.computate.i18n.I18n;
+import org.yaml.snakeyaml.Yaml;
 import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,19 +126,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -149,16 +157,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -180,7 +189,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, false, true, false).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, false, true, false, "GET").onSuccess(listAiTelemetryPlatform -> {
                 response200SearchAiTelemetryPlatform(listAiTelemetryPlatform).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchAiTelemetryPlatform succeeded. "));
@@ -235,6 +244,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       List<String> fls = listAiTelemetryPlatform.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
+      List<String> scopes = siteRequest.getScopes();
       listAiTelemetryPlatform.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
@@ -261,15 +271,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       });
       json.put("list", l);
       response200Search(listAiTelemetryPlatform.getRequest(), listAiTelemetryPlatform.getResponse(), json);
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200SearchAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -321,19 +323,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -346,16 +354,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -377,7 +386,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, false, true, false).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, false, true, false, "GET").onSuccess(listAiTelemetryPlatform -> {
                 response200GETAiTelemetryPlatform(listAiTelemetryPlatform).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("getAiTelemetryPlatform succeeded. "));
@@ -430,15 +439,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
       JsonObject json = JsonObject.mapFrom(listAiTelemetryPlatform.getList().stream().findFirst().orElse(null));
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200GETAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -457,19 +458,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "PATCH"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -482,16 +489,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PATCH") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PATCH")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -525,7 +533,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, true, false, true).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, true, false, true, "PATCH").onSuccess(listAiTelemetryPlatform -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listAiTelemetryPlatform.getRequest().getRows());
@@ -651,7 +659,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             siteRequest.addScopes(scope);
           });
         });
-        searchAiTelemetryPlatformList(siteRequest, false, true, true).onSuccess(listAiTelemetryPlatform -> {
+        searchAiTelemetryPlatformList(siteRequest, false, true, true, "PATCH").onSuccess(listAiTelemetryPlatform -> {
           try {
             AiTelemetryPlatform o = listAiTelemetryPlatform.first();
             ApiRequest apiRequest = new ApiRequest();
@@ -732,15 +740,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PATCHAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -759,19 +759,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "POST"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -784,16 +790,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("POST") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(POST)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("POST")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -837,6 +844,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               JsonObject params = new JsonObject();
               params.put("body", siteRequest.getJsonObject());
               params.put("path", new JsonObject());
+              params.put("scopes", scopes2);
               params.put("cookie", siteRequest.getServiceRequest().getParams().getJsonObject("cookie"));
               params.put("header", siteRequest.getServiceRequest().getParams().getJsonObject("header"));
               params.put("form", new JsonObject());
@@ -981,15 +989,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200POSTAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -1008,19 +1008,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1033,16 +1039,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1076,7 +1083,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, true, false, true).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, true, false, true, "DELETE").onSuccess(listAiTelemetryPlatform -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listAiTelemetryPlatform.getRequest().getRows());
@@ -1201,7 +1208,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             siteRequest.addScopes(scope);
           });
         });
-        searchAiTelemetryPlatformList(siteRequest, false, true, true).onSuccess(listAiTelemetryPlatform -> {
+        searchAiTelemetryPlatformList(siteRequest, false, true, true, "DELETE").onSuccess(listAiTelemetryPlatform -> {
           try {
             AiTelemetryPlatform o = listAiTelemetryPlatform.first();
             if(o != null && listAiTelemetryPlatform.getResponse().getResponse().getNumFound() == 1) {
@@ -1265,15 +1272,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -1292,19 +1291,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "PUT"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1317,16 +1322,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PUT") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PUT)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("PUT")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1605,15 +1611,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200PUTImportAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -1633,19 +1631,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1658,16 +1662,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1689,7 +1694,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, false, true, false).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, false, true, false, "GET").onSuccess(listAiTelemetryPlatform -> {
                 response200SearchPageAiTelemetryPlatform(listAiTelemetryPlatform).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("searchpageAiTelemetryPlatform succeeded. "));
@@ -1774,27 +1779,80 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateUriSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
     return "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm";
   }
-  public String templateSearchPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
-    String template = null;
+  public void templateSearchPageAiTelemetryPlatform(JsonObject ctx, AiTelemetryPlatformPage page, SearchList<AiTelemetryPlatform> listAiTelemetryPlatform, Promise<String> promise) {
     try {
-      String pageTemplateUri = templateUriSearchPageAiTelemetryPlatform(serviceRequest);
+      SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      AiTelemetryPlatform result = listAiTelemetryPlatform.first();
+      String pageTemplateUri = templateUriSearchPageAiTelemetryPlatform(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
+        Map<String, Object> data = new HashMap<>();
+        String body = "";
+        if(template.startsWith("---\n")) {
+          Matcher mMeta = Pattern.compile("---\n([\\w\\W]+?)\n---\n([\\w\\W]+)", Pattern.MULTILINE).matcher(template);
+          if(mMeta.find()) {
+            String meta = mMeta.group(1);
+            body = mMeta.group(2);
+            Yaml yaml = new Yaml();
+            Map<String, Object> map = yaml.load(meta);
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+          }
+        }
+        org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().build();
+        org.commonmark.node.Node document = parser.parse(body);
+        org.commonmark.renderer.html.HtmlRenderer renderer = org.commonmark.renderer.html.HtmlRenderer.builder().build();
+        String pageExtends =  Optional.ofNullable((String)data.get("extends")).orElse("en-us/Article.htm");
+        String htmTemplate = "{% extends \"" + pageExtends + "\" %}\n{% block htmBodyMiddleArticle %}\n" + renderer.render(document) + "\n{% endblock htmBodyMiddleArticle %}\n";
+        String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      }
     } catch(Exception ex) {
       LOG.error(String.format("templateSearchPageAiTelemetryPlatform failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
-    return template;
   }
   public Future<ServiceResponse> response200SearchPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String template = templateSearchPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -1811,9 +1869,19 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           searchpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            String renderedTemplate = jinjava.render(template, ctx.getMap());
-            Buffer buffer = Buffer.buffer(renderedTemplate);
-            promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+            Promise<String> promise2 = Promise.promise();
+            templateSearchPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+            promise2.future().onSuccess(renderedTemplate -> {
+              try {
+                Buffer buffer = Buffer.buffer(renderedTemplate);
+                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+              } catch(Throwable ex) {
+                LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
+                promise.fail(ex);
+              }
+            }).onFailure(ex -> {
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -1875,20 +1943,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, pageId, "GET"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1901,16 +1974,16 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
-              //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1932,7 +2005,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, false, true, false).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, false, true, false, "GET").onSuccess(listAiTelemetryPlatform -> {
                 response200EditPageAiTelemetryPlatform(listAiTelemetryPlatform).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("editpageAiTelemetryPlatform succeeded. "));
@@ -1993,27 +2066,80 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateUriEditPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriEditPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
     return "en-us/edit/ai-telemetry-platform/AiTelemetryPlatformEditPage.htm";
   }
-  public String templateEditPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
-    String template = null;
+  public void templateEditPageAiTelemetryPlatform(JsonObject ctx, AiTelemetryPlatformPage page, SearchList<AiTelemetryPlatform> listAiTelemetryPlatform, Promise<String> promise) {
     try {
-      String pageTemplateUri = templateUriEditPageAiTelemetryPlatform(serviceRequest);
+      SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      AiTelemetryPlatform result = listAiTelemetryPlatform.first();
+      String pageTemplateUri = templateUriEditPageAiTelemetryPlatform(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
+        Map<String, Object> data = new HashMap<>();
+        String body = "";
+        if(template.startsWith("---\n")) {
+          Matcher mMeta = Pattern.compile("---\n([\\w\\W]+?)\n---\n([\\w\\W]+)", Pattern.MULTILINE).matcher(template);
+          if(mMeta.find()) {
+            String meta = mMeta.group(1);
+            body = mMeta.group(2);
+            Yaml yaml = new Yaml();
+            Map<String, Object> map = yaml.load(meta);
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+          }
+        }
+        org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().build();
+        org.commonmark.node.Node document = parser.parse(body);
+        org.commonmark.renderer.html.HtmlRenderer renderer = org.commonmark.renderer.html.HtmlRenderer.builder().build();
+        String pageExtends =  Optional.ofNullable((String)data.get("extends")).orElse("en-us/Article.htm");
+        String htmTemplate = "{% extends \"" + pageExtends + "\" %}\n{% block htmBodyMiddleArticle %}\n" + renderer.render(document) + "\n{% endblock htmBodyMiddleArticle %}\n";
+        String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      }
     } catch(Exception ex) {
       LOG.error(String.format("templateEditPageAiTelemetryPlatform failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
-    return template;
   }
   public Future<ServiceResponse> response200EditPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String template = templateEditPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2030,9 +2156,19 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           editpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            String renderedTemplate = jinjava.render(template, ctx.getMap());
-            Buffer buffer = Buffer.buffer(renderedTemplate);
-            promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+            Promise<String> promise2 = Promise.promise();
+            templateEditPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+            promise2.future().onSuccess(renderedTemplate -> {
+              try {
+                Buffer buffer = Buffer.buffer(renderedTemplate);
+                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+              } catch(Throwable ex) {
+                LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
+                promise.fail(ex);
+              }
+            }).onFailure(ex -> {
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -2094,20 +2230,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
-        form.add("permission", String.format("%s-%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, pageId, "GET"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2120,16 +2261,16 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET") && !classPublicRead) {
-              //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2151,7 +2292,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, false, true, false).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, false, true, false, "GET").onSuccess(listAiTelemetryPlatform -> {
                 response200UserPageAiTelemetryPlatform(listAiTelemetryPlatform).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
                   LOG.debug(String.format("userpageAiTelemetryPlatform succeeded. "));
@@ -2212,27 +2353,80 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     promise.complete();
   }
 
-  public String templateUriUserPageAiTelemetryPlatform(ServiceRequest serviceRequest) {
+  public String templateUriUserPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
     return String.format("%s.htm", StringUtils.substringBefore(serviceRequest.getExtra().getString("uri").substring(1), "?"));
   }
-  public String templateUserPageAiTelemetryPlatform(ServiceRequest serviceRequest, AiTelemetryPlatform result) {
-    String template = null;
+  public void templateUserPageAiTelemetryPlatform(JsonObject ctx, AiTelemetryPlatformPage page, SearchList<AiTelemetryPlatform> listAiTelemetryPlatform, Promise<String> promise) {
     try {
-      String pageTemplateUri = templateUriUserPageAiTelemetryPlatform(serviceRequest);
+      SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      AiTelemetryPlatform result = listAiTelemetryPlatform.first();
+      String pageTemplateUri = templateUriUserPageAiTelemetryPlatform(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
-      template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+      if(result == null || !Files.exists(resourceTemplatePath)) {
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm"), Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else if(pageTemplateUri.endsWith(".md")) {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String metaPrefixResult = String.format("%s.", i18n.getString(I18n.var_resultat));
+        Map<String, Object> data = new HashMap<>();
+        String body = "";
+        if(template.startsWith("---\n")) {
+          Matcher mMeta = Pattern.compile("---\n([\\w\\W]+?)\n---\n([\\w\\W]+)", Pattern.MULTILINE).matcher(template);
+          if(mMeta.find()) {
+            String meta = mMeta.group(1);
+            body = mMeta.group(2);
+            Yaml yaml = new Yaml();
+            Map<String, Object> map = yaml.load(meta);
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+            map.forEach((resultKey, value) -> {
+              if(resultKey.startsWith(metaPrefixResult)) {
+                String key = StringUtils.substringAfter(resultKey, metaPrefixResult);
+                String val = Optional.ofNullable(value).map(v -> v.toString()).orElse(null);
+                if(val instanceof String) {
+                  String rendered = jinjava.render(val, ctx.getMap());
+                  data.put(key, rendered);
+                } else {
+                  data.put(key, val);
+                }
+              }
+            });
+          }
+        }
+        org.commonmark.parser.Parser parser = org.commonmark.parser.Parser.builder().build();
+        org.commonmark.node.Node document = parser.parse(body);
+        org.commonmark.renderer.html.HtmlRenderer renderer = org.commonmark.renderer.html.HtmlRenderer.builder().build();
+        String pageExtends =  Optional.ofNullable((String)data.get("extends")).orElse("en-us/Article.htm");
+        String htmTemplate = "{% extends \"" + pageExtends + "\" %}\n{% block htmBodyMiddleArticle %}\n" + renderer.render(document) + "\n{% endblock htmBodyMiddleArticle %}\n";
+        String renderedTemplate = jinjava.render(htmTemplate, ctx.getMap());
+        promise.complete(renderedTemplate);
+      } else {
+        String template = siteTemplatePath == null ? Resources.toString(Resources.getResource(resourceTemplatePath.toString()), StandardCharsets.UTF_8) : Files.readString(resourceTemplatePath, Charset.forName("UTF-8"));
+        String renderedTemplate = jinjava.render(template, ctx.getMap());
+        promise.complete(renderedTemplate);
+      }
     } catch(Exception ex) {
       LOG.error(String.format("templateUserPageAiTelemetryPlatform failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
-    return template;
   }
   public Future<ServiceResponse> response200UserPageAiTelemetryPlatform(SearchList<AiTelemetryPlatform> listAiTelemetryPlatform) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = listAiTelemetryPlatform.getSiteRequest_(SiteRequest.class);
-      String template = templateUserPageAiTelemetryPlatform(siteRequest.getServiceRequest(), listAiTelemetryPlatform.first());
       AiTelemetryPlatformPage page = new AiTelemetryPlatformPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
@@ -2249,9 +2443,19 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           userpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            String renderedTemplate = jinjava.render(template, ctx.getMap());
-            Buffer buffer = Buffer.buffer(renderedTemplate);
-            promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+            Promise<String> promise2 = Promise.promise();
+            templateUserPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+            promise2.future().onSuccess(renderedTemplate -> {
+              try {
+                Buffer buffer = Buffer.buffer(renderedTemplate);
+                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+              } catch(Throwable ex) {
+                LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
+                promise.fail(ex);
+              }
+            }).onFailure(ex -> {
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -2314,19 +2518,25 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         siteRequest.setLang("enUS");
         String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
         String AITELEMETRYPLATFORM = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("AITELEMETRYPLATFORM");
+        List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_ADMIN)));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, config.getString(ComputateConfigKeys.AUTH_SCOPE_SUPER_ADMIN)));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "GET"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "PUT"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2339,16 +2549,17 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         .onComplete(authorizationDecisionResponse -> {
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
-            JsonArray scopes = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray().stream().findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "AITELEMETRYPLATFORM".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE") && !classPublicRead) {
               //
               List<String> fqs = new ArrayList<>();
-              List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
-              groups.stream().map(group -> {
-                    Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
-                    return mPermission.find() ? mPermission.group(1) : null;
-                  }).filter(v -> v != null).forEach(value -> {
-                    fqs.add(String.format("%s:%s", "hubResource", value));
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(AITELEMETRYPLATFORM-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("DELETE")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2382,7 +2593,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchAiTelemetryPlatformList(siteRequest, true, false, true).onSuccess(listAiTelemetryPlatform -> {
+              searchAiTelemetryPlatformList(siteRequest, true, false, true, "DELETE").onSuccess(listAiTelemetryPlatform -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
                   apiRequest.setRows(listAiTelemetryPlatform.getRequest().getRows());
@@ -2507,7 +2718,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
             siteRequest.addScopes(scope);
           });
         });
-        searchAiTelemetryPlatformList(siteRequest, false, true, true).onSuccess(listAiTelemetryPlatform -> {
+        searchAiTelemetryPlatformList(siteRequest, false, true, true, "DELETE").onSuccess(listAiTelemetryPlatform -> {
           try {
             AiTelemetryPlatform o = listAiTelemetryPlatform.first();
             if(o != null && listAiTelemetryPlatform.getResponse().getResponse().getNumFound() == 1) {
@@ -2571,15 +2782,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
-      if(json == null) {
-        String pageId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("pageId");
-        String m = String.format("%s %s not found", "AI Telemetry developer", pageId);
-        promise.complete(new ServiceResponse(404
-            , m
-            , Buffer.buffer(new JsonObject().put("message", m).encodePrettily()), null));
-      } else {
-        promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
-      }
+      promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
       LOG.error(String.format("response200DELETEFilterAiTelemetryPlatform failed. "), ex);
       promise.tryFail(ex);
@@ -2674,13 +2877,14 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
     return promise.future();
   }
 
-  public Future<SearchList<AiTelemetryPlatform>> searchAiTelemetryPlatformList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify) {
+  public Future<SearchList<AiTelemetryPlatform>> searchAiTelemetryPlatformList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, String scope) {
     Promise<SearchList<AiTelemetryPlatform>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
       SearchList<AiTelemetryPlatform> searchList = new SearchList<AiTelemetryPlatform>();
+      searchList.setScope(scope);
       String facetRange = null;
       Date facetRangeStart = null;
       Date facetRangeEnd = null;
@@ -3026,36 +3230,36 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
       SiteRequest siteRequest2 = (SiteRequest)siteRequest;
       String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-      AiTelemetryPlatform page = new AiTelemetryPlatform();
-      page.setSiteRequest_((SiteRequest)siteRequest);
+      AiTelemetryPlatform o = new AiTelemetryPlatform();
+      o.setSiteRequest_((SiteRequest)siteRequest);
 
-      page.persistForClass(AiTelemetryPlatform.VAR_created, AiTelemetryPlatform.staticSetCreated(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      page.persistForClass(AiTelemetryPlatform.VAR_name, AiTelemetryPlatform.staticSetName(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_name)));
-      page.persistForClass(AiTelemetryPlatform.VAR_description, AiTelemetryPlatform.staticSetDescription(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_description)));
-      page.persistForClass(AiTelemetryPlatform.VAR_archived, AiTelemetryPlatform.staticSetArchived(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_archived)));
-      page.persistForClass(AiTelemetryPlatform.VAR_pageId, AiTelemetryPlatform.staticSetPageId(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageId)));
-      page.persistForClass(AiTelemetryPlatform.VAR_hubResource, AiTelemetryPlatform.staticSetHubResource(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_hubResource)));
-      page.persistForClass(AiTelemetryPlatform.VAR_courseNum, AiTelemetryPlatform.staticSetCourseNum(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_courseNum)));
-      page.persistForClass(AiTelemetryPlatform.VAR_lessonNum, AiTelemetryPlatform.staticSetLessonNum(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_lessonNum)));
-      page.persistForClass(AiTelemetryPlatform.VAR_authorName, AiTelemetryPlatform.staticSetAuthorName(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_authorName)));
-      page.persistForClass(AiTelemetryPlatform.VAR_authorUrl, AiTelemetryPlatform.staticSetAuthorUrl(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_authorUrl)));
-      page.persistForClass(AiTelemetryPlatform.VAR_objectTitle, AiTelemetryPlatform.staticSetObjectTitle(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_objectTitle)));
-      page.persistForClass(AiTelemetryPlatform.VAR_pageImageUri, AiTelemetryPlatform.staticSetPageImageUri(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageImageUri)));
-      page.persistForClass(AiTelemetryPlatform.VAR_displayPage, AiTelemetryPlatform.staticSetDisplayPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_displayPage)));
-      page.persistForClass(AiTelemetryPlatform.VAR_editPage, AiTelemetryPlatform.staticSetEditPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_editPage)));
-      page.persistForClass(AiTelemetryPlatform.VAR_userPage, AiTelemetryPlatform.staticSetUserPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_userPage)));
-      page.persistForClass(AiTelemetryPlatform.VAR_download, AiTelemetryPlatform.staticSetDownload(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_download)));
-      page.persistForClass(AiTelemetryPlatform.VAR_pageImageAlt, AiTelemetryPlatform.staticSetPageImageAlt(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageImageAlt)));
-      page.persistForClass(AiTelemetryPlatform.VAR_prerequisiteArticleIds, AiTelemetryPlatform.staticSetPrerequisiteArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_prerequisiteArticleIds)));
-      page.persistForClass(AiTelemetryPlatform.VAR_solrId, AiTelemetryPlatform.staticSetSolrId(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_solrId)));
-      page.persistForClass(AiTelemetryPlatform.VAR_nextArticleIds, AiTelemetryPlatform.staticSetNextArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_nextArticleIds)));
-      page.persistForClass(AiTelemetryPlatform.VAR_labelsString, AiTelemetryPlatform.staticSetLabelsString(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_labelsString)));
-      page.persistForClass(AiTelemetryPlatform.VAR_labels, AiTelemetryPlatform.staticSetLabels(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_labels)));
-      page.persistForClass(AiTelemetryPlatform.VAR_relatedArticleIds, AiTelemetryPlatform.staticSetRelatedArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_relatedArticleIds)));
+      o.persistForClass(AiTelemetryPlatform.VAR_created, AiTelemetryPlatform.staticSetCreated(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(AiTelemetryPlatform.VAR_name, AiTelemetryPlatform.staticSetName(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_name)));
+      o.persistForClass(AiTelemetryPlatform.VAR_description, AiTelemetryPlatform.staticSetDescription(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_description)));
+      o.persistForClass(AiTelemetryPlatform.VAR_archived, AiTelemetryPlatform.staticSetArchived(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_archived)));
+      o.persistForClass(AiTelemetryPlatform.VAR_pageId, AiTelemetryPlatform.staticSetPageId(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageId)));
+      o.persistForClass(AiTelemetryPlatform.VAR_hubResource, AiTelemetryPlatform.staticSetHubResource(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_hubResource)));
+      o.persistForClass(AiTelemetryPlatform.VAR_courseNum, AiTelemetryPlatform.staticSetCourseNum(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_courseNum)));
+      o.persistForClass(AiTelemetryPlatform.VAR_lessonNum, AiTelemetryPlatform.staticSetLessonNum(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_lessonNum)));
+      o.persistForClass(AiTelemetryPlatform.VAR_authorName, AiTelemetryPlatform.staticSetAuthorName(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_authorName)));
+      o.persistForClass(AiTelemetryPlatform.VAR_authorUrl, AiTelemetryPlatform.staticSetAuthorUrl(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_authorUrl)));
+      o.persistForClass(AiTelemetryPlatform.VAR_objectTitle, AiTelemetryPlatform.staticSetObjectTitle(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_objectTitle)));
+      o.persistForClass(AiTelemetryPlatform.VAR_pageImageUri, AiTelemetryPlatform.staticSetPageImageUri(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageImageUri)));
+      o.persistForClass(AiTelemetryPlatform.VAR_displayPage, AiTelemetryPlatform.staticSetDisplayPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_displayPage)));
+      o.persistForClass(AiTelemetryPlatform.VAR_editPage, AiTelemetryPlatform.staticSetEditPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_editPage)));
+      o.persistForClass(AiTelemetryPlatform.VAR_userPage, AiTelemetryPlatform.staticSetUserPage(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_userPage)));
+      o.persistForClass(AiTelemetryPlatform.VAR_download, AiTelemetryPlatform.staticSetDownload(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_download)));
+      o.persistForClass(AiTelemetryPlatform.VAR_pageImageAlt, AiTelemetryPlatform.staticSetPageImageAlt(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_pageImageAlt)));
+      o.persistForClass(AiTelemetryPlatform.VAR_prerequisiteArticleIds, AiTelemetryPlatform.staticSetPrerequisiteArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_prerequisiteArticleIds)));
+      o.persistForClass(AiTelemetryPlatform.VAR_solrId, AiTelemetryPlatform.staticSetSolrId(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_solrId)));
+      o.persistForClass(AiTelemetryPlatform.VAR_nextArticleIds, AiTelemetryPlatform.staticSetNextArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_nextArticleIds)));
+      o.persistForClass(AiTelemetryPlatform.VAR_labelsString, AiTelemetryPlatform.staticSetLabelsString(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_labelsString)));
+      o.persistForClass(AiTelemetryPlatform.VAR_labels, AiTelemetryPlatform.staticSetLabels(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_labels)));
+      o.persistForClass(AiTelemetryPlatform.VAR_relatedArticleIds, AiTelemetryPlatform.staticSetRelatedArticleIds(siteRequest2, (String)result.get(AiTelemetryPlatform.VAR_relatedArticleIds)));
 
-      page.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o -> {
+      o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
         try {
-          JsonObject data = JsonObject.mapFrom(o);
+          JsonObject data = JsonObject.mapFrom(o2);
           ctx.put("result", data.getMap());
           promise.complete(data);
         } catch(Exception ex) {

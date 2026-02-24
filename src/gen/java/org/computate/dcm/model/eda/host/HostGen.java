@@ -1887,18 +1887,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   }
 
   @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
   public String enUSStringFormatUrlUserPageForClass() {
     return "%s/en-us/user/host/%s";
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
   }
 
   public static String varJsonForClass(String var, Boolean patch) {

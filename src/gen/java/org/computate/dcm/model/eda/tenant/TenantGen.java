@@ -39,6 +39,7 @@ import java.lang.String;
 import java.lang.Long;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import io.vertx.core.json.JsonArray;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -800,6 +801,93 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return a;
   }
 
+	///////////////////////
+  // ansibleProjectIds //
+	///////////////////////
+
+
+  /**
+   *  The entity ansibleProjectIds
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> ansibleProjectIds = new ArrayList<String>();
+
+  /**
+   * <br> The entity ansibleProjectIds
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:ansibleProjectIds">Find the entity ansibleProjectIds in Solr</a>
+   * <br>
+   * @param l is the entity already constructed. 
+   **/
+  protected abstract void _ansibleProjectIds(List<String> l);
+
+  public List<String> getAnsibleProjectIds() {
+    return ansibleProjectIds;
+  }
+
+  public void setAnsibleProjectIds(List<String> ansibleProjectIds) {
+    this.ansibleProjectIds = ansibleProjectIds;
+  }
+  @JsonIgnore
+  public void setAnsibleProjectIds(String o) {
+    String l = Tenant.staticSetAnsibleProjectIds(siteRequest_, o);
+    if(l != null)
+      addAnsibleProjectIds(l);
+  }
+  public static String staticSetAnsibleProjectIds(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public Tenant addAnsibleProjectIds(String...objects) {
+    for(String o : objects) {
+      addAnsibleProjectIds(o);
+    }
+    return (Tenant)this;
+  }
+  public Tenant addAnsibleProjectIds(String o) {
+    if(o != null)
+      this.ansibleProjectIds.add(o);
+    return (Tenant)this;
+  }
+  @JsonIgnore
+  public void setAnsibleProjectIds(JsonArray objects) {
+    ansibleProjectIds.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addAnsibleProjectIds(o);
+    }
+  }
+  protected Tenant ansibleProjectIdsInit() {
+    _ansibleProjectIds(ansibleProjectIds);
+    return (Tenant)this;
+  }
+
+  public static String staticSearchAnsibleProjectIds(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsibleProjectIds(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsibleProjectIds(SiteRequest siteRequest_, String o) {
+    return Tenant.staticSearchAnsibleProjectIds(siteRequest_, Tenant.staticSetAnsibleProjectIds(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlAnsibleProjectIds() {
+    return ansibleProjectIds.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonAnsibleProjectIds(List<String> ansibleProjectIds) {
+    JsonArray a = new JsonArray();
+    ansibleProjectIds.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -838,6 +926,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
         clusterNameInit();
         aapOrganizationIdInit();
         hostInventoryIdsInit();
+        ansibleProjectIdsInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -909,6 +998,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return oTenant.aapOrganizationId;
       case "hostInventoryIds":
         return oTenant.hostInventoryIds;
+      case "ansibleProjectIds":
+        return oTenant.ansibleProjectIds;
       default:
         return super.obtainBaseModel(var);
     }
@@ -938,6 +1029,11 @@ public abstract class TenantGen<DEV> extends BaseModel {
         oTenant.addHostInventoryIds((String)val);
         if(!saves.contains("hostInventoryIds"))
           saves.add("hostInventoryIds");
+        return val;
+      case "ansibleProjectIds":
+        oTenant.addAnsibleProjectIds((String)val);
+        if(!saves.contains("ansibleProjectIds"))
+          saves.add("ansibleProjectIds");
         return val;
       default:
         return super.relateBaseModel(var, val);
@@ -971,6 +1067,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSetAapOrganizationId(siteRequest_, v);
     case "hostInventoryIds":
       return Tenant.staticSetHostInventoryIds(siteRequest_, v);
+    case "ansibleProjectIds":
+      return Tenant.staticSetAnsibleProjectIds(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
@@ -1033,6 +1131,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchAapOrganizationId(siteRequest_, (Long)o);
     case "hostInventoryIds":
       return Tenant.staticSearchHostInventoryIds(siteRequest_, (String)o);
+    case "ansibleProjectIds":
+      return Tenant.staticSearchAnsibleProjectIds(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1065,6 +1165,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
     case "hostInventoryIds":
       return Tenant.staticSearchStrHostInventoryIds(siteRequest_, (String)o);
+    case "ansibleProjectIds":
+      return Tenant.staticSearchStrAnsibleProjectIds(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1097,6 +1199,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return Tenant.staticSearchFqAapOrganizationId(siteRequest_, o);
     case "hostInventoryIds":
       return Tenant.staticSearchFqHostInventoryIds(siteRequest_, o);
+    case "ansibleProjectIds":
+      return Tenant.staticSearchFqAnsibleProjectIds(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1241,6 +1345,10 @@ public abstract class TenantGen<DEV> extends BaseModel {
       List<String> hostInventoryIds = (List<String>)doc.get("hostInventoryIds_docvalues_strings");
       if(hostInventoryIds != null)
         oTenant.hostInventoryIds.addAll(hostInventoryIds);
+
+      List<String> ansibleProjectIds = (List<String>)doc.get("ansibleProjectIds_docvalues_strings");
+      if(ansibleProjectIds != null)
+        oTenant.ansibleProjectIds.addAll(ansibleProjectIds);
     }
 
     super.populateBaseModel(doc);
@@ -1278,6 +1386,13 @@ public abstract class TenantGen<DEV> extends BaseModel {
         l.add(Tenant.staticSearchHostInventoryIds(siteRequest_, o));
       }
     }
+    if(ansibleProjectIds != null) {
+      JsonArray l = new JsonArray();
+      doc.put("ansibleProjectIds_docvalues_strings", l);
+      for(String o : ansibleProjectIds) {
+        l.add(Tenant.staticSearchAnsibleProjectIds(siteRequest_, o));
+      }
+    }
     super.indexBaseModel(doc);
 
 	}
@@ -1302,6 +1417,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "aapOrganizationId_docvalues_long";
       case "hostInventoryIds":
         return "hostInventoryIds_docvalues_strings";
+      case "ansibleProjectIds":
+        return "ansibleProjectIds_docvalues_strings";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1327,6 +1444,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "aapOrganizationId_docvalues_long";
       case "hostInventoryIds":
         return "hostInventoryIds_docvalues_strings";
+      case "ansibleProjectIds":
+        return "ansibleProjectIds_docvalues_strings";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1352,6 +1471,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         return "aapOrganizationId";
       case "hostInventoryIds_docvalues_strings":
         return "hostInventoryIds";
+      case "ansibleProjectIds_docvalues_strings":
+        return "ansibleProjectIds";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1393,6 +1514,9 @@ public abstract class TenantGen<DEV> extends BaseModel {
     Optional.ofNullable((List<?>)doc.get("hostInventoryIds_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
       oTenant.addHostInventoryIds(Tenant.staticSetHostInventoryIds(siteRequest, v.toString()));
     });
+    Optional.ofNullable((List<?>)doc.get("ansibleProjectIds_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oTenant.addAnsibleProjectIds(Tenant.staticSetAnsibleProjectIds(siteRequest, v.toString()));
+    });
 
     super.storeBaseModel(doc);
   }
@@ -1424,6 +1548,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
         apiRequest.addVars("aapOrganizationId");
       if(!Objects.equals(hostInventoryIds, original.getHostInventoryIds()))
         apiRequest.addVars("hostInventoryIds");
+      if(!Objects.equals(ansibleProjectIds, original.getAnsibleProjectIds()))
+        apiRequest.addVars("ansibleProjectIds");
       super.apiRequestBaseModel();
     }
   }
@@ -1444,6 +1570,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(clusterName).map(v -> "clusterName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(hostInventoryIds).map(v -> "hostInventoryIds: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(ansibleProjectIds).map(v -> "ansibleProjectIds: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1472,6 +1599,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String SET_aapOrganizationId = "setAapOrganizationId";
   public static final String VAR_hostInventoryIds = "hostInventoryIds";
   public static final String SET_hostInventoryIds = "setHostInventoryIds";
+  public static final String VAR_ansibleProjectIds = "ansibleProjectIds";
+  public static final String SET_ansibleProjectIds = "setAnsibleProjectIds";
 
   public static List<String> varsQForClass() {
     return Tenant.varsQTenant(new ArrayList<String>());
@@ -1513,6 +1642,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_clusterName = "cluster name";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
   public static final String DISPLAY_NAME_hostInventoryIds = "host inventories";
+  public static final String DISPLAY_NAME_ansibleProjectIds = "Ansible projects";
 
   @Override
   public String idForClass() {
@@ -1544,21 +1674,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return "%s/en-us/edit/tenant/%s";
   }
 
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String varJsonForClass(String var, Boolean patch) {
     return Tenant.varJsonTenant(var, patch);
   }
@@ -1582,6 +1697,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
     case VAR_hostInventoryIds:
       return patch ? SET_hostInventoryIds : VAR_hostInventoryIds;
+    case VAR_ansibleProjectIds:
+      return patch ? SET_ansibleProjectIds : VAR_ansibleProjectIds;
     default:
       return BaseModel.varJsonBaseModel(var, patch);
     }
@@ -1610,6 +1727,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return DISPLAY_NAME_aapOrganizationId;
     case VAR_hostInventoryIds:
       return DISPLAY_NAME_hostInventoryIds;
+    case VAR_ansibleProjectIds:
+      return DISPLAY_NAME_ansibleProjectIds;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -1637,6 +1756,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return "The Ansible Automation Platform ID of the organization. ";
     case VAR_hostInventoryIds:
       return "The related host inventories for this tenant. ";
+    case VAR_ansibleProjectIds:
+      return "The related Ansible projects for this tenant. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -1661,6 +1782,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
     case VAR_aapOrganizationId:
       return "Long";
     case VAR_hostInventoryIds:
+      return "List";
+    case VAR_ansibleProjectIds:
       return "List";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
@@ -1690,6 +1813,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
       return 3;
     case VAR_hostInventoryIds:
       return 4;
+    case VAR_ansibleProjectIds:
+      return 4;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1706,6 +1831,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
     case VAR_tenantDescription:
       return 4;
     case VAR_hostInventoryIds:
+      return 0;
+    case VAR_ansibleProjectIds:
       return 0;
       default:
         return BaseModel.htmCellBaseModel(var);

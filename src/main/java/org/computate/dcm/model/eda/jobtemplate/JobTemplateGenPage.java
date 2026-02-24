@@ -493,7 +493,7 @@ public class JobTemplateGenPage extends JobTemplateGenPageGen<PageLayout> {
    * Initialized: false
   **/
   protected void _result(Wrap<JobTemplate> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("jobTemplateId")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("jobTemplateResource")).orElse(null) != null)
       w.o(searchListJobTemplate_.get(0));
   }
 

@@ -302,51 +302,6 @@ public abstract class JobTemplatePageGen<DEV> extends JobTemplateGenPage {
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
-  @Override
-  public String idForClass() {
-    return null;
-  }
-
-  @Override
-  public String titleForClass() {
-    return null;
-  }
-
-  @Override
-  public String nameForClass() {
-    return null;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return null;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDisplayPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return null;
-  }
-
-  @Override
-  public String enUSStringFormatUrlDownloadForClass() {
-    return null;
-  }
-
   public static String displayNameForClass(String var) {
     return JobTemplatePage.displayNameJobTemplatePage(var);
   }
@@ -354,71 +309,6 @@ public abstract class JobTemplatePageGen<DEV> extends JobTemplateGenPage {
     switch(var) {
     default:
       return JobTemplateGenPage.displayNameJobTemplateGenPage(var);
-    }
-  }
-
-  public static String descriptionJobTemplatePage(String var) {
-    if(var == null)
-      return null;
-    switch(var) {
-      default:
-        return JobTemplateGenPage.descriptionJobTemplateGenPage(var);
-    }
-  }
-
-  public static String classSimpleNameJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.classSimpleNameJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer htmColumnJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.htmColumnJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer htmRowJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.htmRowJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer htmCellJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.htmCellJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer lengthMinJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.lengthMinJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer lengthMaxJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.lengthMaxJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer maxJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.maxJobTemplateGenPage(var);
-    }
-  }
-
-  public static Integer minJobTemplatePage(String var) {
-    switch(var) {
-      default:
-        return JobTemplateGenPage.minJobTemplateGenPage(var);
     }
   }
 }

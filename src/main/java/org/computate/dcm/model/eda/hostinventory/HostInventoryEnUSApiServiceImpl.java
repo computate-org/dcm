@@ -45,7 +45,7 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
               String inventoryName = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryName, patch))).orElse(o.getInventoryName());
               String inventoryId = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryId, patch))).orElse(HostInventory.toId(inventoryName));
               inventoryJson.put(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryId, patch), inventoryId);
-              String inventoryResource = String.format("%s-%s", HostInventory.CLASS_AUTH_RESOURCE, inventoryId);
+              String inventoryResource = String.format("%s-%s-%s", tenantResource, HostInventory.CLASS_AUTH_RESOURCE, inventoryId);
               inventoryJson.put(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryResource, patch), inventoryResource);
               Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_aapInventoryId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapInventoryId());
               String inventoryDescription = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryDescription, patch))).orElse(o.getInventoryDescription());
