@@ -44,7 +44,6 @@ public interface HostCheckEnUSGenApiService {
   public void putimportHostCheckFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void searchpageHostCheck(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void editpageHostCheck(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
-  public void userpageHostCheck(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void deletefilterHostCheck(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
   public void deletefilterHostCheckFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler);
 }

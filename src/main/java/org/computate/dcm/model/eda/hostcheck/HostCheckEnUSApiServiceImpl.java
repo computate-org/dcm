@@ -19,7 +19,7 @@ import org.computate.dcm.request.SiteRequest;
  **/
 public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl {
 
-  public Future<JsonObject> aapUpsertParams(HostCheck o, Boolean inheritPrimaryKey, Boolean patch) {
+  public Future<JsonObject> upsertParams(HostCheck o, Boolean inheritPrimaryKey, Boolean patch) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -54,19 +54,23 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
 
               String checkName = Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkName, patch))).orElse(o.getCheckName());
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkName, patch), checkName);
+              String checkId = Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkId, patch))).orElse(HostCheck.toId(checkName));
+              hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkId, patch), checkId);
+              String checkResource = String.format("%s-%s-%s", tenantResource, HostCheck.CLASS_AUTH_RESOURCE, checkId);
+              hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkResource, patch), checkResource);
               String checkDescription = Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkDescription, patch) )).orElse(o.getCheckDescription());
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkDescription, patch), checkDescription);
               String checkNamespace = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkNamespace, patch))).orElse(o.getCheckNamespace())).orElse(tenantId);
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkNamespace, patch), checkNamespace);
               String checkCommand = Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkCommand, patch))).orElse(o.getCheckCommand());
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkCommand, patch), checkCommand);
-              Integer checkInterval = Integer.parseInt(Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkInterval, patch))).orElse("300"));
+              Integer checkInterval = Integer.parseInt(Optional.ofNullable(hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkInterval, patch))).orElse(Optional.ofNullable(o.getCheckInterval()).map(interval -> interval.toString()).orElse("300")));
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkInterval, patch), checkInterval.toString());
               Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getBoolean(HostCheck.varJsonHostCheck(HostCheck.VAR_checkPublished, patch))).orElse(o.getCheckPublished())).orElse(true);
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_checkPublished, patch), checkPublished);
-              JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getJsonArray(HostCheck.varJsonHostCheck(HostCheck.VAR_eventSubscriptions, patch))).orElse(new JsonArray(o.getEventSubscriptions()))).orElse(new JsonArray());
+              JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getJsonArray(HostCheck.varJsonHostCheck(HostCheck.VAR_eventSubscriptions, patch))).orElse(new JsonArray(o.getEventSubscriptions()))).map(array -> array.size() == 0 ? null : array).orElse(new JsonArray().add(checkId));
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_eventSubscriptions, patch), eventSubscriptions);
-              JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getJsonArray(HostCheck.varJsonHostCheck(HostCheck.VAR_eventHandlers, patch))).orElse(new JsonArray(o.getEventHandlers()))).orElse(new JsonArray().add("sensu-kafka-handler"));
+              JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(hostCheckJson.getJsonArray(HostCheck.varJsonHostCheck(HostCheck.VAR_eventHandlers, patch))).orElse(new JsonArray(o.getEventHandlers()))).map(array -> array.size() == 0 ? null : array).orElse(new JsonArray().add("sensu-kafka-handler"));
               hostCheckJson.put(HostCheck.varJsonHostCheck(HostCheck.VAR_eventHandlers, patch), eventHandlers);
 
               promise.complete(hostCheckJson);
@@ -86,7 +90,7 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
     return promise.future();
   }
 
-  public Future<Void> sensuUpsertHostCheck(HostCheck o, Boolean inheritPrimaryKey, Boolean patch) {
+  public Future<Void> sensuUpsertHostCheck(HostCheck o, Boolean inheritPrimaryKey, Boolean patch, JsonObject hostCheckJson) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -94,7 +98,6 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
       if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
         promise.complete();
       } else {
-        JsonObject hostCheckJson = o.getSiteRequest_().getJsonObject();
         String checkName = hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkName, patch));
         String checkNamespace = hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkNamespace, patch));
         String checkCommand = hostCheckJson.getString(HostCheck.varJsonHostCheck(HostCheck.VAR_checkCommand, patch));
@@ -147,9 +150,13 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
   @Override
   public Future<HostCheck> sqlPOSTHostCheck(HostCheck o, Boolean inheritPrimaryKey) {
     Promise<HostCheck> promise = Promise.promise();
-    sensuUpsertHostCheck(o, inheritPrimaryKey, false).onSuccess(b -> {
-      super.sqlPOSTHostCheck(o, inheritPrimaryKey).onSuccess(o2 -> {
-        promise.complete(o2);
+    upsertParams(o, inheritPrimaryKey, false).onSuccess(hostCheckJson -> {
+      sensuUpsertHostCheck(o, inheritPrimaryKey, false, hostCheckJson).onSuccess(b -> {
+        super.sqlPOSTHostCheck(o, inheritPrimaryKey).onSuccess(o2 -> {
+          promise.complete(o2);
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
         promise.fail(ex);
       });
@@ -162,9 +169,13 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
   @Override
   public Future<HostCheck> sqlPATCHHostCheck(HostCheck o, Boolean inheritPrimaryKey) {
     Promise<HostCheck> promise = Promise.promise();
-    sensuUpsertHostCheck(o, inheritPrimaryKey, true).onSuccess(a -> {
-      super.sqlPATCHHostCheck(o, inheritPrimaryKey).onSuccess(o2 -> {
-        promise.complete(o2);
+    upsertParams(o, inheritPrimaryKey, true).onSuccess(hostCheckJson -> {
+      sensuUpsertHostCheck(o, inheritPrimaryKey, true, hostCheckJson).onSuccess(a -> {
+        super.sqlPATCHHostCheck(o, inheritPrimaryKey).onSuccess(o2 -> {
+          promise.complete(o2);
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
         promise.fail(ex);
       });

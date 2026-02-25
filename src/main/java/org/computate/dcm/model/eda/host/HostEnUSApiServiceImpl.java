@@ -56,7 +56,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               hostJson.put(Host.varJsonHost(Host.VAR_ipAddress, patch), ipAddress);
               String hostId = Optional.ofNullable(hostJson.getString(Host.varJsonHost(Host.VAR_hostId, patch))).orElse(Host.toId(hostName));
               hostJson.put(Host.varJsonHost(Host.VAR_hostId, patch), hostId);
-              String hostResource = String.format("%s-%s-%s", tenantResource, HostInventory.CLASS_AUTH_RESOURCE, hostId);
+              String hostResource = String.format("%s-%s-%s", tenantResource, Host.CLASS_AUTH_RESOURCE, hostId);
               hostJson.put(Host.varJsonHost(Host.VAR_hostResource, patch), hostResource);
               Tenant.fq(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
                 try {
@@ -104,7 +104,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
       } else {
         String hostName = hostJson.getString(Host.varJsonHost(Host.VAR_hostName, patch));
         String ipAddress = hostJson.getString(Host.varJsonHost(Host.VAR_ipAddress, patch));
-        Long aapInventoryId = Long.parseLong(hostJson.getString(Host.VAR_aapInventoryId));
+        Long aapInventoryId = Long.parseLong(hostJson.getString(Host.varJsonHost(Host.VAR_aapInventoryId, patch)));
         String hostDescription = hostJson.getString(Host.varJsonHost(Host.VAR_hostDescription, patch));
         if(hostName == null) {
           RuntimeException ex = new RuntimeException(String.format("The host name cannot be null"));

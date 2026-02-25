@@ -2333,7 +2333,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/PUTImportHostCheckResponse'
-  /en-us/api/host-check/{checkName}:
+  /en-us/api/host-check/{checkResource}:
     get:
       operationId: getHostCheck
       x-vertx-event-bus: dcm-enUS-HostCheck
@@ -2375,7 +2375,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: checkName
+        - name: checkResource
           in: path
           description: >+
           required: true
@@ -2429,7 +2429,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: checkName
+        - name: checkResource
           in: path
           description: >+
           required: true
@@ -2477,7 +2477,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETEHostCheckResponse'
-  /en-us/edit/host-check/{checkName}:
+  /en-us/edit/host-check/{checkResource}:
     get:
       operationId: editpageHostCheck
       x-vertx-event-bus: dcm-enUS-HostCheck
@@ -2519,7 +2519,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: checkName
+        - name: checkResource
           in: path
           description: >+
           required: true
@@ -2773,61 +2773,6 @@ paths:
             text/html; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchPageHostCheckResponse'
-  /en-us/user/host-check/{checkName}:
-    get:
-      operationId: userpageHostCheck
-      x-vertx-event-bus: dcm-enUS-HostCheck
-      security:
-        - openIdConnect:
-          - openid
-          - profile
-          - customerProfileId
-      description: >+
-      summary: >+
-      tags:
-        - host checks
-      parameters:
-        - name: vertx-web.session
-          in: cookie
-          schema:
-            type: string
-        - name: sessionIdBefore
-          in: cookie
-          schema:
-            type: string
-        - name: SITE_FONT_SIZE
-          in: cookie
-          schema:
-            type: string
-        - name: SITE_THEME
-          in: cookie
-          schema:
-            type: string
-        - name: WEB_COMPONENTS_THEME
-          in: cookie
-          schema:
-            type: string
-        - in: query
-          name: var
-          description: 'The var parameters are additional optional variables and values to pass into the application. '
-          required: false
-          schema:
-            type: array
-            items:
-                type: string
-        - name: checkName
-          in: path
-          description: >+
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: >+
-          content:
-            text/html; charset=utf-8:
-              schema:
-                $ref: '#/components/schemas/UserPageHostCheckResponse'
   /en-us/api/host-inventory:
     get:
       operationId: searchHostInventory
@@ -10170,11 +10115,6 @@ components:
         text/html; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchPageHostCheckResponse'
-    UserPageHostCheckResponse:
-      content:
-        text/html; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/UserPageHostCheckResponse'
     SearchHostInventoryResponse:
       content:
         application/json; charset=utf-8:
@@ -11638,6 +11578,10 @@ components:
                     type: string
                   checkName:
                     type: string
+                  checkId:
+                    type: string
+                  checkResource:
+                    type: string
                   checkDescription:
                     type: string
                   checkNamespace:
@@ -11708,6 +11652,20 @@ components:
             removeCheckName:
               type: string
             removeAllCheckName:
+              type: string
+            setCheckId:
+              type: string
+              nullable: true
+            removeCheckId:
+              type: string
+            removeAllCheckId:
+              type: string
+            setCheckResource:
+              type: string
+              nullable: true
+            removeCheckResource:
+              type: string
+            removeAllCheckResource:
               type: string
             setCheckDescription:
               type: string
@@ -11831,6 +11789,20 @@ components:
               type: string
             removeAllCheckName:
               type: string
+            setCheckId:
+              type: string
+              nullable: true
+            removeCheckId:
+              type: string
+            removeAllCheckId:
+              type: string
+            setCheckResource:
+              type: string
+              nullable: true
+            removeCheckResource:
+              type: string
+            removeAllCheckResource:
+              type: string
             setCheckDescription:
               type: string
               nullable: true
@@ -11918,6 +11890,10 @@ components:
               type: string
             checkName:
               type: string
+            checkId:
+              type: string
+            checkResource:
+              type: string
             checkDescription:
               type: string
             checkNamespace:
@@ -11954,6 +11930,10 @@ components:
               type: string
             checkName:
               type: string
+            checkId:
+              type: string
+            checkResource:
+              type: string
             checkDescription:
               type: string
             checkNamespace:
@@ -11989,6 +11969,10 @@ components:
             aapTemplateId:
               type: string
             checkName:
+              type: string
+            checkId:
+              type: string
+            checkResource:
               type: string
             checkDescription:
               type: string
@@ -12031,6 +12015,10 @@ components:
                     type: string
                   checkName:
                     type: string
+                  checkId:
+                    type: string
+                  checkResource:
+                    type: string
                   checkDescription:
                     type: string
                   checkNamespace:
@@ -12066,6 +12054,10 @@ components:
                   aapTemplateId:
                     type: string
                   checkName:
+                    type: string
+                  checkId:
+                    type: string
+                  checkResource:
                     type: string
                   checkDescription:
                     type: string
@@ -12103,6 +12095,10 @@ components:
               type: string
             checkName:
               type: string
+            checkId:
+              type: string
+            checkResource:
+              type: string
             checkDescription:
               type: string
             checkNamespace:
@@ -12139,6 +12135,10 @@ components:
               type: string
             checkName:
               type: string
+            checkId:
+              type: string
+            checkResource:
+              type: string
             checkDescription:
               type: string
             checkNamespace:
@@ -12161,9 +12161,6 @@ components:
       allOf:
         - type: string
     SearchPageHostCheckResponse:
-      allOf:
-        - type: string
-    UserPageHostCheckResponse:
       allOf:
         - type: string
     SearchHostInventoryResponse:
@@ -12614,6 +12611,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  extraVars:
+                    type: object
                   aapTemplateId:
                     type: string
     PATCHJobTemplateRequest:
@@ -12711,6 +12710,13 @@ components:
               type: string
             removeAllJobType:
               type: string
+            setExtraVars:
+              type: object
+              nullable: true
+            removeExtraVars:
+              type: object
+            removeAllExtraVars:
+              type: object
             setAapTemplateId:
               type: string
               nullable: true
@@ -12813,6 +12819,13 @@ components:
               type: string
             removeAllJobType:
               type: string
+            setExtraVars:
+              type: object
+              nullable: true
+            removeExtraVars:
+              type: object
+            removeAllExtraVars:
+              type: object
             setAapTemplateId:
               type: string
               nullable: true
@@ -12850,6 +12863,8 @@ components:
               type: string
             jobType:
               type: string
+            extraVars:
+              type: object
             aapTemplateId:
               type: string
     POSTJobTemplateResponse:
@@ -12882,6 +12897,8 @@ components:
               type: string
             jobType:
               type: string
+            extraVars:
+              type: object
             aapTemplateId:
               type: string
     DELETEFilterJobTemplateResponse:
@@ -12914,6 +12931,8 @@ components:
               type: string
             jobType:
               type: string
+            extraVars:
+              type: object
             aapTemplateId:
               type: string
     PUTImportJobTemplateRequest:
@@ -12951,6 +12970,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  extraVars:
+                    type: object
                   aapTemplateId:
                     type: string
     PUTImportJobTemplateResponse:
@@ -12983,6 +13004,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  extraVars:
+                    type: object
                   aapTemplateId:
                     type: string
     GETJobTemplateResponse:
@@ -13015,6 +13038,8 @@ components:
               type: string
             jobType:
               type: string
+            extraVars:
+              type: object
             aapTemplateId:
               type: string
     DELETEJobTemplateResponse:
@@ -13047,6 +13072,8 @@ components:
               type: string
             jobType:
               type: string
+            extraVars:
+              type: object
             aapTemplateId:
               type: string
     EditPageJobTemplateResponse:

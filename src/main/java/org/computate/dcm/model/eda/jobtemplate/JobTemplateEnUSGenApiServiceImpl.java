@@ -1101,13 +1101,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlDisplayPage());
             break;
-          case "setAapTemplateId":
-              o2.setAapTemplateId(jsonObject.getString(entityVar));
+          case "setExtraVars":
+              o2.setExtraVars(jsonObject.getJsonObject(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+              bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
               num++;
-              bParams.add(o2.sqlAapTemplateId());
+              bParams.add(o2.sqlExtraVars());
             break;
           case "setEditPage":
               o2.setEditPage(jsonObject.getString(entityVar));
@@ -1116,6 +1116,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_editPage + "=$" + num);
               num++;
               bParams.add(o2.sqlEditPage());
+            break;
+          case "setAapTemplateId":
+              o2.setAapTemplateId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAapTemplateId());
             break;
           case "setUserPage":
               o2.setUserPage(jsonObject.getString(entityVar));
@@ -1747,14 +1755,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
-          case JobTemplate.VAR_aapTemplateId:
-            o2.setAapTemplateId(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_extraVars:
+            o2.setExtraVars(jsonObject.getJsonObject(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+            bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
             num++;
-            bParams.add(o2.sqlAapTemplateId());
+            bParams.add(o2.sqlExtraVars());
             break;
           case JobTemplate.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
@@ -1764,6 +1772,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_editPage + "=$" + num);
             num++;
             bParams.add(o2.sqlEditPage());
+            break;
+          case JobTemplate.VAR_aapTemplateId:
+            o2.setAapTemplateId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_aapTemplateId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAapTemplateId());
             break;
           case JobTemplate.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
@@ -4145,7 +4162,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, ansibleProjectResource, aapProjectId, ansiblePlaybook, sessionId, jobTemplateName, userKey, jobTemplateId, jobTemplateResource, jobTemplateDescription, objectTitle, jobType, displayPage, aapTemplateId, editPage, userPage, download FROM JobTemplate WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, ansibleProjectResource, aapProjectId, ansiblePlaybook, sessionId, jobTemplateName, userKey, jobTemplateId, jobTemplateResource, jobTemplateDescription, objectTitle, jobType, displayPage, extraVars, editPage, aapTemplateId, userPage, download FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4503,8 +4520,9 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       o.persistForClass(JobTemplate.VAR_objectTitle, JobTemplate.staticSetObjectTitle(siteRequest2, (String)result.get(JobTemplate.VAR_objectTitle)));
       o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
       o.persistForClass(JobTemplate.VAR_displayPage, JobTemplate.staticSetDisplayPage(siteRequest2, (String)result.get(JobTemplate.VAR_displayPage)));
-      o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
+      o.persistForClass(JobTemplate.VAR_extraVars, JobTemplate.staticSetExtraVars(siteRequest2, (String)result.get(JobTemplate.VAR_extraVars)));
       o.persistForClass(JobTemplate.VAR_editPage, JobTemplate.staticSetEditPage(siteRequest2, (String)result.get(JobTemplate.VAR_editPage)));
+      o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
       o.persistForClass(JobTemplate.VAR_userPage, JobTemplate.staticSetUserPage(siteRequest2, (String)result.get(JobTemplate.VAR_userPage)));
       o.persistForClass(JobTemplate.VAR_download, JobTemplate.staticSetDownload(siteRequest2, (String)result.get(JobTemplate.VAR_download)));
 

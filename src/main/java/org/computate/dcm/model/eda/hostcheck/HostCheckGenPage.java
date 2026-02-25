@@ -495,7 +495,7 @@ public class HostCheckGenPage extends HostCheckGenPageGen<PageLayout> {
    * Initialized: false
   **/
   protected void _result(Wrap<HostCheck> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("checkName")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("checkResource")).orElse(null) != null)
       w.o(searchListHostCheck_.get(0));
   }
 

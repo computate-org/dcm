@@ -40,6 +40,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
 import java.lang.Long;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.vertx.serialize.vertx.JsonObjectDeserializer;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -1042,6 +1043,77 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return jobType;
   }
 
+	///////////////
+  // extraVars //
+	///////////////
+
+
+  /**
+   *  The entity extraVars
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonDeserialize(using = JsonObjectDeserializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected JsonObject extraVars;
+
+  /**
+   * <br> The entity extraVars
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:extraVars">Find the entity extraVars in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _extraVars(Wrap<JsonObject> w);
+
+  public JsonObject getExtraVars() {
+    return extraVars;
+  }
+
+  public void setExtraVars(JsonObject extraVars) {
+    this.extraVars = extraVars;
+  }
+  @JsonIgnore
+  public void setExtraVars(String o) {
+    this.extraVars = JobTemplate.staticSetExtraVars(siteRequest_, o);
+  }
+  public static JsonObject staticSetExtraVars(SiteRequest siteRequest_, String o) {
+    if(o != null) {
+        return new JsonObject(o);
+    }
+    return null;
+  }
+  protected JobTemplate extraVarsInit() {
+    Wrap<JsonObject> extraVarsWrap = new Wrap<JsonObject>().var("extraVars");
+    if(extraVars == null) {
+      _extraVars(extraVarsWrap);
+      Optional.ofNullable(extraVarsWrap.getO()).ifPresent(o -> {
+        setExtraVars(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchExtraVars(SiteRequest siteRequest_, JsonObject o) {
+    return o.toString();
+  }
+
+  public static String staticSearchStrExtraVars(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqExtraVars(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchExtraVars(siteRequest_, JobTemplate.staticSetExtraVars(siteRequest_, o)).toString();
+  }
+
+  public JsonObject sqlExtraVars() {
+    return extraVars;
+  }
+
+  public static JsonObject staticJsonExtraVars(JsonObject extraVars) {
+    return extraVars;
+  }
+
 	///////////////////
   // aapTemplateId //
 	///////////////////
@@ -1154,6 +1226,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         jobTemplateResourceInit();
         jobTemplateDescriptionInit();
         jobTypeInit();
+        extraVarsInit();
         aapTemplateIdInit();
         promise2.complete();
       } catch(Exception ex) {
@@ -1234,6 +1307,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return oJobTemplate.jobTemplateDescription;
       case "jobType":
         return oJobTemplate.jobType;
+      case "extraVars":
+        return oJobTemplate.extraVars;
       case "aapTemplateId":
         return oJobTemplate.aapTemplateId;
       default:
@@ -1319,6 +1394,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSetJobTemplateDescription(siteRequest_, v);
     case "jobType":
       return JobTemplate.staticSetJobType(siteRequest_, v);
+    case "extraVars":
+      return JobTemplate.staticSetExtraVars(siteRequest_, v);
     case "aapTemplateId":
       return JobTemplate.staticSetAapTemplateId(siteRequest_, v);
       default:
@@ -1391,6 +1468,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchJobType(siteRequest_, (String)o);
+    case "extraVars":
+      return JobTemplate.staticSearchExtraVars(siteRequest_, (JsonObject)o);
     case "aapTemplateId":
       return JobTemplate.staticSearchAapTemplateId(siteRequest_, (Long)o);
       default:
@@ -1433,6 +1512,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchStrJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchStrJobType(siteRequest_, (String)o);
+    case "extraVars":
+      return JobTemplate.staticSearchStrExtraVars(siteRequest_, (String)o);
     case "aapTemplateId":
       return JobTemplate.staticSearchStrAapTemplateId(siteRequest_, (Long)o);
       default:
@@ -1475,6 +1556,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchFqJobTemplateDescription(siteRequest_, o);
     case "jobType":
       return JobTemplate.staticSearchFqJobType(siteRequest_, o);
+    case "extraVars":
+      return JobTemplate.staticSearchFqExtraVars(siteRequest_, o);
     case "aapTemplateId":
       return JobTemplate.staticSearchFqAapTemplateId(siteRequest_, o);
       default:
@@ -1587,6 +1670,16 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         }
         saves.add("jobType");
         return val;
+      } else if("extravars".equals(varLower)) {
+        if(val instanceof String) {
+          setExtraVars((String)val);
+        } else if(val instanceof JsonObject) {
+          setExtraVars((JsonObject)val);
+        } else if(val instanceof JsonObject) {
+          setExtraVars((JsonObject)val);
+        }
+        saves.add("extraVars");
+        return val;
       } else if("aaptemplateid".equals(varLower)) {
         if(val instanceof Long) {
           setAapTemplateId((Long)val);
@@ -1684,6 +1777,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           oJobTemplate.setJobType(jobType);
       }
 
+      if(saves.contains("extraVars")) {
+        String extraVars = (String)doc.get("extraVars_docvalues_string");
+        if(extraVars != null)
+          oJobTemplate.setExtraVars(extraVars);
+      }
+
       if(saves.contains("aapTemplateId")) {
         Long aapTemplateId = (Long)doc.get("aapTemplateId_docvalues_long");
         if(aapTemplateId != null)
@@ -1734,6 +1833,9 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(jobType != null) {
       doc.put("jobType_docvalues_string", jobType);
     }
+    if(extraVars != null) {
+      doc.put("extraVars_docvalues_string", extraVars.encode());
+    }
     if(aapTemplateId != null) {
       doc.put("aapTemplateId_docvalues_long", aapTemplateId);
     }
@@ -1769,6 +1871,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
+      case "extraVars":
+        return "extraVars_docvalues_string";
       case "aapTemplateId":
         return "aapTemplateId_docvalues_long";
       default:
@@ -1804,6 +1908,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
+      case "extraVars":
+        return "extraVars_docvalues_string";
       case "aapTemplateId":
         return "aapTemplateId_docvalues_long";
       default:
@@ -1839,6 +1945,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription";
       case "jobType_docvalues_string":
         return "jobType";
+      case "extraVars_docvalues_string":
+        return "extraVars";
       case "aapTemplateId_docvalues_long":
         return "aapTemplateId";
       default:
@@ -1884,6 +1992,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     oJobTemplate.setJobTemplateResource(Optional.ofNullable(doc.get("jobTemplateResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobTemplateDescription(Optional.ofNullable(doc.get("jobTemplateDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobType(Optional.ofNullable(doc.get("jobType_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setExtraVars(Optional.ofNullable(doc.get("extraVars_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapTemplateId(Optional.ofNullable(doc.get("aapTemplateId_docvalues_long")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
@@ -1924,6 +2033,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         apiRequest.addVars("jobTemplateDescription");
       if(!Objects.equals(jobType, original.getJobType()))
         apiRequest.addVars("jobType");
+      if(!Objects.equals(extraVars, original.getExtraVars()))
+        apiRequest.addVars("extraVars");
       if(!Objects.equals(aapTemplateId, original.getAapTemplateId()))
         apiRequest.addVars("aapTemplateId");
       super.apiRequestBaseModel();
@@ -1950,6 +2061,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(jobTemplateResource).map(v -> "jobTemplateResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateDescription).map(v -> "jobTemplateDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobType).map(v -> "jobType: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(extraVars).map(v -> "extraVars: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(aapTemplateId).map(v -> "aapTemplateId: " + v + "\n").orElse(""));
     return sb.toString();
   }
@@ -1987,6 +2099,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String SET_jobTemplateDescription = "setJobTemplateDescription";
   public static final String VAR_jobType = "jobType";
   public static final String SET_jobType = "setJobType";
+  public static final String VAR_extraVars = "extraVars";
+  public static final String SET_extraVars = "setExtraVars";
   public static final String VAR_aapTemplateId = "aapTemplateId";
   public static final String SET_aapTemplateId = "setAapTemplateId";
 
@@ -2027,6 +2141,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_jobTemplateResource = "job template resource";
   public static final String DISPLAY_NAME_jobTemplateDescription = "job template description";
   public static final String DISPLAY_NAME_jobType = "job type";
+  public static final String DISPLAY_NAME_extraVars = "extra vars";
   public static final String DISPLAY_NAME_aapTemplateId = "AAP template ID";
 
   @Override
@@ -2090,6 +2205,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return patch ? SET_jobTemplateDescription : VAR_jobTemplateDescription;
     case VAR_jobType:
       return patch ? SET_jobType : VAR_jobType;
+    case VAR_extraVars:
+      return patch ? SET_extraVars : VAR_extraVars;
     case VAR_aapTemplateId:
       return patch ? SET_aapTemplateId : VAR_aapTemplateId;
     default:
@@ -2128,6 +2245,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return DISPLAY_NAME_jobTemplateDescription;
     case VAR_jobType:
       return DISPLAY_NAME_jobType;
+    case VAR_extraVars:
+      return DISPLAY_NAME_extraVars;
     case VAR_aapTemplateId:
       return DISPLAY_NAME_aapTemplateId;
     default:
@@ -2165,6 +2284,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return "The description of the job template. ";
     case VAR_jobType:
       return "The job type of the job template. ";
+    case VAR_extraVars:
+      return "The extra vars of the job template. ";
     case VAR_aapTemplateId:
       return "The template ID in Ansible Automation Platform. ";
       default:
@@ -2200,6 +2321,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return "String";
     case VAR_jobType:
       return "String";
+    case VAR_extraVars:
+      return "JsonObject";
     case VAR_aapTemplateId:
       return "Long";
       default:
@@ -2234,6 +2357,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return 5;
     case VAR_jobType:
       return 5;
+    case VAR_extraVars:
+      return 5;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -2253,6 +2378,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return 2;
     case VAR_jobType:
       return 3;
+    case VAR_extraVars:
+      return 4;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

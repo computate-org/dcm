@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.computate.search.wrap.Wrap;
+
+import io.vertx.core.json.JsonObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.model.BaseModel;
 
@@ -149,7 +152,6 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * Unique: true
    * HtmRow: 5
    * HtmCell: 1
    * HtmColumn: 1
@@ -165,7 +167,6 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * Unique: true
    * DisplayName: job template ID
    * Description: The ID of the job template in DCM. 
    */
@@ -191,7 +192,6 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * Unique: true
    * HtmRow: 5
    * HtmCell: 2
    * HtmColumn: 2
@@ -216,6 +216,18 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    */
   protected void _jobType(Wrap<String> w) {
     w.o("run");
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * HtmRow: 5
+   * HtmCell: 4
+   * DisplayName: extra vars
+   * Description: The extra vars of the job template. 
+   */
+  protected void _extraVars(Wrap<JsonObject> w) {
   }
 
   /**

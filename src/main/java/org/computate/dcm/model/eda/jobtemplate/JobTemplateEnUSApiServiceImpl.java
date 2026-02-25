@@ -72,6 +72,8 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
                 String jobType = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch))).orElse(o.getJobType())).orElse("run");
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch), jobType);
+                JsonObject extraVars = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch))).orElse(o.getExtraVars())).orElse(new JsonObject().put("APP_USER", "ctate").put("APP_PREFIX", "/usr/local"));
+                jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch), extraVars);
                 Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapTemplateId());
                 jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch), Optional.ofNullable(aapTemplateId).map(v -> v.toString()).orElse(null));
                 String jobTemplateDescription = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch))).orElse(o.getJobTemplateDescription());
@@ -112,6 +114,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         String jobTemplateName = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch))).orElse(ansiblePlaybook);
         String jobTemplateDescription = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch));
         String jobType = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch));
+        JsonObject extraVars = jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch));
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
         String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
@@ -119,7 +122,6 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         String aapUri = patch ? String.format("/api/controller/v2/job_templates/%s/", aapTemplateId) : "/api/controller/v2/job_templates/";
         String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
         String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
-        jobTemplateJson.put(JobTemplate.VAR_aapProjectId, aapProjectId.toString());
 
         JsonObject body = new JsonObject();
         body.put("name", jobTemplateName);
@@ -131,6 +133,8 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         body.put("ask_limit_on_launch", true);
         if(jobTemplateDescription != null)
           body.put("description", jobTemplateDescription);
+        if(extraVars != null)
+          body.put("extra_vars", extraVars.toString());
 
         if(StringUtils.isEmpty(jobTemplateName)) {
           RuntimeException ex = new RuntimeException("Missing template name");
@@ -196,7 +200,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
   @Override
   public Future<JobTemplate> sqlPATCHJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
     Promise<JobTemplate> promise = Promise.promise();
-    aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(jobTemplateJson -> {
+    aapUpsertParams(o, inheritPrimaryKey, true).onSuccess(jobTemplateJson -> {
       aapUpsertJobTemplate(o, inheritPrimaryKey, true, jobTemplateJson).onSuccess(a -> {
         super.sqlPATCHJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
           promise.complete(o2);

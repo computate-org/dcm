@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.search.response.solr.SolrResponse;
 import org.computate.search.response.solr.SolrResponse.FacetField;
+import org.computate.search.tool.SearchTool;
 import org.computate.vertx.config.ComputateConfigKeys;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import org.computate.vertx.search.list.SearchList;
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.model.eda.host.Host;
+import org.computate.dcm.model.eda.hostcheck.HostCheck;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.dcm.user.SiteUserEnUSApiServiceImpl;
@@ -195,58 +197,82 @@ public class SiteRoutes {
           String checkName = messageBody.getJsonObject("check").getJsonObject("metadata").getString("name");
           String checkState = messageBody.getJsonObject("check").getString("state");
           String hostName = messageBody.getJsonObject("entity").getJsonObject("metadata").getString("name");
-          Long templateId = 9L;
           if(!"passing".equals(checkState)) {
             LOG.info(String.format("Check %s in status %s on host %s", checkName, checkState, hostName));
-
             SiteRequest siteRequest = new SiteRequest();
             siteRequest.setConfig(config);
             siteRequest.setWebClient(webClient);
             siteRequest.initDeepSiteRequest(siteRequest);
             siteRequest.addScopes("GET");
+            Host.fqHost(siteRequest, Host.VAR_hostName, hostName).onSuccess(host -> {
+              if(host == null) {
+                RuntimeException ex = new RuntimeException(String.format("Could not find a matching host %s", hostName));
+                LOG.error(ex.getMessage(), ex);
+              } else {
+                SearchList<HostCheck> searchList = new SearchList<HostCheck>();
+                searchList.setStore(true);
+                searchList.q("*:*");
+                searchList.setC(HostCheck.class);
+                searchList.fq(String.format("%s:", HostCheck.varIndexedHostCheck(HostCheck.VAR_checkName)) + SearchTool.escapeQueryChars(checkName));
+                searchList.fq(String.format("%s:", HostCheck.varIndexedHostCheck(HostCheck.VAR_tenantResource)) + SearchTool.escapeQueryChars(host.getTenantResource()));
+                searchList.promiseDeepForClass(siteRequest).onSuccess(hostCheckSearch -> {
+                  try {
+                    HostCheck hostCheck = hostCheckSearch.getList().stream().findFirst().orElse(null);
+                    if(hostCheck == null) {
+                      RuntimeException ex = new RuntimeException(String.format("Could not find a matching host check %s", checkName));
+                      LOG.error(ex.getMessage(), ex);
+                    } else {
+                      String ipAddress = host.getIpAddress();
+                      Long aapTemplateId = hostCheck.getAapTemplateId();
+                      String jobTemplateId = hostCheck.getJobTemplateId();
 
-            SearchList<Host> searchList = new SearchList<Host>();
-            searchList.setStore(true);
-            searchList.q("*:*");
-            searchList.fq(String.format("hostName_docvalues_string:%s", hostName));
-            searchList.setC(Host.class);
-            searchList.setSiteRequest_(siteRequest);
-            searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
-              try {
-                Host host = searchList.first();
-                if(host == null) {
-                  RuntimeException ex = new RuntimeException(String.format("Could not find a matching host %s", hostName));
-                  LOG.error(ex.getMessage(), ex);
-                } else {
-                  String ipAddress = host.getIpAddress();
+                      Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+                      String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+                      Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+                      String aapUri = String.format("/api/controller/v2/job_templates/%s/launch/", aapTemplateId);
+                      String aapUriRunningJob = String.format("/api/controller/v2/jobs/?status__in=running,pending,waiting&job_template=%s&limit__exact=%s", aapTemplateId, ipAddress);
+                      String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+                      String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
-                  Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
-                  String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
-                  Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-                  String aapUri = String.format("/api/controller/v2/job_templates/%s/launch/", templateId);
-                  String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
-                  String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+                      webClient.get(aapPort, aapHostName, aapUriRunningJob).ssl(aapSsl)
+                          .putHeader("Content-Type", "application/json")
+                          .basicAuthentication(aapUserName, aapPassword)
+                          .send()
+                          .expecting(HttpResponseExpectation.SC_OK)
+                          .onSuccess(runningJobResponse -> {
+                        JsonObject runningJobResponseBody = runningJobResponse.bodyAsJsonObject();
+                        if(runningJobResponseBody.getJsonArray("results").size() > 0) {
+                          LOG.info(String.format("AAP job template %s is already running a job on host %s. ", jobTemplateId, hostName));
+                        } else {
+                          JsonObject body = new JsonObject();
+                          body.put("limit", ipAddress);
 
-                  JsonObject body = new JsonObject();
-                  body.put("limit", ipAddress);
-
-                  webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
-                      .putHeader("Content-Type", "application/json")
-                      .basicAuthentication(aapUserName, aapPassword)
-                      .sendJsonObject(body)
-                      .expecting(HttpResponseExpectation.SC_CREATED)
-                      .onSuccess(hostResponse -> {
-                    JsonObject responseBody = hostResponse.bodyAsJsonObject();
-                    LOG.info(String.format("AAP job %s submitted with job template %s", responseBody.getString("job"), responseBody.getString("name")));
-                  }).onFailure(ex -> {
-                    LOG.error(String.format("Updating AAP host failed. "), ex);
-                  });
-                }
-              } catch(Exception ex) {
-                LOG.error(String.format("Updating Sensu host failed. "), ex);
+                          webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
+                              .putHeader("Content-Type", "application/json")
+                              .basicAuthentication(aapUserName, aapPassword)
+                              .sendJsonObject(body)
+                              .expecting(HttpResponseExpectation.SC_CREATED)
+                              .onSuccess(hostResponse -> {
+                            JsonObject responseBody = hostResponse.bodyAsJsonObject();
+                            LOG.info(String.format("AAP %s job %s submitted with job template %s on host %s", jobTemplateId, responseBody.getString("job"), responseBody.getString("name"), hostName));
+                          }).onFailure(ex -> {
+                            LOG.error(String.format("Updating AAP host failed. "), ex);
+                          });
+                        }
+                      }).onFailure(ex -> {
+                        LOG.error(String.format("Updating AAP host failed. "), ex);
+                        promise.fail(ex);
+                      });
+                    }
+                  } catch(Exception ex) {
+                    LOG.error(String.format("Updating Sensu host failed. "), ex);
+                  }
+                }).onFailure(ex -> {
+                  LOG.error(String.format("search HostCheck failed. "), ex);
+                });
               }
             }).onFailure(ex -> {
-              LOG.error(String.format("search HostInventory failed. "), ex);
+              LOG.error(String.format("search Host failed. "), ex);
             });
           }
         } catch(Exception ex) {

@@ -13,8 +13,7 @@ import org.computate.dcm.model.BaseModel;
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host-check
- * EditPageUri: /en-us/edit/host-check/{checkName}
- * UserPageUri: /en-us/user/host-check/{checkName}
+ * EditPageUri: /en-us/edit/host-check/{checkResource}
  * ApiUri: /en-us/api/host-check
  * ApiMethod:
  *   Search:
@@ -130,9 +129,34 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * Description: The name of the host check (may only contain letters, numbers, periods, colons, and dashes). 
    * Required: true
    * VarName: true
-   * VarId: true
    */
   protected void _checkName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: check ID
+   * Description: The ID of the host check in DCM. 
+   */
+  protected void _checkId(Wrap<String> w) {
+    w.o(toId(checkName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * Unique: true
+   * DisplayName: host check resource
+   * Description: The unique authorization resource for the host check for multi-tenancy
+   * VarId: true
+   * AuthorizationResource: HOSTCHECK
+   */
+  protected void _checkResource(Wrap<String> w) {
+    w.o(String.format("%s-%s-%s", tenantResource, HostCheck.CLASS_AUTH_RESOURCE, checkId));
   }
 
   /**
@@ -208,7 +232,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * HtmCell: 7
    * HtmColumn: 3
    * DisplayName: event subscriptions
-   * Description: The list of event subscriptions the host subscribes to. 
+   * Description: The list of event subscriptions the host check subscribes to. 
    */
   protected void _eventSubscriptions(List<String> l) {
   }
@@ -223,6 +247,5 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * Description: The list of event handlers the host subscribes to. 
    */
   protected void _eventHandlers(List<String> l) {
-    l.add("sensu-kafka-handler");
   }
 }

@@ -85,11 +85,12 @@ ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS aapInventoryId bigint;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansibleProjectResource text references AnsibleProject(ansibleProjectResource);
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS aapProjectId bigint;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansiblePlaybook text;
-ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateName text UNIQUE;
-ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateId text UNIQUE;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateName text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateId text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateResource text UNIQUE;
-ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateDescription text UNIQUE;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateDescription text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobType text;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS extraVars jsonb;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS aapTemplateId bigint;
 
 CREATE TABLE IF NOT EXISTS HostInventory();
@@ -156,6 +157,8 @@ ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS jobTemplateResource text referenc
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS jobTemplateId text;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS aapTemplateId bigint;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkName text UNIQUE;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkId text UNIQUE;
+ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkResource text UNIQUE;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkDescription text UNIQUE;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkNamespace text;
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS checkCommand text;

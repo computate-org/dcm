@@ -177,7 +177,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no host check found";
   public static final String ApiUri_enUS = "/en-us/api/host-check";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/host-check";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-check/{checkName}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/host-check/{checkResource}";
   public static final String OfName_enUS = "of host check";
   public static final String ANameAdjective_enUS = "an host check";
   public static final String NameAdjectiveSingular_enUS = "host check";
@@ -185,7 +185,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String Search_enUS_OpenApiUri = "/en-us/api/host-check";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/host-check";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/host-check";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/host-check/{checkName}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/host-check/{checkResource}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/host-check/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/host-check/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/host-check";
@@ -194,7 +194,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/host-check";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/host-check";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/host-check";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/host-check/{checkName}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/host-check/{checkResource}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/host-check/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/host-check/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/host-check-import";
@@ -203,12 +203,9 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/host-check";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/host-check";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/host-check";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-check/{checkName}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/host-check/{checkResource}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/host-check/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/host-check/%s";
-  public static final String UserPage_enUS_OpenApiUri = "/en-us/user/host-check/{checkName}";
-  public static final String UserPage_enUS_StringFormatUri = "/en-us/user/host-check/%s";
-  public static final String UserPage_enUS_StringFormatUrl = "%s/en-us/user/host-check/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/host-check";
   public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/host-check";
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/host-check";
@@ -664,6 +661,130 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
 
   public static String staticJsonCheckName(String checkName) {
     return checkName;
+  }
+
+	/////////////
+  // checkId //
+	/////////////
+
+
+  /**
+   *  The entity checkId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String checkId;
+
+  /**
+   * <br> The entity checkId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:checkId">Find the entity checkId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _checkId(Wrap<String> w);
+
+  public String getCheckId() {
+    return checkId;
+  }
+  public void setCheckId(String o) {
+    this.checkId = HostCheck.staticSetCheckId(siteRequest_, o);
+  }
+  public static String staticSetCheckId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck checkIdInit() {
+    Wrap<String> checkIdWrap = new Wrap<String>().var("checkId");
+    if(checkId == null) {
+      _checkId(checkIdWrap);
+      Optional.ofNullable(checkIdWrap.getO()).ifPresent(o -> {
+        setCheckId(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchCheckId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrCheckId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqCheckId(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchCheckId(siteRequest_, HostCheck.staticSetCheckId(siteRequest_, o)).toString();
+  }
+
+  public String sqlCheckId() {
+    return checkId;
+  }
+
+  public static String staticJsonCheckId(String checkId) {
+    return checkId;
+  }
+
+	///////////////////
+  // checkResource //
+	///////////////////
+
+
+  /**
+   *  The entity checkResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String checkResource;
+
+  /**
+   * <br> The entity checkResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostcheck.HostCheck&fq=entiteVar_enUS_indexed_string:checkResource">Find the entity checkResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _checkResource(Wrap<String> w);
+
+  public String getCheckResource() {
+    return checkResource;
+  }
+  public void setCheckResource(String o) {
+    this.checkResource = HostCheck.staticSetCheckResource(siteRequest_, o);
+  }
+  public static String staticSetCheckResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostCheck checkResourceInit() {
+    Wrap<String> checkResourceWrap = new Wrap<String>().var("checkResource");
+    if(checkResource == null) {
+      _checkResource(checkResourceWrap);
+      Optional.ofNullable(checkResourceWrap.getO()).ifPresent(o -> {
+        setCheckResource(o);
+      });
+    }
+    return (HostCheck)this;
+  }
+
+  public static String staticSearchCheckResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrCheckResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqCheckResource(SiteRequest siteRequest_, String o) {
+    return HostCheck.staticSearchCheckResource(siteRequest_, HostCheck.staticSetCheckResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlCheckResource() {
+    return checkResource;
+  }
+
+  public static String staticJsonCheckResource(String checkResource) {
+    return checkResource;
   }
 
 	//////////////////////
@@ -1199,6 +1320,8 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         jobTemplateIdInit();
         aapTemplateIdInit();
         checkNameInit();
+        checkIdInit();
+        checkResourceInit();
         checkDescriptionInit();
         checkNamespaceInit();
         checkCommandInit();
@@ -1273,6 +1396,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         return oHostCheck.aapTemplateId;
       case "checkName":
         return oHostCheck.checkName;
+      case "checkId":
+        return oHostCheck.checkId;
+      case "checkResource":
+        return oHostCheck.checkResource;
       case "checkDescription":
         return oHostCheck.checkDescription;
       case "checkNamespace":
@@ -1352,6 +1479,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return HostCheck.staticSetAapTemplateId(siteRequest_, v);
     case "checkName":
       return HostCheck.staticSetCheckName(siteRequest_, v);
+    case "checkId":
+      return HostCheck.staticSetCheckId(siteRequest_, v);
+    case "checkResource":
+      return HostCheck.staticSetCheckResource(siteRequest_, v);
     case "checkDescription":
       return HostCheck.staticSetCheckDescription(siteRequest_, v);
     case "checkNamespace":
@@ -1424,6 +1555,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return HostCheck.staticSearchAapTemplateId(siteRequest_, (Long)o);
     case "checkName":
       return HostCheck.staticSearchCheckName(siteRequest_, (String)o);
+    case "checkId":
+      return HostCheck.staticSearchCheckId(siteRequest_, (String)o);
+    case "checkResource":
+      return HostCheck.staticSearchCheckResource(siteRequest_, (String)o);
     case "checkDescription":
       return HostCheck.staticSearchCheckDescription(siteRequest_, (String)o);
     case "checkNamespace":
@@ -1466,6 +1601,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return HostCheck.staticSearchStrAapTemplateId(siteRequest_, (Long)o);
     case "checkName":
       return HostCheck.staticSearchStrCheckName(siteRequest_, (String)o);
+    case "checkId":
+      return HostCheck.staticSearchStrCheckId(siteRequest_, (String)o);
+    case "checkResource":
+      return HostCheck.staticSearchStrCheckResource(siteRequest_, (String)o);
     case "checkDescription":
       return HostCheck.staticSearchStrCheckDescription(siteRequest_, (String)o);
     case "checkNamespace":
@@ -1508,6 +1647,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return HostCheck.staticSearchFqAapTemplateId(siteRequest_, o);
     case "checkName":
       return HostCheck.staticSearchFqCheckName(siteRequest_, o);
+    case "checkId":
+      return HostCheck.staticSearchFqCheckId(siteRequest_, o);
+    case "checkResource":
+      return HostCheck.staticSearchFqCheckResource(siteRequest_, o);
     case "checkDescription":
       return HostCheck.staticSearchFqCheckDescription(siteRequest_, o);
     case "checkNamespace":
@@ -1593,6 +1736,18 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
           setCheckName((String)val);
         }
         saves.add("checkName");
+        return val;
+      } else if("checkid".equals(varLower)) {
+        if(val instanceof String) {
+          setCheckId((String)val);
+        }
+        saves.add("checkId");
+        return val;
+      } else if("checkresource".equals(varLower)) {
+        if(val instanceof String) {
+          setCheckResource((String)val);
+        }
+        saves.add("checkResource");
         return val;
       } else if("checkdescription".equals(varLower)) {
         if(val instanceof String) {
@@ -1707,6 +1862,18 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
           oHostCheck.setCheckName(checkName);
       }
 
+      if(saves.contains("checkId")) {
+        String checkId = (String)doc.get("checkId_docvalues_string");
+        if(checkId != null)
+          oHostCheck.setCheckId(checkId);
+      }
+
+      if(saves.contains("checkResource")) {
+        String checkResource = (String)doc.get("checkResource_docvalues_string");
+        if(checkResource != null)
+          oHostCheck.setCheckResource(checkResource);
+      }
+
       if(saves.contains("checkDescription")) {
         String checkDescription = (String)doc.get("checkDescription_docvalues_string");
         if(checkDescription != null)
@@ -1781,6 +1948,12 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     if(checkName != null) {
       doc.put("checkName_docvalues_string", checkName);
     }
+    if(checkId != null) {
+      doc.put("checkId_docvalues_string", checkId);
+    }
+    if(checkResource != null) {
+      doc.put("checkResource_docvalues_string", checkResource);
+    }
     if(checkDescription != null) {
       doc.put("checkDescription_docvalues_string", checkDescription);
     }
@@ -1830,6 +2003,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         return "aapTemplateId_docvalues_long";
       case "checkName":
         return "checkName_docvalues_string";
+      case "checkId":
+        return "checkId_docvalues_string";
+      case "checkResource":
+        return "checkResource_docvalues_string";
       case "checkDescription":
         return "checkDescription_docvalues_string";
       case "checkNamespace":
@@ -1865,6 +2042,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         return "aapTemplateId_docvalues_long";
       case "checkName":
         return "checkName_docvalues_string";
+      case "checkId":
+        return "checkId_docvalues_string";
+      case "checkResource":
+        return "checkResource_docvalues_string";
       case "checkDescription":
         return "checkDescription_docvalues_string";
       case "checkNamespace":
@@ -1900,6 +2081,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         return "aapTemplateId";
       case "checkName_docvalues_string":
         return "checkName";
+      case "checkId_docvalues_string":
+        return "checkId";
+      case "checkResource_docvalues_string":
+        return "checkResource";
       case "checkDescription_docvalues_string":
         return "checkDescription";
       case "checkNamespace_docvalues_string":
@@ -1951,6 +2136,8 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     oHostCheck.setJobTemplateId(Optional.ofNullable(doc.get("jobTemplateId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setAapTemplateId(Optional.ofNullable(doc.get("aapTemplateId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckName(Optional.ofNullable(doc.get("checkName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setCheckId(Optional.ofNullable(doc.get("checkId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oHostCheck.setCheckResource(Optional.ofNullable(doc.get("checkResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckDescription(Optional.ofNullable(doc.get("checkDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckNamespace(Optional.ofNullable(doc.get("checkNamespace_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostCheck.setCheckCommand(Optional.ofNullable(doc.get("checkCommand_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1989,6 +2176,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
         apiRequest.addVars("aapTemplateId");
       if(!Objects.equals(checkName, original.getCheckName()))
         apiRequest.addVars("checkName");
+      if(!Objects.equals(checkId, original.getCheckId()))
+        apiRequest.addVars("checkId");
+      if(!Objects.equals(checkResource, original.getCheckResource()))
+        apiRequest.addVars("checkResource");
       if(!Objects.equals(checkDescription, original.getCheckDescription()))
         apiRequest.addVars("checkDescription");
       if(!Objects.equals(checkNamespace, original.getCheckNamespace()))
@@ -2021,6 +2212,8 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(jobTemplateId).map(v -> "jobTemplateId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapTemplateId).map(v -> "aapTemplateId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(checkName).map(v -> "checkName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(checkId).map(v -> "checkId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(checkResource).map(v -> "checkResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkDescription).map(v -> "checkDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkNamespace).map(v -> "checkNamespace: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(checkCommand).map(v -> "checkCommand: \"" + v + "\"\n" ).orElse(""));
@@ -2052,6 +2245,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String SET_aapTemplateId = "setAapTemplateId";
   public static final String VAR_checkName = "checkName";
   public static final String SET_checkName = "setCheckName";
+  public static final String VAR_checkId = "checkId";
+  public static final String SET_checkId = "setCheckId";
+  public static final String VAR_checkResource = "checkResource";
+  public static final String SET_checkResource = "setCheckResource";
   public static final String VAR_checkDescription = "checkDescription";
   public static final String SET_checkDescription = "setCheckDescription";
   public static final String VAR_checkNamespace = "checkNamespace";
@@ -2098,6 +2295,8 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_jobTemplateId = "job template ID";
   public static final String DISPLAY_NAME_aapTemplateId = "AAP template ID";
   public static final String DISPLAY_NAME_checkName = "check name";
+  public static final String DISPLAY_NAME_checkId = "check ID";
+  public static final String DISPLAY_NAME_checkResource = "host check resource";
   public static final String DISPLAY_NAME_checkDescription = "check description";
   public static final String DISPLAY_NAME_checkNamespace = "check namespace";
   public static final String DISPLAY_NAME_checkCommand = "check command";
@@ -2108,7 +2307,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
 
   @Override
   public String idForClass() {
-    return checkName;
+    return checkResource;
   }
 
   @Override
@@ -2136,11 +2335,6 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     return "%s/en-us/edit/host-check/%s";
   }
 
-  @Override
-  public String enUSStringFormatUrlUserPageForClass() {
-    return "%s/en-us/user/host-check/%s";
-  }
-
   public static String varJsonForClass(String var, Boolean patch) {
     return HostCheck.varJsonHostCheck(var, patch);
   }
@@ -2160,6 +2354,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return patch ? SET_aapTemplateId : VAR_aapTemplateId;
     case VAR_checkName:
       return patch ? SET_checkName : VAR_checkName;
+    case VAR_checkId:
+      return patch ? SET_checkId : VAR_checkId;
+    case VAR_checkResource:
+      return patch ? SET_checkResource : VAR_checkResource;
     case VAR_checkDescription:
       return patch ? SET_checkDescription : VAR_checkDescription;
     case VAR_checkNamespace:
@@ -2198,6 +2396,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return DISPLAY_NAME_aapTemplateId;
     case VAR_checkName:
       return DISPLAY_NAME_checkName;
+    case VAR_checkId:
+      return DISPLAY_NAME_checkId;
+    case VAR_checkResource:
+      return DISPLAY_NAME_checkResource;
     case VAR_checkDescription:
       return DISPLAY_NAME_checkDescription;
     case VAR_checkNamespace:
@@ -2235,6 +2437,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
       return "The template ID in Ansible Automation Platform. ";
     case VAR_checkName:
       return "The name of the host check (may only contain letters, numbers, periods, colons, and dashes). ";
+    case VAR_checkId:
+      return "The ID of the host check in DCM. ";
+    case VAR_checkResource:
+      return "The unique authorization resource for the host check for multi-tenancy";
     case VAR_checkDescription:
       return "The descrition of the host check. ";
     case VAR_checkNamespace:
@@ -2246,7 +2452,7 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     case VAR_checkPublished:
       return "When disabled the check will not be executed unless explicitly queued. ";
     case VAR_eventSubscriptions:
-      return "The list of event subscriptions the host subscribes to. ";
+      return "The list of event subscriptions the host check subscribes to. ";
     case VAR_eventHandlers:
       return "The list of event handlers the host subscribes to. ";
       default:
@@ -2269,6 +2475,10 @@ public abstract class HostCheckGen<DEV> extends BaseModel {
     case VAR_aapTemplateId:
       return "Long";
     case VAR_checkName:
+      return "String";
+    case VAR_checkId:
+      return "String";
+    case VAR_checkResource:
       return "String";
     case VAR_checkDescription:
       return "String";
