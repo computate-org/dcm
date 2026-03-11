@@ -207,4 +207,17 @@ public class Host extends HostGen<BaseModel> {
    */
   protected void _eventSubscriptions(List<String> w) {
   }
+
+  /**
+   * DocValues: true
+   * Persist: true
+   * HtmRowTitleOpen: relationships
+   * HtmRow: 5
+   * HtmCell: 2
+   * HtmColumn: 2
+   * DisplayName: tags
+   * Description: The list of tags the host has. 
+   */
+  protected void _tags(List<String> w) {
+  }
 }

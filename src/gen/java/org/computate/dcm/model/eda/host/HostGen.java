@@ -1069,6 +1069,93 @@ public abstract class HostGen<DEV> extends BaseModel {
     return a;
   }
 
+	//////////
+  // tags //
+	//////////
+
+
+  /**
+   *  The entity tags
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> tags = new ArrayList<String>();
+
+  /**
+   * <br> The entity tags
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.host.Host&fq=entiteVar_enUS_indexed_string:tags">Find the entity tags in Solr</a>
+   * <br>
+   * @param w is the entity already constructed. 
+   **/
+  protected abstract void _tags(List<String> w);
+
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+  @JsonIgnore
+  public void setTags(String o) {
+    String l = Host.staticSetTags(siteRequest_, o);
+    if(l != null)
+      addTags(l);
+  }
+  public static String staticSetTags(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public Host addTags(String...objects) {
+    for(String o : objects) {
+      addTags(o);
+    }
+    return (Host)this;
+  }
+  public Host addTags(String o) {
+    if(o != null)
+      this.tags.add(o);
+    return (Host)this;
+  }
+  @JsonIgnore
+  public void setTags(JsonArray objects) {
+    tags.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addTags(o);
+    }
+  }
+  protected Host tagsInit() {
+    _tags(tags);
+    return (Host)this;
+  }
+
+  public static String staticSearchTags(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTags(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTags(SiteRequest siteRequest_, String o) {
+    return Host.staticSearchTags(siteRequest_, Host.staticSetTags(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlTags() {
+    return tags.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonTags(List<String> tags) {
+    JsonArray a = new JsonArray();
+    tags.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -1111,6 +1198,7 @@ public abstract class HostGen<DEV> extends BaseModel {
         aapInventoryIdInit();
         inventoryNameInit();
         eventSubscriptionsInit();
+        tagsInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1190,6 +1278,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return oHost.inventoryName;
       case "eventSubscriptions":
         return oHost.eventSubscriptions;
+      case "tags":
+        return oHost.tags;
       default:
         return super.obtainBaseModel(var);
     }
@@ -1267,6 +1357,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSetInventoryName(siteRequest_, v);
     case "eventSubscriptions":
       return Host.staticSetEventSubscriptions(siteRequest_, v);
+    case "tags":
+      return Host.staticSetTags(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
@@ -1337,6 +1429,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchInventoryName(siteRequest_, (String)o);
     case "eventSubscriptions":
       return Host.staticSearchEventSubscriptions(siteRequest_, (String)o);
+    case "tags":
+      return Host.staticSearchTags(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1377,6 +1471,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchStrInventoryName(siteRequest_, (String)o);
     case "eventSubscriptions":
       return Host.staticSearchStrEventSubscriptions(siteRequest_, (String)o);
+    case "tags":
+      return Host.staticSearchStrTags(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1417,6 +1513,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return Host.staticSearchFqInventoryName(siteRequest_, o);
     case "eventSubscriptions":
       return Host.staticSearchFqEventSubscriptions(siteRequest_, o);
+    case "tags":
+      return Host.staticSearchFqTags(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1533,6 +1631,18 @@ public abstract class HostGen<DEV> extends BaseModel {
           saves.add("eventSubscriptions");
         }
         return val;
+      } else if("tags".equals(varLower)) {
+        if(val instanceof List<?>) {
+          ((List<String>)val).stream().forEach(v -> addTags(v));
+        } else if(val instanceof String[]) {
+          Arrays.asList((String[])val).stream().forEach(v -> addTags((String)v));
+        } else if(val instanceof JsonArray) {
+          ((JsonArray)val).stream().forEach(v -> addTags(staticSetTags(siteRequest_, v.toString())));
+        }
+        if(!saves.contains("tags")) {
+          saves.add("tags");
+        }
+        return val;
     } else {
       return super.persistBaseModel(var, val);
     }
@@ -1626,6 +1736,15 @@ public abstract class HostGen<DEV> extends BaseModel {
           });
         }
       }
+
+      if(saves.contains("tags")) {
+        List<String> tags = (List<String>)doc.get("tags_docvalues_strings");
+        if(tags != null) {
+          tags.stream().forEach( v -> {
+            oHost.tags.add(Host.staticSetTags(siteRequest_, v));
+          });
+        }
+      }
     }
 
     super.populateBaseModel(doc);
@@ -1675,6 +1794,13 @@ public abstract class HostGen<DEV> extends BaseModel {
         l.add(Host.staticSearchEventSubscriptions(siteRequest_, o));
       }
     }
+    if(tags != null) {
+      JsonArray l = new JsonArray();
+      doc.put("tags_docvalues_strings", l);
+      for(String o : tags) {
+        l.add(Host.staticSearchTags(siteRequest_, o));
+      }
+    }
     super.indexBaseModel(doc);
 
 	}
@@ -1707,6 +1833,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "inventoryName_docvalues_string";
       case "eventSubscriptions":
         return "eventSubscriptions_docvalues_strings";
+      case "tags":
+        return "tags_docvalues_strings";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1740,6 +1868,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "inventoryName_docvalues_string";
       case "eventSubscriptions":
         return "eventSubscriptions_docvalues_strings";
+      case "tags":
+        return "tags_docvalues_strings";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1773,6 +1903,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         return "inventoryName";
       case "eventSubscriptions_docvalues_strings":
         return "eventSubscriptions";
+      case "tags_docvalues_strings":
+        return "tags";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1818,6 +1950,9 @@ public abstract class HostGen<DEV> extends BaseModel {
     Optional.ofNullable((List<?>)doc.get("eventSubscriptions_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
       oHost.addEventSubscriptions(Host.staticSetEventSubscriptions(siteRequest, v.toString()));
     });
+    Optional.ofNullable((List<?>)doc.get("tags_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oHost.addTags(Host.staticSetTags(siteRequest, v.toString()));
+    });
 
     super.storeBaseModel(doc);
   }
@@ -1857,6 +1992,8 @@ public abstract class HostGen<DEV> extends BaseModel {
         apiRequest.addVars("inventoryName");
       if(!Objects.equals(eventSubscriptions, original.getEventSubscriptions()))
         apiRequest.addVars("eventSubscriptions");
+      if(!Objects.equals(tags, original.getTags()))
+        apiRequest.addVars("tags");
       super.apiRequestBaseModel();
     }
   }
@@ -1881,6 +2018,7 @@ public abstract class HostGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryName).map(v -> "inventoryName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(eventSubscriptions).map(v -> "eventSubscriptions: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(tags).map(v -> "tags: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1917,6 +2055,8 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static final String SET_inventoryName = "setInventoryName";
   public static final String VAR_eventSubscriptions = "eventSubscriptions";
   public static final String SET_eventSubscriptions = "setEventSubscriptions";
+  public static final String VAR_tags = "tags";
+  public static final String SET_tags = "setTags";
 
   public static List<String> varsQForClass() {
     return Host.varsQHost(new ArrayList<String>());
@@ -1956,6 +2096,7 @@ public abstract class HostGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_aapInventoryId = "AAP ID";
   public static final String DISPLAY_NAME_inventoryName = "inventory name";
   public static final String DISPLAY_NAME_eventSubscriptions = "event subscriptions";
+  public static final String DISPLAY_NAME_tags = "tags";
 
   @Override
   public String idForClass() {
@@ -2023,6 +2164,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return patch ? SET_inventoryName : VAR_inventoryName;
     case VAR_eventSubscriptions:
       return patch ? SET_eventSubscriptions : VAR_eventSubscriptions;
+    case VAR_tags:
+      return patch ? SET_tags : VAR_tags;
     default:
       return BaseModel.varJsonBaseModel(var, patch);
     }
@@ -2059,6 +2202,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return DISPLAY_NAME_inventoryName;
     case VAR_eventSubscriptions:
       return DISPLAY_NAME_eventSubscriptions;
+    case VAR_tags:
+      return DISPLAY_NAME_tags;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -2094,6 +2239,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return "The unique authorization resource for the host for multi-tenancy";
     case VAR_eventSubscriptions:
       return "The list of event subscriptions the host subscribes to. ";
+    case VAR_tags:
+      return "The list of tags the host has. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -2127,6 +2274,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return "String";
     case VAR_eventSubscriptions:
       return "List";
+    case VAR_tags:
+      return "List";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
     }
@@ -2141,6 +2290,8 @@ public abstract class HostGen<DEV> extends BaseModel {
     case VAR_hostDescription:
       return 2;
     case VAR_eventSubscriptions:
+      return 2;
+    case VAR_tags:
       return 2;
       default:
         return BaseModel.htmColumnBaseModel(var);
@@ -2159,6 +2310,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return 4;
     case VAR_eventSubscriptions:
       return 5;
+    case VAR_tags:
+      return 5;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -2176,6 +2329,8 @@ public abstract class HostGen<DEV> extends BaseModel {
       return 2;
     case VAR_eventSubscriptions:
       return 1;
+    case VAR_tags:
+      return 2;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

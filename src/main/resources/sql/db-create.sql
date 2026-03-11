@@ -138,6 +138,7 @@ ALTER TABLE Host ADD COLUMN IF NOT EXISTS hostDescription text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS aapInventoryId bigint;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS inventoryName text;
 ALTER TABLE Host ADD COLUMN IF NOT EXISTS eventSubscriptions text[];
+ALTER TABLE Host ADD COLUMN IF NOT EXISTS tags text[];
 
 CREATE TABLE IF NOT EXISTS HostCheck();
 ALTER TABLE HostCheck ADD COLUMN IF NOT EXISTS pk bigserial primary key;

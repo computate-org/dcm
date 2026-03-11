@@ -11098,6 +11098,10 @@ components:
                     type: array
                     items:
                       type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
     PATCHHostRequest:
       allOf:
         - type: object
@@ -11200,6 +11204,23 @@ components:
             addEventSubscriptions:
               type: string
             addAllEventSubscriptions:
+              type: array
+              items:
+                type: string
+            setTags:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeTags:
+              type: string
+            removeAllTags:
+              type: array
+              items:
+                type: string
+            addTags:
+              type: string
+            addAllTags:
               type: array
               items:
                 type: string
@@ -11308,6 +11329,23 @@ components:
               type: array
               items:
                 type: string
+            setTags:
+              type: array
+              nullable: true
+              items:
+                type: string
+            removeTags:
+              type: string
+            removeAllTags:
+              type: array
+              items:
+                type: string
+            addTags:
+              type: string
+            addAllTags:
+              type: array
+              items:
+                type: string
     POSTHostRequest:
       allOf:
         - type: object
@@ -11337,6 +11375,10 @@ components:
             inventoryName:
               type: string
             eventSubscriptions:
+              type: array
+              items:
+                type: string
+            tags:
               type: array
               items:
                 type: string
@@ -11372,6 +11414,10 @@ components:
               type: array
               items:
                 type: string
+            tags:
+              type: array
+              items:
+                type: string
     DELETEFilterHostResponse:
       allOf:
         - type: object
@@ -11401,6 +11447,10 @@ components:
             inventoryName:
               type: string
             eventSubscriptions:
+              type: array
+              items:
+                type: string
+            tags:
               type: array
               items:
                 type: string
@@ -11441,6 +11491,10 @@ components:
                     type: array
                     items:
                       type: string
+                  tags:
+                    type: array
+                    items:
+                      type: string
     PUTImportHostResponse:
       allOf:
         - type: object
@@ -11470,6 +11524,10 @@ components:
                   inventoryName:
                     type: string
                   eventSubscriptions:
+                    type: array
+                    items:
+                      type: string
+                  tags:
                     type: array
                     items:
                       type: string
@@ -11505,6 +11563,10 @@ components:
               type: array
               items:
                 type: string
+            tags:
+              type: array
+              items:
+                type: string
     DELETEHostResponse:
       allOf:
         - type: object
@@ -11534,6 +11596,10 @@ components:
             inventoryName:
               type: string
             eventSubscriptions:
+              type: array
+              items:
+                type: string
+            tags:
               type: array
               items:
                 type: string
