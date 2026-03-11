@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.computate.search.serialize.ComputateLocalDateSerializer;
 import org.computate.search.serialize.ComputateLocalDateDeserializer;
@@ -1227,7 +1228,7 @@ public abstract class SiteUserGen<DEV> extends BaseModel {
   // staticSearch //
   //////////////////
 
-  public static Future<SiteUser> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<SiteUser> fqSiteUser(SiteRequest siteRequest, String var, Object val) {
     Promise<SiteUser> promise = Promise.promise();
     try {
       if(val == null) {

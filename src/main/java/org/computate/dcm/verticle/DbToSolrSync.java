@@ -35,6 +35,13 @@ import io.vertx.sqlclient.RowStream;
 
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.request.SiteRequest;
+import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.host.Host;
+import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.k8s.Project;
 
 
 /**
@@ -201,17 +208,31 @@ public class DbToSolrSync extends DbToSolrSyncGen<AbstractVerticle> {
       pgOptions.setDatabase(config.getString(ConfigKeys.DATABASE_DATABASE));
       pgOptions.setUser(config.getString(ConfigKeys.DATABASE_USERNAME));
       pgOptions.setPassword(config.getString(ConfigKeys.DATABASE_PASSWORD));
-      pgOptions.setIdleTimeout(Integer.parseInt(config.getString(ConfigKeys.DATABASE_MAX_IDLE_TIME)));
-      pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
-      pgOptions.setConnectTimeout(Integer.parseInt(config.getString(ConfigKeys.DATABASE_CONNECT_TIMEOUT)));
+      // pgOptions.setIdleTimeout(Integer.parseInt(config.getString(ConfigKeys.DATABASE_MAX_IDLE_TIME)));
+      // pgOptions.setIdleTimeoutUnit(TimeUnit.SECONDS);
+      // pgOptions.setConnectTimeout(Integer.parseInt(config.getString(ConfigKeys.DATABASE_CONNECT_TIMEOUT)));
 
       PoolOptions poolOptions = new PoolOptions();
       poolOptions.setMaxSize(Integer.parseInt(config.getString(ConfigKeys.DATABASE_MAX_POOL_SIZE)));
       poolOptions.setMaxWaitQueueSize(Integer.parseInt(config.getString(ConfigKeys.DATABASE_MAX_WAIT_QUEUE_SIZE)));
 
       Pool pgPool = PgBuilder.pool().connectingTo(pgOptions).with(poolOptions).using(vertx).build();
-      LOG.info(dbToSolrSyncComplete);
-      promise.complete();
+      dbToSolrSyncRecord(vertx, config, pgPool, Tenant.CLASS_SIMPLE_NAME).onSuccess(q1 -> {
+        dbToSolrSyncRecord(vertx, config, pgPool, AnsibleProject.CLASS_SIMPLE_NAME).onSuccess(q2 -> {
+          dbToSolrSyncRecord(vertx, config, pgPool, JobTemplate.CLASS_SIMPLE_NAME).onSuccess(q3 -> {
+            dbToSolrSyncRecord(vertx, config, pgPool, HostInventory.CLASS_SIMPLE_NAME).onSuccess(q4 -> {
+              dbToSolrSyncRecord(vertx, config, pgPool, Host.CLASS_SIMPLE_NAME).onSuccess(q5 -> {
+                dbToSolrSyncRecord(vertx, config, pgPool, HostCheck.CLASS_SIMPLE_NAME).onSuccess(q6 -> {
+                  dbToSolrSyncRecord(vertx, config, pgPool, Project.CLASS_SIMPLE_NAME).onSuccess(q7 -> {
+                    LOG.info(dbToSolrSyncComplete);
+                    promise.complete();
+                  }).onFailure(ex -> promise.fail(ex));
+                }).onFailure(ex -> promise.fail(ex));
+              }).onFailure(ex -> promise.fail(ex));
+            }).onFailure(ex -> promise.fail(ex));
+          }).onFailure(ex -> promise.fail(ex));
+        }).onFailure(ex -> promise.fail(ex));
+      }).onFailure(ex -> promise.fail(ex));
     } catch (Exception ex) {
       LOG.error("Could not initialize the database schema.", ex);
       promise.fail(ex);

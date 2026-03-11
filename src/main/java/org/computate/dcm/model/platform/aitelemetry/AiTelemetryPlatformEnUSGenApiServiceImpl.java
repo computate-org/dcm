@@ -12,7 +12,6 @@ import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.pgclient.PgPool;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.mqtt.MqttClient;
@@ -33,6 +32,7 @@ import org.computate.search.response.solr.SolrResponse.StatsField;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import java.security.Principal;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
@@ -88,7 +88,6 @@ import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
@@ -140,7 +139,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -168,6 +167,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -182,7 +185,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -337,7 +341,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -365,6 +369,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -379,7 +387,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -472,7 +481,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "PATCH"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -500,6 +509,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -514,7 +527,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PATCH");
+                if(!scopes.contains("PATCH"))
+                  scopes.add("PATCH");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -773,7 +787,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "POST"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -801,6 +815,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -815,7 +833,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("POST");
+                if(!scopes.contains("POST"))
+                  scopes.add("POST");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1022,7 +1041,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1050,6 +1069,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1064,7 +1087,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1305,7 +1329,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "PUT"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1333,6 +1357,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1347,7 +1375,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PUT");
+                if(!scopes.contains("PUT"))
+                  scopes.add("PUT");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1645,7 +1674,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1673,6 +1702,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1687,7 +1720,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1957,7 +1991,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1984,6 +2018,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1998,7 +2036,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2078,7 +2117,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/ai-telemetry-platform/AiTelemetryPlatformEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -2244,7 +2283,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2271,6 +2310,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2285,7 +2328,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2365,7 +2409,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "%s.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -2532,7 +2576,7 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
         if(pageId != null)
           form.add("permission", String.format("%s#%s", pageId, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?AITELEMETRYPLATFORM-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2560,6 +2604,10 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "hubResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2574,7 +2622,8 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }

@@ -16,7 +16,6 @@ import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.pgclient.PgPool;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.mqtt.MqttClient;
@@ -37,6 +36,7 @@ import org.computate.search.response.solr.SolrResponse.StatsField;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import java.security.Principal;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
@@ -92,7 +92,6 @@ import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
@@ -145,13 +144,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -179,6 +178,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -186,6 +189,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -200,7 +207,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -356,13 +364,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -390,6 +398,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -397,6 +409,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -411,7 +427,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -505,13 +522,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "PATCH"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -539,6 +556,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -546,6 +567,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -560,7 +585,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PATCH");
+                if(!scopes.contains("PATCH"))
+                  scopes.add("PATCH");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1183,13 +1209,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "POST"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1217,6 +1243,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -1224,6 +1254,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1238,7 +1272,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("POST");
+                if(!scopes.contains("POST"))
+                  scopes.add("POST");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1773,13 +1808,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1807,6 +1842,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -1814,6 +1853,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1828,7 +1871,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2212,13 +2256,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "PUT"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2246,6 +2290,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -2253,6 +2301,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2267,7 +2319,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PUT");
+                if(!scopes.contains("PUT"))
+                  scopes.add("PUT");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2585,13 +2638,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2619,6 +2672,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -2626,6 +2683,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2640,7 +2701,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2913,13 +2975,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2946,6 +3008,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -2953,6 +3019,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2967,7 +3037,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3216,13 +3287,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3249,6 +3320,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -3256,6 +3331,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3270,7 +3349,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3520,13 +3600,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
         if(inventoryResource != null)
           form.add("permission", String.format("%s#%s", inventoryResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
             });
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?HOSTINVENTORY-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3554,6 +3634,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(HOSTINVENTORY-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
@@ -3561,6 +3645,10 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "inventoryResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3575,7 +3663,8 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -4304,9 +4393,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from Tenant where tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' from Host where inventoryResource=$2")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource())
+          .execute(Tuple.of(o.getTenantResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {

@@ -97,11 +97,9 @@ import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.api.trace.Tracer;
 import io.vertx.ext.auth.authentication.TokenCredentials;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
-import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.mail.MailClient;
 import io.vertx.ext.mail.MailConfig;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.netty.handler.codec.mqtt.MqttQoS;
@@ -160,7 +158,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
   private JsonObject i18n;
 
   /**
-   * A io.vertx.ext.jdbc.JDBCClient for connecting to the relational database PostgreSQL. 
+   * A JDBC client for connecting to the relational database PostgreSQL. 
    **/
   private Pool pgPool;
 
@@ -190,10 +188,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
     this.sdkMeterProvider = sdkMeterProvider;
   }
 
-  /**	
-   *	This is called by Vert.x when the verticle instance is deployed. 
-   *	Initialize a new site context object for storing information about the entire site in English. 
-   *	Setup the startPromise to handle the configuration steps and starting the server. 
+  /**
+   * This is called by Vert.x when the verticle instance is deployed. 
+   * Initialize a new site context object for storing information about the entire site in English. 
+   * Setup the startPromise to handle the configuration steps and starting the server. 
    **/
   @Override()
   public void start(Promise<Void> startPromise) throws Exception, Exception {
@@ -285,7 +283,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
     return promise.future();
   }
 
-  /**	
+  /**
    **/
   private Future<Void> configureWebClient() {
     Promise<Void> promise = Promise.promise();
@@ -302,7 +300,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
     return promise.future();
   }
 
-  /**	
+  /**
    * 
    * Val.ConnectionError.enUS: Could not open the database client connection. 
    * Val.ConnectionSuccess.enUS: The database client connection was successful. 
@@ -310,10 +308,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
    * Val.InitError.enUS: Could not initialize the database tables. 
    * Val.InitSuccess.enUS: The database was initialized successfully. 
    * 
-   *	Configure shared database connections across the cluster for massive scaling of the application. 
-   *	Return a promise that configures a shared database client connection. 
-   *	Load the database configuration into a shared io.vertx.ext.jdbc.JDBCClient for a scalable, clustered datasource connection pool. 
-   *	Initialize the database tables if not already created for the first time. 
+   * Configure shared database connections across the cluster for massive scaling of the application. 
+   * Return a promise that configures a shared database client connection. 
+   * Load the database configuration into a shared JDBC client for a scalable, clustered datasource connection pool. 
+   * Initialize the database tables if not already created for the first time. 
    **/
   private Future<Void> configureData() {
     Promise<Void> promise = Promise.promise();
@@ -326,9 +324,9 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       pgOptions.setDatabase(config().getString(ConfigKeys.DATABASE_DATABASE));
       pgOptions.setUser(config().getString(ConfigKeys.DATABASE_USERNAME));
       pgOptions.setPassword(config().getString(ConfigKeys.DATABASE_PASSWORD));
-      pgOptions.setIdleTimeout(Integer.parseInt(config().getString(ConfigKeys.DATABASE_MAX_IDLE_TIME)));
-      pgOptions.setIdleTimeoutUnit(TimeUnit.HOURS);
-      pgOptions.setConnectTimeout(Integer.parseInt(config().getString(ConfigKeys.DATABASE_CONNECT_TIMEOUT)));
+      // pgOptions.setIdleTimeout(Integer.parseInt(config().getString(ConfigKeys.DATABASE_MAX_IDLE_TIME)));
+      // pgOptions.setIdleTimeoutUnit(TimeUnit.HOURS);
+      // pgOptions.setConnectTimeout(Integer.parseInt(config().getString(ConfigKeys.DATABASE_CONNECT_TIMEOUT)));
 
       PoolOptions poolOptions = new PoolOptions();
       poolOptions.setMaxSize(jdbcMaxPoolSize);
@@ -351,12 +349,12 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
     return promise.future();
   }
 
-  /**	
+  /**
    * Val.Fail.enUS: Could not configure the shared worker executor. 
    * Val.Complete.enUS: The shared worker executor "{}" was configured successfully. 
    * 
-   *	Configure a shared worker executor for running blocking tasks in the background. 
-   *	Return a promise that configures the shared worker executor. 
+   * Configure a shared worker executor for running blocking tasks in the background. 
+   * Return a promise that configures the shared worker executor. 
    **/
   private Future<Void> configureSharedWorkerExecutor() {
     Promise<Void> promise = Promise.promise();
@@ -430,7 +428,7 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
    * Description: Import initial data
    * Val.Skip.enUS: The data import is disabled. 
    **/
-  private Future<Void> importData() {
+  public Future<Void> importData() {
     Promise<Void> promise = Promise.promise();
     if(Boolean.valueOf(config().getString(ConfigKeys.ENABLE_IMPORT_DATA))) {
       SiteRequest siteRequest = new SiteRequest();
@@ -461,28 +459,28 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
       initializeApiService(apiAiTelemetryPlatform);
 
-			apiTimeZone.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TimeZone.CLASS_CANONICAL_NAME, TimeZone.CLASS_SIMPLE_NAME, TimeZone.CLASS_API_ADDRESS_TimeZone, TimeZone.CLASS_AUTH_RESOURCE, "id", "userPage", "download").onSuccess(q1 -> {
-				apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
-					apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantId", "userPage", "download").onSuccess(q3 -> {
-						apiAnsibleProject.importTimer(Paths.get(templatePath, "/en-us/user/ansible-project"), vertx, siteRequest, AnsibleProject.CLASS_CANONICAL_NAME, AnsibleProject.CLASS_SIMPLE_NAME, AnsibleProject.CLASS_API_ADDRESS_AnsibleProject, AnsibleProject.CLASS_AUTH_RESOURCE, "ansibleProjectId", "userPage", "download").onSuccess(q4 -> {
-							apiJobTemplate.importTimer(Paths.get(templatePath, "/en-us/user/job-template"), vertx, siteRequest, JobTemplate.CLASS_CANONICAL_NAME, JobTemplate.CLASS_SIMPLE_NAME, JobTemplate.CLASS_API_ADDRESS_JobTemplate, JobTemplate.CLASS_AUTH_RESOURCE, "jobTemplateId", "userPage", "download").onSuccess(q5 -> {
-								apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryResource", "userPage", "download").onSuccess(q6 -> {
-									apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostResource", "userPage", "download").onSuccess(q7 -> {
-										apiHostCheck.importTimer(Paths.get(templatePath, "/en-us/user/host-check"), vertx, siteRequest, HostCheck.CLASS_CANONICAL_NAME, HostCheck.CLASS_SIMPLE_NAME, HostCheck.CLASS_API_ADDRESS_HostCheck, HostCheck.CLASS_AUTH_RESOURCE, "checkName", "userPage", "download").onSuccess(q8 -> {
-											apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q9 -> {
-												apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q10 -> {
-													LOG.info("data import complete");
-													promise.complete();
-												}).onFailure(ex -> promise.fail(ex));
-											}).onFailure(ex -> promise.fail(ex));
-										}).onFailure(ex -> promise.fail(ex));
-									}).onFailure(ex -> promise.fail(ex));
-								}).onFailure(ex -> promise.fail(ex));
-							}).onFailure(ex -> promise.fail(ex));
-						}).onFailure(ex -> promise.fail(ex));
-					}).onFailure(ex -> promise.fail(ex));
-				}).onFailure(ex -> promise.fail(ex));
-			}).onFailure(ex -> promise.fail(ex));
+      apiTimeZone.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TimeZone.CLASS_CANONICAL_NAME, TimeZone.CLASS_SIMPLE_NAME, TimeZone.CLASS_API_ADDRESS_TimeZone, TimeZone.CLASS_AUTH_RESOURCE, "id", "userPage", "download").onSuccess(q1 -> {
+        apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
+          apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q3 -> {
+            apiAnsibleProject.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, AnsibleProject.CLASS_CANONICAL_NAME, AnsibleProject.CLASS_SIMPLE_NAME, AnsibleProject.CLASS_API_ADDRESS_AnsibleProject, AnsibleProject.CLASS_AUTH_RESOURCE, "ansibleProjectResource", "userPage", "download").onSuccess(q4 -> {
+              apiJobTemplate.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, JobTemplate.CLASS_CANONICAL_NAME, JobTemplate.CLASS_SIMPLE_NAME, JobTemplate.CLASS_API_ADDRESS_JobTemplate, JobTemplate.CLASS_AUTH_RESOURCE, "jobTemplateResource", "userPage", "download").onSuccess(q5 -> {
+                apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryResource", "userPage", "download").onSuccess(q6 -> {
+                  apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostResource", "userPage", "download").onSuccess(q7 -> {
+                    apiHostCheck.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, HostCheck.CLASS_CANONICAL_NAME, HostCheck.CLASS_SIMPLE_NAME, HostCheck.CLASS_API_ADDRESS_HostCheck, HostCheck.CLASS_AUTH_RESOURCE, "checkResource", "userPage", "download").onSuccess(q8 -> {
+                      apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q9 -> {
+                        apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q10 -> {
+                          LOG.info("data import complete");
+                          promise.complete();
+                        }).onFailure(ex -> promise.fail(ex));
+                      }).onFailure(ex -> promise.fail(ex));
+                    }).onFailure(ex -> promise.fail(ex));
+                  }).onFailure(ex -> promise.fail(ex));
+                }).onFailure(ex -> promise.fail(ex));
+              }).onFailure(ex -> promise.fail(ex));
+            }).onFailure(ex -> promise.fail(ex));
+          }).onFailure(ex -> promise.fail(ex));
+        }).onFailure(ex -> promise.fail(ex));
+      }).onFailure(ex -> promise.fail(ex));
     }
     else {
       LOG.info(importDataSkip);

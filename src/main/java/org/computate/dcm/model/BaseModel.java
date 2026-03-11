@@ -172,8 +172,8 @@ public class BaseModel extends BaseModelGen<Object> implements ComputateBaseMode
       s = StringUtils.lowerCase(s);
       s = StringUtils.trim(s);
       s = RegExUtils.replacePattern(s, "[\\s_]{1,}", "-");
-      s = RegExUtils.replacePattern(s, "[^\\w-]", "");
-      s = RegExUtils.replacePattern(s, "-{2,}", "-");
+      s = RegExUtils.replacePattern(s, "[^A-Za-z0-9-]", "");
+      s = RegExUtils.replacePattern(s, "[-_]{2,}", "-");
     }
 
     return s;

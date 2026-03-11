@@ -39,7 +39,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
       } else {
         JsonObject ansibleProjectJson = o.getSiteRequest_().getJsonObject();
         String tenantResource = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_tenantResource, patch))).orElse(o.getTenantResource());
-        Tenant.fq(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
           try {
             if(tenant == null) {
               RuntimeException ex = new RuntimeException(String.format("Could not find a matching tenant %s", tenantResource));

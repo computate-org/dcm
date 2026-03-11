@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.computate.search.serialize.ComputateLocalDateSerializer;
 import org.computate.search.serialize.ComputateLocalDateDeserializer;
@@ -2068,7 +2069,7 @@ public abstract class AiTelemetryPlatformGen<DEV> extends BaseResult {
   // staticSearch //
   //////////////////
 
-  public static Future<AiTelemetryPlatform> fq(SiteRequest siteRequest, String var, Object val) {
+  public static Future<AiTelemetryPlatform> fqAiTelemetryPlatform(SiteRequest siteRequest, String var, Object val) {
     Promise<AiTelemetryPlatform> promise = Promise.promise();
     try {
       if(val == null) {

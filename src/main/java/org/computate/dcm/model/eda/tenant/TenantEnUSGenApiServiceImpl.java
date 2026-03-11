@@ -16,7 +16,6 @@ import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.pgclient.PgPool;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.mqtt.MqttClient;
@@ -37,6 +36,7 @@ import org.computate.search.response.solr.SolrResponse.StatsField;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import java.security.Principal;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
@@ -92,7 +92,6 @@ import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
@@ -144,7 +143,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -172,6 +171,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -186,7 +189,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -341,7 +345,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -369,6 +373,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -383,7 +391,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -476,7 +485,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "PATCH"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -504,6 +513,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -518,7 +531,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PATCH");
+                if(!scopes.contains("PATCH"))
+                  scopes.add("PATCH");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1209,7 +1223,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "POST"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1237,6 +1251,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1251,7 +1269,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("POST");
+                if(!scopes.contains("POST"))
+                  scopes.add("POST");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1786,7 +1805,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1814,6 +1833,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1828,7 +1851,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2212,7 +2236,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "PUT"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2240,6 +2264,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2254,7 +2282,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PUT");
+                if(!scopes.contains("PUT"))
+                  scopes.add("PUT");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2571,7 +2600,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2599,6 +2628,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2613,7 +2646,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2885,7 +2919,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2912,6 +2946,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2926,7 +2964,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3006,7 +3045,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/tenant/TenantSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/tenant/TenantEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3175,7 +3214,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
         if(tenantResource != null)
           form.add("permission", String.format("%s#%s", tenantResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3203,6 +3242,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3217,7 +3260,8 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3944,33 +3988,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
 
   public Future<Void> relateTenant(Tenant o) {
     Promise<Void> promise = Promise.promise();
-    try {
-      SiteRequest siteRequest = o.getSiteRequest_();
-      SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' from HostInventory where tenantResource=$1 UNION SELECT tenantResource as pk2, 'tenantResource' from AnsibleProject where tenantResource=$2")
-          .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource(), o.getTenantResource())
-          ).onSuccess(result -> {
-        try {
-          if(result != null) {
-            for(Row definition : result.value()) {
-              o.relateForClass(definition.getString(1), definition.getValue(0));
-            }
-          }
-          promise.complete();
-        } catch(Exception ex) {
-          LOG.error(String.format("relateTenant failed. "), ex);
-          promise.tryFail(ex);
-        }
-      }).onFailure(ex -> {
-        RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("relateTenant failed. "), ex2);
-        promise.tryFail(ex2);
-      });
-    } catch(Exception ex) {
-      LOG.error(String.format("relateTenant failed. "), ex);
-      promise.tryFail(ex);
-    }
+    promise.complete();
     return promise.future();
   }
 

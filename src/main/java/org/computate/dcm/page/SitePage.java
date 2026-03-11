@@ -35,7 +35,7 @@ import io.vertx.core.json.JsonObject;
 
 
 /**
- * Order: 3
+ * Order: 4
  * Description: Read the latest articles to learn more
  * AName: an article
  * Icon: <i class="fa-duotone fa-regular fa-newspaper"></i>
@@ -311,6 +311,17 @@ public class SitePage extends SitePageGen<BaseResult> {
    * Description: The image accessibility text. 
    */
   protected void _pageImageAlt(Wrap<String> c) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * Stored: true
+   * Persist: true
+   * DisplayName: page template
+   * Description: The optional page template as a String of this page. 
+   * VarPageTemplate: true
+   */
+  protected void _pageTemplate(Wrap<String> w) {
   }
 
   /**

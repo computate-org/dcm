@@ -12,7 +12,6 @@ import java.util.Objects;
 import io.vertx.core.WorkerExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.pgclient.PgPool;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.mqtt.MqttClient;
@@ -33,6 +32,7 @@ import org.computate.search.response.solr.SolrResponse.StatsField;
 import java.util.stream.Collectors;
 import io.vertx.core.json.Json;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import java.security.Principal;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.io.PrintWriter;
@@ -88,7 +88,6 @@ import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.api.service.ServiceResponse;
 import io.vertx.ext.web.client.HttpResponse;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import java.util.HashMap;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
@@ -141,7 +140,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -169,6 +168,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -183,7 +186,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -339,7 +343,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -367,6 +371,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -381,7 +389,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -475,7 +484,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "PATCH"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PATCH)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -503,6 +512,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -517,7 +530,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PATCH");
+                if(!scopes.contains("PATCH"))
+                  scopes.add("PATCH");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -828,14 +842,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlDescription());
             break;
-          case "setGpuEnabled":
-              o2.setGpuEnabled(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Project.VAR_gpuEnabled + "=$" + num);
-              num++;
-              bParams.add(o2.sqlGpuEnabled());
-            break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -843,6 +849,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               bSql.append(Project.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
+            break;
+          case "setGpuEnabled":
+              o2.setGpuEnabled(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Project.VAR_gpuEnabled + "=$" + num);
+              num++;
+              bParams.add(o2.sqlGpuEnabled());
             break;
           case "setPodRestartCount":
               o2.setPodRestartCount(jsonObject.getString(entityVar));
@@ -868,14 +882,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlPodTerminatingCount());
             break;
-          case "setPodsTerminating":
-              o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Project.VAR_podsTerminating + "=$" + num);
-              num++;
-              bParams.add(o2.sqlPodsTerminating());
-            break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -884,13 +890,13 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               num++;
               bParams.add(o2.sqlSessionId());
             break;
-          case "setFullPvcsCount":
-              o2.setFullPvcsCount(jsonObject.getString(entityVar));
+          case "setPodsTerminating":
+              o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
+              bSql.append(Project.VAR_podsTerminating + "=$" + num);
               num++;
-              bParams.add(o2.sqlFullPvcsCount());
+              bParams.add(o2.sqlPodsTerminating());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
@@ -899,6 +905,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               bSql.append(Project.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
+            break;
+          case "setFullPvcsCount":
+              o2.setFullPvcsCount(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
+              num++;
+              bParams.add(o2.sqlFullPvcsCount());
             break;
           case "setFullPvcs":
               o2.setFullPvcs(jsonObject.getJsonArray(entityVar));
@@ -1033,7 +1047,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "POST"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(POST)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1061,6 +1075,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1075,7 +1093,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("POST");
+                if(!scopes.contains("POST"))
+                  scopes.add("POST");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1376,15 +1395,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlDescription());
             break;
-          case Project.VAR_gpuEnabled:
-            o2.setGpuEnabled(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Project.VAR_gpuEnabled + "=$" + num);
-            num++;
-            bParams.add(o2.sqlGpuEnabled());
-            break;
           case Project.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1393,6 +1403,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             bSql.append(Project.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
+            break;
+          case Project.VAR_gpuEnabled:
+            o2.setGpuEnabled(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Project.VAR_gpuEnabled + "=$" + num);
+            num++;
+            bParams.add(o2.sqlGpuEnabled());
             break;
           case Project.VAR_podRestartCount:
             o2.setPodRestartCount(jsonObject.getString(entityVar));
@@ -1421,15 +1440,6 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlPodTerminatingCount());
             break;
-          case Project.VAR_podsTerminating:
-            o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Project.VAR_podsTerminating + "=$" + num);
-            num++;
-            bParams.add(o2.sqlPodsTerminating());
-            break;
           case Project.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1439,14 +1449,14 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case Project.VAR_fullPvcsCount:
-            o2.setFullPvcsCount(jsonObject.getString(entityVar));
+          case Project.VAR_podsTerminating:
+            o2.setPodsTerminating(jsonObject.getJsonArray(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
+            bSql.append(Project.VAR_podsTerminating + "=$" + num);
             num++;
-            bParams.add(o2.sqlFullPvcsCount());
+            bParams.add(o2.sqlPodsTerminating());
             break;
           case Project.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
@@ -1456,6 +1466,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
             bSql.append(Project.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
+            break;
+          case Project.VAR_fullPvcsCount:
+            o2.setFullPvcsCount(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Project.VAR_fullPvcsCount + "=$" + num);
+            num++;
+            bParams.add(o2.sqlFullPvcsCount());
             break;
           case Project.VAR_fullPvcs:
             o2.setFullPvcs(jsonObject.getJsonArray(entityVar));
@@ -1596,7 +1615,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -1624,6 +1643,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -1638,7 +1661,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -1981,7 +2005,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "PUT"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(PUT)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2009,6 +2033,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2023,7 +2051,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("PUT");
+                if(!scopes.contains("PUT"))
+                  scopes.add("PUT");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2341,7 +2370,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2369,6 +2398,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2383,7 +2416,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2656,7 +2690,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2683,6 +2717,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2697,7 +2735,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -2777,7 +2816,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/project/ProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/project/ProjectEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -2946,7 +2985,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "GET"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(GET)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -2973,6 +3012,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -2987,7 +3030,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("GET");
+                if(!scopes.contains("GET"))
+                  scopes.add("GET");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3067,7 +3111,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/project/ProjectSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "%s.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3237,7 +3281,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
         if(projectResource != null)
           form.add("permission", String.format("%s#%s", projectResource, "DELETE"));
         groups.stream().map(group -> {
-              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(DELETE)$").matcher(group);
+              Matcher mPermission = Pattern.compile("^/(.*-?PROJECT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
             }).filter(v -> v != null).forEach(mPermission -> {
               form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
@@ -3265,6 +3309,10 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
                         && mPermission.find();
                   }).forEach(permission -> {
                     fqs.add(String.format("%s:%s", "projectResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
                   });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
@@ -3279,7 +3327,8 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
               }
               if(fqs.size() > 0) {
                 fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                scopes.add("DELETE");
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
                 siteRequest.setFilteredScope(true);
               }
             }
@@ -3922,7 +3971,7 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT projectName, projectResource, created, description, gpuEnabled, archived, podRestartCount, podsRestarting, podTerminatingCount, podsTerminating, sessionId, fullPvcsCount, userKey, fullPvcs, namespaceTerminating, objectTitle, displayPage, editPage, userPage, download FROM Project WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT projectName, projectResource, created, description, archived, gpuEnabled, podRestartCount, podsRestarting, podTerminatingCount, sessionId, podsTerminating, userKey, fullPvcsCount, fullPvcs, namespaceTerminating, objectTitle, displayPage, editPage, userPage, download FROM Project WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4131,15 +4180,15 @@ public class ProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl implements 
       o.persistForClass(Project.VAR_projectResource, Project.staticSetProjectResource(siteRequest2, (String)result.get(Project.VAR_projectResource)));
       o.persistForClass(Project.VAR_created, Project.staticSetCreated(siteRequest2, (String)result.get(Project.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(Project.VAR_description, Project.staticSetDescription(siteRequest2, (String)result.get(Project.VAR_description)));
-      o.persistForClass(Project.VAR_gpuEnabled, Project.staticSetGpuEnabled(siteRequest2, (String)result.get(Project.VAR_gpuEnabled)));
       o.persistForClass(Project.VAR_archived, Project.staticSetArchived(siteRequest2, (String)result.get(Project.VAR_archived)));
+      o.persistForClass(Project.VAR_gpuEnabled, Project.staticSetGpuEnabled(siteRequest2, (String)result.get(Project.VAR_gpuEnabled)));
       o.persistForClass(Project.VAR_podRestartCount, Project.staticSetPodRestartCount(siteRequest2, (String)result.get(Project.VAR_podRestartCount)));
       o.persistForClass(Project.VAR_podsRestarting, Project.staticSetPodsRestarting(siteRequest2, (String)result.get(Project.VAR_podsRestarting)));
       o.persistForClass(Project.VAR_podTerminatingCount, Project.staticSetPodTerminatingCount(siteRequest2, (String)result.get(Project.VAR_podTerminatingCount)));
-      o.persistForClass(Project.VAR_podsTerminating, Project.staticSetPodsTerminating(siteRequest2, (String)result.get(Project.VAR_podsTerminating)));
       o.persistForClass(Project.VAR_sessionId, Project.staticSetSessionId(siteRequest2, (String)result.get(Project.VAR_sessionId)));
-      o.persistForClass(Project.VAR_fullPvcsCount, Project.staticSetFullPvcsCount(siteRequest2, (String)result.get(Project.VAR_fullPvcsCount)));
+      o.persistForClass(Project.VAR_podsTerminating, Project.staticSetPodsTerminating(siteRequest2, (String)result.get(Project.VAR_podsTerminating)));
       o.persistForClass(Project.VAR_userKey, Project.staticSetUserKey(siteRequest2, (String)result.get(Project.VAR_userKey)));
+      o.persistForClass(Project.VAR_fullPvcsCount, Project.staticSetFullPvcsCount(siteRequest2, (String)result.get(Project.VAR_fullPvcsCount)));
       o.persistForClass(Project.VAR_fullPvcs, Project.staticSetFullPvcs(siteRequest2, (String)result.get(Project.VAR_fullPvcs)));
       o.persistForClass(Project.VAR_namespaceTerminating, Project.staticSetNamespaceTerminating(siteRequest2, (String)result.get(Project.VAR_namespaceTerminating)));
       o.persistForClass(Project.VAR_objectTitle, Project.staticSetObjectTitle(siteRequest2, (String)result.get(Project.VAR_objectTitle)));

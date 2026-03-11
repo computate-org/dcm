@@ -58,7 +58,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               hostJson.put(Host.varJsonHost(Host.VAR_hostId, patch), hostId);
               String hostResource = String.format("%s-%s-%s", tenantResource, Host.CLASS_AUTH_RESOURCE, hostId);
               hostJson.put(Host.varJsonHost(Host.VAR_hostResource, patch), hostResource);
-              Tenant.fq(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+              Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
                 try {
                   if(tenant == null) {
                     RuntimeException ex = new RuntimeException(String.format("Could not find a matching tenant %s", tenantResource));
