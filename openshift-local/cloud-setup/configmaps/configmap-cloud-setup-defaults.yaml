@@ -34,7 +34,7 @@ data:
     # A shorter name for the application used for database names, collections, and artifact IDs. 
     SITE_SHORT_NAME: "dcm"
     # A pretty version of the site name. 
-    SITE_DISPLAY_NAME: "Desktop Computer Management"
+    SITE_DISPLAY_NAME: "Developer Computer Minion"
     # A short description of the site. 
     SITE_DESCRIPTION: "Event driven automation for installing desktop applications and OpenShift Local cloud applications on your own computer."
     # The site namespace in OpenShift. 
@@ -90,7 +90,7 @@ data:
     # The API version of this site. 
     API_VERSION: "1.0.0"
     # The Site OpenAPI title. 
-    API_TITLE: "Desktop Computer Management"
+    API_TITLE: "Developer Computer Minion"
     # The API contact email. 
     API_CONTACT_EMAIL: "dcm@computate.topicbox.com"
 
@@ -201,7 +201,7 @@ data:
     WEB_COMPONENTS_THEME: "active"
     FONTAWESOME_KIT: ""
     # A default FontAwesome style. 
-    FONTAWESOME_STYLE: "fa-duotone fa-regular "
+    FONTAWESOME_STYLE: "fa-regular "
     # Site default theme, light or dark. 
     SITE_THEME: "dark"
     # The site logo relative URI
@@ -586,7 +586,7 @@ data:
     # A shorter name for the application used for database names, collections, and artifact IDs. 
     SITE_SHORT_NAME: "dcm"
     # A pretty version of the site name. 
-    SITE_DISPLAY_NAME: Desktop Computer Management
+    SITE_DISPLAY_NAME: Developer Computer Minion
     # A short description of the site. 
     SITE_DESCRIPTION: "Event driven automation for installing desktop applications and OpenShift Local cloud applications on your own computer."
     # The site namespace in OpenShift. 
