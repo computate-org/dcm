@@ -39,12 +39,12 @@ import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.timezone.TimeZone;
 import org.computate.dcm.timezone.TimeZoneEnUSApiServiceImpl;
 import org.computate.dcm.timezone.TimeZoneEnUSGenApiService;
-import org.computate.dcm.page.SitePage;
-import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
-import org.computate.dcm.page.SitePageEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
+import org.computate.dcm.page.SitePage;
+import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
+import org.computate.dcm.page.SitePageEnUSGenApiService;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
@@ -440,10 +440,10 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
 
       TimeZoneEnUSApiServiceImpl apiTimeZone = new TimeZoneEnUSApiServiceImpl();
       initializeApiService(apiTimeZone);
-      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
-      initializeApiService(apiSitePage);
       TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
       initializeApiService(apiTenant);
+      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
+      initializeApiService(apiSitePage);
       AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
       initializeApiService(apiAnsibleProject);
       JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
@@ -460,8 +460,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       initializeApiService(apiAiTelemetryPlatform);
 
       apiTimeZone.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TimeZone.CLASS_CANONICAL_NAME, TimeZone.CLASS_SIMPLE_NAME, TimeZone.CLASS_API_ADDRESS_TimeZone, TimeZone.CLASS_AUTH_RESOURCE, "id", "userPage", "download").onSuccess(q1 -> {
-        apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q2 -> {
-          apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q3 -> {
+        apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q2 -> {
+          apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q3 -> {
             apiAnsibleProject.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, AnsibleProject.CLASS_CANONICAL_NAME, AnsibleProject.CLASS_SIMPLE_NAME, AnsibleProject.CLASS_API_ADDRESS_AnsibleProject, AnsibleProject.CLASS_AUTH_RESOURCE, "ansibleProjectResource", "userPage", "download").onSuccess(q4 -> {
               apiJobTemplate.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, JobTemplate.CLASS_CANONICAL_NAME, JobTemplate.CLASS_SIMPLE_NAME, JobTemplate.CLASS_API_ADDRESS_JobTemplate, JobTemplate.CLASS_AUTH_RESOURCE, "jobTemplateResource", "userPage", "download").onSuccess(q5 -> {
                 apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryResource", "userPage", "download").onSuccess(q6 -> {

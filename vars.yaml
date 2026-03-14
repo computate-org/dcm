@@ -35,9 +35,9 @@ VARS_PATH: "{{ SITE_SRC }}/{{ VARS_FILENAME }}"
 # A shorter name for the application used for database names, collections, and artifact IDs. 
 SITE_SHORT_NAME: "dcm"
 # A pretty version of the site name. 
-SITE_DISPLAY_NAME: Data Center Management
+SITE_DISPLAY_NAME: Developer Computer Minion
 # A short description of the site. 
-SITE_DESCRIPTION: "A hyperscaler-like cloud experience for enterprise on-premises and sovereign cloud infrastructure. DCM is an API-first, technology-agnostic framework that relies on a declarative data model where the desired state of infrastructure is defined as code."
+SITE_DESCRIPTION: "Event driven automation for installing desktop applications and OpenShift Local cloud applications on your own computer."
 # The site namespace in OpenShift. 
 SITE_NAMESPACE: "{{ lookup('env', 'SITE_NAMESPACE') | default('dcm', true) }}"
 # The main locale of this application. 

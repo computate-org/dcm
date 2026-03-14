@@ -326,7 +326,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "PATCH"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "PATCH"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -593,7 +593,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "POST"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "POST"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -808,7 +808,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "DELETE"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1057,7 +1057,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "PUT"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "PUT"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1578,7 +1578,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "GET"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "GET"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1833,7 +1833,7 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin"));
         if(id != null)
-          form.add("permission", String.format("%s#%s", id, "DELETE"));
+          form.add("permission", String.format("%s-%s#%s", TimeZone.CLASS_AUTH_RESOURCE, id, "DELETE"));
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)

@@ -176,12 +176,12 @@ import org.computate.dcm.model.BaseModel;
 import org.computate.dcm.timezone.TimeZoneEnUSGenApiService;
 import org.computate.dcm.timezone.TimeZoneEnUSApiServiceImpl;
 import org.computate.dcm.timezone.TimeZone;
-import org.computate.dcm.page.SitePageEnUSGenApiService;
-import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
-import org.computate.dcm.page.SitePage;
 import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.page.SitePageEnUSGenApiService;
+import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
+import org.computate.dcm.page.SitePage;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
@@ -343,14 +343,14 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiTimeZone.setVertx(vertx);
       apiTimeZone.setConfig(config);
       apiTimeZone.setWebClient(webClient);
-      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
-      apiSitePage.setVertx(vertx);
-      apiSitePage.setConfig(config);
-      apiSitePage.setWebClient(webClient);
       TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
       apiTenant.setVertx(vertx);
       apiTenant.setConfig(config);
       apiTenant.setWebClient(webClient);
+      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
+      apiSitePage.setVertx(vertx);
+      apiSitePage.setConfig(config);
+      apiSitePage.setWebClient(webClient);
       AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
       apiAnsibleProject.setVertx(vertx);
       apiAnsibleProject.setConfig(config);
@@ -382,12 +382,12 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiSiteUser.createAuthorizationScopes(new String[] { "DELETE", "GET", "PATCH", "POST", "SuperAdmin", "Admin", "PUT" }).onSuccess(authToken -> {
           apiTimeZone.authorizeGroupData(authToken, TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" })
               .onSuccess(q2 -> {
-            apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" })
-                .compose(q3 -> apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+            apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                .compose(q3 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                .compose(q3 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
                 .onSuccess(q3 -> {
-              apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
-                  .compose(q4 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
-                  .compose(q4 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+              apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" })
+                  .compose(q4 -> apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
                   .onSuccess(q4 -> {
                 apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectReader", new String[] { "GET" })
                     .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectEditor", new String[] { "GET", "POST", "PATCH" }))
@@ -1436,8 +1436,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("SitePage","Tenant","AnsibleProject","JobTemplate","HostInventory","Host","HostCheck","Project","AiTelemetryPlatform");
-      List<String> authResources = Arrays.asList("SITEPAGE","TENANT","ANSIBLEPROJECT","JOBTEMPLATE","HOSTINVENTORY","HOST","HOSTCHECK","PROJECT","AITELEMETRYPLATFORM");
+      List<String> authClassSimpleNames = Arrays.asList("Tenant","SitePage","AnsibleProject","JobTemplate","HostInventory","Host","HostCheck","Project","AiTelemetryPlatform");
+      List<String> authResources = Arrays.asList("TENANT","SITEPAGE","ANSIBLEPROJECT","JOBTEMPLATE","HOSTINVENTORY","HOST","HOSTCHECK","PROJECT","AITELEMETRYPLATFORM");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1449,13 +1449,13 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       initializeApiService(apiTimeZone);
       registerApiService(TimeZoneEnUSGenApiService.class, apiTimeZone, TimeZone.getClassApiAddress());
 
-      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
-      initializeApiService(apiSitePage);
-      registerApiService(SitePageEnUSGenApiService.class, apiSitePage, SitePage.getClassApiAddress());
-
       TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
       initializeApiService(apiTenant);
       registerApiService(TenantEnUSGenApiService.class, apiTenant, Tenant.getClassApiAddress());
+
+      SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
+      initializeApiService(apiSitePage);
+      registerApiService(SitePageEnUSGenApiService.class, apiSitePage, SitePage.getClassApiAddress());
 
       AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
       initializeApiService(apiAnsibleProject);

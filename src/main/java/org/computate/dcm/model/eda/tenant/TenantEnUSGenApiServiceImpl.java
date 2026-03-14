@@ -162,11 +162,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
-              //
+            if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
@@ -176,22 +175,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         scopes.add(scope);
                     });
                   });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                if(!scopes.contains("GET"))
-                  scopes.add("GET");
-                siteRequest.setFilteredScope(true);
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
               }
             }
             {
@@ -364,11 +365,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
-              //
+            if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
@@ -378,22 +378,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         scopes.add(scope);
                     });
                   });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                if(!scopes.contains("GET"))
-                  scopes.add("GET");
-                siteRequest.setFilteredScope(true);
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
               }
             }
             {
@@ -504,20 +506,19 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("PATCH") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
-                    return permission.getJsonArray("scopes").contains("PATCH")
-                        && mPermission.find();
-                  }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
-                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
-                      if(!scopes.contains(scope))
-                        scopes.add(scope);
-                    });
+            if(!scopes.contains("PATCH")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PATCH")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
                   });
+                });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -1242,20 +1243,19 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("POST") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
-                    return permission.getJsonArray("scopes").contains("POST")
-                        && mPermission.find();
-                  }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
-                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
-                      if(!scopes.contains(scope))
-                        scopes.add(scope);
-                    });
+            if(!scopes.contains("POST")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("POST")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
                   });
+                });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -1824,20 +1824,19 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("DELETE") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
-                    return permission.getJsonArray("scopes").contains("DELETE")
-                        && mPermission.find();
-                  }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
-                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
-                      if(!scopes.contains(scope))
-                        scopes.add(scope);
-                    });
+            if(!scopes.contains("DELETE")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
                   });
+                });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -2255,20 +2254,19 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("PUT") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
-                    return permission.getJsonArray("scopes").contains("PUT")
-                        && mPermission.find();
-                  }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
-                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
-                      if(!scopes.contains(scope))
-                        scopes.add(scope);
-                    });
+            if(!scopes.contains("PUT")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PUT")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
                   });
+                });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
@@ -2619,11 +2617,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
-              //
+            if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
@@ -2633,22 +2630,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         scopes.add(scope);
                     });
                   });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                if(!scopes.contains("GET"))
-                  scopes.add("GET");
-                siteRequest.setFilteredScope(true);
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
               }
             }
             {
@@ -2938,10 +2937,10 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("GET") && !classPublicRead) {
+            if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
@@ -2951,22 +2950,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                         scopes.add(scope);
                     });
                   });
-              JsonObject authParams = siteRequest.getServiceRequest().getParams();
-              JsonObject authQuery = authParams.getJsonObject("query");
-              if(authQuery == null) {
-                authQuery = new JsonObject();
-                authParams.put("query", authQuery);
-              }
-              JsonArray fq = authQuery.getJsonArray("fq");
-              if(fq == null) {
-                fq = new JsonArray();
-                authQuery.put("fq", fq);
-              }
-              if(fqs.size() > 0) {
-                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
-                if(!scopes.contains("GET"))
-                  scopes.add("GET");
-                siteRequest.setFilteredScope(true);
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
               }
             }
             {
@@ -3233,20 +3234,19 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
-            if(!scopes.contains("DELETE") && !classPublicRead) {
-              //
-              List<String> fqs = new ArrayList<>();
-              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
-                    Matcher mPermission = Pattern.compile("^(TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
-                    return permission.getJsonArray("scopes").contains("DELETE")
-                        && mPermission.find();
-                  }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
-                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
-                      if(!scopes.contains(scope))
-                        scopes.add(scope);
-                    });
+            if(!scopes.contains("DELETE")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
                   });
+                });
               JsonObject authParams = siteRequest.getServiceRequest().getParams();
               JsonObject authQuery = authParams.getJsonObject("query");
               if(authQuery == null) {
