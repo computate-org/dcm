@@ -580,6 +580,10 @@ IOTAGENT_NORTH_PORT: 443
 # The message broker transport type (MQTT or AMQP). 
 IOTAGENT_TRANSPORT: AMQP
 
+##############
+# extra vars #
+##############
+
 #########
 # SENSU #
 #########
@@ -613,3 +617,4 @@ AAP_SSL: "{{ (lookup('env', 'AAP_SSL') | default('true', true) | lower) != 'fals
 AAP_HOST_NAME: "{{ lookup('env', 'AAP_HOST_NAME') | default('aap-aap.apps-crc.testing', true) }}"
 # The default port that the Sensu runs. 
 AAP_PORT: "{{ lookup('env', 'AAP_PORT') | default('443', true) }}"
+

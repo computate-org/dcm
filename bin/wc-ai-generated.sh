@@ -7,6 +7,36 @@ find \
   ~/.local/src/dcm/bin/ \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/config/ \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/BaseModel.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/host/HostGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/host/HostEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/host/HostEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/platform/aitelemetry/AiTelemetryPlatformGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/platform/aitelemetry/AiTelemetryPlatformEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/platform/aitelemetry/AiTelemetryPlatformEnUSGenApiService.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/page/ \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/request/ \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/result/ \
@@ -18,5 +48,75 @@ find \
   ~/.local/src/dcm-static/webawesome/css/ \
   ~/.local/src/dcm-static/webawesome/fiware/ \
   ~/.local/src/dcm-static/webawesome/js/ \
-  -type f -exec wc -l {} +
+    ~/.local/src/dcm-static/webawesome/templates/en-us/edit/time-zone/TimeZoneGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZonePaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/tenant/TenantGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/article/SitePageGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePagePaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/ansible-project/AnsibleProjectGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/job-template/JobTemplateGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplatePaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host-inventory/HostInventoryGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventoryGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventoryLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventoryPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventorySearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventorySearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventorySidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host/HostGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host/HostSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host-check/HostCheckGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/project/ProjectGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/ai-telemetry-platform/AiTelemetryPlatformGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ai-telemetry-platform/AiTelemetryPlatformSidebar.htm \
+    -type f -exec wc -l {} +
 echo AI generated

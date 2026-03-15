@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: "Data Center Management"
+  title: "Developer Computer Minion"
   version: 3.0.0
 paths:
   /en-us/api/ansible-project:
@@ -15205,6 +15205,8 @@ components:
                     type: string
                   pageImageAlt:
                     type: string
+                  pageTemplate:
+                    type: string
                   prerequisiteArticleIds:
                     type: string
                   prerequisiteArticles:
@@ -15419,6 +15421,13 @@ components:
             removePageImageAlt:
               type: string
             removeAllPageImageAlt:
+              type: string
+            setPageTemplate:
+              type: string
+              nullable: true
+            removePageTemplate:
+              type: string
+            removeAllPageTemplate:
               type: string
             setPrerequisiteArticleIds:
               type: string
@@ -15719,6 +15728,13 @@ components:
               type: string
             removeAllPageImageAlt:
               type: string
+            setPageTemplate:
+              type: string
+              nullable: true
+            removePageTemplate:
+              type: string
+            removeAllPageTemplate:
+              type: string
             setPrerequisiteArticleIds:
               type: string
               nullable: true
@@ -15893,6 +15909,8 @@ components:
               type: string
             pageImageAlt:
               type: string
+            pageTemplate:
+              type: string
             prerequisiteArticleIds:
               type: string
             prerequisiteArticles:
@@ -15983,6 +16001,8 @@ components:
               type: string
             pageImageAlt:
               type: string
+            pageTemplate:
+              type: string
             prerequisiteArticleIds:
               type: string
             prerequisiteArticles:
@@ -16072,6 +16092,8 @@ components:
             pageImageType:
               type: string
             pageImageAlt:
+              type: string
+            pageTemplate:
               type: string
             prerequisiteArticleIds:
               type: string
@@ -16168,6 +16190,8 @@ components:
                     type: string
                   pageImageAlt:
                     type: string
+                  pageTemplate:
+                    type: string
                   prerequisiteArticleIds:
                     type: string
                   prerequisiteArticles:
@@ -16257,6 +16281,8 @@ components:
                   pageImageType:
                     type: string
                   pageImageAlt:
+                    type: string
+                  pageTemplate:
                     type: string
                   prerequisiteArticleIds:
                     type: string
@@ -16348,6 +16374,8 @@ components:
               type: string
             pageImageAlt:
               type: string
+            pageTemplate:
+              type: string
             prerequisiteArticleIds:
               type: string
             prerequisiteArticles:
@@ -16437,6 +16465,8 @@ components:
             pageImageType:
               type: string
             pageImageAlt:
+              type: string
+            pageTemplate:
               type: string
             prerequisiteArticleIds:
               type: string
