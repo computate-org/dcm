@@ -1,5 +1,6 @@
 package org.computate.dcm.model.eda.host;
 
+import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -167,7 +168,8 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
         String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
         Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
         String sensuUri = String.format("/api/core/v2/namespaces/%s/entities/%s", urlEncode(tenantId), urlEncode(hostName));
-        String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+        String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+        String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
 
         JsonObject body = new JsonObject();
         body.put("entity_class", "proxy");
@@ -187,14 +189,23 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
           LOG.error(ex.getMessage(), ex);
           promise.fail(ex);
         } else {
-          webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
-              .putHeader("Authorization", String.format("Key %s", accessToken))
-              .sendJsonObject(body)
+          webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+              .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
+              .send()
               .expecting(HttpResponseExpectation.SC_OK)
-              .onSuccess(HostResponse -> {
-            promise.complete();
+              .onSuccess(auth -> {
+            webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+                .putHeader("Authorization", String.format("Key %s", auth.bodyAsJsonObject().getString("access_token")))
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_OK)
+                .onSuccess(HostResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating Sensu host failed. "), ex);
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
-            LOG.error(String.format("Updating Sensu host failed. "), ex);
+            LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
             promise.fail(ex);
           });
         }
@@ -297,15 +308,16 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
       String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
       Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
       String sensuUri = String.format("/api/core/v2/namespaces/%s/entities/%s", urlEncode(tenantId), urlEncode(ipAddress));
-      String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+      String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+      String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
 
-      // if(StringUtils.isEmpty(hostName)) {
-      //   RuntimeException ex = new RuntimeException("Missing host name");
-      //   LOG.error(ex.getMessage(), ex);
-      //   promise.fail(ex);
-      // } else {
+      webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+          .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
+          .send()
+          .expecting(HttpResponseExpectation.SC_OK)
+          .onSuccess(auth -> {
         webClient.delete(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
-            .putHeader("Authorization", String.format("Key %s", accessToken))
+            .putHeader("Authorization", String.format("Key %s", auth.bodyAsJsonObject().getString("access_token")))
             .send()
             .expecting(HttpResponseExpectation.SC_NO_CONTENT.or(HttpResponseExpectation.SC_NOT_FOUND))
             .onSuccess(HostResponse -> {
@@ -314,7 +326,10 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
           LOG.error(String.format("Deleting Sensu host failed. "), ex);
           promise.fail(ex);
         });
-      // }
+      }).onFailure(ex -> {
+        LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
+        promise.fail(ex);
+      });
     } catch(Exception ex) {
       LOG.error(String.format("Deleting Sensu host failed. "), ex);
       promise.fail(ex);

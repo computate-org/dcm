@@ -585,19 +585,23 @@ IOTAGENT_TRANSPORT: AMQP
 ##############
 
 #########
-# SENSU #
+# Sensu #
 #########
 
+# The namespace in OpenShift where Sensu will run. 
+SENSU_NAMESPACE: "{{ lookup('env', 'SENSU_NAMESPACE_' + SITE_SHORT_NAME) | default('sensu', true) }}"
 # The Sensu secret name. 
-SENSU_SECRET: "{{ lookup('env', 'SENSU_SECRET') | default('sensu', true) }}"
-# The Auth admin username. 
-SENSU_TOKEN: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENSU_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"token\": \"\" } } )).data['token'] | b64decode }}"
+SENSU_SECRET: "{{ lookup('env', 'SENSU_SECRET') | default('sensu-admin', true) }}"
+# The Sensu admin username
+SENSU_USER_NAME: "admin"
+# The Sensu admin password
+SENSU_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENSU_SECRET, namespace=SENSU_NAMESPACE) | first | default({\"data\": {\"password\": \"\" } } )).data['password'] | b64decode }}"
 # Whether to use SSL when connecting to the Sensu. 
-SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('false', true) | lower) != 'false' }}"
+SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('true', true) | lower) == 'true' }}"
 # The host name to connect to the Sensu in OpenShift. 
-SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('localhost', true) }}"
+SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('sensu-api.apps-crc.testing', true) }}"
 # The default port that the Sensu runs. 
-SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
+SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('443', true) }}"
 
 #######
 # AAP #

@@ -1,6 +1,7 @@
 package org.computate.dcm.model.eda.tenant;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.authentication.UsernamePasswordCredentials;
 import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -54,9 +55,9 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         String tenantDescription = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantDescription, patch));
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
-        String aapTenantName = config.getString(ConfigKeys.AAP_HOST_NAME);
+        String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
         Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-        String aapUri = patch ? String.format("/api/controller/v2/tenants/%s/", o.getAapOrganizationId()) : "/api/controller/v2/organizations/";
+        String aapUri = patch ? String.format("/api/controller/v2/organizations/%s/", o.getAapOrganizationId()) : "/api/controller/v2/organizations/";
         String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
         String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
@@ -68,7 +69,7 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         if(patch) {
           promise.complete();
         } else {
-          webClient.post(aapPort, aapTenantName, aapUri).ssl(aapSsl)
+          webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
               .putHeader("Content-Type", "application/json")
               .basicAuthentication(aapUserName, aapPassword)
               .sendJsonObject(body)
@@ -79,13 +80,13 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
             tenantJson.put(Tenant.VAR_aapOrganizationId, aapOrganizationId);
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("Updating AAP tenant failed. "), ex);
+            LOG.error(String.format("Updating AAP organization failed. "), ex);
             promise.fail(ex);
           });
         }
       }
     } catch(Exception ex) {
-      LOG.error(String.format("Updating AAP tenant failed. "), ex);
+      LOG.error(String.format("Updating AAP organization failed. "), ex);
       promise.fail(ex);
     }
     return promise.future();
@@ -100,10 +101,11 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         String tenantId = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantId, patch));
 
         Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
-        String sensuTenantName = config.getString(ConfigKeys.SENSU_HOST_NAME);
+        String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
         Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
         String sensuUri = String.format("/api/core/v2/namespaces/%s", urlEncode(tenantId));
-        String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+        String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+        String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
 
         JsonObject body = new JsonObject();
         body.put("name", tenantId);
@@ -113,14 +115,23 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
           LOG.error(ex.getMessage(), ex);
           promise.fail(ex);
         } else {
-          webClient.put(sensuPort, sensuTenantName, sensuUri).ssl(sensuSsl)
-              .putHeader("Authorization", String.format("Key %s", accessToken))
-              .sendJsonObject(body)
-              .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
-              .onSuccess(TenantResponse -> {
-            promise.complete();
+          webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+              .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
+              .send()
+              .expecting(HttpResponseExpectation.SC_OK)
+              .onSuccess(auth -> {
+            webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+                .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
+                .onSuccess(TenantResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
-            LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+            LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
             promise.fail(ex);
           });
         }
@@ -145,10 +156,11 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         String handlerCommand = String.format("sensu-kafka-handler --host %s --topic %s", kafkaHost, kafkaTopic);
 
         Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
-        String sensuTenantName = config.getString(ConfigKeys.SENSU_HOST_NAME);
+        String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
         Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
         String sensuUri = String.format("/api/core/v2/namespaces/%s/handlers/%s", urlEncode(tenantId), urlEncode(handlerName));
-        String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+        String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+        String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
 
         JsonObject body = new JsonObject();
         body.put("command", handlerCommand);
@@ -169,14 +181,23 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
           LOG.error(ex.getMessage(), ex);
           promise.fail(ex);
         } else {
-          webClient.put(sensuPort, sensuTenantName, sensuUri).ssl(sensuSsl)
-              .putHeader("Authorization", String.format("Key %s", accessToken))
-              .sendJsonObject(body)
-              .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
-              .onSuccess(TenantResponse -> {
-            promise.complete();
+          webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+              .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
+              .send()
+              .expecting(HttpResponseExpectation.SC_OK)
+              .onSuccess(auth -> {
+            webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+                .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
+                .onSuccess(TenantResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
-            LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+            LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
             promise.fail(ex);
           });
         }
@@ -275,19 +296,29 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     Promise<Void> promise = Promise.promise();
     try {
       Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
-      String sensuTenantName = config.getString(ConfigKeys.SENSU_HOST_NAME);
+      String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
       Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
       String sensuUri = String.format("/api/core/v2/namespaces/%s", o.getTenantId());
-      String accessToken = config.getString(ConfigKeys.SENSU_TOKEN);
+      String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+      String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
 
-      webClient.delete(sensuPort, sensuTenantName, sensuUri).ssl(sensuSsl)
-          .putHeader("Authorization", String.format("Key %s", accessToken))
+      webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+          .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
           .send()
-          .expecting(HttpResponseExpectation.SC_NO_CONTENT.or(HttpResponseExpectation.SC_NOT_FOUND))
-          .onSuccess(TenantResponse -> {
-        promise.complete();
+          .expecting(HttpResponseExpectation.SC_OK)
+          .onSuccess(auth -> {
+        webClient.delete(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+            .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
+            .send()
+            .expecting(HttpResponseExpectation.SC_NO_CONTENT.or(HttpResponseExpectation.SC_NOT_FOUND))
+            .onSuccess(TenantResponse -> {
+          promise.complete();
+        }).onFailure(ex -> {
+          LOG.error(String.format("Deleting Sensu tenant failed. "), ex);
+          promise.fail(ex);
+        });
       }).onFailure(ex -> {
-        LOG.error(String.format("Deleting Sensu tenant failed. "), ex);
+        LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
         promise.fail(ex);
       });
     } catch(Exception ex) {
