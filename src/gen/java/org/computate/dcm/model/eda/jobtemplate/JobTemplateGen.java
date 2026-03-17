@@ -211,7 +211,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/job-template";
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/job-template";
 
-  public static final String Icon = "<i class=\"fa-duotone fa-regular fa-excavator\"></i>";
+  public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-excavator\"></i>";
   public static final Integer Rows = 100;
 
 	////////////////////

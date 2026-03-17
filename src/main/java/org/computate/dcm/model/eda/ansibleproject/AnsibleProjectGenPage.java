@@ -562,7 +562,7 @@ public class AnsibleProjectGenPage extends AnsibleProjectGenPageGen<PageLayout> 
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-duotone fa-regular fa-excavator\"></i>");
+      c.o("<i class=\"{{ FONTAWESOME_STYLE }} fa-excavator\"></i>");
   }
 
   protected void _pageUriAnsibleProject(Wrap<String> c) {

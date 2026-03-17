@@ -558,7 +558,7 @@ public class AiTelemetryPlatformGenPage extends AiTelemetryPlatformGenPageGen<Pa
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-duotone fa-regular fa-chart-fft\"></i>");
+      c.o("<i class=\"{{ FONTAWESOME_STYLE }} fa-chart-fft\"></i>");
   }
 
   protected void _pageUriAiTelemetryPlatform(Wrap<String> c) {

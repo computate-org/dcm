@@ -212,7 +212,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/host-inventory";
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/host-inventory";
 
-  public static final String Icon = "<i class=\"fa-duotone fa-regular fa-network-wired\"></i>";
+  public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-network-wired\"></i>";
   public static final Integer Rows = 100;
 
 	////////////////////

@@ -131,7 +131,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
         if(userId != null)
-          form.add("permission", String.format("%s#%s", userId, "GET"));
+          form.add("permission", String.format("%s-%s#%s", SiteUser.CLASS_AUTH_RESOURCE, userId, "GET"));
         siteRequest.setPublicRead(classPublicRead);
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
@@ -816,7 +816,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
         if(userId != null)
-          form.add("permission", String.format("%s#%s", userId, "POST"));
+          form.add("permission", String.format("%s-%s#%s", SiteUser.CLASS_AUTH_RESOURCE, userId, "POST"));
         siteRequest.setPublicRead(classPublicRead);
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
@@ -1358,7 +1358,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
         if(userId != null)
-          form.add("permission", String.format("%s#%s", userId, "GET"));
+          form.add("permission", String.format("%s-%s#%s", SiteUser.CLASS_AUTH_RESOURCE, userId, "GET"));
         siteRequest.setPublicRead(classPublicRead);
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
@@ -1610,7 +1610,7 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
         if(userId != null)
-          form.add("permission", String.format("%s#%s", userId, "GET"));
+          form.add("permission", String.format("%s-%s#%s", SiteUser.CLASS_AUTH_RESOURCE, userId, "GET"));
         siteRequest.setPublicRead(classPublicRead);
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)

@@ -10,7 +10,7 @@ import org.computate.dcm.model.BaseModel;
  * Description: A managed host inventory. 
  * AName: a host inventory
  * PluralName: host inventories
- * Icon: <i class="fa-duotone fa-regular fa-network-wired"></i>
+ * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-network-wired"></i>
  * Rows: 100
  * MenuDetails: hosts
  * MenuDetailsOpen: true

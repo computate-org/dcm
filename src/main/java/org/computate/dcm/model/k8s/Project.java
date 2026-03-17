@@ -22,7 +22,7 @@ import io.vertx.pgclient.data.Polygon;
  * Description: A research project using AI and GPUs
  * AName: an project
  * PluralName: projects
- * Icon: <i class="fa-duotone fa-regular fa-people-line"></i>
+ * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-people-line"></i>
  * Rows: 100
  * MenuDetails: OpenShift
  * MenuDetailsOpen: true

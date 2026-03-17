@@ -9,7 +9,7 @@ import org.computate.dcm.model.BaseModel;
  * Order: 9
  * Description: A check to be performed on a computer. 
  * AName: a host check
- * Icon: <i class="fa-duotone fa-regular fa-box-check"></i>
+ * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-box-check"></i>
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host-check

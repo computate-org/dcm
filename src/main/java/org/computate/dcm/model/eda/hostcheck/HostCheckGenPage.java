@@ -564,7 +564,7 @@ public class HostCheckGenPage extends HostCheckGenPageGen<PageLayout> {
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-duotone fa-regular fa-box-check\"></i>");
+      c.o("<i class=\"{{ FONTAWESOME_STYLE }} fa-box-check\"></i>");
   }
 
   protected void _pageUriHostCheck(Wrap<String> c) {

@@ -12,7 +12,7 @@ import org.computate.dcm.model.BaseModel;
  * Order: 5
  * Description: A ansible project to be run on a computer in Ansible Automation Platform. 
  * AName: a ansible project
- * Icon: <i class="fa-duotone fa-regular fa-excavator"></i>
+ * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-excavator"></i>
  * Rows: 100
  * MenuDetails: Ansible
  * MenuDetailsOpen: true

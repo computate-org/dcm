@@ -10,7 +10,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  * Order: 8
  * Description: A managed host computer. 
  * AName: a host
- * Icon: <i class="fa-duotone fa-regular fa-server"></i>
+ * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-server"></i>
  * Rows: 100
  * 
  * SearchPageUri: /en-us/search/host

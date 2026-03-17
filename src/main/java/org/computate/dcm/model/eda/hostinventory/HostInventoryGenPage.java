@@ -562,7 +562,7 @@ public class HostInventoryGenPage extends HostInventoryGenPageGen<PageLayout> {
 
   @Override
   protected void _classIcon(Wrap<String> c) {
-      c.o("<i class=\"fa-duotone fa-regular fa-network-wired\"></i>");
+      c.o("<i class=\"{{ FONTAWESOME_STYLE }} fa-network-wired\"></i>");
   }
 
   protected void _pageUriHostInventory(Wrap<String> c) {

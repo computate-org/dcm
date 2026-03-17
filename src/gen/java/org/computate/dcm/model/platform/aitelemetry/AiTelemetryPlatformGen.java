@@ -211,7 +211,7 @@ public abstract class AiTelemetryPlatformGen<DEV> extends BaseResult {
   public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/ai-telemetry-platform";
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/ai-telemetry-platform";
 
-  public static final String Icon = "<i class=\"fa-duotone fa-regular fa-chart-fft\"></i>";
+  public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-chart-fft\"></i>";
 
 	/////////////
   // article //
