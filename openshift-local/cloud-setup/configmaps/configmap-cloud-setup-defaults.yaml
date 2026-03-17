@@ -437,7 +437,7 @@ data:
     ##############
 
     # Enable Kafka message integration. 
-    ENABLE_KAFKA: false
+    ENABLE_KAFKA: true
     # The namespace in OpenShift where Kafka will run. 
     KAFKA_NAMESPACE: "{{ KAFKA_NAMESPACE }}"
     # The Kafka SSL KeyStore secret name. 
@@ -501,7 +501,26 @@ data:
     RABBITMQ_PASSWORD: "{{ lookup('env', 'RABBITMQ_PASSWORD') | default('password', true) }}"
     # The RabbitMQ virtual host. 
     RABBITMQ_VIRTUAL_HOST: "/"
-
+    #######
+    # AAP #
+    #######
+    
+    # Enable Ansible Automation Platform integration. 
+    ENABLE_AAP: "True"
+    # The AAP namespace. 
+    AAP_NAMESPACE: "aap"
+    # The AAP secret name. 
+    AAP_SECRET: "aap-admin-password"
+    # The AAP admin username. 
+    AAP_USER_NAME: "admin"
+    # The Auth admin username. 
+    AAP_PASSWORD: "S0zzd5rWlFQ2jONTIoYc5VpjYffn8eK8"
+    # Whether to use SSL when connecting to the Sensu. 
+    AAP_SSL: "True"
+    # The host name to connect to the Sensu in OpenShift. 
+    AAP_HOST_NAME: "aap-aap.apps-crc.testing"
+    # The default port that the Sensu runs. 
+    AAP_PORT: "443"
     ################################
     # OpenShift Deployment Details #
     ################################
@@ -574,6 +593,8 @@ data:
     # AAP #
     #######
 
+    # Enable Ansible Automation Platform integration. 
+    ENABLE_AAP: "{{ (lookup('env', 'ENABLE_AAP') | lower) != 'false' }}"
     # The AAP namespace. 
     AAP_NAMESPACE: "{{ lookup('env', 'AAP_NAMESPACE') | default('aap', true) }}"
     # The AAP secret name. 

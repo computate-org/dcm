@@ -408,7 +408,7 @@ AUTH_FINE_GRAINED_POLICY_PERMISSIONS: true
 # # The kafka truststore secret name. 
 # KAFKA_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_TRUSTSTORE_SECRET_' + SITE_SHORT_NAME) | default('kafka-cluster-ca-cert', true) }}"
 # Enable Kafka message integration. 
-ENABLE_KAFKA: "{{ (lookup('env', 'ENABLE_KAFKA') | lower) == 'true' }}"
+ENABLE_KAFKA: "{{ (lookup('env', 'ENABLE_KAFKA') | lower) != 'false' }}"
 # The Kafka port. 
 KAFKA_PORT: "{{ lookup('env', 'KAFKA_PORT') | default('32000', true) }}"
 # The namespace in OpenShift where Kafka will run. 
@@ -603,6 +603,8 @@ SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
 # AAP #
 #######
 
+# Enable Ansible Automation Platform integration. 
+ENABLE_AAP: "{{ (lookup('env', 'ENABLE_AAP') | lower) != 'false' }}"
 # The AAP namespace. 
 AAP_NAMESPACE: "{{ lookup('env', 'AAP_NAMESPACE') | default('aap', true) }}"
 # The AAP secret name. 

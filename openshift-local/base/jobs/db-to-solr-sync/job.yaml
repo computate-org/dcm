@@ -40,6 +40,8 @@ spec:
         - secretRef:
             name: cloud-font-awesome
         - secretRef:
+            name: cloud-aap
+        - secretRef:
             name: cloud-extra
         image: quay.io/computateorg/dcm:latest
         imagePullPolicy: Always

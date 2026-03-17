@@ -468,6 +468,11 @@ data:
         definition: "{{ lookup('template', 'font-awesome-secret.yaml') }}"
         validate_certs: false
       when: query('kubernetes.core.k8s', kind='Secret', resource_name=WEB_COMPONENTS_SECRET, namespace=SITE_NAMESPACE) | length == 0
+    - name: "Create an AAP secret in namespace {{ SITE_NAMESPACE }}"
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'aap-secret.yaml') }}"
+        validate_certs: false
     - name: "Create an extra secret in namespace {{ SITE_NAMESPACE }}"
       kubernetes.core.k8s:
         state: present

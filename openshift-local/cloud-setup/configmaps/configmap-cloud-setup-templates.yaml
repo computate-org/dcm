@@ -288,6 +288,22 @@ data:
       FONTAWESOME_KIT: "{{ FONTAWESOME_KIT }}"
       FONTAWESOME_STYLE: "{{ FONTAWESOME_STYLE }}"
       SITE_THEME: "{{ SITE_THEME }}"
+  aap-secret.yaml: |
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: cloud-aap
+      namespace: {{ SITE_NAMESPACE }}
+    type: Opaque
+    stringData:
+      ENABLE_AAP: "{{ ENABLE_AAP }}"
+      AAP_NAMESPACE: "{{ AAP_NAMESPACE }}"
+      AAP_SECRET: "{{ AAP_SECRET }}"
+      AAP_USER_NAME: "{{ AAP_USER_NAME }}"
+      AAP_PASSWORD: "{{ AAP_PASSWORD }}"
+      AAP_SSL: "{{ AAP_SSL }}"
+      AAP_HOST_NAME: "{{ AAP_HOST_NAME }}"
+      AAP_PORT: "{{ AAP_PORT }}"
   extra-secret.yaml: |
     apiVersion: v1
     kind: Secret
@@ -301,6 +317,7 @@ data:
       SENSU_SSL: '{{ SENSU_SSL | replace("'", "\\'") }}'
       SENSU_HOST_NAME: '{{ SENSU_HOST_NAME | replace("'", "\\'") }}'
       SENSU_PORT: '{{ SENSU_PORT | replace("'", "\\'") }}'
+      ENABLE_AAP: '{{ ENABLE_AAP | replace("'", "\\'") }}'
       AAP_NAMESPACE: '{{ AAP_NAMESPACE | replace("'", "\\'") }}'
       AAP_SECRET: '{{ AAP_SECRET | replace("'", "\\'") }}'
       AAP_USER_NAME: '{{ AAP_USER_NAME | replace("'", "\\'") }}'
