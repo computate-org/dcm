@@ -136,7 +136,7 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
               .expecting(HttpResponseExpectation.SC_OK)
               .onSuccess(auth -> {
             webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
-                .putHeader("Authorization", String.format("Key %s", auth.bodyAsJsonObject().getString("access_token")))
+                .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
                 .sendJsonObject(body)
                 .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
                 .onSuccess(HostCheckResponse -> {
@@ -214,7 +214,7 @@ public class HostCheckEnUSApiServiceImpl extends HostCheckEnUSGenApiServiceImpl 
           .expecting(HttpResponseExpectation.SC_OK)
           .onSuccess(auth -> {
         webClient.delete(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
-            .putHeader("Authorization", String.format("Key %s", auth.bodyAsJsonObject().getString("access_token")))
+            .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
             .send()
             .expecting(HttpResponseExpectation.SC_NO_CONTENT.or(HttpResponseExpectation.SC_NOT_FOUND))
             .onSuccess(HostCheckResponse -> {
