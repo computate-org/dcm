@@ -143,6 +143,79 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     return promise.future();
   }
 
+  public Future<Void> sensuUpsertKafkaAsset(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson) {
+    Promise<Void> promise = Promise.promise();
+    try {
+      if(tenantJson == null) {
+        promise.complete();
+      } else {
+        String tenantId = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantId, patch));
+        String assetName = "sensu/sensu-kafka-handler";
+
+        Integer sensuPort = Integer.parseInt(config.getString(ConfigKeys.SENSU_PORT));
+        String sensuHostName = config.getString(ConfigKeys.SENSU_HOST_NAME);
+        Boolean sensuSsl = Boolean.parseBoolean(config.getString(ConfigKeys.SENSU_SSL));
+        String sensuUri = String.format("/api/core/v2/namespaces/%s/assets/%s", urlEncode(tenantId), urlEncode(assetName));
+        String sensuUserName = config.getString(ConfigKeys.SENSU_USER_NAME);
+        String sensuPassword = config.getString(ConfigKeys.SENSU_PASSWORD);
+
+        JsonObject body = new JsonObject();
+        body.put("builds", new JsonArray()
+          .add(new JsonObject()
+            .put("url", "https://assets.bonsai.sensu.io/a17d204ee9e3d09552dc0f1dd59ec3c85812979b/sensu-kafka-handler_0.0.4_linux_amd64.tar.gz")
+            .put("sha512", "6f345ce94c501742ff3907e0f2bc78525b36b9d35fecd2b2a284a87003e39333f60e7fddde9a17f3356e8919b874988c752400c43604cf6f430c2680b51cc64c")
+            .put("filters", new JsonArray().add("entity.system.os == 'linux'").add("entity.system.arch == 'amd64'"))
+          )
+        );
+        JsonObject metadata = new JsonObject();
+        metadata.put("name", assetName);
+        // metadata.put("name", String.format("sensu/%s", assetName));
+        metadata.put("namespace", tenantId);
+        // body.put("headers", null);
+        body.put("metadata", metadata);
+        JsonObject annotations = new JsonObject();
+        annotations.put("io.sensu.bonsai.api_url", "https://bonsai.sensu.io/api/v1/assets/sensu/sensu-kafka-handler");
+        annotations.put("io.sensu.bonsai.name", "sensu-kafka-handler");
+        annotations.put("io.sensu.bonsai.namespace", "sensu");
+        annotations.put("io.sensu.bonsai.tier", "Community");
+        annotations.put("io.sensu.bonsai.url", "https://bonsai.sensu.io/assets/sensu/sensu-kafka-handler");
+        annotations.put("io.sensu.bonsai.version", "0.0.4");
+        annotations.put("io.sensu.bonsai.tags", "");
+        metadata.put("annotations", annotations);
+
+        if(StringUtils.isEmpty(tenantId)) {
+          RuntimeException ex = new RuntimeException("Missing tenant ID");
+          LOG.error(ex.getMessage(), ex);
+          promise.fail(ex);
+        } else {
+          webClient.get(sensuPort, sensuHostName, "/auth").ssl(sensuSsl)
+              .authentication(new UsernamePasswordCredentials(sensuUserName, sensuPassword))
+              .send()
+              .expecting(HttpResponseExpectation.SC_OK)
+              .onSuccess(auth -> {
+            webClient.put(sensuPort, sensuHostName, sensuUri).ssl(sensuSsl)
+                .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
+                .sendJsonObject(body)
+                .expecting(HttpResponseExpectation.SC_OK.or(HttpResponseExpectation.SC_CREATED))
+                .onSuccess(TenantResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating Sensu asset failed. "), ex);
+              promise.fail(ex);
+            });
+          }).onFailure(ex -> {
+            LOG.error(String.format("Requesting Sensu admin token failed. "), ex);
+            promise.fail(ex);
+          });
+        }
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("Updating Sensu namespace failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
   public Future<Void> sensuUpsertKafkaHandler(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson) {
     Promise<Void> promise = Promise.promise();
     try {
@@ -215,9 +288,13 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(tenantJson -> {
       aapUpsertOrganization(o, inheritPrimaryKey, false, tenantJson).onSuccess(a -> {
         sensuUpsertNamespace(o, inheritPrimaryKey, false, tenantJson).onSuccess(b -> {
-          sensuUpsertKafkaHandler(o, inheritPrimaryKey, false, tenantJson).onSuccess(c -> {
-            super.sqlPOSTTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
-              promise.complete(o2);
+          sensuUpsertKafkaAsset(o, inheritPrimaryKey, false, tenantJson).onSuccess(c -> {
+            sensuUpsertKafkaHandler(o, inheritPrimaryKey, false, tenantJson).onSuccess(d -> {
+              super.sqlPOSTTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
+                promise.complete(o2);
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
             }).onFailure(ex -> {
               promise.fail(ex);
             });
@@ -242,10 +319,15 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     aapUpsertParams(o, inheritPrimaryKey, true).onSuccess(tenantJson -> {
       aapUpsertOrganization(o, inheritPrimaryKey, true, tenantJson).onSuccess(a -> {
         sensuUpsertNamespace(o, inheritPrimaryKey, true, tenantJson).onSuccess(b -> {
-          sensuUpsertKafkaHandler(o, inheritPrimaryKey, true, tenantJson).onSuccess(c -> {
-            super.sqlPATCHTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
-              promise.complete(o2);
+          sensuUpsertKafkaAsset(o, inheritPrimaryKey, true, tenantJson).onSuccess(c -> {
+            sensuUpsertKafkaHandler(o, inheritPrimaryKey, true, tenantJson).onSuccess(d -> {
+              super.sqlPATCHTenant(o, inheritPrimaryKey).onSuccess(o2 -> {
+                promise.complete(o2);
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
             }).onFailure(ex -> {
+              LOG.error(String.format("Updating Sensu namespace failed. "), ex);
               promise.fail(ex);
             });
           }).onFailure(ex -> {
