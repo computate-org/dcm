@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.vertx.search.list.SearchList;
@@ -198,7 +199,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
                 .putHeader("Authorization", String.format("Bearer %s", auth.bodyAsJsonObject().getString("access_token")))
                 .sendJsonObject(body)
                 .expecting(HttpResponseExpectation.SC_OK)
-                .onSuccess(HostResponse -> {
+                .onSuccess(hostResponse -> {
               promise.complete();
             }).onFailure(ex -> {
               LOG.error(String.format("Updating Sensu host failed. "), ex);
@@ -217,14 +218,91 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
     return promise.future();
   }
 
+  public Future<Void> installSensuAgent(Host host, Boolean inheritPrimaryKey, Boolean patch, JsonObject hostJson) {
+    Promise<Void> promise = Promise.promise();
+    try {
+      String hostName = hostJson.getString(Host.varJsonHost(Host.VAR_hostName, patch));
+      String ipAddress = hostJson.getString(Host.varJsonHost(Host.VAR_ipAddress, patch));
+      String tenantResource = hostJson.getString(Host.varJsonHost(Host.VAR_tenantResource, patch));
+      String jobTemplateResource = String.format("%s-%s-%s", tenantResource, JobTemplate.CLASS_AUTH_RESOURCE, "install-sensu-agent");
+      JobTemplate.fqJobTemplate(host.getSiteRequest_(), JobTemplate.VAR_jobTemplateResource, jobTemplateResource).onSuccess(jobTemplate -> {
+        try {
+          if(jobTemplate == null) {
+            RuntimeException ex = new RuntimeException(String.format("Could not find a matching jobTemplate %s", jobTemplateResource));
+            LOG.error(ex.getMessage(), ex);
+          } else {
+            JsonObject config = host.getSiteRequest_().getConfig();
+            Long aapTemplateId = jobTemplate.getAapTemplateId();
+            String jobTemplateId = jobTemplate.getJobTemplateId();
+
+            Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+            String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+            Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+            String aapUri = String.format("/api/controller/v2/job_templates/%s/launch/", aapTemplateId);
+            String aapUriRunningJob = String.format("/api/controller/v2/jobs/?status__in=running,pending,waiting&job_template=%s&limit__exact=%s", aapTemplateId, ipAddress);
+            String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+            String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+
+            webClient.get(aapPort, aapHostName, aapUriRunningJob).ssl(aapSsl)
+                .putHeader("Content-Type", "application/json")
+                .basicAuthentication(aapUserName, aapPassword)
+                .send()
+                .expecting(HttpResponseExpectation.SC_OK)
+                .onSuccess(runningJobResponse -> {
+              JsonObject runningJobResponseBody = runningJobResponse.bodyAsJsonObject();
+              if(runningJobResponseBody.getJsonArray("results").size() > 0) {
+                LOG.info(String.format("AAP job template %s is already running a job on host %s. ", jobTemplateId, hostName));
+              } else {
+                JsonObject body = new JsonObject();
+                body.put("limit", ipAddress);
+
+                webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
+                    .putHeader("Content-Type", "application/json")
+                    .basicAuthentication(aapUserName, aapPassword)
+                    .sendJsonObject(body)
+                    .expecting(HttpResponseExpectation.SC_CREATED)
+                    .onSuccess(hostResponse -> {
+                  JsonObject responseBody = hostResponse.bodyAsJsonObject();
+                  LOG.info(String.format("AAP %s job %s submitted with job template %s on host %s", jobTemplateId, responseBody.getString("job"), responseBody.getString("name"), hostName));
+                  promise.complete();
+                }).onFailure(ex -> {
+                  LOG.error(String.format("Updating AAP host failed. "), ex);
+                  promise.fail(ex);
+                });
+              }
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating AAP host failed. "), ex);
+              promise.fail(ex);
+            });
+          }
+        } catch(Exception ex) {
+          LOG.error("Unable to configure Kafka consumers. ", ex);
+          promise.fail(ex);
+        }
+      }).onFailure(ex -> {
+        LOG.error(String.format("Updating AAP host failed. "), ex);
+        promise.fail(ex);
+      });
+    } catch(Exception ex) {
+      LOG.error("Unable to configure Kafka consumers. ", ex);
+      promise.fail(ex);
+    }
+
+    return promise.future();
+  }
+
   @Override
   public Future<Host> sqlPOSTHost(Host o, Boolean inheritPrimaryKey) {
     Promise<Host> promise = Promise.promise();
     aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(hostJson -> {
       aapUpsertHost(o, inheritPrimaryKey, false, hostJson).onSuccess(a -> {
         sensuUpsertHost(o, inheritPrimaryKey, false, hostJson).onSuccess(b -> {
-          super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
-            promise.complete(o2);
+          installSensuAgent(o, inheritPrimaryKey, false, hostJson).onSuccess(c -> {
+            super.sqlPOSTHost(o, inheritPrimaryKey).onSuccess(o2 -> {
+              promise.complete(o2);
+            }).onFailure(ex -> {
+              promise.fail(ex);
+            });
           }).onFailure(ex -> {
             promise.fail(ex);
           });

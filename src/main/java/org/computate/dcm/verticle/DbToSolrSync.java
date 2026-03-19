@@ -37,10 +37,11 @@ import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.k8s.Project;
 
 
@@ -219,13 +220,15 @@ public class DbToSolrSync extends DbToSolrSyncGen<AbstractVerticle> {
       Pool pgPool = PgBuilder.pool().connectingTo(pgOptions).with(poolOptions).using(vertx).build();
       dbToSolrSyncRecord(vertx, config, pgPool, Tenant.CLASS_SIMPLE_NAME).onSuccess(q1 -> {
         dbToSolrSyncRecord(vertx, config, pgPool, AnsibleProject.CLASS_SIMPLE_NAME).onSuccess(q2 -> {
-          dbToSolrSyncRecord(vertx, config, pgPool, JobTemplate.CLASS_SIMPLE_NAME).onSuccess(q3 -> {
+          dbToSolrSyncRecord(vertx, config, pgPool, HostCredential.CLASS_SIMPLE_NAME).onSuccess(q3 -> {
             dbToSolrSyncRecord(vertx, config, pgPool, HostInventory.CLASS_SIMPLE_NAME).onSuccess(q4 -> {
               dbToSolrSyncRecord(vertx, config, pgPool, Host.CLASS_SIMPLE_NAME).onSuccess(q5 -> {
                 dbToSolrSyncRecord(vertx, config, pgPool, HostCheck.CLASS_SIMPLE_NAME).onSuccess(q6 -> {
-                  dbToSolrSyncRecord(vertx, config, pgPool, Project.CLASS_SIMPLE_NAME).onSuccess(q7 -> {
-                    LOG.info(dbToSolrSyncComplete);
-                    promise.complete();
+                  dbToSolrSyncRecord(vertx, config, pgPool, JobTemplate.CLASS_SIMPLE_NAME).onSuccess(q7 -> {
+                    dbToSolrSyncRecord(vertx, config, pgPool, Project.CLASS_SIMPLE_NAME).onSuccess(q8 -> {
+                      LOG.info(dbToSolrSyncComplete);
+                      promise.complete();
+                    }).onFailure(ex -> promise.fail(ex));
                   }).onFailure(ex -> promise.fail(ex));
                 }).onFailure(ex -> promise.fail(ex));
               }).onFailure(ex -> promise.fail(ex));

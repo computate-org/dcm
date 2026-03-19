@@ -9,6 +9,9 @@ import io.vertx.core.json.JsonObject;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.request.SiteRequest;
 
@@ -16,6 +19,56 @@ import org.computate.dcm.request.SiteRequest;
  * Translate: false
  **/
 public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServiceImpl {
+
+  public Future<JsonObject> aapUpsertJobTemplateSensu(Tenant tenant, Boolean inheritPrimaryKey, Boolean patch, JsonObject inventoryJson) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      if(inventoryJson == null) {
+        promise.complete();
+      } else {
+        if(patch) {
+          promise.complete();
+        } else {
+          SiteRequest siteRequest = tenant.getSiteRequest_();
+          String tenantResource = inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_tenantResource, patch));
+          String ansibleProjectId = "dcm-ansible";
+          String ansibleProjectResource = String.format("%s-%s-%s", tenantResource, AnsibleProject.CLASS_AUTH_RESOURCE, ansibleProjectId);
+
+          AnsibleProject.fqAnsibleProject(siteRequest, AnsibleProject.VAR_ansibleProjectResource, ansibleProjectResource).onSuccess(project -> {
+            try {
+              String inventoryResource = inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryResource, patch));
+              String inventoryId = inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryId, patch));
+              Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_aapInventoryId, patch))).map(s -> Long.parseLong(s)).orElse(null);
+              Long aapProjectId = project.getAapProjectId();
+              Long aapOrganizationId = project.getAapOrganizationId();
+
+              JsonObject jobTemplateJson = new JsonObject();
+              jobTemplateJson.put(JobTemplate.VAR_inventoryResource, inventoryResource);
+              jobTemplateJson.put(JobTemplate.VAR_ansibleProjectResource, ansibleProjectResource);
+              jobTemplateJson.put(JobTemplate.VAR_ansiblePlaybook, "install_sensu_agent.yaml");
+              jobTemplateJson.put(JobTemplate.VAR_aapInventoryId, aapInventoryId);
+              jobTemplateJson.put(JobTemplate.VAR_aapProjectId, aapProjectId);
+              jobTemplateJson.put(JobTemplate.VAR_aapOrganizationId, aapOrganizationId);
+              JobTemplateEnUSApiServiceImpl.aapUpsertJobTemplate(config, webClient, tenant.getSiteRequest_(), inheritPrimaryKey, false, jobTemplateJson).onSuccess(jobTemplateResponseBody -> {
+                promise.complete(jobTemplateResponseBody);
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
+            } catch(Exception ex) {
+              LOG.error(String.format("Failed to query Ansible project. "), ex);
+              promise.fail(ex);
+            }
+          }).onFailure(ex -> {
+            promise.tryFail(ex);
+          });
+        }
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("Creating default Ansible template for Sensu Agent failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
 
   public Future<Void> aapUpsertHostInventory(HostInventory o, Boolean inheritPrimaryKey, Boolean patch) {
     Promise<Void> promise = Promise.promise();
@@ -92,10 +145,19 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
                       .sendJsonObject(body)
                       .expecting(HttpResponseExpectation.SC_CREATED)
                       .onSuccess(inventoryResponse -> {
-                    JsonObject responseBody = inventoryResponse.bodyAsJsonObject();
-                    String aapInventoryId2 = responseBody.getString("id");
-                    inventoryJson.put(HostInventory.VAR_aapInventoryId, aapInventoryId2);
-                    promise.complete();
+                    try {
+                      JsonObject responseBody = inventoryResponse.bodyAsJsonObject();
+                      String aapInventoryId2 = responseBody.getString("id");
+                      inventoryJson.put(HostInventory.VAR_aapInventoryId, aapInventoryId2);
+                      aapUpsertJobTemplateSensu(tenant, inheritPrimaryKey, patch, inventoryJson).onSuccess(jobTemplateResponseBody -> {
+                        promise.complete();
+                      }).onFailure(ex -> {
+                        promise.fail(ex);
+                      });
+                    } catch(Throwable ex) {
+                      LOG.error(String.format("Post AAP Host Inventory creation failed. "), ex);
+                      promise.fail(ex);
+                    }
                   }).onFailure(ex -> {
                     LOG.error(String.format("Updating AAP inventory failed. "), ex);
                     promise.fail(ex);

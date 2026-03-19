@@ -48,9 +48,9 @@ import org.computate.dcm.page.SitePageEnUSGenApiService;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
+import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSGenApiService;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSGenApiService;
@@ -60,6 +60,9 @@ import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
 import org.computate.dcm.model.eda.hostcheck.HostCheck;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
 import org.computate.dcm.model.k8s.Project;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
@@ -446,14 +449,16 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       initializeApiService(apiSitePage);
       AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
       initializeApiService(apiAnsibleProject);
-      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
-      initializeApiService(apiJobTemplate);
+      HostCredentialEnUSApiServiceImpl apiHostCredential = new HostCredentialEnUSApiServiceImpl();
+      initializeApiService(apiHostCredential);
       HostInventoryEnUSApiServiceImpl apiHostInventory = new HostInventoryEnUSApiServiceImpl();
       initializeApiService(apiHostInventory);
       HostEnUSApiServiceImpl apiHost = new HostEnUSApiServiceImpl();
       initializeApiService(apiHost);
       HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
       initializeApiService(apiHostCheck);
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      initializeApiService(apiJobTemplate);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
@@ -463,14 +468,16 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
         apiTenant.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, Tenant.CLASS_CANONICAL_NAME, Tenant.CLASS_SIMPLE_NAME, Tenant.CLASS_API_ADDRESS_Tenant, Tenant.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q2 -> {
           apiSitePage.importTimer(Paths.get(templatePath, "/en-us/view/article"), vertx, siteRequest, SitePage.CLASS_CANONICAL_NAME, SitePage.CLASS_SIMPLE_NAME, SitePage.CLASS_API_ADDRESS_SitePage, SitePage.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q3 -> {
             apiAnsibleProject.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, AnsibleProject.CLASS_CANONICAL_NAME, AnsibleProject.CLASS_SIMPLE_NAME, AnsibleProject.CLASS_API_ADDRESS_AnsibleProject, AnsibleProject.CLASS_AUTH_RESOURCE, "ansibleProjectResource", "userPage", "download").onSuccess(q4 -> {
-              apiJobTemplate.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, JobTemplate.CLASS_CANONICAL_NAME, JobTemplate.CLASS_SIMPLE_NAME, JobTemplate.CLASS_API_ADDRESS_JobTemplate, JobTemplate.CLASS_AUTH_RESOURCE, "jobTemplateResource", "userPage", "download").onSuccess(q5 -> {
+              apiHostCredential.importTimer(Paths.get(templatePath, "/en-us/user/host-credential"), vertx, siteRequest, HostCredential.CLASS_CANONICAL_NAME, HostCredential.CLASS_SIMPLE_NAME, HostCredential.CLASS_API_ADDRESS_HostCredential, HostCredential.CLASS_AUTH_RESOURCE, "credentialResource", "userPage", "download").onSuccess(q5 -> {
                 apiHostInventory.importTimer(Paths.get(templatePath, "/en-us/user/host-inventory"), vertx, siteRequest, HostInventory.CLASS_CANONICAL_NAME, HostInventory.CLASS_SIMPLE_NAME, HostInventory.CLASS_API_ADDRESS_HostInventory, HostInventory.CLASS_AUTH_RESOURCE, "inventoryResource", "userPage", "download").onSuccess(q6 -> {
                   apiHost.importTimer(Paths.get(templatePath, "/en-us/user/host"), vertx, siteRequest, Host.CLASS_CANONICAL_NAME, Host.CLASS_SIMPLE_NAME, Host.CLASS_API_ADDRESS_Host, Host.CLASS_AUTH_RESOURCE, "hostResource", "userPage", "download").onSuccess(q7 -> {
                     apiHostCheck.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, HostCheck.CLASS_CANONICAL_NAME, HostCheck.CLASS_SIMPLE_NAME, HostCheck.CLASS_API_ADDRESS_HostCheck, HostCheck.CLASS_AUTH_RESOURCE, "checkResource", "userPage", "download").onSuccess(q8 -> {
-                      apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q9 -> {
-                        apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q10 -> {
-                          LOG.info("data import complete");
-                          promise.complete();
+                      apiJobTemplate.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, JobTemplate.CLASS_CANONICAL_NAME, JobTemplate.CLASS_SIMPLE_NAME, JobTemplate.CLASS_API_ADDRESS_JobTemplate, JobTemplate.CLASS_AUTH_RESOURCE, "jobTemplateResource", "userPage", "download").onSuccess(q9 -> {
+                        apiProject.importTimer(Paths.get(templatePath, "/en-us/user/project"), vertx, siteRequest, Project.CLASS_CANONICAL_NAME, Project.CLASS_SIMPLE_NAME, Project.CLASS_API_ADDRESS_Project, Project.CLASS_AUTH_RESOURCE, "projectResource", "userPage", "download").onSuccess(q10 -> {
+                          apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q11 -> {
+                            LOG.info("data import complete");
+                            promise.complete();
+                          }).onFailure(ex -> promise.fail(ex));
                         }).onFailure(ex -> promise.fail(ex));
                       }).onFailure(ex -> promise.fail(ex));
                     }).onFailure(ex -> promise.fail(ex));

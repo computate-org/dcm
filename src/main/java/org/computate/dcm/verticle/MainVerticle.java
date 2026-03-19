@@ -185,9 +185,9 @@ import org.computate.dcm.page.SitePage;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSGenApiService;
+import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSGenApiService;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
@@ -197,6 +197,9 @@ import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.Project;
@@ -355,10 +358,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiAnsibleProject.setVertx(vertx);
       apiAnsibleProject.setConfig(config);
       apiAnsibleProject.setWebClient(webClient);
-      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
-      apiJobTemplate.setVertx(vertx);
-      apiJobTemplate.setConfig(config);
-      apiJobTemplate.setWebClient(webClient);
+      HostCredentialEnUSApiServiceImpl apiHostCredential = new HostCredentialEnUSApiServiceImpl();
+      apiHostCredential.setVertx(vertx);
+      apiHostCredential.setConfig(config);
+      apiHostCredential.setWebClient(webClient);
       HostInventoryEnUSApiServiceImpl apiHostInventory = new HostInventoryEnUSApiServiceImpl();
       apiHostInventory.setVertx(vertx);
       apiHostInventory.setConfig(config);
@@ -371,6 +374,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiHostCheck.setVertx(vertx);
       apiHostCheck.setConfig(config);
       apiHostCheck.setWebClient(webClient);
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      apiJobTemplate.setVertx(vertx);
+      apiJobTemplate.setConfig(config);
+      apiJobTemplate.setWebClient(webClient);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       apiProject.setVertx(vertx);
       apiProject.setConfig(config);
@@ -394,10 +401,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
                     .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
                     .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                     .onSuccess(q5 -> {
-                  apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateReader", new String[] { "GET" })
-                      .compose(q6 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateEditor", new String[] { "GET", "POST", "PATCH" }))
-                      .compose(q6 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                      .compose(q6 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                  apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialReader", new String[] { "GET" })
+                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialEditor", new String[] { "GET", "POST", "PATCH" }))
+                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                       .onSuccess(q6 -> {
                     apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryReader", new String[] { "GET" })
                         .compose(q7 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryEditor", new String[] { "GET", "POST", "PATCH" }))
@@ -414,17 +421,23 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
                             .compose(q9 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
                             .compose(q9 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                             .onSuccess(q9 -> {
-                          apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
-                              .compose(q10 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
-                              .compose(q10 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                              .compose(q10 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                          apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateReader", new String[] { "GET" })
+                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateEditor", new String[] { "GET", "POST", "PATCH" }))
+                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                               .onSuccess(q10 -> {
-                            apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
-                                .compose(q11 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
-                                .compose(q11 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                            apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
+                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
+                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                                 .onSuccess(q11 -> {
-                              LOG.info("authorize data complete");
-                              promise.complete();
+                              apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
+                                  .compose(q12 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
+                                  .compose(q12 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                                  .onSuccess(q12 -> {
+                                LOG.info("authorize data complete");
+                                promise.complete();
+                            }).onFailure(ex -> promise.fail(ex));
                           }).onFailure(ex -> promise.fail(ex));
                         }).onFailure(ex -> promise.fail(ex));
                       }).onFailure(ex -> promise.fail(ex));
@@ -1436,8 +1449,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("Tenant","SitePage","AnsibleProject","JobTemplate","HostInventory","Host","HostCheck","Project","AiTelemetryPlatform");
-      List<String> authResources = Arrays.asList("TENANT","SITEPAGE","ANSIBLEPROJECT","JOBTEMPLATE","HOSTINVENTORY","HOST","HOSTCHECK","PROJECT","AITELEMETRYPLATFORM");
+      List<String> authClassSimpleNames = Arrays.asList("Tenant","SitePage","AnsibleProject","HostCredential","HostInventory","Host","HostCheck","JobTemplate","Project","AiTelemetryPlatform");
+      List<String> authResources = Arrays.asList("TENANT","SITEPAGE","ANSIBLEPROJECT","HOSTCREDENTIAL","HOSTINVENTORY","HOST","HOSTCHECK","JOBTEMPLATE","PROJECT","AITELEMETRYPLATFORM");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1461,9 +1474,9 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       initializeApiService(apiAnsibleProject);
       registerApiService(AnsibleProjectEnUSGenApiService.class, apiAnsibleProject, AnsibleProject.getClassApiAddress());
 
-      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
-      initializeApiService(apiJobTemplate);
-      registerApiService(JobTemplateEnUSGenApiService.class, apiJobTemplate, JobTemplate.getClassApiAddress());
+      HostCredentialEnUSApiServiceImpl apiHostCredential = new HostCredentialEnUSApiServiceImpl();
+      initializeApiService(apiHostCredential);
+      registerApiService(HostCredentialEnUSGenApiService.class, apiHostCredential, HostCredential.getClassApiAddress());
 
       HostInventoryEnUSApiServiceImpl apiHostInventory = new HostInventoryEnUSApiServiceImpl();
       initializeApiService(apiHostInventory);
@@ -1476,6 +1489,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
       initializeApiService(apiHostCheck);
       registerApiService(HostCheckEnUSGenApiService.class, apiHostCheck, HostCheck.getClassApiAddress());
+
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      initializeApiService(apiJobTemplate);
+      registerApiService(JobTemplateEnUSGenApiService.class, apiJobTemplate, JobTemplate.getClassApiAddress());
 
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);

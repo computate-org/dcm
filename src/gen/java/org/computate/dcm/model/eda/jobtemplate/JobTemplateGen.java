@@ -40,6 +40,7 @@ import java.lang.String;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import java.lang.Long;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.vertx.serialize.vertx.JsonObjectDeserializer;
 import org.computate.search.wrap.Wrap;
@@ -93,11 +94,11 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>This class contains a comment <b>"Rows: 100"</b>, which means the JobTemplate API will return a default of 100 records instead of 10 by default. 
  * Each API has built in pagination of the search records to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
- * <h2>Order: 6</h2>
- * <p>This class contains a comment <b>"Order: 6"</b>, which means this class will be sorted by the given number 6 ascending when code that relates to multiple classes at the same time is generated. 
+ * <h2>Order: 10</h2>
+ * <p>This class contains a comment <b>"Order: 10"</b>, which means this class will be sorted by the given number 10 ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 6</h2>
- * <p>This class contains a comment <b>"SqlOrder: 6"</b>, which means this class will be sorted by the given number 6 ascending when SQL code to create and drop the tables is generated. 
+ * <h2>SqlOrder: 10</h2>
+ * <p>This class contains a comment <b>"SqlOrder: 10"</b>, which means this class will be sorted by the given number 10 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <b>"Model: true"</b>, which means this class will be stored in the database. 
@@ -538,6 +539,138 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
 
   public static String staticJsonAapInventoryId(Long aapInventoryId) {
     return Optional.ofNullable(aapInventoryId).map(v -> v.toString()).orElse(null);
+  }
+
+	////////////////////////
+  // credentialResource //
+	////////////////////////
+
+
+  /**
+   *  The entity credentialResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String credentialResource;
+
+  /**
+   * <br> The entity credentialResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:credentialResource">Find the entity credentialResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _credentialResource(Wrap<String> w);
+
+  public String getCredentialResource() {
+    return credentialResource;
+  }
+  public void setCredentialResource(String o) {
+    this.credentialResource = JobTemplate.staticSetCredentialResource(siteRequest_, o);
+  }
+  public static String staticSetCredentialResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected JobTemplate credentialResourceInit() {
+    Wrap<String> credentialResourceWrap = new Wrap<String>().var("credentialResource");
+    if(credentialResource == null) {
+      _credentialResource(credentialResourceWrap);
+      Optional.ofNullable(credentialResourceWrap.getO()).ifPresent(o -> {
+        setCredentialResource(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static String staticSearchCredentialResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrCredentialResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqCredentialResource(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchCredentialResource(siteRequest_, JobTemplate.staticSetCredentialResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlCredentialResource() {
+    return credentialResource;
+  }
+
+  public static String staticJsonCredentialResource(String credentialResource) {
+    return credentialResource;
+  }
+
+	/////////////////////////
+  // aapHostCredentialId //
+	/////////////////////////
+
+
+  /**
+   *  The entity aapHostCredentialId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonSerialize(using = ToStringSerializer.class)
+  @JsonInclude(Include.NON_NULL)
+  protected Long aapHostCredentialId;
+
+  /**
+   * <br> The entity aapHostCredentialId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:aapHostCredentialId">Find the entity aapHostCredentialId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _aapHostCredentialId(Wrap<Long> w);
+
+  public Long getAapHostCredentialId() {
+    return aapHostCredentialId;
+  }
+
+  public void setAapHostCredentialId(Long aapHostCredentialId) {
+    this.aapHostCredentialId = aapHostCredentialId;
+  }
+  @JsonIgnore
+  public void setAapHostCredentialId(String o) {
+    this.aapHostCredentialId = JobTemplate.staticSetAapHostCredentialId(siteRequest_, o);
+  }
+  public static Long staticSetAapHostCredentialId(SiteRequest siteRequest_, String o) {
+    if(NumberUtils.isParsable(o))
+      return Long.parseLong(o);
+    return null;
+  }
+  protected JobTemplate aapHostCredentialIdInit() {
+    Wrap<Long> aapHostCredentialIdWrap = new Wrap<Long>().var("aapHostCredentialId");
+    if(aapHostCredentialId == null) {
+      _aapHostCredentialId(aapHostCredentialIdWrap);
+      Optional.ofNullable(aapHostCredentialIdWrap.getO()).ifPresent(o -> {
+        setAapHostCredentialId(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static Long staticSearchAapHostCredentialId(SiteRequest siteRequest_, Long o) {
+    return o;
+  }
+
+  public static String staticSearchStrAapHostCredentialId(SiteRequest siteRequest_, Long o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAapHostCredentialId(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAapHostCredentialId(siteRequest_, JobTemplate.staticSetAapHostCredentialId(siteRequest_, o)).toString();
+  }
+
+  public Long sqlAapHostCredentialId() {
+    return aapHostCredentialId;
+  }
+
+  public static String staticJsonAapHostCredentialId(Long aapHostCredentialId) {
+    return Optional.ofNullable(aapHostCredentialId).map(v -> v.toString()).orElse(null);
   }
 
 	////////////////////////////
@@ -1219,6 +1352,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         aapOrganizationIdInit();
         inventoryResourceInit();
         aapInventoryIdInit();
+        credentialResourceInit();
+        aapHostCredentialIdInit();
         ansibleProjectResourceInit();
         aapProjectIdInit();
         ansiblePlaybookInit();
@@ -1292,6 +1427,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return oJobTemplate.inventoryResource;
       case "aapInventoryId":
         return oJobTemplate.aapInventoryId;
+      case "credentialResource":
+        return oJobTemplate.credentialResource;
+      case "aapHostCredentialId":
+        return oJobTemplate.aapHostCredentialId;
       case "ansibleProjectResource":
         return oJobTemplate.ansibleProjectResource;
       case "aapProjectId":
@@ -1349,6 +1488,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         if(!saves.contains("inventoryResource"))
           saves.add("inventoryResource");
         return val;
+      case "credentialResource":
+        if(oJobTemplate.getCredentialResource() == null)
+          oJobTemplate.setCredentialResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("credentialResource"))
+          saves.add("credentialResource");
+        return val;
       case "ansibleProjectResource":
         if(oJobTemplate.getAnsibleProjectResource() == null)
           oJobTemplate.setAnsibleProjectResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
@@ -1379,6 +1524,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSetInventoryResource(siteRequest_, v);
     case "aapInventoryId":
       return JobTemplate.staticSetAapInventoryId(siteRequest_, v);
+    case "credentialResource":
+      return JobTemplate.staticSetCredentialResource(siteRequest_, v);
+    case "aapHostCredentialId":
+      return JobTemplate.staticSetAapHostCredentialId(siteRequest_, v);
     case "ansibleProjectResource":
       return JobTemplate.staticSetAnsibleProjectResource(siteRequest_, v);
     case "aapProjectId":
@@ -1453,6 +1602,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchInventoryResource(siteRequest_, (String)o);
     case "aapInventoryId":
       return JobTemplate.staticSearchAapInventoryId(siteRequest_, (Long)o);
+    case "credentialResource":
+      return JobTemplate.staticSearchCredentialResource(siteRequest_, (String)o);
+    case "aapHostCredentialId":
+      return JobTemplate.staticSearchAapHostCredentialId(siteRequest_, (Long)o);
     case "ansibleProjectResource":
       return JobTemplate.staticSearchAnsibleProjectResource(siteRequest_, (String)o);
     case "aapProjectId":
@@ -1497,6 +1650,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchStrInventoryResource(siteRequest_, (String)o);
     case "aapInventoryId":
       return JobTemplate.staticSearchStrAapInventoryId(siteRequest_, (Long)o);
+    case "credentialResource":
+      return JobTemplate.staticSearchStrCredentialResource(siteRequest_, (String)o);
+    case "aapHostCredentialId":
+      return JobTemplate.staticSearchStrAapHostCredentialId(siteRequest_, (Long)o);
     case "ansibleProjectResource":
       return JobTemplate.staticSearchStrAnsibleProjectResource(siteRequest_, (String)o);
     case "aapProjectId":
@@ -1541,6 +1698,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchFqInventoryResource(siteRequest_, o);
     case "aapInventoryId":
       return JobTemplate.staticSearchFqAapInventoryId(siteRequest_, o);
+    case "credentialResource":
+      return JobTemplate.staticSearchFqCredentialResource(siteRequest_, o);
+    case "aapHostCredentialId":
+      return JobTemplate.staticSearchFqAapHostCredentialId(siteRequest_, o);
     case "ansibleProjectResource":
       return JobTemplate.staticSearchFqAnsibleProjectResource(siteRequest_, o);
     case "aapProjectId":
@@ -1620,6 +1781,20 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           setAapInventoryId(val == null ? null : val.toString());
         }
         saves.add("aapInventoryId");
+        return val;
+      } else if("credentialresource".equals(varLower)) {
+        if(val instanceof String) {
+          setCredentialResource((String)val);
+        }
+        saves.add("credentialResource");
+        return val;
+      } else if("aaphostcredentialid".equals(varLower)) {
+        if(val instanceof Long) {
+          setAapHostCredentialId((Long)val);
+        } else {
+          setAapHostCredentialId(val == null ? null : val.toString());
+        }
+        saves.add("aapHostCredentialId");
         return val;
       } else if("ansibleprojectresource".equals(varLower)) {
         if(val instanceof String) {
@@ -1732,6 +1907,16 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           oJobTemplate.setAapInventoryId(aapInventoryId);
       }
 
+      String credentialResource = (String)doc.get("credentialResource_docvalues_string");
+      if(credentialResource != null)
+        oJobTemplate.setCredentialResource(credentialResource);
+
+      if(saves.contains("aapHostCredentialId")) {
+        Long aapHostCredentialId = (Long)doc.get("aapHostCredentialId_docvalues_long");
+        if(aapHostCredentialId != null)
+          oJobTemplate.setAapHostCredentialId(aapHostCredentialId);
+      }
+
       String ansibleProjectResource = (String)doc.get("ansibleProjectResource_docvalues_string");
       if(ansibleProjectResource != null)
         oJobTemplate.setAnsibleProjectResource(ansibleProjectResource);
@@ -1810,6 +1995,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(aapInventoryId != null) {
       doc.put("aapInventoryId_docvalues_long", aapInventoryId);
     }
+    if(credentialResource != null) {
+      doc.put("credentialResource_docvalues_string", credentialResource);
+    }
+    if(aapHostCredentialId != null) {
+      doc.put("aapHostCredentialId_docvalues_long", aapHostCredentialId);
+    }
     if(ansibleProjectResource != null) {
       doc.put("ansibleProjectResource_docvalues_string", ansibleProjectResource);
     }
@@ -1856,6 +2047,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "inventoryResource_docvalues_string";
       case "aapInventoryId":
         return "aapInventoryId_docvalues_long";
+      case "credentialResource":
+        return "credentialResource_docvalues_string";
+      case "aapHostCredentialId":
+        return "aapHostCredentialId_docvalues_long";
       case "ansibleProjectResource":
         return "ansibleProjectResource_docvalues_string";
       case "aapProjectId":
@@ -1893,6 +2088,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "inventoryResource_docvalues_string";
       case "aapInventoryId":
         return "aapInventoryId_docvalues_long";
+      case "credentialResource":
+        return "credentialResource_docvalues_string";
+      case "aapHostCredentialId":
+        return "aapHostCredentialId_docvalues_long";
       case "ansibleProjectResource":
         return "ansibleProjectResource_docvalues_string";
       case "aapProjectId":
@@ -1930,6 +2129,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "inventoryResource";
       case "aapInventoryId_docvalues_long":
         return "aapInventoryId";
+      case "credentialResource_docvalues_string":
+        return "credentialResource";
+      case "aapHostCredentialId_docvalues_long":
+        return "aapHostCredentialId";
       case "ansibleProjectResource_docvalues_string":
         return "ansibleProjectResource";
       case "aapProjectId_docvalues_long":
@@ -1985,6 +2188,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     oJobTemplate.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapInventoryId(Optional.ofNullable(doc.get("aapInventoryId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setCredentialResource(Optional.ofNullable(doc.get("credentialResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAapHostCredentialId(Optional.ofNullable(doc.get("aapHostCredentialId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAnsibleProjectResource(Optional.ofNullable(doc.get("ansibleProjectResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapProjectId(Optional.ofNullable(doc.get("aapProjectId_docvalues_long")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAnsiblePlaybook(Optional.ofNullable(doc.get("ansiblePlaybook_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -2018,6 +2223,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         apiRequest.addVars("inventoryResource");
       if(!Objects.equals(aapInventoryId, original.getAapInventoryId()))
         apiRequest.addVars("aapInventoryId");
+      if(!Objects.equals(credentialResource, original.getCredentialResource()))
+        apiRequest.addVars("credentialResource");
+      if(!Objects.equals(aapHostCredentialId, original.getAapHostCredentialId()))
+        apiRequest.addVars("aapHostCredentialId");
       if(!Objects.equals(ansibleProjectResource, original.getAnsibleProjectResource()))
         apiRequest.addVars("ansibleProjectResource");
       if(!Objects.equals(aapProjectId, original.getAapProjectId()))
@@ -2054,6 +2263,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapInventoryId).map(v -> "aapInventoryId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(credentialResource).map(v -> "credentialResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(aapHostCredentialId).map(v -> "aapHostCredentialId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(ansibleProjectResource).map(v -> "ansibleProjectResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapProjectId).map(v -> "aapProjectId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(ansiblePlaybook).map(v -> "ansiblePlaybook: \"" + v + "\"\n" ).orElse(""));
@@ -2084,6 +2295,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String SET_inventoryResource = "setInventoryResource";
   public static final String VAR_aapInventoryId = "aapInventoryId";
   public static final String SET_aapInventoryId = "setAapInventoryId";
+  public static final String VAR_credentialResource = "credentialResource";
+  public static final String SET_credentialResource = "setCredentialResource";
+  public static final String VAR_aapHostCredentialId = "aapHostCredentialId";
+  public static final String SET_aapHostCredentialId = "setAapHostCredentialId";
   public static final String VAR_ansibleProjectResource = "ansibleProjectResource";
   public static final String SET_ansibleProjectResource = "setAnsibleProjectResource";
   public static final String VAR_aapProjectId = "aapProjectId";
@@ -2134,6 +2349,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP organization ID";
   public static final String DISPLAY_NAME_inventoryResource = "inventory";
   public static final String DISPLAY_NAME_aapInventoryId = "AAP inventory ID";
+  public static final String DISPLAY_NAME_credentialResource = "host credential";
+  public static final String DISPLAY_NAME_aapHostCredentialId = "AAP host credential ID";
   public static final String DISPLAY_NAME_ansibleProjectResource = "Ansible project";
   public static final String DISPLAY_NAME_aapProjectId = "AAP project ID";
   public static final String DISPLAY_NAME_ansiblePlaybook = "Ansible playbook";
@@ -2190,6 +2407,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return patch ? SET_inventoryResource : VAR_inventoryResource;
     case VAR_aapInventoryId:
       return patch ? SET_aapInventoryId : VAR_aapInventoryId;
+    case VAR_credentialResource:
+      return patch ? SET_credentialResource : VAR_credentialResource;
+    case VAR_aapHostCredentialId:
+      return patch ? SET_aapHostCredentialId : VAR_aapHostCredentialId;
     case VAR_ansibleProjectResource:
       return patch ? SET_ansibleProjectResource : VAR_ansibleProjectResource;
     case VAR_aapProjectId:
@@ -2230,6 +2451,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return DISPLAY_NAME_inventoryResource;
     case VAR_aapInventoryId:
       return DISPLAY_NAME_aapInventoryId;
+    case VAR_credentialResource:
+      return DISPLAY_NAME_credentialResource;
+    case VAR_aapHostCredentialId:
+      return DISPLAY_NAME_aapHostCredentialId;
     case VAR_ansibleProjectResource:
       return DISPLAY_NAME_ansibleProjectResource;
     case VAR_aapProjectId:
@@ -2269,6 +2494,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return "The unique authorization resource for the inventory for multi-tenancy";
     case VAR_aapInventoryId:
       return "The inventory ID in Ansible Automation Platform. ";
+    case VAR_credentialResource:
+      return "The Ansible host credential to use when connecting to hosts. ";
+    case VAR_aapHostCredentialId:
+      return "The host credential ID in Ansible Automation Platform. ";
     case VAR_ansibleProjectResource:
       return "The Ansible project containing the playbook for this Job Template. ";
     case VAR_aapProjectId:
@@ -2305,6 +2534,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     case VAR_inventoryResource:
       return "String";
     case VAR_aapInventoryId:
+      return "Long";
+    case VAR_credentialResource:
+      return "String";
+    case VAR_aapHostCredentialId:
       return "Long";
     case VAR_ansibleProjectResource:
       return "String";
@@ -2348,6 +2581,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_inventoryResource:
       return 3;
+    case VAR_credentialResource:
+      return 3;
     case VAR_ansibleProjectResource:
       return 4;
     case VAR_ansiblePlaybook:
@@ -2369,6 +2604,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_inventoryResource:
       return 0;
+    case VAR_credentialResource:
+      return 1;
     case VAR_ansibleProjectResource:
       return 0;
     case VAR_ansiblePlaybook:

@@ -88,8 +88,8 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
     return promise.future();
   }
 
-  public Future<Void> aapUpsertAnsibleProject(AnsibleProject o, Boolean inheritPrimaryKey, Boolean patch, JsonObject ansibleProjectJson) {
-    Promise<Void> promise = Promise.promise();
+  public static Future<JsonObject> aapUpsertAnsibleProject(JsonObject config, WebClient webClient, AnsibleProject o, Boolean inheritPrimaryKey, Boolean patch, JsonObject ansibleProjectJson) {
+    Promise<JsonObject> promise = Promise.promise();
     try {
       if(ansibleProjectJson == null) {
         promise.complete();
@@ -98,9 +98,9 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
         String ansibleProjectDescription = ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_ansibleProjectDescription, patch));
         Long aapProjectId = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_aapProjectId, patch))).map(id -> Long.parseLong(id)).orElse(null);
         Long aapOrganizationId = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_aapOrganizationId, patch))).map(id -> Long.parseLong(id)).orElse(null);
-        String sourceControlType = ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_sourceControlType, patch));
+        String sourceControlType = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_sourceControlType, patch))).orElse("git");
         String sourceControlUrl = ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_sourceControlUrl, patch));
-        String sourceControlBranch = ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_sourceControlBranch, patch));
+        String sourceControlBranch = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_sourceControlBranch, patch))).orElse(null);
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
         String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
@@ -145,7 +145,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
               JsonObject responseBody = ansibleProjectResponse.bodyAsJsonObject();
               String aapProjectId2 = responseBody.getString("id");
               ansibleProjectJson.put(AnsibleProject.VAR_aapProjectId, aapProjectId2);
-              promise.complete();
+              promise.complete(responseBody);
             }).onFailure(ex -> {
               LOG.error(String.format("Updating AAP ansibleProject failed. "), ex);
               promise.fail(ex);
@@ -164,7 +164,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
   public Future<AnsibleProject> sqlPOSTAnsibleProject(AnsibleProject o, Boolean inheritPrimaryKey) {
     Promise<AnsibleProject> promise = Promise.promise();
     aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(ansibleProjectJson -> {
-      aapUpsertAnsibleProject(o, inheritPrimaryKey, false, ansibleProjectJson).onSuccess(a -> {
+      aapUpsertAnsibleProject(config, webClient, o, inheritPrimaryKey, false, ansibleProjectJson).onSuccess(a -> {
         super.sqlPOSTAnsibleProject(o, inheritPrimaryKey).onSuccess(o2 -> {
           promise.complete(o2);
         }).onFailure(ex -> {
@@ -183,7 +183,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
   public Future<AnsibleProject> sqlPATCHAnsibleProject(AnsibleProject o, Boolean inheritPrimaryKey) {
     Promise<AnsibleProject> promise = Promise.promise();
     aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(ansibleProjectJson -> {
-      aapUpsertAnsibleProject(o, inheritPrimaryKey, true, ansibleProjectJson).onSuccess(a -> {
+      aapUpsertAnsibleProject(config, webClient, o, inheritPrimaryKey, true, ansibleProjectJson).onSuccess(a -> {
         super.sqlPATCHAnsibleProject(o, inheritPrimaryKey).onSuccess(o2 -> {
           promise.complete(o2);
         }).onFailure(ex -> {

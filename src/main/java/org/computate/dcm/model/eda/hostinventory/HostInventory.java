@@ -100,6 +100,7 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * DisplayName: inventory name
    * Description: The name of the inventory in AAP. 
    * VarName: true
+   * Required: true
    */
   protected void _inventoryName(Wrap<String> w) {
   }

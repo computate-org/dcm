@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 6
+ * Order: 10
  * Description: A job template to be run on a computer in Ansible Automation Platform. 
  * AName: a job template
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-excavator"></i>
@@ -107,6 +107,30 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * Description: The inventory ID in Ansible Automation Platform. 
    */
   protected void _aapInventoryId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: host credential
+   * Description: The Ansible host credential to use when connecting to hosts. 
+   * Relate: HostCredential.credentialResource
+   * HtmRow: 3
+   * HtmCell: 1
+   * Required: true
+   **/
+  protected void _credentialResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: AAP host credential ID
+   * Description: The host credential ID in Ansible Automation Platform. 
+   */
+  protected void _aapHostCredentialId(Wrap<Long> w) {
   }
 
   /**
