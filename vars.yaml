@@ -602,6 +602,8 @@ SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('true', true) | lower) == '
 SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('sensu-api.apps-crc.testing', true) }}"
 # The default port that the Sensu runs. 
 SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('443', true) }}"
+# The Sensu backend websocket URL.
+SENSU_BACKEND_WEBSOCKET_URL: "{{ lookup('env', 'SENSU_BACKENT_WEBSOCKET_URL') | default(('wss' if SENSU_SSL | bool else 'ws') + '://' + SENSU_HOST_NAME + ':' + SENSU_PORT, true) }}"
 
 #######
 # AAP #

@@ -39,6 +39,7 @@ import java.util.Map;
 import java.lang.String;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import java.lang.Long;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.host.Host;
 import io.vertx.core.json.JsonArray;
 import org.computate.search.wrap.Wrap;
@@ -91,11 +92,11 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>This class contains a comment <b>"Rows: 100"</b>, which means the HostInventory API will return a default of 100 records instead of 10 by default. 
  * Each API has built in pagination of the search records to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
- * <h2>Order: 7</h2>
- * <p>This class contains a comment <b>"Order: 7"</b>, which means this class will be sorted by the given number 7 ascending when code that relates to multiple classes at the same time is generated. 
+ * <h2>Order: 6</h2>
+ * <p>This class contains a comment <b>"Order: 6"</b>, which means this class will be sorted by the given number 6 ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 7</h2>
- * <p>This class contains a comment <b>"SqlOrder: 7"</b>, which means this class will be sorted by the given number 7 ascending when SQL code to create and drop the tables is generated. 
+ * <h2>SqlOrder: 6</h2>
+ * <p>This class contains a comment <b>"SqlOrder: 6"</b>, which means this class will be sorted by the given number 6 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <b>"Model: true"</b>, which means this class will be stored in the database. 
@@ -407,6 +408,68 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
 
   public static String staticJsonAapOrganizationId(Long aapOrganizationId) {
     return Optional.ofNullable(aapOrganizationId).map(v -> v.toString()).orElse(null);
+  }
+
+	////////////////////////
+  // credentialResource //
+	////////////////////////
+
+
+  /**
+   *  The entity credentialResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String credentialResource;
+
+  /**
+   * <br> The entity credentialResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.hostinventory.HostInventory&fq=entiteVar_enUS_indexed_string:credentialResource">Find the entity credentialResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _credentialResource(Wrap<String> w);
+
+  public String getCredentialResource() {
+    return credentialResource;
+  }
+  public void setCredentialResource(String o) {
+    this.credentialResource = HostInventory.staticSetCredentialResource(siteRequest_, o);
+  }
+  public static String staticSetCredentialResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected HostInventory credentialResourceInit() {
+    Wrap<String> credentialResourceWrap = new Wrap<String>().var("credentialResource");
+    if(credentialResource == null) {
+      _credentialResource(credentialResourceWrap);
+      Optional.ofNullable(credentialResourceWrap.getO()).ifPresent(o -> {
+        setCredentialResource(o);
+      });
+    }
+    return (HostInventory)this;
+  }
+
+  public static String staticSearchCredentialResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrCredentialResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqCredentialResource(SiteRequest siteRequest_, String o) {
+    return HostInventory.staticSearchCredentialResource(siteRequest_, HostInventory.staticSetCredentialResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlCredentialResource() {
+    return credentialResource;
+  }
+
+  public static String staticJsonCredentialResource(String credentialResource) {
+    return credentialResource;
   }
 
 	///////////////////
@@ -908,6 +971,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         tenantResourceInit();
         tenantIdInit();
         aapOrganizationIdInit();
+        credentialResourceInit();
         inventoryNameInit();
         inventoryIdInit();
         inventoryResourceInit();
@@ -974,6 +1038,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return oHostInventory.tenantId;
       case "aapOrganizationId":
         return oHostInventory.aapOrganizationId;
+      case "credentialResource":
+        return oHostInventory.credentialResource;
       case "inventoryName":
         return oHostInventory.inventoryName;
       case "inventoryId":
@@ -1019,6 +1085,12 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         if(!saves.contains("tenantResource"))
           saves.add("tenantResource");
         return val;
+      case "credentialResource":
+        if(oHostInventory.getCredentialResource() == null)
+          oHostInventory.setCredentialResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("credentialResource"))
+          saves.add("credentialResource");
+        return val;
       case "hostInventoryIds":
         oHostInventory.addHostInventoryIds((String)val);
         if(!saves.contains("hostInventoryIds"))
@@ -1044,6 +1116,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSetTenantId(siteRequest_, v);
     case "aapOrganizationId":
       return HostInventory.staticSetAapOrganizationId(siteRequest_, v);
+    case "credentialResource":
+      return HostInventory.staticSetCredentialResource(siteRequest_, v);
     case "inventoryName":
       return HostInventory.staticSetInventoryName(siteRequest_, v);
     case "inventoryId":
@@ -1108,6 +1182,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return HostInventory.staticSearchAapOrganizationId(siteRequest_, (Long)o);
+    case "credentialResource":
+      return HostInventory.staticSearchCredentialResource(siteRequest_, (String)o);
     case "inventoryName":
       return HostInventory.staticSearchInventoryName(siteRequest_, (String)o);
     case "inventoryId":
@@ -1142,6 +1218,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchStrTenantId(siteRequest_, (String)o);
     case "aapOrganizationId":
       return HostInventory.staticSearchStrAapOrganizationId(siteRequest_, (Long)o);
+    case "credentialResource":
+      return HostInventory.staticSearchStrCredentialResource(siteRequest_, (String)o);
     case "inventoryName":
       return HostInventory.staticSearchStrInventoryName(siteRequest_, (String)o);
     case "inventoryId":
@@ -1176,6 +1254,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return HostInventory.staticSearchFqTenantId(siteRequest_, o);
     case "aapOrganizationId":
       return HostInventory.staticSearchFqAapOrganizationId(siteRequest_, o);
+    case "credentialResource":
+      return HostInventory.staticSearchFqCredentialResource(siteRequest_, o);
     case "inventoryName":
       return HostInventory.staticSearchFqInventoryName(siteRequest_, o);
     case "inventoryId":
@@ -1235,6 +1315,12 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
           setAapOrganizationId(val == null ? null : val.toString());
         }
         saves.add("aapOrganizationId");
+        return val;
+      } else if("credentialresource".equals(varLower)) {
+        if(val instanceof String) {
+          setCredentialResource((String)val);
+        }
+        saves.add("credentialResource");
         return val;
       } else if("inventoryname".equals(varLower)) {
         if(val instanceof String) {
@@ -1307,6 +1393,10 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
           oHostInventory.setAapOrganizationId(aapOrganizationId);
       }
 
+      String credentialResource = (String)doc.get("credentialResource_docvalues_string");
+      if(credentialResource != null)
+        oHostInventory.setCredentialResource(credentialResource);
+
       if(saves.contains("inventoryName")) {
         String inventoryName = (String)doc.get("inventoryName_docvalues_string");
         if(inventoryName != null)
@@ -1361,6 +1451,9 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     if(aapOrganizationId != null) {
       doc.put("aapOrganizationId_docvalues_long", aapOrganizationId);
     }
+    if(credentialResource != null) {
+      doc.put("credentialResource_docvalues_string", credentialResource);
+    }
     if(inventoryName != null) {
       doc.put("inventoryName_docvalues_string", inventoryName);
     }
@@ -1398,6 +1491,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
+      case "credentialResource":
+        return "credentialResource_docvalues_string";
       case "inventoryName":
         return "inventoryName_docvalues_string";
       case "inventoryId":
@@ -1425,6 +1520,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantId_docvalues_string";
       case "aapOrganizationId":
         return "aapOrganizationId_docvalues_long";
+      case "credentialResource":
+        return "credentialResource_docvalues_string";
       case "inventoryName":
         return "inventoryName_docvalues_string";
       case "inventoryId":
@@ -1452,6 +1549,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         return "tenantId";
       case "aapOrganizationId_docvalues_long":
         return "aapOrganizationId";
+      case "credentialResource_docvalues_string":
+        return "credentialResource";
       case "inventoryName_docvalues_string":
         return "inventoryName";
       case "inventoryId_docvalues_string":
@@ -1499,6 +1598,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     oHostInventory.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
+    oHostInventory.setCredentialResource(Optional.ofNullable(doc.get("credentialResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryName(Optional.ofNullable(doc.get("inventoryName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryId(Optional.ofNullable(doc.get("inventoryId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oHostInventory.setInventoryResource(Optional.ofNullable(doc.get("inventoryResource_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1527,6 +1627,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
         apiRequest.addVars("tenantId");
       if(!Objects.equals(aapOrganizationId, original.getAapOrganizationId()))
         apiRequest.addVars("aapOrganizationId");
+      if(!Objects.equals(credentialResource, original.getCredentialResource()))
+        apiRequest.addVars("credentialResource");
       if(!Objects.equals(inventoryName, original.getInventoryName()))
         apiRequest.addVars("inventoryName");
       if(!Objects.equals(inventoryId, original.getInventoryId()))
@@ -1555,6 +1657,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(credentialResource).map(v -> "credentialResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryName).map(v -> "inventoryName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryId).map(v -> "inventoryId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(inventoryResource).map(v -> "inventoryResource: \"" + v + "\"\n" ).orElse(""));
@@ -1578,6 +1681,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String SET_tenantId = "setTenantId";
   public static final String VAR_aapOrganizationId = "aapOrganizationId";
   public static final String SET_aapOrganizationId = "setAapOrganizationId";
+  public static final String VAR_credentialResource = "credentialResource";
+  public static final String SET_credentialResource = "setCredentialResource";
   public static final String VAR_inventoryName = "inventoryName";
   public static final String SET_inventoryName = "setInventoryName";
   public static final String VAR_inventoryId = "inventoryId";
@@ -1621,6 +1726,7 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_tenantId = "tenant ID";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
+  public static final String DISPLAY_NAME_credentialResource = "host credential";
   public static final String DISPLAY_NAME_inventoryName = "inventory name";
   public static final String DISPLAY_NAME_inventoryId = "inventory ID";
   public static final String DISPLAY_NAME_inventoryResource = "inventory resource";
@@ -1675,6 +1781,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return patch ? SET_tenantId : VAR_tenantId;
     case VAR_aapOrganizationId:
       return patch ? SET_aapOrganizationId : VAR_aapOrganizationId;
+    case VAR_credentialResource:
+      return patch ? SET_credentialResource : VAR_credentialResource;
     case VAR_inventoryName:
       return patch ? SET_inventoryName : VAR_inventoryName;
     case VAR_inventoryId:
@@ -1705,6 +1813,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return DISPLAY_NAME_tenantId;
     case VAR_aapOrganizationId:
       return DISPLAY_NAME_aapOrganizationId;
+    case VAR_credentialResource:
+      return DISPLAY_NAME_credentialResource;
     case VAR_inventoryName:
       return DISPLAY_NAME_inventoryName;
     case VAR_inventoryId:
@@ -1734,6 +1844,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return "The ID of this tenant";
     case VAR_aapOrganizationId:
       return "The Ansible Automation Platform ID of the organization. ";
+    case VAR_credentialResource:
+      return "The Ansible host credential to use when connecting to hosts. ";
     case VAR_inventoryName:
       return "The name of the inventory in AAP. ";
     case VAR_inventoryId:
@@ -1761,6 +1873,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
       return "String";
     case VAR_aapOrganizationId:
       return "Long";
+    case VAR_credentialResource:
+      return "String";
     case VAR_inventoryName:
       return "String";
     case VAR_inventoryId:
@@ -1797,6 +1911,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 3;
+    case VAR_credentialResource:
+      return 3;
     case VAR_inventoryName:
       return 4;
     case VAR_inventoryDescription:
@@ -1814,6 +1930,8 @@ public abstract class HostInventoryGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantResource:
       return 0;
+    case VAR_credentialResource:
+      return 1;
     case VAR_inventoryName:
       return 0;
     case VAR_inventoryDescription:

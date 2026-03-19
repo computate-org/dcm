@@ -223,6 +223,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
     try {
       String hostName = hostJson.getString(Host.varJsonHost(Host.VAR_hostName, patch));
       String ipAddress = hostJson.getString(Host.varJsonHost(Host.VAR_ipAddress, patch));
+      String tenantId = hostJson.getString(Host.varJsonHost(Host.VAR_tenantId, patch));
       String tenantResource = hostJson.getString(Host.varJsonHost(Host.VAR_tenantResource, patch));
       String jobTemplateResource = String.format("%s-%s-%s", tenantResource, JobTemplate.CLASS_AUTH_RESOURCE, "install-sensu-agent");
       JobTemplate.fqJobTemplate(host.getSiteRequest_(), JobTemplate.VAR_jobTemplateResource, jobTemplateResource).onSuccess(jobTemplate -> {
@@ -255,6 +256,14 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               } else {
                 JsonObject body = new JsonObject();
                 body.put("limit", ipAddress);
+                body.put("extra_vars", new JsonObject()
+                    .put("hostName", hostName)
+                    .put("tenantId", tenantId)
+                    .put("sensuBackendUserName", config.getString(ConfigKeys.SENSU_USER_NAME))
+                    .put("sensuBackendPassword", config.getString(ConfigKeys.SENSU_PASSWORD))
+                    .put("sensuBackendWebsocketUrl", config.getString(ConfigKeys.SENSU_BACKEND_WEBSOCKET_URL))
+                    .toString()
+                    );
 
                 webClient.post(aapPort, aapHostName, aapUri).ssl(aapSsl)
                     .putHeader("Content-Type", "application/json")

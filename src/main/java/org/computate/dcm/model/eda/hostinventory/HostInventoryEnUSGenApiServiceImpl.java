@@ -2,6 +2,8 @@ package org.computate.dcm.model.eda.hostinventory;
 
 import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.host.Host;
 import org.computate.dcm.request.SiteRequest;
@@ -921,13 +923,36 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlAapOrganizationId());
             break;
-          case "setInventoryName":
-              o2.setInventoryName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlInventoryName());
+          case "setCredentialResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostCredential.varIndexedHostCredential(HostCredential.VAR_credentialResource), HostCredential.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostCredential");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_credentialResource, HostCredential.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeCredentialResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                sql(siteRequest).update(HostInventory.class, pk).setToNull(HostInventory.VAR_credentialResource, HostCredential.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case "setArchived":
               o2.setArchived(jsonObject.getString(entityVar));
@@ -936,6 +961,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               bSql.append(HostInventory.VAR_archived + "=$" + num);
               num++;
               bParams.add(o2.sqlArchived());
+            break;
+          case "setInventoryName":
+              o2.setInventoryName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryName());
             break;
           case "setInventoryId":
               o2.setInventoryId(jsonObject.getString(entityVar));
@@ -961,14 +994,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlInventoryDescription());
             break;
-          case "setAapInventoryId":
-              o2.setAapInventoryId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAapInventoryId());
-            break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -977,13 +1002,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               num++;
               bParams.add(o2.sqlSessionId());
             break;
-          case "setInventoryKind":
-              o2.setInventoryKind(jsonObject.getString(entityVar));
+          case "setAapInventoryId":
+              o2.setAapInventoryId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
+              bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
               num++;
-              bParams.add(o2.sqlInventoryKind());
+              bParams.add(o2.sqlAapInventoryId());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
@@ -992,6 +1017,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               bSql.append(HostInventory.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
+            break;
+          case "setInventoryKind":
+              o2.setInventoryKind(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
+              num++;
+              bParams.add(o2.sqlInventoryKind());
             break;
           case "setHostInventoryIds":
             JsonArray setHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
@@ -1585,14 +1618,25 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlAapOrganizationId());
             break;
-          case HostInventory.VAR_inventoryName:
-            o2.setInventoryName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlInventoryName());
+          case HostInventory.VAR_credentialResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostCredential.varIndexedHostCredential(HostCredential.VAR_credentialResource), HostCredential.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostCredential");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_credentialResource, HostCredential.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
             break;
           case HostInventory.VAR_archived:
             o2.setArchived(jsonObject.getString(entityVar));
@@ -1602,6 +1646,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             bSql.append(HostInventory.VAR_archived + "=$" + num);
             num++;
             bParams.add(o2.sqlArchived());
+            break;
+          case HostInventory.VAR_inventoryName:
+            o2.setInventoryName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_inventoryName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryName());
             break;
           case HostInventory.VAR_inventoryId:
             o2.setInventoryId(jsonObject.getString(entityVar));
@@ -1630,15 +1683,6 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlInventoryDescription());
             break;
-          case HostInventory.VAR_aapInventoryId:
-            o2.setAapInventoryId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAapInventoryId());
-            break;
           case HostInventory.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1648,14 +1692,14 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case HostInventory.VAR_inventoryKind:
-            o2.setInventoryKind(jsonObject.getString(entityVar));
+          case HostInventory.VAR_aapInventoryId:
+            o2.setAapInventoryId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
+            bSql.append(HostInventory.VAR_aapInventoryId + "=$" + num);
             num++;
-            bParams.add(o2.sqlInventoryKind());
+            bParams.add(o2.sqlAapInventoryId());
             break;
           case HostInventory.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
@@ -1665,6 +1709,15 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             bSql.append(HostInventory.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
+            break;
+          case HostInventory.VAR_inventoryKind:
+            o2.setInventoryKind(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(HostInventory.VAR_inventoryKind + "=$" + num);
+            num++;
+            bParams.add(o2.sqlInventoryKind());
             break;
           case HostInventory.VAR_hostInventoryIds:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
@@ -2151,6 +2204,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                     classes.add("Tenant");
                   }
                   sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case HostInventory.VAR_credentialResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostCredential.varIndexedHostCredential(HostCredential.VAR_credentialResource), HostCredential.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostCredential");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_credentialResource, HostCredential.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3956,6 +4029,26 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
               }));
             });
             break;
+          case HostInventory.VAR_credentialResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(HostCredential.varIndexedHostCredential(HostCredential.VAR_credentialResource), HostCredential.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("HostCredential");
+                  }
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_credentialResource, HostCredential.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           case HostInventory.VAR_hostInventoryIds:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
@@ -4350,7 +4443,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryName, archived, inventoryId, inventoryResource, inventoryDescription, aapInventoryId, sessionId, inventoryKind, userKey, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, credentialResource, archived, inventoryName, inventoryId, inventoryResource, inventoryDescription, sessionId, aapInventoryId, userKey, inventoryKind, objectTitle, displayPage, editPage, userPage, download FROM HostInventory WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4395,9 +4488,9 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1 UNION SELECT credentialResource as pk2, 'credentialResource' FROM HostCredential WHERE credentialResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
+          .execute(Tuple.of(o.getTenantResource(), o.getCredentialResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4560,6 +4653,42 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
             }));
           }
 
+          if("HostCredential".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<HostCredential> searchList2 = new SearchList<HostCredential>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(HostCredential.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                HostCredential o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-HostCredential", json, new DeliveryOptions().addHeader("action", "patchHostCredentialFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
+
           if("Host".equals(classSimpleName2) && solrId2 != null) {
             SearchList<Host> searchList2 = new SearchList<Host>();
             searchList2.setStore(true);
@@ -4657,15 +4786,16 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       o.persistForClass(HostInventory.VAR_tenantId, HostInventory.staticSetTenantId(siteRequest2, (String)result.get(HostInventory.VAR_tenantId)));
       o.persistForClass(HostInventory.VAR_created, HostInventory.staticSetCreated(siteRequest2, (String)result.get(HostInventory.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(HostInventory.VAR_aapOrganizationId, HostInventory.staticSetAapOrganizationId(siteRequest2, (String)result.get(HostInventory.VAR_aapOrganizationId)));
-      o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
+      o.persistForClass(HostInventory.VAR_credentialResource, HostInventory.staticSetCredentialResource(siteRequest2, (String)result.get(HostInventory.VAR_credentialResource)));
       o.persistForClass(HostInventory.VAR_archived, HostInventory.staticSetArchived(siteRequest2, (String)result.get(HostInventory.VAR_archived)));
+      o.persistForClass(HostInventory.VAR_inventoryName, HostInventory.staticSetInventoryName(siteRequest2, (String)result.get(HostInventory.VAR_inventoryName)));
       o.persistForClass(HostInventory.VAR_inventoryId, HostInventory.staticSetInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_inventoryId)));
       o.persistForClass(HostInventory.VAR_inventoryResource, HostInventory.staticSetInventoryResource(siteRequest2, (String)result.get(HostInventory.VAR_inventoryResource)));
       o.persistForClass(HostInventory.VAR_inventoryDescription, HostInventory.staticSetInventoryDescription(siteRequest2, (String)result.get(HostInventory.VAR_inventoryDescription)));
-      o.persistForClass(HostInventory.VAR_aapInventoryId, HostInventory.staticSetAapInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_aapInventoryId)));
       o.persistForClass(HostInventory.VAR_sessionId, HostInventory.staticSetSessionId(siteRequest2, (String)result.get(HostInventory.VAR_sessionId)));
-      o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
+      o.persistForClass(HostInventory.VAR_aapInventoryId, HostInventory.staticSetAapInventoryId(siteRequest2, (String)result.get(HostInventory.VAR_aapInventoryId)));
       o.persistForClass(HostInventory.VAR_userKey, HostInventory.staticSetUserKey(siteRequest2, (String)result.get(HostInventory.VAR_userKey)));
+      o.persistForClass(HostInventory.VAR_inventoryKind, HostInventory.staticSetInventoryKind(siteRequest2, (String)result.get(HostInventory.VAR_inventoryKind)));
       o.persistForClass(HostInventory.VAR_objectTitle, HostInventory.staticSetObjectTitle(siteRequest2, (String)result.get(HostInventory.VAR_objectTitle)));
       o.persistForClass(HostInventory.VAR_displayPage, HostInventory.staticSetDisplayPage(siteRequest2, (String)result.get(HostInventory.VAR_displayPage)));
       o.persistForClass(HostInventory.VAR_editPage, HostInventory.staticSetEditPage(siteRequest2, (String)result.get(HostInventory.VAR_editPage)));

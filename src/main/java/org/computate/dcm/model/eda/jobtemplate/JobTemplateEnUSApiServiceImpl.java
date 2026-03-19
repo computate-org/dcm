@@ -72,7 +72,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapInventoryId, patch), aapInventoryId.toString());
                   Long aapHostCredentialId = credential.getAapCredentialId();
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapHostCredentialId, patch), aapHostCredentialId.toString());
-                  Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getLong(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch))).orElse(o.getAapOrganizationId())).orElse(inventory.getAapOrganizationId());
+                  Long aapOrganizationId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapOrganizationId())).orElse(inventory.getAapOrganizationId());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapOrganizationId, patch), aapOrganizationId.toString());
                   String tenantResource = Optional.ofNullable(Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch))).orElse(o.getTenantResource())).orElse(inventory.getTenantResource())).orElse(inventory.getTenantResource());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantResource, patch), tenantResource);
@@ -90,7 +90,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
                   String jobType = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch))).orElse(o.getJobType())).orElse("run");
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch), jobType);
-                  JsonObject extraVars = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch))).orElse(o.getExtraVars())).orElse(new JsonObject().put("APP_USER", "ctate").put("APP_PREFIX", "/usr/local"));
+                  JsonObject extraVars = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch))).orElse(o.getExtraVars())).orElse(new JsonObject());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch), extraVars);
                   Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapTemplateId());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch), Optional.ofNullable(aapTemplateId).map(v -> v.toString()).orElse(null));
@@ -123,11 +123,11 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
     Promise<JsonObject> promise = Promise.promise();
     try {
       JsonObject pageParams = new JsonObject();
-      pageParams.put("scopes", new JsonArray().add("GET").add("POST"));
+      pageParams.put("scopes", new JsonArray().add("GET").add("POST").add("PATCH"));
       pageParams.put("body", body);
       pageParams.put("path", new JsonObject());
       pageParams.put("cookie", new JsonObject());
-      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*"));
       JsonObject pageContext = new JsonObject().put("params", pageParams);
       JsonObject pageRequest = new JsonObject().put("context", pageContext);
       String ansibleProjectResource = body.getString(JobTemplate.VAR_ansibleProjectResource);
@@ -228,13 +228,46 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
     return promise.future();
   }
 
+  public static Future<JsonObject> aapUpsertHostCredential(JsonObject config, WebClient webClient, SiteRequest siteRequest, Boolean inheritPrimaryKey, Boolean patch, JsonObject jobTemplateJson, JsonObject aapJobTemplate) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+      String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+      Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+      String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+      String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
+      Long aapHostCredentialId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapHostCredentialId, patch))).map(t -> Long.parseLong(t)).orElse(null);
+      Long aapTemplateId = Long.parseLong(aapJobTemplate.getString(JobTemplate.VAR_aapTemplateId));
+
+      webClient.post(aapPort, aapHostName, String.format("/api/controller/v2/job_templates/%s/credentials/", aapTemplateId)).ssl(aapSsl)
+          .putHeader("Content-Type", "application/json")
+          .basicAuthentication(aapUserName, aapPassword)
+          .sendJsonObject(new JsonObject().put("id", aapHostCredentialId))
+          .expecting(HttpResponseExpectation.SC_CREATED.or(HttpResponseExpectation.SC_NO_CONTENT).or(HttpResponseExpectation.SC_BAD_REQUEST))
+          .onSuccess(createCredentialResponse -> {
+        promise.complete(createCredentialResponse.bodyAsJsonObject());
+      }).onFailure(ex -> {
+        LOG.error(String.format("Updating the host credential for the Ansible Template failed. "), ex);
+        promise.fail(ex);
+      });
+    } catch(Exception ex) {
+      LOG.error(String.format("Updating the host credential for the Ansible Template failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
   @Override
   public Future<JobTemplate> sqlPOSTJobTemplate(JobTemplate o, Boolean inheritPrimaryKey) {
     Promise<JobTemplate> promise = Promise.promise();
     aapUpsertParams(o, inheritPrimaryKey, false).onSuccess(jobTemplateJson -> {
-      aapUpsertJobTemplate(config, webClient, o.getSiteRequest_(), inheritPrimaryKey, false, jobTemplateJson).onSuccess(a -> {
-        super.sqlPOSTJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
-          promise.complete(o2);
+      aapUpsertJobTemplate(config, webClient, o.getSiteRequest_(), inheritPrimaryKey, false, jobTemplateJson).onSuccess(aapJobTemplate -> {
+        aapUpsertHostCredential(config, webClient, o.getSiteRequest_(), inheritPrimaryKey, false, jobTemplateJson, aapJobTemplate).onSuccess(aapJobTemplateHostCredential -> {
+          super.sqlPOSTJobTemplate(o, inheritPrimaryKey).onSuccess(o2 -> {
+            promise.complete(o2);
+          }).onFailure(ex -> {
+            promise.fail(ex);
+          });
         }).onFailure(ex -> {
           promise.fail(ex);
         });

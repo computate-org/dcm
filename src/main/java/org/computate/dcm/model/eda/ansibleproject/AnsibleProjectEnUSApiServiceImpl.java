@@ -98,11 +98,11 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
     Promise<JsonObject> promise = Promise.promise();
     try {
       JsonObject pageParams = new JsonObject();
-      pageParams.put("scopes", new JsonArray().add("GET").add("POST"));
+      pageParams.put("scopes", new JsonArray().add("GET").add("POST").add("PATCH"));
       pageParams.put("body", body);
       pageParams.put("path", new JsonObject());
       pageParams.put("cookie", new JsonObject());
-      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*"));
       JsonObject pageContext = new JsonObject().put("params", pageParams);
       JsonObject pageRequest = new JsonObject().put("context", pageContext);
       String ansibleProjectResource = body.getString(AnsibleProject.VAR_ansibleProjectResource);
@@ -153,6 +153,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
         body.put("scm_type", sourceControlType);
         body.put("scm_url", sourceControlUrl);
         body.put("scm_branch", sourceControlBranch);
+        body.put("scm_update_on_launch", true);
 
         if(StringUtils.isEmpty(ansibleProjectName)) {
           RuntimeException ex = new RuntimeException("Missing ansibleProject name");

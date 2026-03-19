@@ -6,7 +6,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 7
+ * Order: 6
  * Description: A managed host inventory. 
  * AName: a host inventory
  * PluralName: host inventories
@@ -86,6 +86,20 @@ public class HostInventory extends HostInventoryGen<BaseModel> {
    * Description: The Ansible Automation Platform ID of the organization. 
    */
   protected void _aapOrganizationId(Wrap<Long> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: host credential
+   * Description: The Ansible host credential to use when connecting to hosts. 
+   * Relate: HostCredential.credentialResource
+   * HtmRow: 3
+   * HtmCell: 1
+   * Required: true
+   **/
+  protected void _credentialResource(Wrap<String> w) {
   }
 
   /**

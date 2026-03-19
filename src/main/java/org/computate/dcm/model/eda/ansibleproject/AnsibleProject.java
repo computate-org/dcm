@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 6
+ * Order: 9
  * Description: A ansible project to be run on a computer in Ansible Automation Platform. 
  * AName: a ansible project
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-excavator"></i>

@@ -13738,6 +13738,8 @@ components:
                     type: string
                   aapOrganizationId:
                     type: string
+                  credentialResource:
+                    type: string
                   inventoryName:
                     type: string
                   inventoryId:
@@ -13778,6 +13780,13 @@ components:
             removeAapOrganizationId:
               type: string
             removeAllAapOrganizationId:
+              type: string
+            setCredentialResource:
+              type: string
+              nullable: true
+            removeCredentialResource:
+              type: string
+            removeAllCredentialResource:
               type: string
             setInventoryName:
               type: string
@@ -13863,6 +13872,13 @@ components:
               type: string
             removeAllAapOrganizationId:
               type: string
+            setCredentialResource:
+              type: string
+              nullable: true
+            removeCredentialResource:
+              type: string
+            removeAllCredentialResource:
+              type: string
             setInventoryName:
               type: string
               nullable: true
@@ -13932,6 +13948,8 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            credentialResource:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -13958,6 +13976,8 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            credentialResource:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -13983,6 +14003,8 @@ components:
             tenantId:
               type: string
             aapOrganizationId:
+              type: string
+            credentialResource:
               type: string
             inventoryName:
               type: string
@@ -14015,6 +14037,8 @@ components:
                     type: string
                   aapOrganizationId:
                     type: string
+                  credentialResource:
+                    type: string
                   inventoryName:
                     type: string
                   inventoryId:
@@ -14040,6 +14064,8 @@ components:
                   tenantId:
                     type: string
                   aapOrganizationId:
+                    type: string
+                  credentialResource:
                     type: string
                   inventoryName:
                     type: string
@@ -14067,6 +14093,8 @@ components:
               type: string
             aapOrganizationId:
               type: string
+            credentialResource:
+              type: string
             inventoryName:
               type: string
             inventoryId:
@@ -14092,6 +14120,8 @@ components:
             tenantId:
               type: string
             aapOrganizationId:
+              type: string
+            credentialResource:
               type: string
             inventoryName:
               type: string

@@ -7,7 +7,7 @@ import org.computate.dcm.model.BaseModel;
 import org.computate.dcm.model.eda.tenant.Tenant;
 
 /**
- * Order: 8
+ * Order: 7
  * Description: A managed host computer. 
  * AName: a host
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-server"></i>
