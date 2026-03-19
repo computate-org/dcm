@@ -37,19 +37,18 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
           AnsibleProject.fqAnsibleProject(siteRequest, AnsibleProject.VAR_ansibleProjectResource, ansibleProjectResource).onSuccess(project -> {
             try {
               String inventoryResource = inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryResource, patch));
-              String inventoryId = inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_inventoryId, patch));
               Long aapInventoryId = Optional.ofNullable(inventoryJson.getString(HostInventory.varJsonHostInventory(HostInventory.VAR_aapInventoryId, patch))).map(s -> Long.parseLong(s)).orElse(null);
               Long aapProjectId = project.getAapProjectId();
               Long aapOrganizationId = project.getAapOrganizationId();
 
-              JsonObject jobTemplateJson = new JsonObject();
-              jobTemplateJson.put(JobTemplate.VAR_inventoryResource, inventoryResource);
-              jobTemplateJson.put(JobTemplate.VAR_ansibleProjectResource, ansibleProjectResource);
-              jobTemplateJson.put(JobTemplate.VAR_ansiblePlaybook, "install_sensu_agent.yaml");
-              jobTemplateJson.put(JobTemplate.VAR_aapInventoryId, aapInventoryId);
-              jobTemplateJson.put(JobTemplate.VAR_aapProjectId, aapProjectId);
-              jobTemplateJson.put(JobTemplate.VAR_aapOrganizationId, aapOrganizationId);
-              JobTemplateEnUSApiServiceImpl.aapUpsertJobTemplate(config, webClient, tenant.getSiteRequest_(), inheritPrimaryKey, false, jobTemplateJson).onSuccess(jobTemplateResponseBody -> {
+              JsonObject jobTemplateRequestBody = new JsonObject();
+              jobTemplateRequestBody.put(JobTemplate.VAR_inventoryResource, inventoryResource);
+              jobTemplateRequestBody.put(JobTemplate.VAR_ansibleProjectResource, ansibleProjectResource);
+              jobTemplateRequestBody.put(JobTemplate.VAR_ansiblePlaybook, "install_sensu_agent.yaml");
+              jobTemplateRequestBody.put(JobTemplate.VAR_aapInventoryId, aapInventoryId);
+              jobTemplateRequestBody.put(JobTemplate.VAR_aapProjectId, aapProjectId);
+              jobTemplateRequestBody.put(JobTemplate.VAR_aapOrganizationId, aapOrganizationId);
+              JobTemplateEnUSApiServiceImpl.putimportJobTemplateAsync(config, vertx, jobTemplateRequestBody).onSuccess(jobTemplateResponseBody -> {
                 promise.complete(jobTemplateResponseBody);
               }).onFailure(ex -> {
                 promise.fail(ex);

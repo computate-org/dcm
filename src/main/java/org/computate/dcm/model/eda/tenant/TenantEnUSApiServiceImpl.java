@@ -47,63 +47,46 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     return promise.future();
   }
 
-  public Future<Void> aapUpsertAnsibleGalaxyCredential(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson, String aapOrganizationId) {
+  public Future<Void> aapUpsertAnsibleGalaxyCredential(Tenant tenant) {
     Promise<Void> promise = Promise.promise();
     try {
-      if(tenantJson == null) {
-        promise.complete();
-      } else {
-        String tenantName = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantName, patch));
-        String tenantDescription = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantDescription, patch));
+      Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
+      String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
+      Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
+      String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
+      String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
 
-        Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
-        String aapHostName = config.getString(ConfigKeys.AAP_HOST_NAME);
-        Boolean aapSsl = Boolean.parseBoolean(config.getString(ConfigKeys.AAP_SSL));
-        String aapUserName = config.getString(ConfigKeys.AAP_USER_NAME);
-        String aapPassword = config.getString(ConfigKeys.AAP_PASSWORD);
-
-        JsonObject body = new JsonObject();
-        body.put("name", tenantName);
-        if(tenantDescription != null)
-          body.put("description", Optional.ofNullable(tenantDescription).orElse(tenantName));
-
-        if(patch) {
-          promise.complete();
-        } else {
-          tenantJson.put(Tenant.VAR_aapOrganizationId, aapOrganizationId);
-          webClient.get(aapPort, aapHostName, "/api/controller/v2/credentials/?name=" + urlEncode("Ansible Galaxy")).ssl(aapSsl)
-              .putHeader("Content-Type", "application/json")
-              .basicAuthentication(aapUserName, aapPassword)
-              .send()
-              .expecting(HttpResponseExpectation.SC_OK)
-              .onSuccess(queryAnsibleGalaxyResponse -> {
-            try {
-              JsonObject ansibleGalaxyCredential = queryAnsibleGalaxyResponse.bodyAsJsonObject().getJsonArray("results").stream().findFirst().map(cred -> (JsonObject)cred).orElse(null);
-              if(ansibleGalaxyCredential == null) {
-                promise.complete();
-              } else {
-                webClient.post(aapPort, aapHostName, String.format("/api/controller/v2/organizations/%s/galaxy_credentials/", aapOrganizationId)).ssl(aapSsl)
-                    .putHeader("Content-Type", "application/json")
-                    .basicAuthentication(aapUserName, aapPassword)
-                    .sendJsonObject(new JsonObject().put("id", Long.parseLong(ansibleGalaxyCredential.getString("id"))))
-                    .expecting(HttpResponseExpectation.SC_CREATED.or(HttpResponseExpectation.SC_NO_CONTENT).or(HttpResponseExpectation.SC_BAD_REQUEST))
-                    .onSuccess(createCredentialResponse -> {
-                  promise.complete();
-                }).onFailure(ex -> {
-                  LOG.error(String.format("Updating the Ansible Galaxy credential for the organization failed. "), ex);
-                  promise.fail(ex);
-                });
-              }
-            } catch(Exception ex) {
-              LOG.error(String.format("Querying Ansible Galaxy credential failed. "), ex);
+      webClient.get(aapPort, aapHostName, "/api/controller/v2/credentials/?name=" + urlEncode("Ansible Galaxy")).ssl(aapSsl)
+          .putHeader("Content-Type", "application/json")
+          .basicAuthentication(aapUserName, aapPassword)
+          .send()
+          .expecting(HttpResponseExpectation.SC_OK)
+          .onSuccess(queryAnsibleGalaxyResponse -> {
+        try {
+          JsonObject ansibleGalaxyCredential = queryAnsibleGalaxyResponse.bodyAsJsonObject().getJsonArray("results").stream().findFirst().map(cred -> (JsonObject)cred).orElse(null);
+          if(ansibleGalaxyCredential == null) {
+            promise.complete();
+          } else {
+            webClient.post(aapPort, aapHostName, String.format("/api/controller/v2/organizations/%s/galaxy_credentials/", tenant.getAapOrganizationId())).ssl(aapSsl)
+                .putHeader("Content-Type", "application/json")
+                .basicAuthentication(aapUserName, aapPassword)
+                .sendJsonObject(new JsonObject().put("id", Long.parseLong(ansibleGalaxyCredential.getString("id"))))
+                .expecting(HttpResponseExpectation.SC_CREATED.or(HttpResponseExpectation.SC_NO_CONTENT).or(HttpResponseExpectation.SC_BAD_REQUEST))
+                .onSuccess(createCredentialResponse -> {
+              promise.complete();
+            }).onFailure(ex -> {
+              LOG.error(String.format("Updating the Ansible Galaxy credential for the organization failed. "), ex);
               promise.fail(ex);
-            }
-          }).onFailure(ex -> {
-            LOG.error(String.format("Querying Ansible Galaxy credential failed. "), ex);
-            promise.fail(ex);
-          });
+            });
+          }
+        } catch(Exception ex) {
+          LOG.error(String.format("Querying Ansible Galaxy credential failed. "), ex);
+          promise.fail(ex);
         }
-      }
+      }).onFailure(ex -> {
+        LOG.error(String.format("Querying Ansible Galaxy credential failed. "), ex);
+        promise.fail(ex);
+      });
     } catch(Exception ex) {
       LOG.error(String.format("Updating AAP organization failed. "), ex);
       promise.fail(ex);
@@ -111,29 +94,19 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
     return promise.future();
   }
 
-  public Future<JsonObject> aapUpsertAnsibleProjectSensu(Tenant o, Boolean inheritPrimaryKey, Boolean patch, JsonObject tenantJson, String aapOrganizationId) {
+  public Future<JsonObject> aapUpsertAnsibleProjectSensu(Tenant o) {
     Promise<JsonObject> promise = Promise.promise();
     try {
-      if(tenantJson == null) {
-        promise.complete();
-      } else {
-        if(patch) {
-          promise.complete();
-        } else {
-          String tenantResource = tenantJson.getString(Tenant.varJsonTenant(Tenant.VAR_tenantName, patch));
-          JsonObject ansibleProjectRequestBody = new JsonObject();
-          ansibleProjectRequestBody.put(AnsibleProject.VAR_ansibleProjectName, "dcm_ansible");
-          ansibleProjectRequestBody.put(AnsibleProject.VAR_tenantResource, tenantResource);
-          ansibleProjectRequestBody.put(AnsibleProject.VAR_sourceControlUrl, "https://github.com/computate-org/dcm_ansible.git");
-          ansibleProjectRequestBody.put(AnsibleProject.VAR_aapOrganizationId, aapOrganizationId);
-          AnsibleProjectEnUSApiServiceImpl.aapUpsertAnsibleProject(config, webClient, null, inheritPrimaryKey, false, ansibleProjectRequestBody).onSuccess(ansibleProjectResponseBody -> {
-            promise.complete(ansibleProjectResponseBody);
-          }).onFailure(ex -> {
-           LOG.error(String.format("Creating default Ansible template for Sensu Agent failed. "), ex);
-            promise.fail(ex);
-          });
-        }
-      }
+      JsonObject ansibleProjectRequestBody = new JsonObject();
+      ansibleProjectRequestBody.put(AnsibleProject.VAR_ansibleProjectName, "dcm_ansible");
+      ansibleProjectRequestBody.put(AnsibleProject.VAR_tenantResource, o.getTenantResource());
+      ansibleProjectRequestBody.put(AnsibleProject.VAR_sourceControlUrl, "https://github.com/computate-org/dcm_ansible.git");
+      ansibleProjectRequestBody.put(AnsibleProject.VAR_aapOrganizationId, o.getAapOrganizationId());
+      AnsibleProjectEnUSApiServiceImpl.putimportAnsibleProjectAsync(config, vertx, ansibleProjectRequestBody).onSuccess(ansibleProjectResponseBody -> {
+        promise.complete(ansibleProjectResponseBody);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
     } catch(Exception ex) {
       LOG.error(String.format("Creating default Ansible template for Sensu Agent failed. "), ex);
       promise.fail(ex);
@@ -175,15 +148,7 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
               JsonObject responseBody = tenantResponse.bodyAsJsonObject();
               String aapOrganizationId = responseBody.getString("id");
               tenantJson.put(Tenant.VAR_aapOrganizationId, aapOrganizationId);
-              aapUpsertAnsibleProjectSensu(o, inheritPrimaryKey, patch, tenantJson, aapOrganizationId).onSuccess(a -> {
-                aapUpsertAnsibleGalaxyCredential(o, inheritPrimaryKey, patch, tenantJson, aapOrganizationId).onSuccess(b -> {
-                  promise.complete();
-                }).onFailure(ex -> {
-                  promise.fail(ex);
-                });
-              }).onFailure(ex -> {
-                promise.fail(ex);
-              });
+              promise.complete();
             } catch(Exception ex) {
               LOG.error(String.format("Post AAP host creation failed. "), ex);
               promise.fail(ex);
@@ -410,6 +375,25 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
           }).onFailure(ex -> {
             promise.fail(ex);
           });
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
+  }
+
+  @Override
+  public Future<Tenant> postTenantFuture(SiteRequest siteRequest, Boolean tenantResource) {
+    Promise<Tenant> promise = Promise.promise();
+    super.postTenantFuture(siteRequest, tenantResource).onSuccess(tenant -> {
+      aapUpsertAnsibleProjectSensu(tenant).onSuccess(a -> {
+        aapUpsertAnsibleGalaxyCredential(tenant).onSuccess(b -> {
+          promise.complete(tenant);
         }).onFailure(ex -> {
           promise.fail(ex);
         });

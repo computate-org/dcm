@@ -4,6 +4,8 @@ import io.vertx.ext.web.api.service.ServiceRequest;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -15,6 +17,7 @@ import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.request.SiteRequest;
+import org.computate.vertx.config.ComputateConfigKeys;
 import org.computate.vertx.search.list.SearchList;
 
 /**
@@ -111,6 +114,36 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
       }
     } catch(Exception ex) {
       LOG.error(String.format("Updating AAP host failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
+  public static Future<JsonObject> putimportJobTemplateAsync(JsonObject config, Vertx vertx, JsonObject body) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      JsonObject pageParams = new JsonObject();
+      pageParams.put("scopes", new JsonArray().add("GET").add("POST"));
+      pageParams.put("body", body);
+      pageParams.put("path", new JsonObject());
+      pageParams.put("cookie", new JsonObject());
+      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+      JsonObject pageContext = new JsonObject().put("params", pageParams);
+      JsonObject pageRequest = new JsonObject().put("context", pageContext);
+      String ansibleProjectResource = body.getString(JobTemplate.VAR_ansibleProjectResource);
+
+      vertx.eventBus().request(JobTemplate.CLASS_API_ADDRESS_JobTemplate, pageRequest, new DeliveryOptions()
+          .setSendTimeout(config.getLong(ComputateConfigKeys.VERTX_MAX_EVENT_LOOP_EXECUTE_TIME) * 1000)
+          .addHeader("action", String.format("putimport%sFuture", JobTemplate.CLASS_SIMPLE_NAME))
+          ).onSuccess(message -> {
+        LOG.info(String.format("Imported %s Ansible project", ansibleProjectResource));
+        promise.complete();
+      }).onFailure(ex -> {
+        LOG.error(String.format(importDataFail, JobTemplate.CLASS_SIMPLE_NAME), ex);
+        promise.fail(ex);
+      });
+    } catch(Exception ex) {
+      LOG.error(String.format(importDataFail, JobTemplate.CLASS_SIMPLE_NAME), ex);
       promise.fail(ex);
     }
     return promise.future();

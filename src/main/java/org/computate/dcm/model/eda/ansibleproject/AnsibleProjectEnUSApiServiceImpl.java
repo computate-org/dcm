@@ -5,8 +5,11 @@ import io.vertx.ext.auth.oauth2.OAuth2Auth;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.Vertx;
 import io.vertx.core.WorkerExecutor;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Pool;
+
+import org.computate.vertx.config.ComputateConfigKeys;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
 import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.mqtt.MqttClient;
@@ -14,7 +17,10 @@ import io.vertx.amqp.AmqpSender;
 import io.vertx.rabbitmq.RabbitMQClient;
 import com.hubspot.jinjava.Jinjava;
 import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.api.service.ServiceResponse;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.json.JsonArray;
@@ -83,6 +89,36 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
       }
     } catch(Exception ex) {
       LOG.error(String.format("Updating AAP ansibleProject failed. "), ex);
+      promise.fail(ex);
+    }
+    return promise.future();
+  }
+
+  public static Future<JsonObject> putimportAnsibleProjectAsync(JsonObject config, Vertx vertx, JsonObject body) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      JsonObject pageParams = new JsonObject();
+      pageParams.put("scopes", new JsonArray().add("GET").add("POST"));
+      pageParams.put("body", body);
+      pageParams.put("path", new JsonObject());
+      pageParams.put("cookie", new JsonObject());
+      pageParams.put("query", new JsonObject().put("softCommit", true).put("q", "*:*").put("var", new JsonArray().add("refresh:false")));
+      JsonObject pageContext = new JsonObject().put("params", pageParams);
+      JsonObject pageRequest = new JsonObject().put("context", pageContext);
+      String ansibleProjectResource = body.getString(AnsibleProject.VAR_ansibleProjectResource);
+
+      vertx.eventBus().request(AnsibleProject.CLASS_API_ADDRESS_AnsibleProject, pageRequest, new DeliveryOptions()
+          .setSendTimeout(config.getLong(ComputateConfigKeys.VERTX_MAX_EVENT_LOOP_EXECUTE_TIME) * 1000)
+          .addHeader("action", String.format("putimport%sFuture", AnsibleProject.CLASS_SIMPLE_NAME))
+          ).onSuccess(message -> {
+        LOG.info(String.format("Imported %s Ansible project", ansibleProjectResource));
+        promise.complete();
+      }).onFailure(ex -> {
+        LOG.error(String.format(importDataFail, AnsibleProject.CLASS_SIMPLE_NAME), ex);
+        promise.fail(ex);
+      });
+    } catch(Exception ex) {
+      LOG.error(String.format(importDataFail, AnsibleProject.CLASS_SIMPLE_NAME), ex);
       promise.fail(ex);
     }
     return promise.future();
@@ -217,8 +253,8 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
 
         if(aapProjectId == null) {
           RuntimeException ex = new RuntimeException("Missing AAP project ID");
-          LOG.error(ex.getMessage(), ex);
-          promise.fail(ex);
+          LOG.warn(ex.getMessage(), ex);
+          promise.complete();
         } else {
           webClient.delete(aapPort, aapHostName, aapUri).ssl(aapSsl)
               .putHeader("Content-Type", "application/json")
