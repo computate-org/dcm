@@ -5,7 +5,7 @@
   <groupId>org.computate</groupId>
   <artifactId>dcm</artifactId>
   <version>1.0.0</version>
-  <name>Developer Computer Minion</name>
+  <name>Developer Computer Management</name>
   <description>Event driven automation for installing desktop applications and OpenShift Local cloud applications on your own computer.</description>
   <url>https://dcm.computate.org</url>
   <packaging>jar</packaging>
