@@ -1,6 +1,7 @@
 package org.computate.dcm.model.eda.jobtemplate;
 
 import io.vertx.ext.web.api.service.ServiceRequest;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -196,7 +197,10 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                 .putHeader("Content-Type", "application/json")
                 .basicAuthentication(aapUserName, aapPassword)
                 .sendJsonObject(body)
-                .expecting(HttpResponseExpectation.SC_OK)
+                .expecting(HttpResponseExpectation.SC_OK.wrappingFailure((response, ex) -> {
+                  return new RuntimeException(String.format("%s: %s", ex.getMessage()
+                      , ((HttpResponse<?>)response).body().toString()));
+                }))
                 .onSuccess(templateResponse -> {
               promise.complete();
             }).onFailure(ex -> {
@@ -208,7 +212,10 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                 .putHeader("Content-Type", "application/json")
                 .basicAuthentication(aapUserName, aapPassword)
                 .sendJsonObject(body)
-                .expecting(HttpResponseExpectation.SC_CREATED)
+                .expecting(HttpResponseExpectation.SC_CREATED.wrappingFailure((response, ex) -> {
+                  return new RuntimeException(String.format("%s: %s", ex.getMessage()
+                      , ((HttpResponse<?>)response).body().toString()));
+                }))
                 .onSuccess(templateResponse -> {
               JsonObject responseBody = templateResponse.bodyAsJsonObject();
               Long aapTemplateId2 = responseBody.getLong("id");

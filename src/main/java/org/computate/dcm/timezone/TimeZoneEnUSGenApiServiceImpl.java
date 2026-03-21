@@ -2507,8 +2507,8 @@ public class TimeZoneEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
       o.persistForClass(TimeZone.VAR_created, TimeZone.staticSetCreated(siteRequest2, (String)result.get(TimeZone.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(TimeZone.VAR_location, TimeZone.staticSetLocation(siteRequest2, (String)result.get(TimeZone.VAR_location)));
       o.persistForClass(TimeZone.VAR_name, TimeZone.staticSetName(siteRequest2, (String)result.get(TimeZone.VAR_name)));
-      o.persistForClass(TimeZone.VAR_archived, TimeZone.staticSetArchived(siteRequest2, (String)result.get(TimeZone.VAR_archived)));
       o.persistForClass(TimeZone.VAR_displayName, TimeZone.staticSetDisplayName(siteRequest2, (String)result.get(TimeZone.VAR_displayName)));
+      o.persistForClass(TimeZone.VAR_archived, TimeZone.staticSetArchived(siteRequest2, (String)result.get(TimeZone.VAR_archived)));
       o.persistForClass(TimeZone.VAR_id, TimeZone.staticSetId(siteRequest2, (String)result.get(TimeZone.VAR_id)));
       o.persistForClass(TimeZone.VAR_objectTitle, TimeZone.staticSetObjectTitle(siteRequest2, (String)result.get(TimeZone.VAR_objectTitle)));
       o.persistForClass(TimeZone.VAR_displayPage, TimeZone.staticSetDisplayPage(siteRequest2, (String)result.get(TimeZone.VAR_displayPage)));

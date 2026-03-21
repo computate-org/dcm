@@ -1003,14 +1003,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Host.VAR_archived + "=$" + num);
-              num++;
-              bParams.add(o2.sqlArchived());
-            break;
           case "setAapHostId":
               o2.setAapHostId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1018,6 +1010,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               bSql.append(Host.VAR_aapHostId + "=$" + num);
               num++;
               bParams.add(o2.sqlAapHostId());
+            break;
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_archived + "=$" + num);
+              num++;
+              bParams.add(o2.sqlArchived());
             break;
           case "setHostName":
               o2.setHostName(jsonObject.getString(entityVar));
@@ -1043,14 +1043,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               num++;
               bParams.add(o2.sqlHostId());
             break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(Host.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
-            break;
           case "setHostResource":
               o2.setHostResource(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1059,13 +1051,13 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               num++;
               bParams.add(o2.sqlHostResource());
             break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(Host.VAR_userKey + "=$" + num);
+              bSql.append(Host.VAR_sessionId + "=$" + num);
               num++;
-              bParams.add(o2.sqlUserKey());
+              bParams.add(o2.sqlSessionId());
             break;
           case "setHostDescription":
               o2.setHostDescription(jsonObject.getString(entityVar));
@@ -1074,6 +1066,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               bSql.append(Host.VAR_hostDescription + "=$" + num);
               num++;
               bParams.add(o2.sqlHostDescription());
+            break;
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(Host.VAR_userKey + "=$" + num);
+              num++;
+              bParams.add(o2.sqlUserKey());
             break;
           case "setAapInventoryId":
               o2.setAapInventoryId(jsonObject.getString(entityVar));
@@ -1636,15 +1636,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
               }));
             });
             break;
-          case Host.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Host.VAR_archived + "=$" + num);
-            num++;
-            bParams.add(o2.sqlArchived());
-            break;
           case Host.VAR_aapHostId:
             o2.setAapHostId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1653,6 +1644,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             bSql.append(Host.VAR_aapHostId + "=$" + num);
             num++;
             bParams.add(o2.sqlAapHostId());
+            break;
+          case Host.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_archived + "=$" + num);
+            num++;
+            bParams.add(o2.sqlArchived());
             break;
           case Host.VAR_hostName:
             o2.setHostName(jsonObject.getString(entityVar));
@@ -1681,15 +1681,6 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             num++;
             bParams.add(o2.sqlHostId());
             break;
-          case Host.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(Host.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
-            break;
           case Host.VAR_hostResource:
             o2.setHostResource(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1699,14 +1690,14 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             num++;
             bParams.add(o2.sqlHostResource());
             break;
-          case Host.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
+          case Host.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(Host.VAR_userKey + "=$" + num);
+            bSql.append(Host.VAR_sessionId + "=$" + num);
             num++;
-            bParams.add(o2.sqlUserKey());
+            bParams.add(o2.sqlSessionId());
             break;
           case Host.VAR_hostDescription:
             o2.setHostDescription(jsonObject.getString(entityVar));
@@ -1716,6 +1707,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
             bSql.append(Host.VAR_hostDescription + "=$" + num);
             num++;
             bParams.add(o2.sqlHostDescription());
+            break;
+          case Host.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(Host.VAR_userKey + "=$" + num);
+            num++;
+            bParams.add(o2.sqlUserKey());
             break;
           case Host.VAR_aapInventoryId:
             o2.setAapInventoryId(jsonObject.getString(entityVar));
@@ -4516,7 +4516,7 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapHostId, hostName, ipAddress, hostId, sessionId, hostResource, userKey, hostDescription, aapInventoryId, inventoryName, objectTitle, eventSubscriptions, displayPage, tags, editPage, userPage, download FROM Host WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, aapHostId, archived, hostName, ipAddress, hostId, hostResource, sessionId, hostDescription, userKey, aapInventoryId, inventoryName, objectTitle, eventSubscriptions, displayPage, tags, editPage, userPage, download FROM Host WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4824,15 +4824,15 @@ public class HostEnUSGenApiServiceImpl extends BaseApiServiceImpl implements Hos
       o.persistForClass(Host.VAR_created, Host.staticSetCreated(siteRequest2, (String)result.get(Host.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(Host.VAR_aapOrganizationId, Host.staticSetAapOrganizationId(siteRequest2, (String)result.get(Host.VAR_aapOrganizationId)));
       o.persistForClass(Host.VAR_inventoryResource, Host.staticSetInventoryResource(siteRequest2, (String)result.get(Host.VAR_inventoryResource)));
-      o.persistForClass(Host.VAR_archived, Host.staticSetArchived(siteRequest2, (String)result.get(Host.VAR_archived)));
       o.persistForClass(Host.VAR_aapHostId, Host.staticSetAapHostId(siteRequest2, (String)result.get(Host.VAR_aapHostId)));
+      o.persistForClass(Host.VAR_archived, Host.staticSetArchived(siteRequest2, (String)result.get(Host.VAR_archived)));
       o.persistForClass(Host.VAR_hostName, Host.staticSetHostName(siteRequest2, (String)result.get(Host.VAR_hostName)));
       o.persistForClass(Host.VAR_ipAddress, Host.staticSetIpAddress(siteRequest2, (String)result.get(Host.VAR_ipAddress)));
       o.persistForClass(Host.VAR_hostId, Host.staticSetHostId(siteRequest2, (String)result.get(Host.VAR_hostId)));
-      o.persistForClass(Host.VAR_sessionId, Host.staticSetSessionId(siteRequest2, (String)result.get(Host.VAR_sessionId)));
       o.persistForClass(Host.VAR_hostResource, Host.staticSetHostResource(siteRequest2, (String)result.get(Host.VAR_hostResource)));
-      o.persistForClass(Host.VAR_userKey, Host.staticSetUserKey(siteRequest2, (String)result.get(Host.VAR_userKey)));
+      o.persistForClass(Host.VAR_sessionId, Host.staticSetSessionId(siteRequest2, (String)result.get(Host.VAR_sessionId)));
       o.persistForClass(Host.VAR_hostDescription, Host.staticSetHostDescription(siteRequest2, (String)result.get(Host.VAR_hostDescription)));
+      o.persistForClass(Host.VAR_userKey, Host.staticSetUserKey(siteRequest2, (String)result.get(Host.VAR_userKey)));
       o.persistForClass(Host.VAR_aapInventoryId, Host.staticSetAapInventoryId(siteRequest2, (String)result.get(Host.VAR_aapInventoryId)));
       o.persistForClass(Host.VAR_inventoryName, Host.staticSetInventoryName(siteRequest2, (String)result.get(Host.VAR_inventoryName)));
       o.persistForClass(Host.VAR_objectTitle, Host.staticSetObjectTitle(siteRequest2, (String)result.get(Host.VAR_objectTitle)));
