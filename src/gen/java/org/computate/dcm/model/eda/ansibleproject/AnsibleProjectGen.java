@@ -997,6 +997,147 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     return a;
   }
 
+	//////////////////////
+  // ansiblePlaybooks //
+	//////////////////////
+
+
+  /**
+   *  The entity ansiblePlaybooks
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> ansiblePlaybooks = new ArrayList<String>();
+
+  /**
+   * <br> The entity ansiblePlaybooks
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:ansiblePlaybooks">Find the entity ansiblePlaybooks in Solr</a>
+   * <br>
+   * @param l is the entity already constructed. 
+   **/
+  protected abstract void _ansiblePlaybooks(List<String> l);
+
+  public List<String> getAnsiblePlaybooks() {
+    return ansiblePlaybooks;
+  }
+
+  public void setAnsiblePlaybooks(List<String> ansiblePlaybooks) {
+    this.ansiblePlaybooks = ansiblePlaybooks;
+  }
+  @JsonIgnore
+  public void setAnsiblePlaybooks(String o) {
+    String l = AnsibleProject.staticSetAnsiblePlaybooks(siteRequest_, o);
+    if(l != null)
+      addAnsiblePlaybooks(l);
+  }
+  public static String staticSetAnsiblePlaybooks(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public AnsibleProject addAnsiblePlaybooks(String...objects) {
+    for(String o : objects) {
+      addAnsiblePlaybooks(o);
+    }
+    return (AnsibleProject)this;
+  }
+  public AnsibleProject addAnsiblePlaybooks(String o) {
+    if(o != null)
+      this.ansiblePlaybooks.add(o);
+    return (AnsibleProject)this;
+  }
+  @JsonIgnore
+  public void setAnsiblePlaybooks(JsonArray objects) {
+    ansiblePlaybooks.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addAnsiblePlaybooks(o);
+    }
+  }
+  protected AnsibleProject ansiblePlaybooksInit() {
+    _ansiblePlaybooks(ansiblePlaybooks);
+    return (AnsibleProject)this;
+  }
+
+  public static String staticSearchAnsiblePlaybooks(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsiblePlaybooks(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsiblePlaybooks(SiteRequest siteRequest_, String o) {
+    return AnsibleProject.staticSearchAnsiblePlaybooks(siteRequest_, AnsibleProject.staticSetAnsiblePlaybooks(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlAnsiblePlaybooks() {
+    return ansiblePlaybooks.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonAnsiblePlaybooks(List<String> ansiblePlaybooks) {
+    JsonArray a = new JsonArray();
+    ansiblePlaybooks.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
+	//////////////////////////
+  // ansiblePlaybooksList //
+	//////////////////////////
+
+
+  /**
+   *  The entity ansiblePlaybooksList
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String ansiblePlaybooksList;
+
+  /**
+   * <br> The entity ansiblePlaybooksList
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.ansibleproject.AnsibleProject&fq=entiteVar_enUS_indexed_string:ansiblePlaybooksList">Find the entity ansiblePlaybooksList in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _ansiblePlaybooksList(Wrap<String> w);
+
+  public String getAnsiblePlaybooksList() {
+    return ansiblePlaybooksList;
+  }
+  public void setAnsiblePlaybooksList(String o) {
+    this.ansiblePlaybooksList = AnsibleProject.staticSetAnsiblePlaybooksList(siteRequest_, o);
+  }
+  public static String staticSetAnsiblePlaybooksList(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected AnsibleProject ansiblePlaybooksListInit() {
+    Wrap<String> ansiblePlaybooksListWrap = new Wrap<String>().var("ansiblePlaybooksList");
+    if(ansiblePlaybooksList == null) {
+      _ansiblePlaybooksList(ansiblePlaybooksListWrap);
+      Optional.ofNullable(ansiblePlaybooksListWrap.getO()).ifPresent(o -> {
+        setAnsiblePlaybooksList(o);
+      });
+    }
+    return (AnsibleProject)this;
+  }
+
+  public static String staticSearchAnsiblePlaybooksList(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrAnsiblePlaybooksList(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAnsiblePlaybooksList(SiteRequest siteRequest_, String o) {
+    return AnsibleProject.staticSearchAnsiblePlaybooksList(siteRequest_, AnsibleProject.staticSetAnsiblePlaybooksList(siteRequest_, o)).toString();
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -1038,6 +1179,8 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         aapProjectIdInit();
         ansibleProjectDescriptionInit();
         jobTemplateResourcesInit();
+        ansiblePlaybooksInit();
+        ansiblePlaybooksListInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1115,6 +1258,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return oAnsibleProject.ansibleProjectDescription;
       case "jobTemplateResources":
         return oAnsibleProject.jobTemplateResources;
+      case "ansiblePlaybooks":
+        return oAnsibleProject.ansiblePlaybooks;
+      case "ansiblePlaybooksList":
+        return oAnsibleProject.ansiblePlaybooksList;
       default:
         return super.obtainBaseModel(var);
     }
@@ -1189,6 +1336,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSetAnsibleProjectDescription(siteRequest_, v);
     case "jobTemplateResources":
       return AnsibleProject.staticSetJobTemplateResources(siteRequest_, v);
+    case "ansiblePlaybooks":
+      return AnsibleProject.staticSetAnsiblePlaybooks(siteRequest_, v);
+    case "ansiblePlaybooksList":
+      return AnsibleProject.staticSetAnsiblePlaybooksList(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
@@ -1257,6 +1408,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchAnsibleProjectDescription(siteRequest_, (String)o);
     case "jobTemplateResources":
       return AnsibleProject.staticSearchJobTemplateResources(siteRequest_, (String)o);
+    case "ansiblePlaybooks":
+      return AnsibleProject.staticSearchAnsiblePlaybooks(siteRequest_, (String)o);
+    case "ansiblePlaybooksList":
+      return AnsibleProject.staticSearchAnsiblePlaybooksList(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1295,6 +1450,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchStrAnsibleProjectDescription(siteRequest_, (String)o);
     case "jobTemplateResources":
       return AnsibleProject.staticSearchStrJobTemplateResources(siteRequest_, (String)o);
+    case "ansiblePlaybooks":
+      return AnsibleProject.staticSearchStrAnsiblePlaybooks(siteRequest_, (String)o);
+    case "ansiblePlaybooksList":
+      return AnsibleProject.staticSearchStrAnsiblePlaybooksList(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1333,6 +1492,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return AnsibleProject.staticSearchFqAnsibleProjectDescription(siteRequest_, o);
     case "jobTemplateResources":
       return AnsibleProject.staticSearchFqJobTemplateResources(siteRequest_, o);
+    case "ansiblePlaybooks":
+      return AnsibleProject.staticSearchFqAnsiblePlaybooks(siteRequest_, o);
+    case "ansiblePlaybooksList":
+      return AnsibleProject.staticSearchFqAnsiblePlaybooksList(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1429,6 +1592,18 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         }
         saves.add("ansibleProjectDescription");
         return val;
+      } else if("ansibleplaybooks".equals(varLower)) {
+        if(val instanceof List<?>) {
+          ((List<String>)val).stream().forEach(v -> addAnsiblePlaybooks(v));
+        } else if(val instanceof String[]) {
+          Arrays.asList((String[])val).stream().forEach(v -> addAnsiblePlaybooks((String)v));
+        } else if(val instanceof JsonArray) {
+          ((JsonArray)val).stream().forEach(v -> addAnsiblePlaybooks(staticSetAnsiblePlaybooks(siteRequest_, v.toString())));
+        }
+        if(!saves.contains("ansiblePlaybooks")) {
+          saves.add("ansiblePlaybooks");
+        }
+        return val;
     } else {
       return super.persistBaseModel(var, val);
     }
@@ -1513,6 +1688,21 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       List<String> jobTemplateResources = (List<String>)doc.get("jobTemplateResources_docvalues_strings");
       if(jobTemplateResources != null)
         oAnsibleProject.jobTemplateResources.addAll(jobTemplateResources);
+
+      if(saves.contains("ansiblePlaybooks")) {
+        List<String> ansiblePlaybooks = (List<String>)doc.get("ansiblePlaybooks_docvalues_strings");
+        if(ansiblePlaybooks != null) {
+          ansiblePlaybooks.stream().forEach( v -> {
+            oAnsibleProject.ansiblePlaybooks.add(AnsibleProject.staticSetAnsiblePlaybooks(siteRequest_, v));
+          });
+        }
+      }
+
+      if(saves.contains("ansiblePlaybooksList")) {
+        String ansiblePlaybooksList = (String)doc.get("ansiblePlaybooksList_docvalues_string");
+        if(ansiblePlaybooksList != null)
+          oAnsibleProject.setAnsiblePlaybooksList(ansiblePlaybooksList);
+      }
     }
 
     super.populateBaseModel(doc);
@@ -1559,6 +1749,16 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         l.add(AnsibleProject.staticSearchJobTemplateResources(siteRequest_, o));
       }
     }
+    if(ansiblePlaybooks != null) {
+      JsonArray l = new JsonArray();
+      doc.put("ansiblePlaybooks_docvalues_strings", l);
+      for(String o : ansiblePlaybooks) {
+        l.add(AnsibleProject.staticSearchAnsiblePlaybooks(siteRequest_, o));
+      }
+    }
+    if(ansiblePlaybooksList != null) {
+      doc.put("ansiblePlaybooksList_docvalues_string", ansiblePlaybooksList);
+    }
     super.indexBaseModel(doc);
 
 	}
@@ -1589,6 +1789,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectDescription_docvalues_string";
       case "jobTemplateResources":
         return "jobTemplateResources_docvalues_strings";
+      case "ansiblePlaybooks":
+        return "ansiblePlaybooks_docvalues_strings";
+      case "ansiblePlaybooksList":
+        return "ansiblePlaybooksList_docvalues_string";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1620,6 +1824,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectDescription_docvalues_string";
       case "jobTemplateResources":
         return "jobTemplateResources_docvalues_strings";
+      case "ansiblePlaybooks":
+        return "ansiblePlaybooks_docvalues_strings";
+      case "ansiblePlaybooksList":
+        return "ansiblePlaybooksList_docvalues_string";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1651,6 +1859,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         return "ansibleProjectDescription";
       case "jobTemplateResources_docvalues_strings":
         return "jobTemplateResources";
+      case "ansiblePlaybooks_docvalues_strings":
+        return "ansiblePlaybooks";
+      case "ansiblePlaybooksList_docvalues_string":
+        return "ansiblePlaybooksList";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1695,6 +1907,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     Optional.ofNullable((List<?>)doc.get("jobTemplateResources_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
       oAnsibleProject.addJobTemplateResources(AnsibleProject.staticSetJobTemplateResources(siteRequest, v.toString()));
     });
+    Optional.ofNullable((List<?>)doc.get("ansiblePlaybooks_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oAnsibleProject.addAnsiblePlaybooks(AnsibleProject.staticSetAnsiblePlaybooks(siteRequest, v.toString()));
+    });
+    oAnsibleProject.setAnsiblePlaybooksList(Optional.ofNullable(doc.get("ansiblePlaybooksList_docvalues_string")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
   }
@@ -1732,6 +1948,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
         apiRequest.addVars("ansibleProjectDescription");
       if(!Objects.equals(jobTemplateResources, original.getJobTemplateResources()))
         apiRequest.addVars("jobTemplateResources");
+      if(!Objects.equals(ansiblePlaybooks, original.getAnsiblePlaybooks()))
+        apiRequest.addVars("ansiblePlaybooks");
+      if(!Objects.equals(ansiblePlaybooksList, original.getAnsiblePlaybooksList()))
+        apiRequest.addVars("ansiblePlaybooksList");
       super.apiRequestBaseModel();
     }
   }
@@ -1755,6 +1975,8 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(aapProjectId).map(v -> "aapProjectId: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(ansibleProjectDescription).map(v -> "ansibleProjectDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateResources).map(v -> "jobTemplateResources: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(ansiblePlaybooks).map(v -> "ansiblePlaybooks: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(ansiblePlaybooksList).map(v -> "ansiblePlaybooksList: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
   }
 
@@ -1789,6 +2011,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String SET_ansibleProjectDescription = "setAnsibleProjectDescription";
   public static final String VAR_jobTemplateResources = "jobTemplateResources";
   public static final String SET_jobTemplateResources = "setJobTemplateResources";
+  public static final String VAR_ansiblePlaybooks = "ansiblePlaybooks";
+  public static final String SET_ansiblePlaybooks = "setAnsiblePlaybooks";
+  public static final String VAR_ansiblePlaybooksList = "ansiblePlaybooksList";
+  public static final String SET_ansiblePlaybooksList = "setAnsiblePlaybooksList";
 
   public static List<String> varsQForClass() {
     return AnsibleProject.varsQAnsibleProject(new ArrayList<String>());
@@ -1827,6 +2053,8 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_aapProjectId = "AAP project ID";
   public static final String DISPLAY_NAME_ansibleProjectDescription = "ansible project description";
   public static final String DISPLAY_NAME_jobTemplateResources = "job templates";
+  public static final String DISPLAY_NAME_ansiblePlaybooks = "ansible playbooks";
+  public static final String DISPLAY_NAME_ansiblePlaybooksList = "ansible playbooks";
 
   @Override
   public String idForClass() {
@@ -1887,6 +2115,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return patch ? SET_ansibleProjectDescription : VAR_ansibleProjectDescription;
     case VAR_jobTemplateResources:
       return patch ? SET_jobTemplateResources : VAR_jobTemplateResources;
+    case VAR_ansiblePlaybooks:
+      return patch ? SET_ansiblePlaybooks : VAR_ansiblePlaybooks;
+    case VAR_ansiblePlaybooksList:
+      return patch ? SET_ansiblePlaybooksList : VAR_ansiblePlaybooksList;
     default:
       return BaseModel.varJsonBaseModel(var, patch);
     }
@@ -1921,6 +2153,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return DISPLAY_NAME_ansibleProjectDescription;
     case VAR_jobTemplateResources:
       return DISPLAY_NAME_jobTemplateResources;
+    case VAR_ansiblePlaybooks:
+      return DISPLAY_NAME_ansiblePlaybooks;
+    case VAR_ansiblePlaybooksList:
+      return DISPLAY_NAME_ansiblePlaybooksList;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -1954,6 +2190,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return "The description of the ansible project. ";
     case VAR_jobTemplateResources:
       return "The related job templates for this Ansible project. ";
+    case VAR_ansiblePlaybooks:
+      return "The related ansible playbooks for this Ansible project. ";
+    case VAR_ansiblePlaybooksList:
+      return "The related ansible playbooks for this Ansible project. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -1985,6 +2225,10 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return "String";
     case VAR_jobTemplateResources:
       return "List";
+    case VAR_ansiblePlaybooks:
+      return "List";
+    case VAR_ansiblePlaybooksList:
+      return "String";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
     }
@@ -2019,6 +2263,8 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return 4;
     case VAR_jobTemplateResources:
       return 4;
+    case VAR_ansiblePlaybooksList:
+      return 4;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -2040,6 +2286,8 @@ public abstract class AnsibleProjectGen<DEV> extends BaseModel {
       return 1;
     case VAR_jobTemplateResources:
       return 2;
+    case VAR_ansiblePlaybooksList:
+      return 3;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

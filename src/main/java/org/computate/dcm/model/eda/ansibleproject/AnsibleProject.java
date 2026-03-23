@@ -213,4 +213,31 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    **/
   protected void _jobTemplateResources(List<String> l) {
   }
+
+  /**
+   * {@inheritDoc}
+   * Persist: true
+   * DocValues: true
+   * DisplayName: ansible playbooks
+   * Description: The related ansible playbooks for this Ansible project. 
+   **/
+  protected void _ansiblePlaybooks(List<String> l) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: ansible playbooks
+   * Description: The related ansible playbooks for this Ansible project. 
+   * Multiline: true
+   * HtmRow: 4
+   * HtmCell: 3
+   **/
+  protected void _ansiblePlaybooksList(Wrap<String> w) {
+    StringBuilder sb = new StringBuilder();
+    ansiblePlaybooks.stream().forEach(s -> {
+      sb.append(s).append("\n");
+    });
+    w.o(sb.toString());
+  }
 }

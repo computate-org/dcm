@@ -166,6 +166,7 @@ ALTER TABLE AnsibleProject ADD COLUMN IF NOT EXISTS ansibleProjectId text UNIQUE
 ALTER TABLE AnsibleProject ADD COLUMN IF NOT EXISTS ansibleProjectResource text UNIQUE;
 ALTER TABLE AnsibleProject ADD COLUMN IF NOT EXISTS aapProjectId bigint;
 ALTER TABLE AnsibleProject ADD COLUMN IF NOT EXISTS ansibleProjectDescription text UNIQUE;
+ALTER TABLE AnsibleProject ADD COLUMN IF NOT EXISTS ansiblePlaybooks text[];
 
 CREATE TABLE IF NOT EXISTS JobTemplate();
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS pk bigserial primary key;
@@ -187,6 +188,7 @@ ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS credentialResource text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS aapHostCredentialId bigint;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansibleProjectResource text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS aapProjectId bigint;
+ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansiblePlaybooks text[];
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS ansiblePlaybook text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateName text;
 ALTER TABLE JobTemplate ADD COLUMN IF NOT EXISTS jobTemplateId text;

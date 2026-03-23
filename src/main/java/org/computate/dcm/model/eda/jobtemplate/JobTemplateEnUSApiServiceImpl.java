@@ -81,6 +81,8 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_tenantId, patch), tenantId);
                   Long aapProjectId = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapProjectId())).orElse(project.getAapProjectId());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapProjectId, patch), Optional.ofNullable(aapProjectId).map(v -> v.toString()).orElse(null));
+                  JsonArray ansiblePlaybooks = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getJsonArray(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybooks, patch))).orElse(null)).orElse(new JsonArray(project.getAnsiblePlaybooks()));
+                  jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybooks, patch), Optional.ofNullable(ansiblePlaybooks).orElse(new JsonArray()));
                   String ansiblePlaybook = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch))).orElse(o.getAnsiblePlaybook());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_ansiblePlaybook, patch), ansiblePlaybook);
                   String jobTemplateName = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch))).orElse(o.getJobTemplateName())).orElse(Optional.ofNullable(ansiblePlaybook).map(s -> StringUtils.substringBeforeLast(s, ".")).orElse(null));

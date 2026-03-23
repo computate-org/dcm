@@ -160,13 +160,40 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
 
   /**
    * {@inheritDoc}
+   * Persist: true
+   * DocValues: true
+   * DisplayName: ansible playbooks
+   * Description: The related ansible playbooks for this Ansible project. 
+   **/
+  protected void _ansiblePlaybooks(List<String> l) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: ansible playbooks
+   * Description: The related ansible playbooks for this Ansible project. 
+   * Multiline: true
+   * HtmRow: 5
+   * HtmCell: 0
+   **/
+  protected void _ansiblePlaybooksList(Wrap<String> w) {
+    StringBuilder sb = new StringBuilder();
+    ansiblePlaybooks.stream().forEach(s -> {
+      sb.append(s).append("\n");
+    });
+    w.o(sb.toString());
+  }
+
+  /**
+   * {@inheritDoc}
    * DocValues: true
    * Persist: true
    * DisplayName: Ansible playbook
    * Description: The Ansible playbook for this Job Template. 
    * HtmRowTitleOpen: Ansible Job Template details
    * HtmRow: 5
-   * HtmCell: 0
+   * HtmCell: 1
    * Required: true
    **/
   protected void _ansiblePlaybook(Wrap<String> w) {
@@ -177,7 +204,7 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 5
-   * HtmCell: 1
+   * HtmCell: 2
    * HtmColumn: 1
    * DisplayName: job template name
    * Description: The name of the job template (may only contain letters, numbers, periods, colons, and dashes). 
@@ -217,7 +244,7 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 5
-   * HtmCell: 2
+   * HtmCell: 3
    * HtmColumn: 2
    * DisplayName: job template description
    * Description: The description of the job template. 
@@ -231,7 +258,7 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 5
-   * HtmCell: 3
+   * HtmCell: 4
    * DisplayName: job type
    * Description: The job type of the job template. 
    * Radio:
@@ -247,7 +274,7 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * HtmRow: 5
-   * HtmCell: 4
+   * HtmCell: 5
    * DisplayName: extra vars
    * Description: The extra vars of the job template. 
    */

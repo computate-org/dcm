@@ -312,8 +312,6 @@ public class TenantEnUSApiServiceImpl extends TenantEnUSGenApiServiceImpl {
         JsonObject body = new JsonObject();
         body.put("command", handlerCommand);
         body.put("type", "pipe");
-        body.put("filters", new JsonArray().add(""));
-        body.put("handlers", new JsonArray().add(""));
         body.put("runtime_assets", new JsonArray().add("sensu/sensu-kafka-handler"));
         body.put("timeout", 0);
         JsonObject metadata = new JsonObject();

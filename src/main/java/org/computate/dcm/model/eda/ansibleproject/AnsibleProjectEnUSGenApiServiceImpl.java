@@ -1117,6 +1117,14 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
+          case "setAnsiblePlaybooks":
+              o2.setAnsiblePlaybooks(jsonObject.getJsonArray(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(AnsibleProject.VAR_ansiblePlaybooks + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAnsiblePlaybooks());
+            break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1729,6 +1737,15 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(AnsibleProject.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
+            break;
+          case AnsibleProject.VAR_ansiblePlaybooks:
+            o2.setAnsiblePlaybooks(jsonObject.getJsonArray(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(AnsibleProject.VAR_ansiblePlaybooks + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAnsiblePlaybooks());
             break;
           case AnsibleProject.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -4070,7 +4087,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, sourceControlType, archived, sourceControlUrl, sourceControlBranch, ansibleProjectName, ansibleProjectId, sessionId, ansibleProjectResource, userKey, aapProjectId, ansibleProjectDescription, objectTitle, displayPage, editPage, userPage, download FROM AnsibleProject WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, sourceControlType, archived, sourceControlUrl, sourceControlBranch, ansibleProjectName, ansibleProjectId, sessionId, ansibleProjectResource, userKey, aapProjectId, ansibleProjectDescription, objectTitle, ansiblePlaybooks, displayPage, editPage, userPage, download FROM AnsibleProject WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4389,6 +4406,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       o.persistForClass(AnsibleProject.VAR_aapProjectId, AnsibleProject.staticSetAapProjectId(siteRequest2, (String)result.get(AnsibleProject.VAR_aapProjectId)));
       o.persistForClass(AnsibleProject.VAR_ansibleProjectDescription, AnsibleProject.staticSetAnsibleProjectDescription(siteRequest2, (String)result.get(AnsibleProject.VAR_ansibleProjectDescription)));
       o.persistForClass(AnsibleProject.VAR_objectTitle, AnsibleProject.staticSetObjectTitle(siteRequest2, (String)result.get(AnsibleProject.VAR_objectTitle)));
+      o.persistForClass(AnsibleProject.VAR_ansiblePlaybooks, AnsibleProject.staticSetAnsiblePlaybooks(siteRequest2, (String)result.get(AnsibleProject.VAR_ansiblePlaybooks)));
       o.persistForClass(AnsibleProject.VAR_displayPage, AnsibleProject.staticSetDisplayPage(siteRequest2, (String)result.get(AnsibleProject.VAR_displayPage)));
       o.persistForClass(AnsibleProject.VAR_editPage, AnsibleProject.staticSetEditPage(siteRequest2, (String)result.get(AnsibleProject.VAR_editPage)));
       o.persistForClass(AnsibleProject.VAR_userPage, AnsibleProject.staticSetUserPage(siteRequest2, (String)result.get(AnsibleProject.VAR_userPage)));

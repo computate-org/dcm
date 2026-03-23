@@ -1117,6 +1117,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlUserKey());
             break;
+          case "setAnsiblePlaybooks":
+              o2.setAnsiblePlaybooks(jsonObject.getJsonArray(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_ansiblePlaybooks + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAnsiblePlaybooks());
+            break;
           case "setAnsiblePlaybook":
               o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1124,22 +1132,6 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
               num++;
               bParams.add(o2.sqlAnsiblePlaybook());
-            break;
-          case "setJobTemplateName":
-              o2.setJobTemplateName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlJobTemplateName());
-            break;
-          case "setJobTemplateId":
-              o2.setJobTemplateId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlJobTemplateId());
             break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -1149,13 +1141,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
-          case "setJobTemplateResource":
-              o2.setJobTemplateResource(jsonObject.getString(entityVar));
+          case "setJobTemplateName":
+              o2.setJobTemplateName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
               num++;
-              bParams.add(o2.sqlJobTemplateResource());
+              bParams.add(o2.sqlJobTemplateName());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1165,13 +1157,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlDisplayPage());
             break;
-          case "setJobTemplateDescription":
-              o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+          case "setJobTemplateId":
+              o2.setJobTemplateId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
               num++;
-              bParams.add(o2.sqlJobTemplateDescription());
+              bParams.add(o2.sqlJobTemplateId());
             break;
           case "setEditPage":
               o2.setEditPage(jsonObject.getString(entityVar));
@@ -1181,13 +1173,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlEditPage());
             break;
-          case "setJobType":
-              o2.setJobType(jsonObject.getString(entityVar));
+          case "setJobTemplateResource":
+              o2.setJobTemplateResource(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_jobType + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
               num++;
-              bParams.add(o2.sqlJobType());
+              bParams.add(o2.sqlJobTemplateResource());
             break;
           case "setUserPage":
               o2.setUserPage(jsonObject.getString(entityVar));
@@ -1197,13 +1189,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlUserPage());
             break;
-          case "setExtraVars":
-              o2.setExtraVars(jsonObject.getJsonObject(entityVar));
+          case "setJobTemplateDescription":
+              o2.setJobTemplateDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
+              bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
               num++;
-              bParams.add(o2.sqlExtraVars());
+              bParams.add(o2.sqlJobTemplateDescription());
             break;
           case "setDownload":
               o2.setDownload(jsonObject.getString(entityVar));
@@ -1212,6 +1204,22 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               bSql.append(JobTemplate.VAR_download + "=$" + num);
               num++;
               bParams.add(o2.sqlDownload());
+            break;
+          case "setJobType":
+              o2.setJobType(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_jobType + "=$" + num);
+              num++;
+              bParams.add(o2.sqlJobType());
+            break;
+          case "setExtraVars":
+              o2.setExtraVars(jsonObject.getJsonObject(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
+              num++;
+              bParams.add(o2.sqlExtraVars());
             break;
           case "setAapTemplateId":
               o2.setAapTemplateId(jsonObject.getString(entityVar));
@@ -1804,6 +1812,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlUserKey());
             break;
+          case JobTemplate.VAR_ansiblePlaybooks:
+            o2.setAnsiblePlaybooks(jsonObject.getJsonArray(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_ansiblePlaybooks + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAnsiblePlaybooks());
+            break;
           case JobTemplate.VAR_ansiblePlaybook:
             o2.setAnsiblePlaybook(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1812,24 +1829,6 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_ansiblePlaybook + "=$" + num);
             num++;
             bParams.add(o2.sqlAnsiblePlaybook());
-            break;
-          case JobTemplate.VAR_jobTemplateName:
-            o2.setJobTemplateName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlJobTemplateName());
-            break;
-          case JobTemplate.VAR_jobTemplateId:
-            o2.setJobTemplateId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlJobTemplateId());
             break;
           case JobTemplate.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
@@ -1840,14 +1839,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
-          case JobTemplate.VAR_jobTemplateResource:
-            o2.setJobTemplateResource(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateName:
+            o2.setJobTemplateName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateName + "=$" + num);
             num++;
-            bParams.add(o2.sqlJobTemplateResource());
+            bParams.add(o2.sqlJobTemplateName());
             break;
           case JobTemplate.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1858,14 +1857,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
-          case JobTemplate.VAR_jobTemplateDescription:
-            o2.setJobTemplateDescription(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateId:
+            o2.setJobTemplateId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateId + "=$" + num);
             num++;
-            bParams.add(o2.sqlJobTemplateDescription());
+            bParams.add(o2.sqlJobTemplateId());
             break;
           case JobTemplate.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
@@ -1876,14 +1875,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlEditPage());
             break;
-          case JobTemplate.VAR_jobType:
-            o2.setJobType(jsonObject.getString(entityVar));
+          case JobTemplate.VAR_jobTemplateResource:
+            o2.setJobTemplateResource(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_jobType + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateResource + "=$" + num);
             num++;
-            bParams.add(o2.sqlJobType());
+            bParams.add(o2.sqlJobTemplateResource());
             break;
           case JobTemplate.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
@@ -1894,14 +1893,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             num++;
             bParams.add(o2.sqlUserPage());
             break;
-          case JobTemplate.VAR_extraVars:
-            o2.setExtraVars(jsonObject.getJsonObject(entityVar));
+          case JobTemplate.VAR_jobTemplateDescription:
+            o2.setJobTemplateDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
+            bSql.append(JobTemplate.VAR_jobTemplateDescription + "=$" + num);
             num++;
-            bParams.add(o2.sqlExtraVars());
+            bParams.add(o2.sqlJobTemplateDescription());
             break;
           case JobTemplate.VAR_download:
             o2.setDownload(jsonObject.getString(entityVar));
@@ -1911,6 +1910,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_download + "=$" + num);
             num++;
             bParams.add(o2.sqlDownload());
+            break;
+          case JobTemplate.VAR_jobType:
+            o2.setJobType(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_jobType + "=$" + num);
+            num++;
+            bParams.add(o2.sqlJobType());
+            break;
+          case JobTemplate.VAR_extraVars:
+            o2.setExtraVars(jsonObject.getJsonObject(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_extraVars + "=$" + num);
+            num++;
+            bParams.add(o2.sqlExtraVars());
             break;
           case JobTemplate.VAR_aapTemplateId:
             o2.setAapTemplateId(jsonObject.getString(entityVar));
@@ -4388,7 +4405,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, credentialResource, aapHostCredentialId, ansibleProjectResource, sessionId, aapProjectId, userKey, ansiblePlaybook, jobTemplateName, jobTemplateId, objectTitle, jobTemplateResource, displayPage, jobTemplateDescription, editPage, jobType, userPage, extraVars, download, aapTemplateId FROM JobTemplate WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, credentialResource, aapHostCredentialId, ansibleProjectResource, sessionId, aapProjectId, userKey, ansiblePlaybooks, ansiblePlaybook, objectTitle, jobTemplateName, displayPage, jobTemplateId, editPage, jobTemplateResource, userPage, jobTemplateDescription, download, jobType, extraVars, aapTemplateId FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4776,18 +4793,19 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       o.persistForClass(JobTemplate.VAR_sessionId, JobTemplate.staticSetSessionId(siteRequest2, (String)result.get(JobTemplate.VAR_sessionId)));
       o.persistForClass(JobTemplate.VAR_aapProjectId, JobTemplate.staticSetAapProjectId(siteRequest2, (String)result.get(JobTemplate.VAR_aapProjectId)));
       o.persistForClass(JobTemplate.VAR_userKey, JobTemplate.staticSetUserKey(siteRequest2, (String)result.get(JobTemplate.VAR_userKey)));
+      o.persistForClass(JobTemplate.VAR_ansiblePlaybooks, JobTemplate.staticSetAnsiblePlaybooks(siteRequest2, (String)result.get(JobTemplate.VAR_ansiblePlaybooks)));
       o.persistForClass(JobTemplate.VAR_ansiblePlaybook, JobTemplate.staticSetAnsiblePlaybook(siteRequest2, (String)result.get(JobTemplate.VAR_ansiblePlaybook)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateId, JobTemplate.staticSetJobTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateId)));
       o.persistForClass(JobTemplate.VAR_objectTitle, JobTemplate.staticSetObjectTitle(siteRequest2, (String)result.get(JobTemplate.VAR_objectTitle)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateResource, JobTemplate.staticSetJobTemplateResource(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateResource)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateName, JobTemplate.staticSetJobTemplateName(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateName)));
       o.persistForClass(JobTemplate.VAR_displayPage, JobTemplate.staticSetDisplayPage(siteRequest2, (String)result.get(JobTemplate.VAR_displayPage)));
-      o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateId, JobTemplate.staticSetJobTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateId)));
       o.persistForClass(JobTemplate.VAR_editPage, JobTemplate.staticSetEditPage(siteRequest2, (String)result.get(JobTemplate.VAR_editPage)));
-      o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateResource, JobTemplate.staticSetJobTemplateResource(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateResource)));
       o.persistForClass(JobTemplate.VAR_userPage, JobTemplate.staticSetUserPage(siteRequest2, (String)result.get(JobTemplate.VAR_userPage)));
-      o.persistForClass(JobTemplate.VAR_extraVars, JobTemplate.staticSetExtraVars(siteRequest2, (String)result.get(JobTemplate.VAR_extraVars)));
+      o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
       o.persistForClass(JobTemplate.VAR_download, JobTemplate.staticSetDownload(siteRequest2, (String)result.get(JobTemplate.VAR_download)));
+      o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
+      o.persistForClass(JobTemplate.VAR_extraVars, JobTemplate.staticSetExtraVars(siteRequest2, (String)result.get(JobTemplate.VAR_extraVars)));
       o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
 
       o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
