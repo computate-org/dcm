@@ -312,11 +312,14 @@ data:
       namespace: {{ SITE_NAMESPACE }}
     type: Opaque
     stringData:
+      SENSU_NAMESPACE: '{{ SENSU_NAMESPACE | replace("'", "\\'") }}'
       SENSU_SECRET: '{{ SENSU_SECRET | replace("'", "\\'") }}'
-      SENSU_TOKEN: '{{ SENSU_TOKEN | replace("'", "\\'") }}'
+      SENSU_USER_NAME: '{{ SENSU_USER_NAME | replace("'", "\\'") }}'
+      SENSU_PASSWORD: '{{ SENSU_PASSWORD | replace("'", "\\'") }}'
       SENSU_SSL: '{{ SENSU_SSL | replace("'", "\\'") }}'
       SENSU_HOST_NAME: '{{ SENSU_HOST_NAME | replace("'", "\\'") }}'
       SENSU_PORT: '{{ SENSU_PORT | replace("'", "\\'") }}'
+      SENSU_BACKEND_WEBSOCKET_URL: '{{ SENSU_BACKEND_WEBSOCKET_URL | replace("'", "\\'") }}'
       ENABLE_AAP: '{{ ENABLE_AAP | replace("'", "\\'") }}'
       AAP_NAMESPACE: '{{ AAP_NAMESPACE | replace("'", "\\'") }}'
       AAP_SECRET: '{{ AAP_SECRET | replace("'", "\\'") }}'

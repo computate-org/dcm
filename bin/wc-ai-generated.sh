@@ -10,18 +10,15 @@ find \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/timezone/TimeZoneEnUSGenApiService.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantGenPage.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiServiceImpl.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiService.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/page/SitePageEnUSGenApiService.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectGenPage.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiServiceImpl.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiService.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateGenPage.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiServiceImpl.java \
-  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/tenant/TenantEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcredential/HostCredentialGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcredential/HostCredentialEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcredential/HostCredentialEnUSGenApiService.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostinventory/HostInventoryEnUSGenApiService.java \
@@ -31,6 +28,12 @@ find \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/HostCheckEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/ansibleproject/AnsibleProjectEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiService.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiService.java \
@@ -55,13 +58,6 @@ find \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSearchButtons.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSearchForm.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/time-zone/TimeZoneSidebar.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/tenant/TenantGenEditPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantGenSearchPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantLocation.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantPaginationButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchForm.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSidebar.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/edit/article/SitePageGenEditPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageGenSearchPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageLocation.htm \
@@ -69,20 +65,20 @@ find \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSearchButtons.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSearchForm.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/article/SitePageSidebar.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/ansible-project/AnsibleProjectGenEditPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectGenSearchPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectLocation.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectPaginationButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchForm.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSidebar.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/job-template/JobTemplateGenEditPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateGenSearchPage.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateLocation.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplatePaginationButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchButtons.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchForm.htm \
-      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/tenant/TenantGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/tenant/TenantSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host-credential/HostCredentialGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-credential/HostCredentialSidebar.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host-inventory/HostInventoryGenEditPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventoryGenSearchPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-inventory/HostInventoryLocation.htm \
@@ -104,6 +100,20 @@ find \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSearchButtons.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSearchForm.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check/HostCheckSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/ansible-project/AnsibleProjectGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/ansible-project/AnsibleProjectSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/job-template/JobTemplateGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplatePaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSidebar.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/edit/project/ProjectGenEditPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectGenSearchPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectLocation.htm \

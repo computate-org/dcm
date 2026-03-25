@@ -201,7 +201,7 @@ data:
     WEB_COMPONENTS_THEME: "active"
     FONTAWESOME_KIT: ""
     # A default FontAwesome style. 
-    FONTAWESOME_STYLE: "fa-duotone fa-regular "
+    FONTAWESOME_STYLE: "fa-regular "
     # Site default theme, light or dark. 
     SITE_THEME: "dark"
     # The site logo relative URI
@@ -321,8 +321,10 @@ data:
     DATABASE_USERNAME: "{{ lookup('env', 'DATABASE_USERNAME_' + SITE_SHORT_NAME) | default(SITE_SHORT_NAME, true) }}"
     # The database secret containing the user password to connect to the database. 
     DATABASE_SECRET: "postgres-pguser-dcm"
+    # The database secret containing the user password to connect to the database. 
+    DATABASE_SECRET_KEY: "{{ lookup('env', 'DATABASE_SECRET_KEY_' + SITE_SHORT_NAME) | default('DATABASE_PASSWORD', true) }}"
     # The PostgreSQL database password of the site. 
-    DATABASE_PASSWORD: "{{ query('kubernetes.core.k8s', kind='Secret', resource_name=(DATABASE_SECRET), namespace=SITE_NAMESPACE)[0].data.password | b64decode }}"
+    DATABASE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=(DATABASE_SECRET), namespace=SITE_NAMESPACE) | first | default({})).data[DATABASE_SECRET_KEY] | default('') | b64decode }}"
     # The PostgreSQL database name of the site. 
     DATABASE_DATABASE: "{{ lookup('env', 'DATABASE_DATABASE_' + SITE_SHORT_NAME) | default(SITE_SHORT_NAME + 'cloud', true) }}"
     # The PostgreSQL database max pool size. 
@@ -514,7 +516,7 @@ data:
     # The AAP admin username. 
     AAP_USER_NAME: "admin"
     # The Auth admin username. 
-    AAP_PASSWORD: "S0zzd5rWlFQ2jONTIoYc5VpjYffn8eK8"
+    AAP_PASSWORD: "x8z9MQbi02Dk1KCXFJfOT9J4SDCIw0G9"
     # Whether to use SSL when connecting to the Sensu. 
     AAP_SSL: "True"
     # The host name to connect to the Sensu in OpenShift. 
@@ -575,19 +577,25 @@ data:
     ##############
 
     #########
-    # SENSU #
+    # Sensu #
     #########
 
+    # The namespace in OpenShift where Sensu will run. 
+    SENSU_NAMESPACE: "{{ lookup('env', 'SENSU_NAMESPACE_' + SITE_SHORT_NAME) | default('sensu', true) }}"
     # The Sensu secret name. 
-    SENSU_SECRET: "{{ lookup('env', 'SENSU_SECRET') | default('sensu', true) }}"
-    # The Auth admin username. 
-    SENSU_TOKEN: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENSU_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"token\": \"\" } } )).data['token'] | b64decode }}"
+    SENSU_SECRET: "{{ lookup('env', 'SENSU_SECRET') | default('sensu-admin', true) }}"
+    # The Sensu admin username
+    SENSU_USER_NAME: "admin"
+    # The Sensu admin password
+    SENSU_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=SENSU_SECRET, namespace=SENSU_NAMESPACE) | first | default({\"data\": {\"password\": \"\" } } )).data['password'] | b64decode }}"
     # Whether to use SSL when connecting to the Sensu. 
-    SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('false', true) | lower) != 'false' }}"
+    SENSU_SSL: "{{ (lookup('env', 'SENSU_SSL') | default('true', true) | lower) == 'true' }}"
     # The host name to connect to the Sensu in OpenShift. 
-    SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('localhost', true) }}"
+    SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('sensu-api.apps-crc.testing', true) }}"
     # The default port that the Sensu runs. 
-    SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('8080', true) }}"
+    SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('443', true) }}"
+    # The Sensu backend websocket URL.
+    SENSU_BACKEND_WEBSOCKET_URL: "{{ lookup('env', 'SENSU_BACKENT_WEBSOCKET_URL') | default(('wss' if SENSU_SSL | bool else 'ws') + '://' + SENSU_HOST_NAME + ':' + SENSU_PORT, true) }}"
 
     #######
     # AAP #
