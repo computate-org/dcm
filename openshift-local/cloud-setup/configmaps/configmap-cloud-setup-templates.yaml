@@ -312,6 +312,7 @@ data:
       namespace: {{ SITE_NAMESPACE }}
     type: Opaque
     stringData:
+      ENABLE_SENSU: '{{ ENABLE_SENSU | replace("'", "\\'") }}'
       SENSU_NAMESPACE: '{{ SENSU_NAMESPACE | replace("'", "\\'") }}'
       SENSU_SECRET: '{{ SENSU_SECRET | replace("'", "\\'") }}'
       SENSU_USER_NAME: '{{ SENSU_USER_NAME | replace("'", "\\'") }}'

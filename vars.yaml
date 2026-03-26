@@ -588,6 +588,8 @@ IOTAGENT_TRANSPORT: AMQP
 # Sensu #
 #########
 
+# Enable Sensu integration. 
+ENABLE_SENSU: "{{ (lookup('env', 'ENABLE_SENSU') | lower) != 'false' }}"
 # The namespace in OpenShift where Sensu will run. 
 SENSU_NAMESPACE: "{{ lookup('env', 'SENSU_NAMESPACE_' + SITE_SHORT_NAME) | default('sensu', true) }}"
 # The Sensu secret name. 
@@ -618,7 +620,7 @@ AAP_SECRET: "{{ lookup('env', 'AAP_SECRET') | default('aap-admin-password', true
 # The AAP admin username. 
 AAP_USER_NAME: "{{ lookup('env', 'AAP_USER_NAME') | default('admin', true) }}"
 # The Auth admin username. 
-AAP_PASSWORD: "{{ query('kubernetes.core.k8s', kind='Secret', resource_name=AAP_SECRET, namespace=AAP_NAMESPACE)[0].data['password'] | b64decode }}"
+AAP_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=AAP_SECRET, namespace=AAP_NAMESPACE) | first | default({\"data\": {\"password\": \"\" } } )).data['password'] | b64decode }}"
 # Whether to use SSL when connecting to the Sensu. 
 AAP_SSL: "{{ (lookup('env', 'AAP_SSL') | default('true', true) | lower) != 'false' }}"
 # The host name to connect to the Sensu in OpenShift. 

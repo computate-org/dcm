@@ -503,26 +503,7 @@ data:
     RABBITMQ_PASSWORD: "{{ lookup('env', 'RABBITMQ_PASSWORD') | default('password', true) }}"
     # The RabbitMQ virtual host. 
     RABBITMQ_VIRTUAL_HOST: "/"
-    #######
-    # AAP #
-    #######
-    
-    # Enable Ansible Automation Platform integration. 
-    ENABLE_AAP: "True"
-    # The AAP namespace. 
-    AAP_NAMESPACE: "aap"
-    # The AAP secret name. 
-    AAP_SECRET: "aap-admin-password"
-    # The AAP admin username. 
-    AAP_USER_NAME: "admin"
-    # The Auth admin username. 
-    AAP_PASSWORD: "x8z9MQbi02Dk1KCXFJfOT9J4SDCIw0G9"
-    # Whether to use SSL when connecting to the Sensu. 
-    AAP_SSL: "True"
-    # The host name to connect to the Sensu in OpenShift. 
-    AAP_HOST_NAME: "aap-aap.apps-crc.testing"
-    # The default port that the Sensu runs. 
-    AAP_PORT: "443"
+
     ################################
     # OpenShift Deployment Details #
     ################################
@@ -580,6 +561,8 @@ data:
     # Sensu #
     #########
 
+    # Enable Sensu integration. 
+    ENABLE_SENSU: "{{ (lookup('env', 'ENABLE_SENSU') | lower) != 'false' }}"
     # The namespace in OpenShift where Sensu will run. 
     SENSU_NAMESPACE: "{{ lookup('env', 'SENSU_NAMESPACE_' + SITE_SHORT_NAME) | default('sensu', true) }}"
     # The Sensu secret name. 
@@ -610,7 +593,7 @@ data:
     # The AAP admin username. 
     AAP_USER_NAME: "{{ lookup('env', 'AAP_USER_NAME') | default('admin', true) }}"
     # The Auth admin username. 
-    AAP_PASSWORD: "{{ query('kubernetes.core.k8s', kind='Secret', resource_name=AAP_SECRET, namespace=AAP_NAMESPACE)[0].data['password'] | b64decode }}"
+    AAP_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=AAP_SECRET, namespace=AAP_NAMESPACE) | first | default({\"data\": {\"password\": \"\" } } )).data['password'] | b64decode }}"
     # Whether to use SSL when connecting to the Sensu. 
     AAP_SSL: "{{ (lookup('env', 'AAP_SSL') | default('true', true) | lower) != 'false' }}"
     # The host name to connect to the Sensu in OpenShift. 
