@@ -4,4 +4,3 @@ resources:
   - dcm-secrets/
   - cloud-setup/
   - dcm/
-  - extra-rolebindings/
