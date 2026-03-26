@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: "Developer Computer Managements"
+  title: "Developer Computer Management"
   version: 3.0.0
 paths:
   /en-us/api/ansible-project:
