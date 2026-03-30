@@ -475,6 +475,11 @@ data:
         state: present
         definition: "{{ lookup('template', 'aap-secret.yaml') }}"
         validate_certs: false
+    - name: "Create a KAFKA secret in namespace {{ SITE_NAMESPACE }}"
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'kafka-secret.yaml') }}"
+        validate_certs: false
     - name: "Create an extra secret in namespace {{ SITE_NAMESPACE }}"
       kubernetes.core.k8s:
         state: present

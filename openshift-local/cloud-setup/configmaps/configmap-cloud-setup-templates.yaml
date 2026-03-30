@@ -304,6 +304,21 @@ data:
       AAP_SSL: "{{ AAP_SSL }}"
       AAP_HOST_NAME: "{{ AAP_HOST_NAME }}"
       AAP_PORT: "{{ AAP_PORT }}"
+  kafka-secret.yaml: |
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: cloud-kafka
+      namespace: {{ SITE_NAMESPACE }}
+    type: Opaque
+    stringData:
+      ENABLE_KAFKA: "{{ ENABLE_KAFKA }}"
+      KAFKA_NAMESPACE: "{{ KAFKA_NAMESPACE }}"
+      KAFKA_USER_NAME: "{{ KAFKA_USER_NAME }}"
+      KAFKA_PASSWORD: "{{ KAFKA_PASSWORD }}"
+      KAFKA_GROUP: "{{ KAFKA_GROUP }}"
+      KAFKA_BROKERS: "{{ KAFKA_BROKERS }}"
+      KAFKA_PORT: "{{ KAFKA_PORT }}"
   extra-secret.yaml: |
     apiVersion: v1
     kind: Secret

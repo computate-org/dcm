@@ -42,6 +42,8 @@ spec:
         - secretRef:
             name: cloud-aap
         - secretRef:
+            name: cloud-kafka
+        - secretRef:
             name: cloud-extra
         image: quay.io/computateorg/dcm:latest
         imagePullPolicy: Always
