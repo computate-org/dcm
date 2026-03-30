@@ -43,6 +43,7 @@ import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import io.vertx.core.json.JsonArray;
+import java.lang.Boolean;
 import org.computate.vertx.serialize.vertx.JsonObjectDeserializer;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
@@ -1318,6 +1319,73 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     return jobType;
   }
 
+	//////////////////////////
+  // askExtraVarsOnLaunch //
+	//////////////////////////
+
+
+  /**
+   *  The entity askExtraVarsOnLaunch
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected Boolean askExtraVarsOnLaunch;
+
+  /**
+   * <br> The entity askExtraVarsOnLaunch
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.jobtemplate.JobTemplate&fq=entiteVar_enUS_indexed_string:askExtraVarsOnLaunch">Find the entity askExtraVarsOnLaunch in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _askExtraVarsOnLaunch(Wrap<Boolean> w);
+
+  public Boolean getAskExtraVarsOnLaunch() {
+    return askExtraVarsOnLaunch;
+  }
+
+  public void setAskExtraVarsOnLaunch(Boolean askExtraVarsOnLaunch) {
+    this.askExtraVarsOnLaunch = askExtraVarsOnLaunch;
+  }
+  @JsonIgnore
+  public void setAskExtraVarsOnLaunch(String o) {
+    this.askExtraVarsOnLaunch = JobTemplate.staticSetAskExtraVarsOnLaunch(siteRequest_, o);
+  }
+  public static Boolean staticSetAskExtraVarsOnLaunch(SiteRequest siteRequest_, String o) {
+    return Boolean.parseBoolean(o);
+  }
+  protected JobTemplate askExtraVarsOnLaunchInit() {
+    Wrap<Boolean> askExtraVarsOnLaunchWrap = new Wrap<Boolean>().var("askExtraVarsOnLaunch");
+    if(askExtraVarsOnLaunch == null) {
+      _askExtraVarsOnLaunch(askExtraVarsOnLaunchWrap);
+      Optional.ofNullable(askExtraVarsOnLaunchWrap.getO()).ifPresent(o -> {
+        setAskExtraVarsOnLaunch(o);
+      });
+    }
+    return (JobTemplate)this;
+  }
+
+  public static Boolean staticSearchAskExtraVarsOnLaunch(SiteRequest siteRequest_, Boolean o) {
+    return o;
+  }
+
+  public static String staticSearchStrAskExtraVarsOnLaunch(SiteRequest siteRequest_, Boolean o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqAskExtraVarsOnLaunch(SiteRequest siteRequest_, String o) {
+    return JobTemplate.staticSearchAskExtraVarsOnLaunch(siteRequest_, JobTemplate.staticSetAskExtraVarsOnLaunch(siteRequest_, o)).toString();
+  }
+
+  public Boolean sqlAskExtraVarsOnLaunch() {
+    return askExtraVarsOnLaunch;
+  }
+
+  public static Boolean staticJsonAskExtraVarsOnLaunch(Boolean askExtraVarsOnLaunch) {
+    return askExtraVarsOnLaunch;
+  }
+
 	///////////////
   // extraVars //
 	///////////////
@@ -1505,6 +1573,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         jobTemplateResourceInit();
         jobTemplateDescriptionInit();
         jobTypeInit();
+        askExtraVarsOnLaunchInit();
         extraVarsInit();
         aapTemplateIdInit();
         promise2.complete();
@@ -1594,6 +1663,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return oJobTemplate.jobTemplateDescription;
       case "jobType":
         return oJobTemplate.jobType;
+      case "askExtraVarsOnLaunch":
+        return oJobTemplate.askExtraVarsOnLaunch;
       case "extraVars":
         return oJobTemplate.extraVars;
       case "aapTemplateId":
@@ -1695,6 +1766,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSetJobTemplateDescription(siteRequest_, v);
     case "jobType":
       return JobTemplate.staticSetJobType(siteRequest_, v);
+    case "askExtraVarsOnLaunch":
+      return JobTemplate.staticSetAskExtraVarsOnLaunch(siteRequest_, v);
     case "extraVars":
       return JobTemplate.staticSetExtraVars(siteRequest_, v);
     case "aapTemplateId":
@@ -1777,6 +1850,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchJobType(siteRequest_, (String)o);
+    case "askExtraVarsOnLaunch":
+      return JobTemplate.staticSearchAskExtraVarsOnLaunch(siteRequest_, (Boolean)o);
     case "extraVars":
       return JobTemplate.staticSearchExtraVars(siteRequest_, (JsonObject)o);
     case "aapTemplateId":
@@ -1829,6 +1904,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchStrJobTemplateDescription(siteRequest_, (String)o);
     case "jobType":
       return JobTemplate.staticSearchStrJobType(siteRequest_, (String)o);
+    case "askExtraVarsOnLaunch":
+      return JobTemplate.staticSearchStrAskExtraVarsOnLaunch(siteRequest_, (Boolean)o);
     case "extraVars":
       return JobTemplate.staticSearchStrExtraVars(siteRequest_, (String)o);
     case "aapTemplateId":
@@ -1881,6 +1958,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return JobTemplate.staticSearchFqJobTemplateDescription(siteRequest_, o);
     case "jobType":
       return JobTemplate.staticSearchFqJobType(siteRequest_, o);
+    case "askExtraVarsOnLaunch":
+      return JobTemplate.staticSearchFqAskExtraVarsOnLaunch(siteRequest_, o);
     case "extraVars":
       return JobTemplate.staticSearchFqExtraVars(siteRequest_, o);
     case "aapTemplateId":
@@ -2021,6 +2100,14 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         }
         saves.add("jobType");
         return val;
+      } else if("askextravarsonlaunch".equals(varLower)) {
+        if(val instanceof Boolean) {
+          setAskExtraVarsOnLaunch((Boolean)val);
+        } else {
+          setAskExtraVarsOnLaunch(val == null ? null : val.toString());
+        }
+        saves.add("askExtraVarsOnLaunch");
+        return val;
       } else if("extravars".equals(varLower)) {
         if(val instanceof String) {
           setExtraVars((String)val);
@@ -2153,6 +2240,12 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
           oJobTemplate.setJobType(jobType);
       }
 
+      if(saves.contains("askExtraVarsOnLaunch")) {
+        Boolean askExtraVarsOnLaunch = (Boolean)doc.get("askExtraVarsOnLaunch_docvalues_boolean");
+        if(askExtraVarsOnLaunch != null)
+          oJobTemplate.setAskExtraVarsOnLaunch(askExtraVarsOnLaunch);
+      }
+
       if(saves.contains("extraVars")) {
         String extraVars = (String)doc.get("extraVars_docvalues_string");
         if(extraVars != null)
@@ -2225,6 +2318,9 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     if(jobType != null) {
       doc.put("jobType_docvalues_string", jobType);
     }
+    if(askExtraVarsOnLaunch != null) {
+      doc.put("askExtraVarsOnLaunch_docvalues_boolean", askExtraVarsOnLaunch);
+    }
     if(extraVars != null) {
       doc.put("extraVars_docvalues_string", extraVars.encode());
     }
@@ -2271,6 +2367,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
+      case "askExtraVarsOnLaunch":
+        return "askExtraVarsOnLaunch_docvalues_boolean";
       case "extraVars":
         return "extraVars_docvalues_string";
       case "aapTemplateId":
@@ -2316,6 +2414,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription_docvalues_string";
       case "jobType":
         return "jobType_docvalues_string";
+      case "askExtraVarsOnLaunch":
+        return "askExtraVarsOnLaunch_docvalues_boolean";
       case "extraVars":
         return "extraVars_docvalues_string";
       case "aapTemplateId":
@@ -2361,6 +2461,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         return "jobTemplateDescription";
       case "jobType_docvalues_string":
         return "jobType";
+      case "askExtraVarsOnLaunch_docvalues_boolean":
+        return "askExtraVarsOnLaunch";
       case "extraVars_docvalues_string":
         return "extraVars";
       case "aapTemplateId_docvalues_long":
@@ -2414,6 +2516,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     oJobTemplate.setJobTemplateResource(Optional.ofNullable(doc.get("jobTemplateResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobTemplateDescription(Optional.ofNullable(doc.get("jobTemplateDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setJobType(Optional.ofNullable(doc.get("jobType_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oJobTemplate.setAskExtraVarsOnLaunch(Optional.ofNullable(doc.get("askExtraVarsOnLaunch_docvalues_boolean")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setExtraVars(Optional.ofNullable(doc.get("extraVars_docvalues_string")).map(v -> v.toString()).orElse(null));
     oJobTemplate.setAapTemplateId(Optional.ofNullable(doc.get("aapTemplateId_docvalues_long")).map(v -> v.toString()).orElse(null));
 
@@ -2463,6 +2566,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
         apiRequest.addVars("jobTemplateDescription");
       if(!Objects.equals(jobType, original.getJobType()))
         apiRequest.addVars("jobType");
+      if(!Objects.equals(askExtraVarsOnLaunch, original.getAskExtraVarsOnLaunch()))
+        apiRequest.addVars("askExtraVarsOnLaunch");
       if(!Objects.equals(extraVars, original.getExtraVars()))
         apiRequest.addVars("extraVars");
       if(!Objects.equals(aapTemplateId, original.getAapTemplateId()))
@@ -2495,6 +2600,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(jobTemplateResource).map(v -> "jobTemplateResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobTemplateDescription).map(v -> "jobTemplateDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(jobType).map(v -> "jobType: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(askExtraVarsOnLaunch).map(v -> "askExtraVarsOnLaunch: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(extraVars).map(v -> "extraVars: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(aapTemplateId).map(v -> "aapTemplateId: " + v + "\n").orElse(""));
     return sb.toString();
@@ -2541,6 +2647,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String SET_jobTemplateDescription = "setJobTemplateDescription";
   public static final String VAR_jobType = "jobType";
   public static final String SET_jobType = "setJobType";
+  public static final String VAR_askExtraVarsOnLaunch = "askExtraVarsOnLaunch";
+  public static final String SET_askExtraVarsOnLaunch = "setAskExtraVarsOnLaunch";
   public static final String VAR_extraVars = "extraVars";
   public static final String SET_extraVars = "setExtraVars";
   public static final String VAR_aapTemplateId = "aapTemplateId";
@@ -2587,6 +2695,7 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_jobTemplateResource = "job template resource";
   public static final String DISPLAY_NAME_jobTemplateDescription = "job template description";
   public static final String DISPLAY_NAME_jobType = "job type";
+  public static final String DISPLAY_NAME_askExtraVarsOnLaunch = "ask extra vars on launch";
   public static final String DISPLAY_NAME_extraVars = "extra vars";
   public static final String DISPLAY_NAME_aapTemplateId = "AAP template ID";
 
@@ -2659,6 +2768,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return patch ? SET_jobTemplateDescription : VAR_jobTemplateDescription;
     case VAR_jobType:
       return patch ? SET_jobType : VAR_jobType;
+    case VAR_askExtraVarsOnLaunch:
+      return patch ? SET_askExtraVarsOnLaunch : VAR_askExtraVarsOnLaunch;
     case VAR_extraVars:
       return patch ? SET_extraVars : VAR_extraVars;
     case VAR_aapTemplateId:
@@ -2707,6 +2818,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return DISPLAY_NAME_jobTemplateDescription;
     case VAR_jobType:
       return DISPLAY_NAME_jobType;
+    case VAR_askExtraVarsOnLaunch:
+      return DISPLAY_NAME_askExtraVarsOnLaunch;
     case VAR_extraVars:
       return DISPLAY_NAME_extraVars;
     case VAR_aapTemplateId:
@@ -2754,6 +2867,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return "The description of the job template. ";
     case VAR_jobType:
       return "The job type of the job template. ";
+    case VAR_askExtraVarsOnLaunch:
+      return "If extra vars should be asked on launch. ";
     case VAR_extraVars:
       return "The extra vars of the job template. ";
     case VAR_aapTemplateId:
@@ -2799,6 +2914,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return "String";
     case VAR_jobType:
       return "String";
+    case VAR_askExtraVarsOnLaunch:
+      return "Boolean";
     case VAR_extraVars:
       return "JsonObject";
     case VAR_aapTemplateId:
@@ -2839,6 +2956,8 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return 5;
     case VAR_jobType:
       return 5;
+    case VAR_askExtraVarsOnLaunch:
+      return 5;
     case VAR_extraVars:
       return 5;
       default:
@@ -2864,8 +2983,10 @@ public abstract class JobTemplateGen<DEV> extends BaseModel {
       return 3;
     case VAR_jobType:
       return 4;
-    case VAR_extraVars:
+    case VAR_askExtraVarsOnLaunch:
       return 5;
+    case VAR_extraVars:
+      return 6;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

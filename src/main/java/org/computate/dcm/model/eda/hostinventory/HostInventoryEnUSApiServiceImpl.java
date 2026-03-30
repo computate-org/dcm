@@ -44,6 +44,7 @@ public class HostInventoryEnUSApiServiceImpl extends HostInventoryEnUSGenApiServ
           jobTemplateRequestBody.put(JobTemplate.VAR_aapProjectId, aapProjectId.toString());
           jobTemplateRequestBody.put(JobTemplate.VAR_aapOrganizationId, aapOrganizationId.toString());
           jobTemplateRequestBody.put(JobTemplate.VAR_credentialResource, credentialResource);
+          jobTemplateRequestBody.put(JobTemplate.VAR_askExtraVarsOnLaunch, true);
           JobTemplateEnUSApiServiceImpl.putimportJobTemplateAsync(config, vertx, jobTemplateRequestBody).onSuccess(jobTemplateResponseBody -> {
             promise.complete(jobTemplateResponseBody);
           }).onFailure(ex -> {

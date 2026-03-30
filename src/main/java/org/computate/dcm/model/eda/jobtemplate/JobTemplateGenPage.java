@@ -4,6 +4,7 @@ import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import java.lang.String;
 import java.lang.Long;
 import java.util.List;
+import java.lang.Boolean;
 import io.vertx.core.json.JsonObject;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;

@@ -11662,12 +11662,6 @@ components:
                     type: array
                     items:
                       type: string
-                  ansiblePlaybooks:
-                    type: array
-                    items:
-                      type: string
-                  ansiblePlaybooksList:
-                    type: string
     PATCHAnsibleProjectRequest:
       allOf:
         - type: object
@@ -11766,30 +11760,6 @@ components:
               type: array
               items:
                 type: string
-            setAnsiblePlaybooks:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeAnsiblePlaybooks:
-              type: string
-            removeAllAnsiblePlaybooks:
-              type: array
-              items:
-                type: string
-            addAnsiblePlaybooks:
-              type: string
-            addAllAnsiblePlaybooks:
-              type: array
-              items:
-                type: string
-            setAnsiblePlaybooksList:
-              type: string
-              nullable: true
-            removeAnsiblePlaybooksList:
-              type: string
-            removeAllAnsiblePlaybooksList:
-              type: string
     PATCHAnsibleProjectResponse:
       allOf:
         - type: object
@@ -11888,30 +11858,6 @@ components:
               type: array
               items:
                 type: string
-            setAnsiblePlaybooks:
-              type: array
-              nullable: true
-              items:
-                type: string
-            removeAnsiblePlaybooks:
-              type: string
-            removeAllAnsiblePlaybooks:
-              type: array
-              items:
-                type: string
-            addAnsiblePlaybooks:
-              type: string
-            addAllAnsiblePlaybooks:
-              type: array
-              items:
-                type: string
-            setAnsiblePlaybooksList:
-              type: string
-              nullable: true
-            removeAnsiblePlaybooksList:
-              type: string
-            removeAllAnsiblePlaybooksList:
-              type: string
     POSTAnsibleProjectRequest:
       allOf:
         - type: object
@@ -11942,12 +11888,6 @@ components:
               type: array
               items:
                 type: string
-            ansiblePlaybooks:
-              type: array
-              items:
-                type: string
-            ansiblePlaybooksList:
-              type: string
     POSTAnsibleProjectResponse:
       allOf:
         - type: object
@@ -11978,12 +11918,6 @@ components:
               type: array
               items:
                 type: string
-            ansiblePlaybooks:
-              type: array
-              items:
-                type: string
-            ansiblePlaybooksList:
-              type: string
     DELETEFilterAnsibleProjectResponse:
       allOf:
         - type: object
@@ -12014,12 +11948,6 @@ components:
               type: array
               items:
                 type: string
-            ansiblePlaybooks:
-              type: array
-              items:
-                type: string
-            ansiblePlaybooksList:
-              type: string
     PUTImportAnsibleProjectRequest:
       allOf:
         - type: object
@@ -12055,12 +11983,6 @@ components:
                     type: array
                     items:
                       type: string
-                  ansiblePlaybooks:
-                    type: array
-                    items:
-                      type: string
-                  ansiblePlaybooksList:
-                    type: string
     PUTImportAnsibleProjectResponse:
       allOf:
         - type: object
@@ -12091,12 +12013,6 @@ components:
                     type: array
                     items:
                       type: string
-                  ansiblePlaybooks:
-                    type: array
-                    items:
-                      type: string
-                  ansiblePlaybooksList:
-                    type: string
     GETAnsibleProjectResponse:
       allOf:
         - type: object
@@ -12127,12 +12043,6 @@ components:
               type: array
               items:
                 type: string
-            ansiblePlaybooks:
-              type: array
-              items:
-                type: string
-            ansiblePlaybooksList:
-              type: string
     DELETEAnsibleProjectResponse:
       allOf:
         - type: object
@@ -12163,12 +12073,6 @@ components:
               type: array
               items:
                 type: string
-            ansiblePlaybooks:
-              type: array
-              items:
-                type: string
-            ansiblePlaybooksList:
-              type: string
     EditPageAnsibleProjectResponse:
       allOf:
         - type: string
@@ -14298,6 +14202,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  askExtraVarsOnLaunch:
+                    type: boolean
                   extraVars:
                     type: object
                   aapTemplateId:
@@ -14435,6 +14341,13 @@ components:
               type: string
             removeAllJobType:
               type: string
+            setAskExtraVarsOnLaunch:
+              type: boolean
+              nullable: true
+            removeAskExtraVarsOnLaunch:
+              type: boolean
+            removeAllAskExtraVarsOnLaunch:
+              type: boolean
             setExtraVars:
               type: object
               nullable: true
@@ -14582,6 +14495,13 @@ components:
               type: string
             removeAllJobType:
               type: string
+            setAskExtraVarsOnLaunch:
+              type: boolean
+              nullable: true
+            removeAskExtraVarsOnLaunch:
+              type: boolean
+            removeAllAskExtraVarsOnLaunch:
+              type: boolean
             setExtraVars:
               type: object
               nullable: true
@@ -14636,6 +14556,8 @@ components:
               type: string
             jobType:
               type: string
+            askExtraVarsOnLaunch:
+              type: boolean
             extraVars:
               type: object
             aapTemplateId:
@@ -14680,6 +14602,8 @@ components:
               type: string
             jobType:
               type: string
+            askExtraVarsOnLaunch:
+              type: boolean
             extraVars:
               type: object
             aapTemplateId:
@@ -14724,6 +14648,8 @@ components:
               type: string
             jobType:
               type: string
+            askExtraVarsOnLaunch:
+              type: boolean
             extraVars:
               type: object
             aapTemplateId:
@@ -14773,6 +14699,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  askExtraVarsOnLaunch:
+                    type: boolean
                   extraVars:
                     type: object
                   aapTemplateId:
@@ -14817,6 +14745,8 @@ components:
                     type: string
                   jobType:
                     type: string
+                  askExtraVarsOnLaunch:
+                    type: boolean
                   extraVars:
                     type: object
                   aapTemplateId:
@@ -14861,6 +14791,8 @@ components:
               type: string
             jobType:
               type: string
+            askExtraVarsOnLaunch:
+              type: boolean
             extraVars:
               type: object
             aapTemplateId:
@@ -14905,6 +14837,8 @@ components:
               type: string
             jobType:
               type: string
+            askExtraVarsOnLaunch:
+              type: boolean
             extraVars:
               type: object
             aapTemplateId:

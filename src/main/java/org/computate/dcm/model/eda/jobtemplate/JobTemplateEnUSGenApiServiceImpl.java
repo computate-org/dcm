@@ -1213,6 +1213,14 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
               num++;
               bParams.add(o2.sqlJobType());
             break;
+          case "setAskExtraVarsOnLaunch":
+              o2.setAskExtraVarsOnLaunch(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(JobTemplate.VAR_askExtraVarsOnLaunch + "=$" + num);
+              num++;
+              bParams.add(o2.sqlAskExtraVarsOnLaunch());
+            break;
           case "setExtraVars":
               o2.setExtraVars(jsonObject.getJsonObject(entityVar));
               if(bParams.size() > 0)
@@ -1919,6 +1927,15 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
             bSql.append(JobTemplate.VAR_jobType + "=$" + num);
             num++;
             bParams.add(o2.sqlJobType());
+            break;
+          case JobTemplate.VAR_askExtraVarsOnLaunch:
+            o2.setAskExtraVarsOnLaunch(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(JobTemplate.VAR_askExtraVarsOnLaunch + "=$" + num);
+            num++;
+            bParams.add(o2.sqlAskExtraVarsOnLaunch());
             break;
           case JobTemplate.VAR_extraVars:
             o2.setExtraVars(jsonObject.getJsonObject(entityVar));
@@ -3181,19 +3198,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           Promise<Void> promise1 = Promise.promise();
           searchpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageJobTemplate(ctx, page, listJobTemplate, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageJobTemplate(ctx, page, listJobTemplate, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageJobTemplate failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3512,19 +3534,24 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           Promise<Void> promise1 = Promise.promise();
           editpageJobTemplatePageInit(ctx, page, listJobTemplate, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageJobTemplate(ctx, page, listJobTemplate, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageJobTemplate(ctx, page, listJobTemplate, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageJobTemplate failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -4405,7 +4432,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, credentialResource, aapHostCredentialId, ansibleProjectResource, sessionId, aapProjectId, userKey, ansiblePlaybooks, ansiblePlaybook, objectTitle, jobTemplateName, displayPage, jobTemplateId, editPage, jobTemplateResource, userPage, jobTemplateDescription, download, jobType, extraVars, aapTemplateId FROM JobTemplate WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource, tenantId, created, aapOrganizationId, inventoryResource, archived, aapInventoryId, credentialResource, aapHostCredentialId, ansibleProjectResource, sessionId, aapProjectId, userKey, ansiblePlaybooks, ansiblePlaybook, objectTitle, jobTemplateName, displayPage, jobTemplateId, editPage, jobTemplateResource, userPage, jobTemplateDescription, download, jobType, askExtraVarsOnLaunch, extraVars, aapTemplateId FROM JobTemplate WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4805,6 +4832,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       o.persistForClass(JobTemplate.VAR_jobTemplateDescription, JobTemplate.staticSetJobTemplateDescription(siteRequest2, (String)result.get(JobTemplate.VAR_jobTemplateDescription)));
       o.persistForClass(JobTemplate.VAR_download, JobTemplate.staticSetDownload(siteRequest2, (String)result.get(JobTemplate.VAR_download)));
       o.persistForClass(JobTemplate.VAR_jobType, JobTemplate.staticSetJobType(siteRequest2, (String)result.get(JobTemplate.VAR_jobType)));
+      o.persistForClass(JobTemplate.VAR_askExtraVarsOnLaunch, JobTemplate.staticSetAskExtraVarsOnLaunch(siteRequest2, (String)result.get(JobTemplate.VAR_askExtraVarsOnLaunch)));
       o.persistForClass(JobTemplate.VAR_extraVars, JobTemplate.staticSetExtraVars(siteRequest2, (String)result.get(JobTemplate.VAR_extraVars)));
       o.persistForClass(JobTemplate.VAR_aapTemplateId, JobTemplate.staticSetAapTemplateId(siteRequest2, (String)result.get(JobTemplate.VAR_aapTemplateId)));
 

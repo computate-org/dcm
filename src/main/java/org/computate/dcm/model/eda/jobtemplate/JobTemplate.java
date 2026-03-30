@@ -275,6 +275,19 @@ public class JobTemplate extends JobTemplateGen<BaseModel> {
    * Persist: true
    * HtmRow: 5
    * HtmCell: 5
+   * DisplayName: ask extra vars on launch
+   * Description: If extra vars should be asked on launch. 
+   */
+  protected void _askExtraVarsOnLaunch(Wrap<Boolean> w) {
+    w.o(false);
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * HtmRow: 5
+   * HtmCell: 6
    * DisplayName: extra vars
    * Description: The extra vars of the job template. 
    */

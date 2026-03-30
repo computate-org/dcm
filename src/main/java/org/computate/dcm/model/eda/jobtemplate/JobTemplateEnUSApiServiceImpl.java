@@ -95,6 +95,8 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch), jobType);
                   JsonObject extraVars = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch))).orElse(o.getExtraVars())).orElse(new JsonObject());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch), extraVars);
+                  Boolean askExtraVarsOnLaunch = Optional.ofNullable(Optional.ofNullable(jobTemplateJson.getBoolean(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_askExtraVarsOnLaunch, patch))).orElse(o.getAskExtraVarsOnLaunch())).orElse(false);
+                  jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_askExtraVarsOnLaunch, patch), askExtraVarsOnLaunch);
                   Long aapTemplateId = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch))).map(s -> Long.parseLong(s)).orElse(o.getAapTemplateId());
                   jobTemplateJson.put(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_aapTemplateId, patch), Optional.ofNullable(aapTemplateId).map(v -> v.toString()).orElse(null));
                   String jobTemplateDescription = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch))).orElse(o.getJobTemplateDescription());
@@ -167,6 +169,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         String jobTemplateName = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateName, patch))).orElse(Optional.ofNullable(ansiblePlaybook).map(s -> StringUtils.substringBeforeLast(s, ".")).orElse(null));
         String jobTemplateDescription = jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobTemplateDescription, patch));
         String jobType = Optional.ofNullable(jobTemplateJson.getString(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_jobType, patch))).orElse("run");
+        Boolean askExtraVarsOnLaunch = jobTemplateJson.getBoolean(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_askExtraVarsOnLaunch, patch), false);
         JsonObject extraVars = jobTemplateJson.getJsonObject(JobTemplate.varJsonJobTemplate(JobTemplate.VAR_extraVars, patch));
 
         Integer aapPort = Integer.parseInt(config.getString(ConfigKeys.AAP_PORT));
@@ -184,6 +187,7 @@ public class JobTemplateEnUSApiServiceImpl extends JobTemplateEnUSGenApiServiceI
         body.put("playbook", ansiblePlaybook);
         body.put("organization", aapOrganizationId);
         body.put("ask_limit_on_launch", true);
+        body.put("ask_variables_on_launch", askExtraVarsOnLaunch);
         if(jobTemplateDescription != null)
           body.put("description", jobTemplateDescription);
         if(extraVars != null)
