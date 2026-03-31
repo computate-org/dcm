@@ -435,8 +435,6 @@ KAFKA_GROUP: "{{ lookup('env', 'KAFKA_GROUP') | default('dcm-site', true) }}"
 # KAFKA_SSL_TRUSTSTORE_SECRET: "{{ lookup('env', 'KAFKA_SSL_TRUSTSTORE_SECRET') | default(KAFKA_TRUSTSTORE_SECRET, true) }}"
 # # The Kafka SSL truststore password. 
 # KAFKA_SSL_TRUSTSTORE_PASSWORD: "{{ (query('kubernetes.core.k8s', kind='Secret', resource_name=KAFKA_SSL_TRUSTSTORE_SECRET, namespace=SITE_NAMESPACE) | first | default({\"data\": {\"ca.password\": \"\" } } )).data['ca.password'] | b64decode }}"
-# The Kafka topic for Sensu events
-KAFKA_TOPIC_SENSU_EVENT: "{{ lookup('env', 'KAFKA_TOPIC_SENSU_EVENT') | default('sensu-event', true) }}"
 
 ################################
 # OpenShift Deployment Details #
@@ -606,6 +604,8 @@ SENSU_HOST_NAME: "{{ lookup('env', 'SENSU_HOST_NAME') | default('sensu-api.apps-
 SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('443', true) }}"
 # The Sensu backend websocket URL.
 SENSU_BACKEND_WEBSOCKET_URL: "{{ lookup('env', 'SENSU_BACKENT_WEBSOCKET_URL') | default(('wss' if SENSU_SSL | bool else 'ws') + '://' + SENSU_HOST_NAME + ':' + SENSU_PORT, true) }}"
+# The Kafka topic for Sensu events
+KAFKA_TOPIC_SENSU_EVENT: "{{ lookup('env', 'KAFKA_TOPIC_SENSU_EVENT') | default('sensu-event', true) }}"
 
 #######
 # AAP #

@@ -583,6 +583,8 @@ data:
     SENSU_PORT: "{{ lookup('env', 'SENSU_PORT') | default('443', true) }}"
     # The Sensu backend websocket URL.
     SENSU_BACKEND_WEBSOCKET_URL: "{{ lookup('env', 'SENSU_BACKENT_WEBSOCKET_URL') | default(('wss' if SENSU_SSL | bool else 'ws') + '://' + SENSU_HOST_NAME + ':' + SENSU_PORT, true) }}"
+    # The Kafka topic for Sensu events
+    KAFKA_TOPIC_SENSU_EVENT: "{{ lookup('env', 'KAFKA_TOPIC_SENSU_EVENT') | default('sensu-event', true) }}"
 
     #######
     # AAP #

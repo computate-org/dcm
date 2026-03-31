@@ -334,6 +334,7 @@ data:
       SENSU_HOST_NAME: '{{ SENSU_HOST_NAME | replace("'", "\\'") }}'
       SENSU_PORT: '{{ SENSU_PORT | replace("'", "\\'") }}'
       SENSU_BACKEND_WEBSOCKET_URL: '{{ SENSU_BACKEND_WEBSOCKET_URL | replace("'", "\\'") }}'
+      KAFKA_TOPIC_SENSU_EVENT: '{{ KAFKA_TOPIC_SENSU_EVENT | replace("'", "\\'") }}'
       ENABLE_AAP: '{{ ENABLE_AAP | replace("'", "\\'") }}'
       AAP_NAMESPACE: '{{ AAP_NAMESPACE | replace("'", "\\'") }}'
       AAP_SECRET: '{{ AAP_SECRET | replace("'", "\\'") }}'
