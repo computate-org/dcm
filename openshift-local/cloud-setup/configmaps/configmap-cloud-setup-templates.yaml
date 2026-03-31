@@ -314,8 +314,6 @@ data:
     stringData:
       ENABLE_KAFKA: "{{ ENABLE_KAFKA }}"
       KAFKA_NAMESPACE: "{{ KAFKA_NAMESPACE }}"
-      KAFKA_USER_NAME: "{{ KAFKA_USER_NAME }}"
-      KAFKA_PASSWORD: "{{ KAFKA_PASSWORD }}"
       KAFKA_GROUP: "{{ KAFKA_GROUP }}"
       KAFKA_BROKERS: "{{ KAFKA_BROKERS }}"
       KAFKA_PORT: "{{ KAFKA_PORT }}"
