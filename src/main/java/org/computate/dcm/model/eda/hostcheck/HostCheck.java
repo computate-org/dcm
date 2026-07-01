@@ -6,7 +6,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 8
+ * Order: 121
  * Description: A check to be performed on a computer. 
  * AName: a host check
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-box-check"></i>
@@ -55,7 +55,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * AuthorizationResource: TENANT
    * Relate: Tenant.tenantResource
    * HtmRowTitleOpen: tenant details
-   * HtmRow: 3
+   * HtmRow: 23
    * HtmCell: 0
    * HtmColumn: 0
    **/
@@ -89,7 +89,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * AuthorizationResource: JOBTEMPLATE
    * Relate: JobTemplate.jobTemplateResource
    * HtmRowTitleOpen: job template details
-   * HtmRow: 4
+   * HtmRow: 24
    * HtmCell: 0
    * HtmColumn: 0
    **/
@@ -122,7 +122,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * Persist: true
    * Unique: true
    * HtmRowTitleOpen: host check details
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 0
    * HtmColumn: 1
    * DisplayName: check name
@@ -164,7 +164,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * Unique: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 1
    * HtmColumn: 2
    * DisplayName: check description
@@ -178,7 +178,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 2
    * DisplayName: check namespace
    * Description: The namespace of the host check. 
@@ -191,7 +191,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 3
    * DisplayName: check command
    * Description: The bash command to run during the check. 
@@ -204,7 +204,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 4
    * DisplayName: check interval in seconds
    * Description: The check interval in seconds. 
@@ -216,7 +216,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 6
    * DisplayName: check published
    * Description: When disabled the check will not be executed unless explicitly queued. 
@@ -228,7 +228,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 7
    * HtmColumn: 3
    * DisplayName: event subscriptions
@@ -240,7 +240,7 @@ public class HostCheck extends HostCheckGen<BaseModel> {
   /**
    * DocValues: true
    * Persist: true
-   * HtmRow: 5
+   * HtmRow: 25
    * HtmCell: 8
    * HtmColumn: 4
    * DisplayName: event handlers

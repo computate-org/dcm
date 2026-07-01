@@ -2936,19 +2936,24 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           Promise<Void> promise1 = Promise.promise();
           searchpageAnsibleProjectPageInit(ctx, page, listAnsibleProject, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageAnsibleProject(ctx, page, listAnsibleProject, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageAnsibleProject failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageAnsibleProject(ctx, page, listAnsibleProject, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageAnsibleProject failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageAnsibleProject failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3250,19 +3255,24 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           Promise<Void> promise1 = Promise.promise();
           editpageAnsibleProjectPageInit(ctx, page, listAnsibleProject, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageAnsibleProject(ctx, page, listAnsibleProject, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageAnsibleProject failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageAnsibleProject(ctx, page, listAnsibleProject, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageAnsibleProject failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageAnsibleProject failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -4079,6 +4089,144 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     return promise.future();
   }
   public void searchAnsibleProject2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<AnsibleProject> searchList) {
+  }
+
+  public Future<JsonObject> upsertAnsibleProject(AnsibleProject o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+        String old_tenantResource = AnsibleProject.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+          try {
+            if(oTenant == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+
+              String old_tenantId = AnsibleProject.staticJsonTenantId(o.getTenantId());
+              String new_tenantId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_tenantId, patch));
+              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_tenantId, patch), tenantId);
+
+              String old_created = AnsibleProject.staticJsonCreated(o.getCreated());
+              String new_created = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_created, patch));
+              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_created, patch), created);
+
+              String old_aapOrganizationId = AnsibleProject.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              String new_aapOrganizationId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapOrganizationId, patch));
+              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+              String old_sourceControlType = AnsibleProject.staticJsonSourceControlType(o.getSourceControlType());
+              String new_sourceControlType = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlType, patch));
+              String sourceControlType = Optional.ofNullable(Optional.ofNullable(new_sourceControlType).orElse(old_sourceControlType)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlType, patch), sourceControlType);
+
+              Boolean old_archived = AnsibleProject.staticJsonArchived(o.getArchived());
+              Boolean new_archived = json.getBoolean(AnsibleProject.varJson(AnsibleProject.VAR_archived, patch));
+              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_archived, patch), archived);
+
+              String old_sourceControlUrl = AnsibleProject.staticJsonSourceControlUrl(o.getSourceControlUrl());
+              String new_sourceControlUrl = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlUrl, patch));
+              String sourceControlUrl = Optional.ofNullable(Optional.ofNullable(new_sourceControlUrl).orElse(old_sourceControlUrl)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlUrl, patch), sourceControlUrl);
+
+              String old_sourceControlBranch = AnsibleProject.staticJsonSourceControlBranch(o.getSourceControlBranch());
+              String new_sourceControlBranch = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlBranch, patch));
+              String sourceControlBranch = Optional.ofNullable(Optional.ofNullable(new_sourceControlBranch).orElse(old_sourceControlBranch)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlBranch, patch), sourceControlBranch);
+
+              String old_ansibleProjectName = AnsibleProject.staticJsonAnsibleProjectName(o.getAnsibleProjectName());
+              String new_ansibleProjectName = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectName, patch));
+              String ansibleProjectName = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectName).orElse(old_ansibleProjectName)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectName, patch), ansibleProjectName);
+
+              String old_ansibleProjectId = AnsibleProject.staticJsonAnsibleProjectId(o.getAnsibleProjectId());
+              String new_ansibleProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectId, patch));
+              String ansibleProjectId = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectId).orElse(old_ansibleProjectId)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectId, patch), ansibleProjectId);
+
+              String old_sessionId = AnsibleProject.staticJsonSessionId(o.getSessionId());
+              String new_sessionId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sessionId, patch));
+              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sessionId, patch), sessionId);
+
+              String old_ansibleProjectResource = AnsibleProject.staticJsonAnsibleProjectResource(o.getAnsibleProjectResource());
+              String new_ansibleProjectResource = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectResource, patch));
+              String ansibleProjectResource = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectResource).orElse(old_ansibleProjectResource)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectResource, patch), ansibleProjectResource);
+
+              String old_userKey = AnsibleProject.staticJsonUserKey(o.getUserKey());
+              String new_userKey = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userKey, patch));
+              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_userKey, patch), userKey);
+
+              String old_aapProjectId = AnsibleProject.staticJsonAapProjectId(o.getAapProjectId());
+              String new_aapProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapProjectId, patch));
+              String aapProjectId = Optional.ofNullable(Optional.ofNullable(new_aapProjectId).orElse(old_aapProjectId)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_aapProjectId, patch), aapProjectId);
+
+              String old_ansibleProjectDescription = AnsibleProject.staticJsonAnsibleProjectDescription(o.getAnsibleProjectDescription());
+              String new_ansibleProjectDescription = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectDescription, patch));
+              String ansibleProjectDescription = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectDescription).orElse(old_ansibleProjectDescription)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectDescription, patch), ansibleProjectDescription);
+
+              String old_objectTitle = AnsibleProject.staticJsonObjectTitle(o.getObjectTitle());
+              String new_objectTitle = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_objectTitle, patch));
+              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_objectTitle, patch), objectTitle);
+
+              JsonArray old_ansiblePlaybooks = AnsibleProject.staticJsonAnsiblePlaybooks(o.getAnsiblePlaybooks());
+              JsonArray new_ansiblePlaybooks = json.getJsonArray(AnsibleProject.varJson(AnsibleProject.VAR_ansiblePlaybooks, patch));
+              JsonArray ansiblePlaybooks = Optional.ofNullable(Optional.ofNullable(new_ansiblePlaybooks).orElse(old_ansiblePlaybooks)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansiblePlaybooks, patch), ansiblePlaybooks);
+
+              String old_displayPage = AnsibleProject.staticJsonDisplayPage(o.getDisplayPage());
+              String new_displayPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_displayPage, patch));
+              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_displayPage, patch), displayPage);
+
+              String old_editPage = AnsibleProject.staticJsonEditPage(o.getEditPage());
+              String new_editPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_editPage, patch));
+              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_editPage, patch), editPage);
+
+              String old_userPage = AnsibleProject.staticJsonUserPage(o.getUserPage());
+              String new_userPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userPage, patch));
+              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_userPage, patch), userPage);
+
+              String old_download = AnsibleProject.staticJsonDownload(o.getDownload());
+              String new_download = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_download, patch));
+              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // json.put(AnsibleProject.varJson(AnsibleProject.VAR_download, patch), download);
+
+              promise.complete(json);
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertAnsibleProject failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertAnsibleProject failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistAnsibleProject(AnsibleProject o, Boolean patch) {

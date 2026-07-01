@@ -14,7 +14,7 @@ import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.request.SiteRequest;
 
 /**
- * Order: 1
+ * Order: 11
  * Description: A user record for each site user
  * AName: a site user
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-user-gear"></i>

@@ -706,7 +706,7 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
                 eventHandler.handle(Future.failedFuture(ex));
               });
             } else {
-              String m = String.format("%s %s not found", "tenant", null);
+              String m = String.format("%s %s not found", "discovered tenant", null);
               eventHandler.handle(Future.failedFuture(m));
             }
           } catch(Exception ex) {
@@ -2830,19 +2830,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
           Promise<Void> promise1 = Promise.promise();
           searchpageTenantPageInit(ctx, page, listTenant, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageTenant(ctx, page, listTenant, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageTenant failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageTenant(ctx, page, listTenant, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageTenant failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageTenant failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3126,19 +3131,24 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
           Promise<Void> promise1 = Promise.promise();
           editpageTenantPageInit(ctx, page, listTenant, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageTenant(ctx, page, listTenant, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageTenant failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageTenant(ctx, page, listTenant, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageTenant failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageTenant failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3938,6 +3948,110 @@ public class TenantEnUSGenApiServiceImpl extends BaseApiServiceImpl implements T
     return promise.future();
   }
   public void searchTenant2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<Tenant> searchList) {
+  }
+
+  public Future<JsonObject> upsertTenant(Tenant o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+
+        String old_tenantName = Tenant.staticJsonTenantName(o.getTenantName());
+        String new_tenantName = json.getString(Tenant.varJson(Tenant.VAR_tenantName, patch));
+        String tenantName = Optional.ofNullable(Optional.ofNullable(new_tenantName).orElse(old_tenantName)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_tenantName, patch), tenantName);
+
+        String old_tenantId = Tenant.staticJsonTenantId(o.getTenantId());
+        String new_tenantId = json.getString(Tenant.varJson(Tenant.VAR_tenantId, patch));
+        String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_tenantId, patch), tenantId);
+
+        String old_created = Tenant.staticJsonCreated(o.getCreated());
+        String new_created = json.getString(Tenant.varJson(Tenant.VAR_created, patch));
+        String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_created, patch), created);
+
+        String old_tenantResource = Tenant.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(Optional.ofNullable(new_tenantResource).orElse(old_tenantResource)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+
+        String old_pageId = Tenant.staticJsonPageId(o.getPageId());
+        String new_pageId = json.getString(Tenant.varJson(Tenant.VAR_pageId, patch));
+        String pageId = Optional.ofNullable(Optional.ofNullable(new_pageId).orElse(old_pageId)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_pageId, patch), pageId);
+
+        Boolean old_archived = Tenant.staticJsonArchived(o.getArchived());
+        Boolean new_archived = json.getBoolean(Tenant.varJson(Tenant.VAR_archived, patch));
+        Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_archived, patch), archived);
+
+        String old_tenantDescription = Tenant.staticJsonTenantDescription(o.getTenantDescription());
+        String new_tenantDescription = json.getString(Tenant.varJson(Tenant.VAR_tenantDescription, patch));
+        String tenantDescription = Optional.ofNullable(Optional.ofNullable(new_tenantDescription).orElse(old_tenantDescription)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_tenantDescription, patch), tenantDescription);
+
+        String old_hubId = Tenant.staticJsonHubId(o.getHubId());
+        String new_hubId = json.getString(Tenant.varJson(Tenant.VAR_hubId, patch));
+        String hubId = Optional.ofNullable(Optional.ofNullable(new_hubId).orElse(old_hubId)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_hubId, patch), hubId);
+
+        String old_clusterName = Tenant.staticJsonClusterName(o.getClusterName());
+        String new_clusterName = json.getString(Tenant.varJson(Tenant.VAR_clusterName, patch));
+        String clusterName = Optional.ofNullable(Optional.ofNullable(new_clusterName).orElse(old_clusterName)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_clusterName, patch), clusterName);
+
+        String old_aapOrganizationId = Tenant.staticJsonAapOrganizationId(o.getAapOrganizationId());
+        String new_aapOrganizationId = json.getString(Tenant.varJson(Tenant.VAR_aapOrganizationId, patch));
+        String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+        String old_sessionId = Tenant.staticJsonSessionId(o.getSessionId());
+        String new_sessionId = json.getString(Tenant.varJson(Tenant.VAR_sessionId, patch));
+        String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_sessionId, patch), sessionId);
+
+        String old_userKey = Tenant.staticJsonUserKey(o.getUserKey());
+        String new_userKey = json.getString(Tenant.varJson(Tenant.VAR_userKey, patch));
+        String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_userKey, patch), userKey);
+
+        String old_objectTitle = Tenant.staticJsonObjectTitle(o.getObjectTitle());
+        String new_objectTitle = json.getString(Tenant.varJson(Tenant.VAR_objectTitle, patch));
+        String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_objectTitle, patch), objectTitle);
+
+        String old_displayPage = Tenant.staticJsonDisplayPage(o.getDisplayPage());
+        String new_displayPage = json.getString(Tenant.varJson(Tenant.VAR_displayPage, patch));
+        String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_displayPage, patch), displayPage);
+
+        String old_editPage = Tenant.staticJsonEditPage(o.getEditPage());
+        String new_editPage = json.getString(Tenant.varJson(Tenant.VAR_editPage, patch));
+        String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_editPage, patch), editPage);
+
+        String old_userPage = Tenant.staticJsonUserPage(o.getUserPage());
+        String new_userPage = json.getString(Tenant.varJson(Tenant.VAR_userPage, patch));
+        String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_userPage, patch), userPage);
+
+        String old_download = Tenant.staticJsonDownload(o.getDownload());
+        String new_download = json.getString(Tenant.varJson(Tenant.VAR_download, patch));
+        String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+        // json.put(Tenant.varJson(Tenant.VAR_download, patch), download);
+
+          promise.complete(json);
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertTenant failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistTenant(Tenant o, Boolean patch) {

@@ -34,6 +34,9 @@ find \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSGenApiService.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCRGenPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCREnUSGenApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCREnUSGenApiService.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectGenPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSGenApiService.java \
@@ -114,6 +117,13 @@ find \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchButtons.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSearchForm.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/job-template/JobTemplateSidebar.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/edit/host-check-cr/HostCheckCRGenEditPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRGenSearchPage.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRLocation.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRPaginationButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRSearchButtons.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRSearchForm.htm \
+      ~/.local/src/dcm-static/webawesome/templates/en-us/search/host-check-cr/HostCheckCRSidebar.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/edit/project/ProjectGenEditPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectGenSearchPage.htm \
       ~/.local/src/dcm-static/webawesome/templates/en-us/search/project/ProjectLocation.htm \

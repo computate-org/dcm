@@ -2958,19 +2958,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           Promise<Void> promise1 = Promise.promise();
           searchpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageHostInventory(ctx, page, listHostInventory, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageHostInventory(ctx, page, listHostInventory, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageHostInventory failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3272,19 +3277,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           Promise<Void> promise1 = Promise.promise();
           editpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageHostInventory(ctx, page, listHostInventory, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageHostInventory(ctx, page, listHostInventory, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageHostInventory failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3586,19 +3596,24 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           Promise<Void> promise1 = Promise.promise();
           userpageHostInventoryPageInit(ctx, page, listHostInventory, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateUserPageHostInventory(ctx, page, listHostInventory, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateUserPageHostInventory(ctx, page, listHostInventory, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200UserPageHostInventory failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -4435,6 +4450,129 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     return promise.future();
   }
   public void searchHostInventory2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<HostInventory> searchList) {
+  }
+
+  public Future<JsonObject> upsertHostInventory(HostInventory o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+        String old_tenantResource = HostInventory.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+          try {
+            if(oTenant == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+
+              String old_tenantId = HostInventory.staticJsonTenantId(o.getTenantId());
+              String new_tenantId = json.getString(HostInventory.varJson(HostInventory.VAR_tenantId, patch));
+              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_tenantId, patch), tenantId);
+
+              String old_created = HostInventory.staticJsonCreated(o.getCreated());
+              String new_created = json.getString(HostInventory.varJson(HostInventory.VAR_created, patch));
+              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_created, patch), created);
+
+              String old_aapOrganizationId = HostInventory.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              String new_aapOrganizationId = json.getString(HostInventory.varJson(HostInventory.VAR_aapOrganizationId, patch));
+              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+              Boolean old_archived = HostInventory.staticJsonArchived(o.getArchived());
+              Boolean new_archived = json.getBoolean(HostInventory.varJson(HostInventory.VAR_archived, patch));
+              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_archived, patch), archived);
+
+              String old_inventoryName = HostInventory.staticJsonInventoryName(o.getInventoryName());
+              String new_inventoryName = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryName, patch));
+              String inventoryName = Optional.ofNullable(Optional.ofNullable(new_inventoryName).orElse(old_inventoryName)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_inventoryName, patch), inventoryName);
+
+              String old_inventoryId = HostInventory.staticJsonInventoryId(o.getInventoryId());
+              String new_inventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryId, patch));
+              String inventoryId = Optional.ofNullable(Optional.ofNullable(new_inventoryId).orElse(old_inventoryId)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_inventoryId, patch), inventoryId);
+
+              String old_inventoryResource = HostInventory.staticJsonInventoryResource(o.getInventoryResource());
+              String new_inventoryResource = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch));
+              String inventoryResource = Optional.ofNullable(Optional.ofNullable(new_inventoryResource).orElse(old_inventoryResource)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch), inventoryResource);
+
+              String old_inventoryDescription = HostInventory.staticJsonInventoryDescription(o.getInventoryDescription());
+              String new_inventoryDescription = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryDescription, patch));
+              String inventoryDescription = Optional.ofNullable(Optional.ofNullable(new_inventoryDescription).orElse(old_inventoryDescription)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_inventoryDescription, patch), inventoryDescription);
+
+              String old_sessionId = HostInventory.staticJsonSessionId(o.getSessionId());
+              String new_sessionId = json.getString(HostInventory.varJson(HostInventory.VAR_sessionId, patch));
+              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_sessionId, patch), sessionId);
+
+              String old_aapInventoryId = HostInventory.staticJsonAapInventoryId(o.getAapInventoryId());
+              String new_aapInventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_aapInventoryId, patch));
+              String aapInventoryId = Optional.ofNullable(Optional.ofNullable(new_aapInventoryId).orElse(old_aapInventoryId)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_aapInventoryId, patch), aapInventoryId);
+
+              String old_userKey = HostInventory.staticJsonUserKey(o.getUserKey());
+              String new_userKey = json.getString(HostInventory.varJson(HostInventory.VAR_userKey, patch));
+              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_userKey, patch), userKey);
+
+              String old_inventoryKind = HostInventory.staticJsonInventoryKind(o.getInventoryKind());
+              String new_inventoryKind = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryKind, patch));
+              String inventoryKind = Optional.ofNullable(Optional.ofNullable(new_inventoryKind).orElse(old_inventoryKind)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_inventoryKind, patch), inventoryKind);
+
+              String old_objectTitle = HostInventory.staticJsonObjectTitle(o.getObjectTitle());
+              String new_objectTitle = json.getString(HostInventory.varJson(HostInventory.VAR_objectTitle, patch));
+              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_objectTitle, patch), objectTitle);
+
+              String old_displayPage = HostInventory.staticJsonDisplayPage(o.getDisplayPage());
+              String new_displayPage = json.getString(HostInventory.varJson(HostInventory.VAR_displayPage, patch));
+              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_displayPage, patch), displayPage);
+
+              String old_editPage = HostInventory.staticJsonEditPage(o.getEditPage());
+              String new_editPage = json.getString(HostInventory.varJson(HostInventory.VAR_editPage, patch));
+              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_editPage, patch), editPage);
+
+              String old_userPage = HostInventory.staticJsonUserPage(o.getUserPage());
+              String new_userPage = json.getString(HostInventory.varJson(HostInventory.VAR_userPage, patch));
+              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_userPage, patch), userPage);
+
+              String old_download = HostInventory.staticJsonDownload(o.getDownload());
+              String new_download = json.getString(HostInventory.varJson(HostInventory.VAR_download, patch));
+              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // json.put(HostInventory.varJson(HostInventory.VAR_download, patch), download);
+
+              promise.complete(json);
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertHostInventory failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertHostInventory failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistHostInventory(HostInventory o, Boolean patch) {

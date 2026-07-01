@@ -46,8 +46,8 @@ import org.computate.vertx.api.BaseApiServiceInterface;
 import org.computate.vertx.config.ComputateConfigKeys;
 import org.computate.vertx.model.base.ComputateBaseModel;
 import org.computate.vertx.model.user.ComputateSiteUser;
-import org.computate.vertx.openapi.OpenApi3Generator;
 import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
+import org.computate.vertx.openapi.OpenApi3Generator;
 import org.computate.vertx.request.ComputateSiteRequest;
 import org.computate.vertx.result.base.ComputateBaseResult;
 import org.computate.vertx.search.list.SearchList;
@@ -173,18 +173,15 @@ import org.computate.dcm.user.SiteUserEnUSGenApiService;
 import org.computate.dcm.user.SiteUserEnUSApiServiceImpl;
 import org.computate.dcm.result.BaseResult;
 import org.computate.dcm.model.BaseModel;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.timezone.TimeZoneEnUSGenApiService;
 import org.computate.dcm.timezone.TimeZoneEnUSApiServiceImpl;
 import org.computate.dcm.timezone.TimeZone;
-import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.page.SitePageEnUSGenApiService;
 import org.computate.dcm.page.SitePageEnUSApiServiceImpl;
 import org.computate.dcm.page.SitePage;
-import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
-import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSGenApiService;
 import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostcredential.HostCredential;
@@ -194,15 +191,30 @@ import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.host.HostEnUSGenApiService;
 import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.host.Host;
-import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
-import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.hostcheck.HostCheck;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSGenApiService;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSGenApiService;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.k8s.ProjectEnUSGenApiService;
 import org.computate.dcm.model.k8s.ProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.k8s.Project;
+import org.computate.dcm.model.eda.hostcheck.cr.HostCheckCREnUSGenApiService;
+import org.computate.dcm.model.eda.hostcheck.cr.HostCheckCREnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcheck.cr.HostCheckCR;
+import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSGenApiService;
+import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.hostcheck.HostCheck;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
+import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
+import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.Tenant;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
@@ -338,6 +350,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       siteRequest.setConfig(config);
       siteRequest.setWebClient(webClient);
       siteRequest.initDeepSiteRequest(siteRequest);
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      apiJobTemplate.setVertx(vertx);
+      apiJobTemplate.setConfig(config);
+      apiJobTemplate.setWebClient(webClient);
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       apiSiteUser.setVertx(vertx);
       apiSiteUser.setConfig(config);
@@ -346,18 +362,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiTimeZone.setVertx(vertx);
       apiTimeZone.setConfig(config);
       apiTimeZone.setWebClient(webClient);
-      TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
-      apiTenant.setVertx(vertx);
-      apiTenant.setConfig(config);
-      apiTenant.setWebClient(webClient);
       SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
       apiSitePage.setVertx(vertx);
       apiSitePage.setConfig(config);
       apiSitePage.setWebClient(webClient);
-      AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
-      apiAnsibleProject.setVertx(vertx);
-      apiAnsibleProject.setConfig(config);
-      apiAnsibleProject.setWebClient(webClient);
       HostCredentialEnUSApiServiceImpl apiHostCredential = new HostCredentialEnUSApiServiceImpl();
       apiHostCredential.setVertx(vertx);
       apiHostCredential.setConfig(config);
@@ -370,73 +378,114 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiHost.setVertx(vertx);
       apiHost.setConfig(config);
       apiHost.setWebClient(webClient);
-      HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
-      apiHostCheck.setVertx(vertx);
-      apiHostCheck.setConfig(config);
-      apiHostCheck.setWebClient(webClient);
-      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
-      apiJobTemplate.setVertx(vertx);
-      apiJobTemplate.setConfig(config);
-      apiJobTemplate.setWebClient(webClient);
+      AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
+      apiAnsibleProject.setVertx(vertx);
+      apiAnsibleProject.setConfig(config);
+      apiAnsibleProject.setWebClient(webClient);
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       apiProject.setVertx(vertx);
       apiProject.setConfig(config);
       apiProject.setWebClient(webClient);
+      HostCheckCREnUSApiServiceImpl apiHostCheckCR = new HostCheckCREnUSApiServiceImpl();
+      apiHostCheckCR.setVertx(vertx);
+      apiHostCheckCR.setConfig(config);
+      apiHostCheckCR.setWebClient(webClient);
+      HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
+      apiHostCheck.setVertx(vertx);
+      apiHostCheck.setConfig(config);
+      apiHostCheck.setWebClient(webClient);
+      TenantIntentEnUSApiServiceImpl apiTenantIntent = new TenantIntentEnUSApiServiceImpl();
+      apiTenantIntent.setVertx(vertx);
+      apiTenantIntent.setConfig(config);
+      apiTenantIntent.setWebClient(webClient);
+      TenantRealizedEnUSApiServiceImpl apiTenantRealized = new TenantRealizedEnUSApiServiceImpl();
+      apiTenantRealized.setVertx(vertx);
+      apiTenantRealized.setConfig(config);
+      apiTenantRealized.setWebClient(webClient);
+      TenantRequestedEnUSApiServiceImpl apiTenantRequested = new TenantRequestedEnUSApiServiceImpl();
+      apiTenantRequested.setVertx(vertx);
+      apiTenantRequested.setConfig(config);
+      apiTenantRequested.setWebClient(webClient);
+      TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
+      apiTenant.setVertx(vertx);
+      apiTenant.setConfig(config);
+      apiTenant.setWebClient(webClient);
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
       apiAiTelemetryPlatform.setVertx(vertx);
       apiAiTelemetryPlatform.setConfig(config);
       apiAiTelemetryPlatform.setWebClient(webClient);
-      apiSiteUser.createAuthorizationScopes(new String[] { "DELETE", "GET", "PATCH", "POST", "SuperAdmin", "Admin", "PUT" }).onSuccess(authToken -> {
-          apiTimeZone.authorizeGroupData(authToken, TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" })
-              .onSuccess(q2 -> {
-            apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
-                .compose(q3 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
-                .compose(q3 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+      apiSiteUser.createAuthorizationScopes(new String[] { "DELETE", "GET", "PATCH", "POST", "SuperAdmin", "Admin", "PUT", "GETManager" }).onSuccess(authToken -> {
+        apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateReader", new String[] { "GET" })
+            .compose(q1 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateEditor", new String[] { "GET", "POST", "PATCH" }))
+            .compose(q1 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+            .compose(q1 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+            .onSuccess(q1 -> {
+            apiTimeZone.authorizeGroupData(authToken, TimeZone.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" })
                 .onSuccess(q3 -> {
               apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" })
                   .compose(q4 -> apiSitePage.authorizeGroupData(authToken, SitePage.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
                   .onSuccess(q4 -> {
-                apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectReader", new String[] { "GET" })
-                    .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectEditor", new String[] { "GET", "POST", "PATCH" }))
-                    .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                    .compose(q5 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialReader", new String[] { "GET" })
+                    .compose(q5 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialEditor", new String[] { "GET", "POST", "PATCH" }))
+                    .compose(q5 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                    .compose(q5 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                     .onSuccess(q5 -> {
-                  apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialReader", new String[] { "GET" })
-                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "HostCredentialEditor", new String[] { "GET", "POST", "PATCH" }))
-                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                      .compose(q6 -> apiHostCredential.authorizeGroupData(authToken, HostCredential.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                  apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryReader", new String[] { "GET" })
+                      .compose(q6 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryEditor", new String[] { "GET", "POST", "PATCH" }))
+                      .compose(q6 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                      .compose(q6 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                       .onSuccess(q6 -> {
-                    apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryReader", new String[] { "GET" })
-                        .compose(q7 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "HostInventoryEditor", new String[] { "GET", "POST", "PATCH" }))
-                        .compose(q7 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                        .compose(q7 -> apiHostInventory.authorizeGroupData(authToken, HostInventory.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                    apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostReader", new String[] { "GET" })
+                        .compose(q7 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostEditor", new String[] { "GET", "POST", "PATCH" }))
+                        .compose(q7 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                        .compose(q7 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                         .onSuccess(q7 -> {
-                      apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostReader", new String[] { "GET" })
-                          .compose(q8 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "HostEditor", new String[] { "GET", "POST", "PATCH" }))
-                          .compose(q8 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                          .compose(q8 -> apiHost.authorizeGroupData(authToken, Host.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                      apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectReader", new String[] { "GET" })
+                          .compose(q8 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "AnsibleProjectEditor", new String[] { "GET", "POST", "PATCH" }))
+                          .compose(q8 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                          .compose(q8 -> apiAnsibleProject.authorizeGroupData(authToken, AnsibleProject.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                           .onSuccess(q8 -> {
-                        apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "HostCheckReader", new String[] { "GET" })
-                            .compose(q9 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "HostCheckEditor", new String[] { "GET", "POST", "PATCH" }))
-                            .compose(q9 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                            .compose(q9 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                        apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                            .compose(q9 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                             .onSuccess(q9 -> {
-                          apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateReader", new String[] { "GET" })
-                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "JobTemplateEditor", new String[] { "GET", "POST", "PATCH" }))
-                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                              .compose(q10 -> apiJobTemplate.authorizeGroupData(authToken, JobTemplate.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                          apiHostCheckCR.authorizeGroupData(authToken, HostCheckCR.CLASS_AUTH_RESOURCE, "HostCheckReader", new String[] { "GET" })
+                              .compose(q10 -> apiHostCheckCR.authorizeGroupData(authToken, HostCheckCR.CLASS_AUTH_RESOURCE, "HostCheckEditor", new String[] { "GET", "POST", "PATCH" }))
+                              .compose(q10 -> apiHostCheckCR.authorizeGroupData(authToken, HostCheckCR.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                              .compose(q10 -> apiHostCheckCR.authorizeGroupData(authToken, HostCheckCR.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                               .onSuccess(q10 -> {
-                            apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectReader", new String[] { "GET" })
-                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "ProjectEditor", new String[] { "GET", "POST", "PATCH" }))
-                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
-                                .compose(q11 -> apiProject.authorizeGroupData(authToken, Project.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
+                            apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "HostCheckReader", new String[] { "GET" })
+                                .compose(q11 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "HostCheckEditor", new String[] { "GET", "POST", "PATCH" }))
+                                .compose(q11 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "Admin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE" }))
+                                .compose(q11 -> apiHostCheck.authorizeGroupData(authToken, HostCheck.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "GET", "PUT", "POST", "PATCH", "DELETE", "Admin", "SuperAdmin" }))
                                 .onSuccess(q11 -> {
-                              apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
-                                  .compose(q12 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
-                                  .compose(q12 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                              apiTenantIntent.authorizeGroupData(authToken, TenantIntent.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                                  .compose(q12 -> apiTenantIntent.authorizeGroupData(authToken, TenantIntent.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                  .compose(q12 -> apiTenantIntent.authorizeGroupData(authToken, TenantIntent.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
                                   .onSuccess(q12 -> {
-                                LOG.info("authorize data complete");
-                                promise.complete();
+                                apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                                    .compose(q13 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                    .compose(q13 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                    .onSuccess(q13 -> {
+                                  apiTenantRequested.authorizeGroupData(authToken, TenantRequested.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                                      .compose(q14 -> apiTenantRequested.authorizeGroupData(authToken, TenantRequested.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                      .compose(q14 -> apiTenantRequested.authorizeGroupData(authToken, TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                      .onSuccess(q14 -> {
+                                    apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                                        .compose(q15 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                        .compose(q15 -> apiTenant.authorizeGroupData(authToken, Tenant.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                        .onSuccess(q15 -> {
+                                      apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
+                                          .compose(q16 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
+                                          .compose(q16 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                                          .onSuccess(q16 -> {
+                                        LOG.info("authorize data complete");
+                                        promise.complete();
+                                      }).onFailure(ex -> promise.fail(ex));
+                                  }).onFailure(ex -> promise.fail(ex));
+                                }).onFailure(ex -> promise.fail(ex));
+                              }).onFailure(ex -> promise.fail(ex));
                             }).onFailure(ex -> promise.fail(ex));
                           }).onFailure(ex -> promise.fail(ex));
                         }).onFailure(ex -> promise.fail(ex));
@@ -772,11 +821,11 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
                         configureAmqp().onSuccess(j -> 
                           configureRabbitmq().onSuccess(k -> 
                             configureJinjava().onSuccess(l -> 
-                                configureApi().onSuccess(n -> 
-                                  configureUi().onSuccess(o -> 
-                                    startServer().onSuccess(p -> startPromise.complete())
-                                  ).onFailure(ex -> startPromise.fail(ex))
+                              configureApi().onSuccess(n -> 
+                                configureUi().onSuccess(o -> 
+                                  startServer().onSuccess(p -> startPromise.complete())
                                 ).onFailure(ex -> startPromise.fail(ex))
+                              ).onFailure(ex -> startPromise.fail(ex))
                             ).onFailure(ex -> startPromise.fail(ex))
                           ).onFailure(ex -> startPromise.fail(ex))
                         ).onFailure(ex -> startPromise.fail(ex))
@@ -1211,6 +1260,7 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
         //ClusteredSessionStore sessionStore = ClusteredSessionStore.create(vertx);
         sessionStore = LocalSessionStore.create(vertx, config().getString(ConfigKeys.SITE_NAME));
         sessionHandler = SessionHandler.create(sessionStore);
+        sessionHandler.setCookieHttpOnlyFlag(true);
         if(StringUtils.startsWith(siteBaseUrl, "https://"))
           sessionHandler.setCookieSecureFlag(true);
     
@@ -1449,8 +1499,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("Tenant","SitePage","AnsibleProject","HostCredential","HostInventory","Host","HostCheck","JobTemplate","Project","AiTelemetryPlatform");
-      List<String> authResources = Arrays.asList("TENANT","SITEPAGE","ANSIBLEPROJECT","HOSTCREDENTIAL","HOSTINVENTORY","HOST","HOSTCHECK","JOBTEMPLATE","PROJECT","AITELEMETRYPLATFORM");
+      List<String> authClassSimpleNames = Arrays.asList("JobTemplate","SitePage","HostCredential","HostInventory","Host","AnsibleProject","Project","HostCheckCR","HostCheck","TenantIntent","TenantRealized","TenantRequested","Tenant","AiTelemetryPlatform");
+      List<String> authResources = Arrays.asList("JOBTEMPLATE","SITEPAGE","HOSTCREDENTIAL","HOSTINVENTORY","HOST","ANSIBLEPROJECT","PROJECT","HOSTCHECKCR","HOSTCHECK","TENANTINTENT","TENANTREALIZED","TENANTREQUESTED","TENANT","AITELEMETRYPLATFORM");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1458,21 +1508,17 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiSiteUser.configureUserSearchApi(config().getString(ComputateConfigKeys.USER_SEARCH_URI), router, SiteRequest.class, SiteUser.class, SiteUser.CLASS_API_ADDRESS_SiteUser, config(), webClient, authResources, authClassSimpleNames);
       apiSiteUser.configurePublicSearchApi(config().getString(ComputateConfigKeys.PUBLIC_SEARCH_URI), router, SiteRequest.class, config(), webClient, publicClassSimpleNames);
 
+      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
+      initializeApiService(apiJobTemplate);
+      registerApiService(JobTemplateEnUSGenApiService.class, apiJobTemplate, JobTemplate.getClassApiAddress());
+
       TimeZoneEnUSApiServiceImpl apiTimeZone = new TimeZoneEnUSApiServiceImpl();
       initializeApiService(apiTimeZone);
       registerApiService(TimeZoneEnUSGenApiService.class, apiTimeZone, TimeZone.getClassApiAddress());
 
-      TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
-      initializeApiService(apiTenant);
-      registerApiService(TenantEnUSGenApiService.class, apiTenant, Tenant.getClassApiAddress());
-
       SitePageEnUSApiServiceImpl apiSitePage = new SitePageEnUSApiServiceImpl();
       initializeApiService(apiSitePage);
       registerApiService(SitePageEnUSGenApiService.class, apiSitePage, SitePage.getClassApiAddress());
-
-      AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
-      initializeApiService(apiAnsibleProject);
-      registerApiService(AnsibleProjectEnUSGenApiService.class, apiAnsibleProject, AnsibleProject.getClassApiAddress());
 
       HostCredentialEnUSApiServiceImpl apiHostCredential = new HostCredentialEnUSApiServiceImpl();
       initializeApiService(apiHostCredential);
@@ -1486,17 +1532,37 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       initializeApiService(apiHost);
       registerApiService(HostEnUSGenApiService.class, apiHost, Host.getClassApiAddress());
 
-      HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
-      initializeApiService(apiHostCheck);
-      registerApiService(HostCheckEnUSGenApiService.class, apiHostCheck, HostCheck.getClassApiAddress());
-
-      JobTemplateEnUSApiServiceImpl apiJobTemplate = new JobTemplateEnUSApiServiceImpl();
-      initializeApiService(apiJobTemplate);
-      registerApiService(JobTemplateEnUSGenApiService.class, apiJobTemplate, JobTemplate.getClassApiAddress());
+      AnsibleProjectEnUSApiServiceImpl apiAnsibleProject = new AnsibleProjectEnUSApiServiceImpl();
+      initializeApiService(apiAnsibleProject);
+      registerApiService(AnsibleProjectEnUSGenApiService.class, apiAnsibleProject, AnsibleProject.getClassApiAddress());
 
       ProjectEnUSApiServiceImpl apiProject = new ProjectEnUSApiServiceImpl();
       initializeApiService(apiProject);
       registerApiService(ProjectEnUSGenApiService.class, apiProject, Project.getClassApiAddress());
+
+      HostCheckCREnUSApiServiceImpl apiHostCheckCR = new HostCheckCREnUSApiServiceImpl();
+      initializeApiService(apiHostCheckCR);
+      registerApiService(HostCheckCREnUSGenApiService.class, apiHostCheckCR, HostCheckCR.getClassApiAddress());
+
+      HostCheckEnUSApiServiceImpl apiHostCheck = new HostCheckEnUSApiServiceImpl();
+      initializeApiService(apiHostCheck);
+      registerApiService(HostCheckEnUSGenApiService.class, apiHostCheck, HostCheck.getClassApiAddress());
+
+      TenantIntentEnUSApiServiceImpl apiTenantIntent = new TenantIntentEnUSApiServiceImpl();
+      initializeApiService(apiTenantIntent);
+      registerApiService(TenantIntentEnUSGenApiService.class, apiTenantIntent, TenantIntent.getClassApiAddress());
+
+      TenantRealizedEnUSApiServiceImpl apiTenantRealized = new TenantRealizedEnUSApiServiceImpl();
+      initializeApiService(apiTenantRealized);
+      registerApiService(TenantRealizedEnUSGenApiService.class, apiTenantRealized, TenantRealized.getClassApiAddress());
+
+      TenantRequestedEnUSApiServiceImpl apiTenantRequested = new TenantRequestedEnUSApiServiceImpl();
+      initializeApiService(apiTenantRequested);
+      registerApiService(TenantRequestedEnUSGenApiService.class, apiTenantRequested, TenantRequested.getClassApiAddress());
+
+      TenantEnUSApiServiceImpl apiTenant = new TenantEnUSApiServiceImpl();
+      initializeApiService(apiTenant);
+      registerApiService(TenantEnUSGenApiService.class, apiTenant, Tenant.getClassApiAddress());
 
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
       initializeApiService(apiAiTelemetryPlatform);
@@ -1622,6 +1688,18 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
         }).onFailure(ex -> {
           LOG.error(String.format("Failed to render page %s", originalUri), ex);
           handler.fail(ex);
+        });
+      });
+
+      router.post("/ngsi-ld/subscription").handler(ctx -> {
+        SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
+        initializeApiService(apiSiteUser);
+        apiSiteUser.listPUTImportSmartDataModel(ctx).onSuccess(a -> {
+          ctx.response().setStatusCode(200);
+          ctx.end();
+        }).onFailure(ex -> {
+          LOG.error("NGSI-LD subscription failed", ex);
+          promise.fail(ex);
         });
       });
 

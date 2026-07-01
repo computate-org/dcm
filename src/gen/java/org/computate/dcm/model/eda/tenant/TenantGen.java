@@ -1,5 +1,8 @@
 package org.computate.dcm.model.eda.tenant;
 
+import java.util.List;
+import org.computate.search.wrap.Wrap;
+import org.computate.dcm.model.BaseModel;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.model.BaseModel;
 import io.vertx.core.json.JsonObject;
@@ -26,6 +29,7 @@ import org.computate.search.serialize.ComputateZonedDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.computate.search.serialize.ComputateBigDecimalDeserializer;
 import java.math.MathContext;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.text.NumberFormat;
@@ -53,9 +57,11 @@ import org.computate.search.response.solr.SolrResponse;
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
  * <li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class TenantGen into the class Tenant. 
- * </li><li>You can add a class comment "Rows: 100" if you wish the Tenant API to return more or less than 10 records by default. 
- * In this case, the API will return 100 records from the API instead of 10 by default. 
- * Each API has built in pagination of the search records to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * </li><li><p>
+ *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the discovered tenant API to return more or less than 10 results by default. 
+ *   In this case, the API will return 100 results from the API instead of 10 by default. 
+ *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * </p>
  * </li>
  * <h3>About the Tenant class and it's generated class TenantGen&lt;BaseModel&gt;: </h3>extends TenantGen
  * <p>
@@ -73,46 +79,64 @@ import org.computate.search.response.solr.SolrResponse;
  * The generated <code>class TenantGen extends BaseModel</code> which means that Tenant extends TenantGen which extends BaseModel. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
- * <h2>Api: true</h2>
- * <p>This class contains a comment <b>"Api: true"</b>, which means this class will have Java Vert.x API backend code generated for these objects. 
+ * <h2>
+ *   Api: true
+ * </h2>
+ * <p>
+ *   This class contains a comment <kbd><b>Api: true</b></kbd>, which means this class will have Java Vert.x API backend code generated for these objects. 
  * </p>
  * <h2>ApiTag.enUS: true</h2>
- * <p>This class contains a comment <b>"ApiTag: tenants"</b>, which groups all of the OpenAPIs for Tenant objects under the tag "tenants". 
+ * <p>This class contains a comment <kbd><b>ApiTag: discovered tenants</b></kbd>, which groups all of the OpenAPIs for Tenant objects under the tag "discovered tenants". 
  * </p>
  * <h2>ApiUri.enUS: /en-us/api/tenant</h2>
- * <p>This class contains a comment <b>"ApiUri: /en-us/api/tenant"</b>, which defines the base API URI for Tenant objects as "/en-us/api/tenant" in the OpenAPI spec. 
+ * <p>This class contains a comment <kbd><b>ApiUri: /en-us/api/tenant</b></kbd>, which defines the base API URI for Tenant objects as "/en-us/api/tenant" in the OpenAPI spec. 
  * </p>
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
- * <p>This class contains a comment <b>"Indexed: true"</b>, which means this class will be indexed in the search engine. 
+ * <p>This class contains a comment <kbd><b>Indexed: true</b></kbd>, which means this class will be indexed in the search engine. 
  * Every protected void method that begins with "_" that is marked to be searched with a comment like "Indexed: true", "Stored: true", or "DocValues: true" will be indexed in the search engine. 
  * </p>
  * <h2>{@inheritDoc}</h2>
  * <p>By adding a class comment "{@inheritDoc}", the Tenant class will inherit the helpful inherited class comments from the super class TenantGen. 
  * </p>
- * <h2>Rows: null</h2>
- * <h2>Order: 4</h2>
- * <p>This class contains a comment <b>"Order: 4"</b>, which means this class will be sorted by the given number 4 ascending when code that relates to multiple classes at the same time is generated. 
+ * <h2>
+ *   Rows: 10
+ * </h2>
+ * <p>This class contains a comment <kbd><b>Rows: 10</b></kbd>, which means the discovered tenant API will return a default of 10 results instead of 10 by default. 
+ * Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
- * <h2>SqlOrder: 4</h2>
- * <p>This class contains a comment <b>"SqlOrder: 4"</b>, which means this class will be sorted by the given number 4 ascending when SQL code to create and drop the tables is generated. 
+ * <p>
+ *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the discovered tenant API to return more or less than 10 results by default. 
+ *   In this case, the API will return 100 results from the API instead of 10 by default. 
+ *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * </p>
+ * <h2>
+ *   Order: 144
+ * </h2>
+ * <p>
+ *   This class contains a comment <kbd><b>Order: 144</b></kbd>, 
+ *   which means this class will be sorted by the given number 144 
+ *   ascending when code that relates to multiple classes at the same time is generated. 
+ * </p>
+ * <h2>SqlOrder: 144</h2>
+ * <p>This class contains a comment <kbd><b>SqlOrder: 144</b></kbd>, which means this class will be sorted by the given number 144 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
- * <p>This class contains a comment <b>"Model: true"</b>, which means this class will be stored in the database. 
+ * <p>This class contains a comment <kbd><b>Model: true</b></kbd>, which means this class will be stored in the database. 
  * Every protected void method that begins with "_" that contains a "Persist: true" comment will be a persisted field in the database table. 
  * </p>
  * <h2>Page: true</h2>
- * <p>This class contains a comment <b>"Page: true"</b>, which means this class will have webpage code generated for these objects. 
+ * <p>This class contains a comment <kbd><b>Page: true</b></kbd>, which means this class will have webpage code generated for these objects. 
  * Java Vert.x backend API code, Handlebars HTML template frontend code, and JavaScript code will all generated and can be extended. 
  * This creates a new Java class org.computate.dcm.model.eda.tenant.TenantPage. 
  * </p>
  * <h2>SuperPage.enUS: PageLayout</h2>
- * <p>This class contains a comment <b>"SuperPage.enUS: PageLayout"</b>, which identifies the Java super class of the page code by it's class simple name "PageLayout". 
+ * <p>This class contains a comment <kbd><b>SuperPage.enUS: PageLayout</b></kbd>, which identifies the Java super class of the page code by it's class simple name "PageLayout". 
  * This means that the newly created class org.computate.dcm.model.eda.tenant.TenantPage extends org.computate.dcm.page.PageLayout. 
  * </p>
  * <h2>Promise: true</h2>
  * <p>
- *   This class contains a comment <b>"Promise: true"</b>
+ *   This class contains a comment <kbd><b>Promise: true</b></kbd>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
  *   This means that the Tenant Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
@@ -133,8 +157,8 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>
  *   If a super class of this Java class with `Model: true`, then the child class will also inherit `Promise: true`. 
  * </p>
- * <h2>AName.enUS: a tenant</h2>
- * <p>This class contains a comment <b>"AName.enUS: a tenant"</b>, which identifies the language context to describe a Tenant as "a tenant". 
+ * <h2>AName.enUS: a discovered tenant</h2>
+ * <p>This class contains a comment <kbd><b>AName.enUS: a discovered tenant</b></kbd>, which identifies the language context to describe a Tenant as "a discovered tenant". 
  * </p>
  * <p>
  * Delete the class Tenant in Solr: 
@@ -160,27 +184,27 @@ public abstract class TenantGen<DEV> extends BaseModel {
   protected static final Logger LOG = LoggerFactory.getLogger(Tenant.class);
 
   public static final String Description_enUS = "Tenants are separate organizations sharing the same cloud resources. ";
-  public static final String AName_enUS = "a tenant";
+  public static final String AName_enUS = "a discovered tenant";
   public static final String This_enUS = "this ";
-  public static final String ThisName_enUS = "this tenant";
+  public static final String ThisName_enUS = "this discovered tenant";
   public static final String A_enUS = "a ";
-  public static final String TheName_enUS = "the tenant";
-  public static final String SingularName_enUS = "tenant";
-  public static final String PluralName_enUS = "tenants";
-  public static final String NameActual_enUS = "current tenant";
-  public static final String AllName_enUS = "all tenants";
-  public static final String SearchAllNameBy_enUS = "search tenants by ";
-  public static final String SearchAllName_enUS = "search tenants";
-  public static final String Title_enUS = "tenants";
-  public static final String ThePluralName_enUS = "the tenants";
-  public static final String NoNameFound_enUS = "no tenant found";
+  public static final String TheName_enUS = "the discovered tenant";
+  public static final String SingularName_enUS = "discovered tenant";
+  public static final String PluralName_enUS = "discovered tenants";
+  public static final String NameActual_enUS = "current discovered tenant";
+  public static final String AllName_enUS = "all discovered tenants";
+  public static final String SearchAllNameBy_enUS = "search discovered tenants by ";
+  public static final String SearchAllName_enUS = "search discovered tenants";
+  public static final String Title_enUS = "discovered tenants";
+  public static final String ThePluralName_enUS = "the discovered tenants";
+  public static final String NoNameFound_enUS = "no discovered tenant found";
   public static final String ApiUri_enUS = "/en-us/api/tenant";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/tenant";
   public static final String ApiUriEditPage_enUS = "/en-us/edit/tenant/{tenantResource}";
-  public static final String OfName_enUS = "of tenant";
-  public static final String ANameAdjective_enUS = "a tenant";
-  public static final String NameAdjectiveSingular_enUS = "tenant";
-  public static final String NameAdjectivePlural_enUS = "tenants";
+  public static final String OfName_enUS = "of discovered tenant";
+  public static final String ANameAdjective_enUS = "a discovered tenant";
+  public static final String NameAdjectiveSingular_enUS = "discovered tenant";
+  public static final String NameAdjectivePlural_enUS = "discovered tenants";
   public static final String Search_enUS_OpenApiUri = "/en-us/api/tenant";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/tenant";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/tenant";
@@ -894,7 +918,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
   //////////////
 
   public Future<TenantGen<DEV>> promiseDeepTenant(SiteRequest siteRequest_) {
-    setSiteRequest_(siteRequest_);
+    if(this.siteRequest_ == null)
+      setSiteRequest_(siteRequest_);
     return promiseDeepTenant();
   }
 
@@ -1094,16 +1119,16 @@ public abstract class TenantGen<DEV> extends BaseModel {
           try {
             promise.complete(searchList.getList().stream().findFirst().orElse(null));
           } catch(Throwable ex) {
-            LOG.error("Error while querying the tenant", ex);
+            LOG.error("Error while querying the discovered tenant", ex);
             promise.fail(ex);
           }
         }).onFailure(ex -> {
-          LOG.error("Error while querying the tenant", ex);
+          LOG.error("Error while querying the discovered tenant", ex);
           promise.fail(ex);
         });
       }
     } catch(Throwable ex) {
-      LOG.error("Error while querying the tenant", ex);
+      LOG.error("Error while querying the discovered tenant", ex);
       promise.fail(ex);
     }
     return promise.future();
@@ -1675,7 +1700,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return "%s/en-us/edit/tenant/%s";
   }
 
-  public static String varJsonForClass(String var, Boolean patch) {
+  public static String varJson(String var, Boolean patch) {
     return Tenant.varJsonTenant(var, patch);
   }
   public static String varJsonTenant(String var, Boolean patch) {
@@ -1742,7 +1767,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
     case VAR_tenantName:
       return "The name of this tenant";
     case VAR_tenantId:
-      return "The ID of this tenant";
+      return "The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. ";
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
     case VAR_pageId:
@@ -1805,17 +1830,15 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static Integer htmRowTenant(String var) {
     switch(var) {
     case VAR_tenantName:
-      return 3;
-    case VAR_tenantId:
-      return 3;
+      return 23;
     case VAR_pageId:
-      return 99;
+      return 299;
     case VAR_tenantDescription:
-      return 3;
+      return 23;
     case VAR_hostInventoryIds:
-      return 4;
+      return 24;
     case VAR_ansibleProjectIds:
-      return 4;
+      return 24;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1825,8 +1848,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     switch(var) {
     case VAR_tenantName:
       return 1;
-    case VAR_tenantId:
-      return 2;
     case VAR_pageId:
       return 1;
     case VAR_tenantDescription:

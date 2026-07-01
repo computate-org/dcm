@@ -30,6 +30,9 @@ find \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplate.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplatePage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/jobtemplate/JobTemplateEnUSApiServiceImpl.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCR.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCRPage.java \
+  ~/.local/src/dcm/src/main/java/org/computate/dcm/model/eda/hostcheck/cr/HostCheckCREnUSApiServiceImpl.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/Project.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectPage.java \
   ~/.local/src/dcm/src/main/java/org/computate/dcm/model/k8s/ProjectEnUSApiServiceImpl.java \

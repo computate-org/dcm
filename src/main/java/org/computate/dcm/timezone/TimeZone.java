@@ -5,7 +5,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.result.BaseResult;
 
 /**
- * Order: 2
+ * Order: 12
  * Description: A timezone
  * AName: a time zone
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-globe"></i>

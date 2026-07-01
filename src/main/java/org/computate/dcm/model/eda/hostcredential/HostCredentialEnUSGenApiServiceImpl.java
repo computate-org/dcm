@@ -2809,19 +2809,24 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           Promise<Void> promise1 = Promise.promise();
           searchpageHostCredentialPageInit(ctx, page, listHostCredential, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageHostCredential(ctx, page, listHostCredential, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageHostCredential failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageHostCredential(ctx, page, listHostCredential, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageHostCredential failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageHostCredential failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3123,19 +3128,24 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           Promise<Void> promise1 = Promise.promise();
           editpageHostCredentialPageInit(ctx, page, listHostCredential, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageHostCredential(ctx, page, listHostCredential, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageHostCredential failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageHostCredential(ctx, page, listHostCredential, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageHostCredential failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageHostCredential failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3437,19 +3447,24 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           Promise<Void> promise1 = Promise.promise();
           userpageHostCredentialPageInit(ctx, page, listHostCredential, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateUserPageHostCredential(ctx, page, listHostCredential, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageHostCredential failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateUserPageHostCredential(ctx, page, listHostCredential, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200UserPageHostCredential failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200UserPageHostCredential failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -4245,6 +4260,149 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     return promise.future();
   }
   public void searchHostCredential2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<HostCredential> searchList) {
+  }
+
+  public Future<JsonObject> upsertHostCredential(HostCredential o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+        String old_tenantResource = HostCredential.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+          try {
+            if(oTenant == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+
+              String old_tenantId = HostCredential.staticJsonTenantId(o.getTenantId());
+              String new_tenantId = json.getString(HostCredential.varJson(HostCredential.VAR_tenantId, patch));
+              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_tenantId, patch), tenantId);
+
+              String old_created = HostCredential.staticJsonCreated(o.getCreated());
+              String new_created = json.getString(HostCredential.varJson(HostCredential.VAR_created, patch));
+              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_created, patch), created);
+
+              String old_aapOrganizationId = HostCredential.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              String new_aapOrganizationId = json.getString(HostCredential.varJson(HostCredential.VAR_aapOrganizationId, patch));
+              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+              String old_credentialName = HostCredential.staticJsonCredentialName(o.getCredentialName());
+              String new_credentialName = json.getString(HostCredential.varJson(HostCredential.VAR_credentialName, patch));
+              String credentialName = Optional.ofNullable(Optional.ofNullable(new_credentialName).orElse(old_credentialName)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_credentialName, patch), credentialName);
+
+              Boolean old_archived = HostCredential.staticJsonArchived(o.getArchived());
+              Boolean new_archived = json.getBoolean(HostCredential.varJson(HostCredential.VAR_archived, patch));
+              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_archived, patch), archived);
+
+              String old_credentialId = HostCredential.staticJsonCredentialId(o.getCredentialId());
+              String new_credentialId = json.getString(HostCredential.varJson(HostCredential.VAR_credentialId, patch));
+              String credentialId = Optional.ofNullable(Optional.ofNullable(new_credentialId).orElse(old_credentialId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_credentialId, patch), credentialId);
+
+              String old_credentialResource = HostCredential.staticJsonCredentialResource(o.getCredentialResource());
+              String new_credentialResource = json.getString(HostCredential.varJson(HostCredential.VAR_credentialResource, patch));
+              String credentialResource = Optional.ofNullable(Optional.ofNullable(new_credentialResource).orElse(old_credentialResource)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_credentialResource, patch), credentialResource);
+
+              String old_credentialDescription = HostCredential.staticJsonCredentialDescription(o.getCredentialDescription());
+              String new_credentialDescription = json.getString(HostCredential.varJson(HostCredential.VAR_credentialDescription, patch));
+              String credentialDescription = Optional.ofNullable(Optional.ofNullable(new_credentialDescription).orElse(old_credentialDescription)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_credentialDescription, patch), credentialDescription);
+
+              String old_aapCredentialId = HostCredential.staticJsonAapCredentialId(o.getAapCredentialId());
+              String new_aapCredentialId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialId, patch));
+              String aapCredentialId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialId).orElse(old_aapCredentialId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_aapCredentialId, patch), aapCredentialId);
+
+              String old_sessionId = HostCredential.staticJsonSessionId(o.getSessionId());
+              String new_sessionId = json.getString(HostCredential.varJson(HostCredential.VAR_sessionId, patch));
+              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_sessionId, patch), sessionId);
+
+              String old_aapCredentialTypeId = HostCredential.staticJsonAapCredentialTypeId(o.getAapCredentialTypeId());
+              String new_aapCredentialTypeId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialTypeId, patch));
+              String aapCredentialTypeId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialTypeId).orElse(old_aapCredentialTypeId)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_aapCredentialTypeId, patch), aapCredentialTypeId);
+
+              String old_userKey = HostCredential.staticJsonUserKey(o.getUserKey());
+              String new_userKey = json.getString(HostCredential.varJson(HostCredential.VAR_userKey, patch));
+              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_userKey, patch), userKey);
+
+              String old_userName = HostCredential.staticJsonUserName(o.getUserName());
+              String new_userName = json.getString(HostCredential.varJson(HostCredential.VAR_userName, patch));
+              String userName = Optional.ofNullable(Optional.ofNullable(new_userName).orElse(old_userName)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_userName, patch), userName);
+
+              String old_password = HostCredential.staticJsonPassword(o.getPassword());
+              String new_password = json.getString(HostCredential.varJson(HostCredential.VAR_password, patch));
+              String password = Optional.ofNullable(Optional.ofNullable(new_password).orElse(old_password)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_password, patch), password);
+
+              String old_becomeMethod = HostCredential.staticJsonBecomeMethod(o.getBecomeMethod());
+              String new_becomeMethod = json.getString(HostCredential.varJson(HostCredential.VAR_becomeMethod, patch));
+              String becomeMethod = Optional.ofNullable(Optional.ofNullable(new_becomeMethod).orElse(old_becomeMethod)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_becomeMethod, patch), becomeMethod);
+
+              String old_objectTitle = HostCredential.staticJsonObjectTitle(o.getObjectTitle());
+              String new_objectTitle = json.getString(HostCredential.varJson(HostCredential.VAR_objectTitle, patch));
+              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_objectTitle, patch), objectTitle);
+
+              String old_becomePassword = HostCredential.staticJsonBecomePassword(o.getBecomePassword());
+              String new_becomePassword = json.getString(HostCredential.varJson(HostCredential.VAR_becomePassword, patch));
+              String becomePassword = Optional.ofNullable(Optional.ofNullable(new_becomePassword).orElse(old_becomePassword)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_becomePassword, patch), becomePassword);
+
+              String old_displayPage = HostCredential.staticJsonDisplayPage(o.getDisplayPage());
+              String new_displayPage = json.getString(HostCredential.varJson(HostCredential.VAR_displayPage, patch));
+              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_displayPage, patch), displayPage);
+
+              String old_editPage = HostCredential.staticJsonEditPage(o.getEditPage());
+              String new_editPage = json.getString(HostCredential.varJson(HostCredential.VAR_editPage, patch));
+              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_editPage, patch), editPage);
+
+              String old_userPage = HostCredential.staticJsonUserPage(o.getUserPage());
+              String new_userPage = json.getString(HostCredential.varJson(HostCredential.VAR_userPage, patch));
+              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_userPage, patch), userPage);
+
+              String old_download = HostCredential.staticJsonDownload(o.getDownload());
+              String new_download = json.getString(HostCredential.varJson(HostCredential.VAR_download, patch));
+              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // json.put(HostCredential.varJson(HostCredential.VAR_download, patch), download);
+
+              promise.complete(json);
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertHostCredential failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertHostCredential failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistHostCredential(HostCredential o, Boolean patch) {

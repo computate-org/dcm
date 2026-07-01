@@ -1530,19 +1530,24 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           Promise<Void> promise1 = Promise.promise();
           searchpageSiteUserPageInit(ctx, page, listSiteUser, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageSiteUser(ctx, page, listSiteUser, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageSiteUser failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageSiteUser(ctx, page, listSiteUser, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageSiteUser failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageSiteUser failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -1782,19 +1787,24 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
           Promise<Void> promise1 = Promise.promise();
           editpageSiteUserPageInit(ctx, page, listSiteUser, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageSiteUser(ctx, page, listSiteUser, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageSiteUser failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageSiteUser(ctx, page, listSiteUser, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageSiteUser failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageSiteUser failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -1974,6 +1984,130 @@ public class SiteUserEnUSGenApiServiceImpl extends BaseApiServiceImpl implements
     return promise.future();
   }
   public void searchSiteUser2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<SiteUser> searchList) {
+  }
+
+  public Future<JsonObject> upsertSiteUser(SiteUser o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+
+        String old_userId = SiteUser.staticJsonUserId(o.getUserId());
+        String new_userId = json.getString(SiteUser.varJson(SiteUser.VAR_userId, patch));
+        String userId = Optional.ofNullable(Optional.ofNullable(new_userId).orElse(old_userId)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userId, patch), userId);
+
+        String old_created = SiteUser.staticJsonCreated(o.getCreated());
+        String new_created = json.getString(SiteUser.varJson(SiteUser.VAR_created, patch));
+        String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_created, patch), created);
+
+        String old_userName = SiteUser.staticJsonUserName(o.getUserName());
+        String new_userName = json.getString(SiteUser.varJson(SiteUser.VAR_userName, patch));
+        String userName = Optional.ofNullable(Optional.ofNullable(new_userName).orElse(old_userName)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userName, patch), userName);
+
+        String old_userEmail = SiteUser.staticJsonUserEmail(o.getUserEmail());
+        String new_userEmail = json.getString(SiteUser.varJson(SiteUser.VAR_userEmail, patch));
+        String userEmail = Optional.ofNullable(Optional.ofNullable(new_userEmail).orElse(old_userEmail)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userEmail, patch), userEmail);
+
+        Boolean old_archived = SiteUser.staticJsonArchived(o.getArchived());
+        Boolean new_archived = json.getBoolean(SiteUser.varJson(SiteUser.VAR_archived, patch));
+        Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_archived, patch), archived);
+
+        String old_userFirstName = SiteUser.staticJsonUserFirstName(o.getUserFirstName());
+        String new_userFirstName = json.getString(SiteUser.varJson(SiteUser.VAR_userFirstName, patch));
+        String userFirstName = Optional.ofNullable(Optional.ofNullable(new_userFirstName).orElse(old_userFirstName)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userFirstName, patch), userFirstName);
+
+        String old_userLastName = SiteUser.staticJsonUserLastName(o.getUserLastName());
+        String new_userLastName = json.getString(SiteUser.varJson(SiteUser.VAR_userLastName, patch));
+        String userLastName = Optional.ofNullable(Optional.ofNullable(new_userLastName).orElse(old_userLastName)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userLastName, patch), userLastName);
+
+        String old_userFullName = SiteUser.staticJsonUserFullName(o.getUserFullName());
+        String new_userFullName = json.getString(SiteUser.varJson(SiteUser.VAR_userFullName, patch));
+        String userFullName = Optional.ofNullable(Optional.ofNullable(new_userFullName).orElse(old_userFullName)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userFullName, patch), userFullName);
+
+        String old_userProfileUrl = SiteUser.staticJsonUserProfileUrl(o.getUserProfileUrl());
+        String new_userProfileUrl = json.getString(SiteUser.varJson(SiteUser.VAR_userProfileUrl, patch));
+        String userProfileUrl = Optional.ofNullable(Optional.ofNullable(new_userProfileUrl).orElse(old_userProfileUrl)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userProfileUrl, patch), userProfileUrl);
+
+        String old_sessionId = SiteUser.staticJsonSessionId(o.getSessionId());
+        String new_sessionId = json.getString(SiteUser.varJson(SiteUser.VAR_sessionId, patch));
+        String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_sessionId, patch), sessionId);
+
+        Boolean old_seeArchived = SiteUser.staticJsonSeeArchived(o.getSeeArchived());
+        Boolean new_seeArchived = json.getBoolean(SiteUser.varJson(SiteUser.VAR_seeArchived, patch));
+        Boolean seeArchived = Optional.ofNullable(Optional.ofNullable(new_seeArchived).orElse(old_seeArchived)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_seeArchived, patch), seeArchived);
+
+        String old_userKey = SiteUser.staticJsonUserKey(o.getUserKey());
+        String new_userKey = json.getString(SiteUser.varJson(SiteUser.VAR_userKey, patch));
+        String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userKey, patch), userKey);
+
+        String old_displayName = SiteUser.staticJsonDisplayName(o.getDisplayName());
+        String new_displayName = json.getString(SiteUser.varJson(SiteUser.VAR_displayName, patch));
+        String displayName = Optional.ofNullable(Optional.ofNullable(new_displayName).orElse(old_displayName)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_displayName, patch), displayName);
+
+        String old_siteFontSize = SiteUser.staticJsonSiteFontSize(o.getSiteFontSize());
+        String new_siteFontSize = json.getString(SiteUser.varJson(SiteUser.VAR_siteFontSize, patch));
+        String siteFontSize = Optional.ofNullable(Optional.ofNullable(new_siteFontSize).orElse(old_siteFontSize)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_siteFontSize, patch), siteFontSize);
+
+        String old_siteTheme = SiteUser.staticJsonSiteTheme(o.getSiteTheme());
+        String new_siteTheme = json.getString(SiteUser.varJson(SiteUser.VAR_siteTheme, patch));
+        String siteTheme = Optional.ofNullable(Optional.ofNullable(new_siteTheme).orElse(old_siteTheme)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_siteTheme, patch), siteTheme);
+
+        String old_objectTitle = SiteUser.staticJsonObjectTitle(o.getObjectTitle());
+        String new_objectTitle = json.getString(SiteUser.varJson(SiteUser.VAR_objectTitle, patch));
+        String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_objectTitle, patch), objectTitle);
+
+        String old_customerProfileId = SiteUser.staticJsonCustomerProfileId(o.getCustomerProfileId());
+        String new_customerProfileId = json.getString(SiteUser.varJson(SiteUser.VAR_customerProfileId, patch));
+        String customerProfileId = Optional.ofNullable(Optional.ofNullable(new_customerProfileId).orElse(old_customerProfileId)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_customerProfileId, patch), customerProfileId);
+
+        String old_displayPage = SiteUser.staticJsonDisplayPage(o.getDisplayPage());
+        String new_displayPage = json.getString(SiteUser.varJson(SiteUser.VAR_displayPage, patch));
+        String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_displayPage, patch), displayPage);
+
+        String old_editPage = SiteUser.staticJsonEditPage(o.getEditPage());
+        String new_editPage = json.getString(SiteUser.varJson(SiteUser.VAR_editPage, patch));
+        String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_editPage, patch), editPage);
+
+        String old_userPage = SiteUser.staticJsonUserPage(o.getUserPage());
+        String new_userPage = json.getString(SiteUser.varJson(SiteUser.VAR_userPage, patch));
+        String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_userPage, patch), userPage);
+
+        String old_download = SiteUser.staticJsonDownload(o.getDownload());
+        String new_download = json.getString(SiteUser.varJson(SiteUser.VAR_download, patch));
+        String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+        // json.put(SiteUser.varJson(SiteUser.VAR_download, patch), download);
+
+          promise.complete(json);
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertSiteUser failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistSiteUser(SiteUser o, Boolean patch) {

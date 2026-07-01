@@ -48,7 +48,7 @@ data:
     # The domain name of the site. 
     DOMAIN_NAME: "computate.org"
     # The GitHub organization for this project. 
-    GITHUB_ORG: "computate-org"
+    GIT_ORG: "computate-org"
     # The main git repository for the project. 
     SITE_REPO: "git@github.com:computate-org/dcm.git"
     # The main git repository for the project via ssh. 
@@ -67,6 +67,8 @@ data:
     CLUSTER_PUBLIC_PORT: "{{ (SITE_PORT | int) + 1 }}"
     # Zookeeper root path to avoid conflicts with other apps using Zookeeper for clustering. 
     ZOOKEEPER_ROOT_PATH: "{{ lookup('env', 'ZOOKEEPER_ROOT_PATH') | default(SITE_NAME + '-cloud', true) }}"
+    # Zookeeper root path to avoid conflicts with other apps using Zookeeper for clustering. 
+    ZOOKEEPER_RETRY_POLICY: "exponential_backoff"
     # Verify SSL connections. 
     SSL_VERIFY: "{{ lookup('env', 'SSL_VERIFY') | default('false', true) | bool }}"
     # The public search endpoint for searching public items in the site. 
@@ -384,7 +386,7 @@ data:
     ###############
 
     # Enable FIWARE Smart Data Model integrations. 
-    ENABLE_FIWARE: false
+    ENABLE_FIWARE: true
     # FIWARE Smart Data Model source code directory. 
     SMART_DATA_MODELS_SRC: "{{ (PARENT_SRC + '/smart-data-models') | realpath }}"
     # Map default latitude,longitude. 

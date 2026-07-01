@@ -35,7 +35,7 @@ import io.vertx.core.json.JsonObject;
 
 
 /**
- * Order: 3
+ * Order: 13
  * Description: Read the latest articles to learn more
  * AName: an article
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-newspaper"></i>
@@ -83,7 +83,7 @@ public class SitePage extends SitePageGen<BaseResult> {
    * {@inheritDoc}
    */
   protected void _githubOrg(Wrap<String> w) {
-    w.o(siteRequest_.getConfig().getString(ConfigKeys.GITHUB_ORG));
+    w.o(siteRequest_.getConfig().getString(ConfigKeys.GIT_ORG));
   }
 
   /**

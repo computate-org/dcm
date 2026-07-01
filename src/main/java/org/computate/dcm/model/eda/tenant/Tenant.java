@@ -1,31 +1,14 @@
 package org.computate.dcm.model.eda.tenant;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
-import org.apache.commons.lang3.StringUtils;
-import org.computate.search.tool.SearchTool;
 import org.computate.search.wrap.Wrap;
-import org.computate.vertx.api.BaseApiServiceImpl;
-import org.computate.vertx.config.ComputateConfigKeys;
-import org.computate.vertx.search.list.SearchList;
 import org.computate.dcm.model.BaseModel;
 
-import io.vertx.core.Promise;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.pgclient.data.Path;
-import io.vertx.pgclient.data.Point;
-import io.vertx.pgclient.data.Polygon;
-
 /**
- * Order: 4
+ * Order: 144
  * Description: Tenants are separate organizations sharing the same cloud resources. 
- * AName: a tenant
+ * AName: a discovered tenant
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-buildings"></i>
- * MenuDetails: multi-tenancy
- * MenuDetailsOpen: true
  *
  * SearchPageUri: /en-us/search/tenant
  * EditPageUri: /en-us/edit/tenant/{tenantResource}
@@ -62,7 +45,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * Persist: true
    * DisplayName: tenant name
    * Description: The name of this tenant
-   * HtmRow: 3
+   * HtmRow: 23
    * HtmCell: 1
    * HtmColumn: 1
    * HtmRowTitleOpen: tenant details
@@ -78,9 +61,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * DocValues: true
    * Persist: true
    * DisplayName: tenant ID
-   * Description: The ID of this tenant
-   * HtmRow: 3
-   * HtmCell: 2
+   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
    * Facet: true
    * DefaultFacet: true
    **/
@@ -107,8 +88,8 @@ public class Tenant extends TenantGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * HtmRowTitleOpen: Useful URLs
-   * HtmRow: 99
+   * HtmRowTitle: Useful URLs
+   * HtmRow: 299
    * HtmCell: 1
    * Facet: true
    * DisplayName: Page ID
@@ -124,7 +105,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * Persist: true
    * DisplayName: description
    * Description: A description of this tenant
-   * HtmRow: 3
+   * HtmRow: 23
    * HtmCell: 4
    * Facet: true
    * HtmColumn: 3
@@ -171,8 +152,8 @@ public class Tenant extends TenantGen<BaseModel> {
    * DisplayName: host inventories
    * Description: The related host inventories for this tenant. 
    * Relate: HostInventory.tenantResource
-   * HtmRowTitleOpen: relationships
-   * HtmRow: 4
+   * HtmRowTitle: relationships
+   * HtmRow: 24
    * HtmCell: 0
    **/
   protected void _hostInventoryIds(List<String> l) {
@@ -184,7 +165,7 @@ public class Tenant extends TenantGen<BaseModel> {
    * DisplayName: Ansible projects
    * Description: The related Ansible projects for this tenant. 
    * Relate: AnsibleProject.tenantResource
-   * HtmRow: 4
+   * HtmRow: 24
    * HtmCell: 0
    **/
   protected void _ansibleProjectIds(List<String> l) {

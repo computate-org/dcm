@@ -6,7 +6,7 @@ import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 
 /**
- * Order: 6
+ * Order: 16
  * Description: A managed host inventory. 
  * AName: a host inventory
  * PluralName: host inventories

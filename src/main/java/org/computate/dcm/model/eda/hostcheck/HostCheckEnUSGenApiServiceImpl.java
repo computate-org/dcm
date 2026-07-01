@@ -3035,19 +3035,24 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           Promise<Void> promise1 = Promise.promise();
           searchpageHostCheckPageInit(ctx, page, listHostCheck, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageHostCheck(ctx, page, listHostCheck, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageHostCheck failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageHostCheck(ctx, page, listHostCheck, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageHostCheck failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageHostCheck failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -3366,19 +3371,24 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           Promise<Void> promise1 = Promise.promise();
           editpageHostCheckPageInit(ctx, page, listHostCheck, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageHostCheck(ctx, page, listHostCheck, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageHostCheck failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageHostCheck(ctx, page, listHostCheck, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageHostCheck failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageHostCheck failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -4211,6 +4221,178 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     return promise.future();
   }
   public void searchHostCheck2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<HostCheck> searchList) {
+  }
+
+  public Future<JsonObject> upsertHostCheck(HostCheck o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+        String old_tenantResource = HostCheck.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+          try {
+            if(oTenant == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              String old_jobTemplateResource = HostCheck.staticJsonJobTemplateResource(o.getJobTemplateResource());
+              String new_jobTemplateResource = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch));
+              String jobTemplateResource = Optional.ofNullable(new_jobTemplateResource).orElse(old_jobTemplateResource);
+              JobTemplate.fqJobTemplate(siteRequest, JobTemplate.VAR_jobTemplateResource, jobTemplateResource).onSuccess(oJobTemplate -> {
+                try {
+                  if(oJobTemplate == null) {
+                    RuntimeException ex = new RuntimeException(String.format("Could not find a matching JobTemplate %s", jobTemplateResource));
+                    LOG.error(ex.getMessage(), ex);
+                    promise.fail(ex);
+                  } else {
+                    json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
+
+                    String old_tenantId = HostCheck.staticJsonTenantId(o.getTenantId());
+                    String new_tenantId = json.getString(HostCheck.varJson(HostCheck.VAR_tenantId, patch));
+                    String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_tenantId, patch), tenantId);
+
+                    String old_created = HostCheck.staticJsonCreated(o.getCreated());
+                    String new_created = json.getString(HostCheck.varJson(HostCheck.VAR_created, patch));
+                    String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_created, patch), created);
+
+                    String old_aapOrganizationId = HostCheck.staticJsonAapOrganizationId(o.getAapOrganizationId());
+                    String new_aapOrganizationId = json.getString(HostCheck.varJson(HostCheck.VAR_aapOrganizationId, patch));
+                    String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+                    Boolean old_archived = HostCheck.staticJsonArchived(o.getArchived());
+                    Boolean new_archived = json.getBoolean(HostCheck.varJson(HostCheck.VAR_archived, patch));
+                    Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_archived, patch), archived);
+
+                    String old_jobTemplateId = HostCheck.staticJsonJobTemplateId(o.getJobTemplateId());
+                    String new_jobTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_jobTemplateId, patch));
+                    String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_jobTemplateId, patch), jobTemplateId);
+
+                    String old_aapTemplateId = HostCheck.staticJsonAapTemplateId(o.getAapTemplateId());
+                    String new_aapTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_aapTemplateId, patch));
+                    String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_aapTemplateId, patch), aapTemplateId);
+
+                    String old_checkName = HostCheck.staticJsonCheckName(o.getCheckName());
+                    String new_checkName = json.getString(HostCheck.varJson(HostCheck.VAR_checkName, patch));
+                    String checkName = Optional.ofNullable(Optional.ofNullable(new_checkName).orElse(old_checkName)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkName, patch), checkName);
+
+                    String old_checkId = HostCheck.staticJsonCheckId(o.getCheckId());
+                    String new_checkId = json.getString(HostCheck.varJson(HostCheck.VAR_checkId, patch));
+                    String checkId = Optional.ofNullable(Optional.ofNullable(new_checkId).orElse(old_checkId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkId, patch), checkId);
+
+                    String old_sessionId = HostCheck.staticJsonSessionId(o.getSessionId());
+                    String new_sessionId = json.getString(HostCheck.varJson(HostCheck.VAR_sessionId, patch));
+                    String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_sessionId, patch), sessionId);
+
+                    String old_checkResource = HostCheck.staticJsonCheckResource(o.getCheckResource());
+                    String new_checkResource = json.getString(HostCheck.varJson(HostCheck.VAR_checkResource, patch));
+                    String checkResource = Optional.ofNullable(Optional.ofNullable(new_checkResource).orElse(old_checkResource)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkResource, patch), checkResource);
+
+                    String old_userKey = HostCheck.staticJsonUserKey(o.getUserKey());
+                    String new_userKey = json.getString(HostCheck.varJson(HostCheck.VAR_userKey, patch));
+                    String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_userKey, patch), userKey);
+
+                    String old_checkDescription = HostCheck.staticJsonCheckDescription(o.getCheckDescription());
+                    String new_checkDescription = json.getString(HostCheck.varJson(HostCheck.VAR_checkDescription, patch));
+                    String checkDescription = Optional.ofNullable(Optional.ofNullable(new_checkDescription).orElse(old_checkDescription)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkDescription, patch), checkDescription);
+
+                    String old_checkNamespace = HostCheck.staticJsonCheckNamespace(o.getCheckNamespace());
+                    String new_checkNamespace = json.getString(HostCheck.varJson(HostCheck.VAR_checkNamespace, patch));
+                    String checkNamespace = Optional.ofNullable(Optional.ofNullable(new_checkNamespace).orElse(old_checkNamespace)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkNamespace, patch), checkNamespace);
+
+                    String old_checkCommand = HostCheck.staticJsonCheckCommand(o.getCheckCommand());
+                    String new_checkCommand = json.getString(HostCheck.varJson(HostCheck.VAR_checkCommand, patch));
+                    String checkCommand = Optional.ofNullable(Optional.ofNullable(new_checkCommand).orElse(old_checkCommand)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkCommand, patch), checkCommand);
+
+                    String old_objectTitle = HostCheck.staticJsonObjectTitle(o.getObjectTitle());
+                    String new_objectTitle = json.getString(HostCheck.varJson(HostCheck.VAR_objectTitle, patch));
+                    String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_objectTitle, patch), objectTitle);
+
+                    String old_checkInterval = HostCheck.staticJsonCheckInterval(o.getCheckInterval());
+                    String new_checkInterval = json.getString(HostCheck.varJson(HostCheck.VAR_checkInterval, patch));
+                    String checkInterval = Optional.ofNullable(Optional.ofNullable(new_checkInterval).orElse(old_checkInterval)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkInterval, patch), checkInterval);
+
+                    String old_displayPage = HostCheck.staticJsonDisplayPage(o.getDisplayPage());
+                    String new_displayPage = json.getString(HostCheck.varJson(HostCheck.VAR_displayPage, patch));
+                    String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_displayPage, patch), displayPage);
+
+                    Boolean old_checkPublished = HostCheck.staticJsonCheckPublished(o.getCheckPublished());
+                    Boolean new_checkPublished = json.getBoolean(HostCheck.varJson(HostCheck.VAR_checkPublished, patch));
+                    Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(new_checkPublished).orElse(old_checkPublished)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_checkPublished, patch), checkPublished);
+
+                    String old_editPage = HostCheck.staticJsonEditPage(o.getEditPage());
+                    String new_editPage = json.getString(HostCheck.varJson(HostCheck.VAR_editPage, patch));
+                    String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_editPage, patch), editPage);
+
+                    JsonArray old_eventSubscriptions = HostCheck.staticJsonEventSubscriptions(o.getEventSubscriptions());
+                    JsonArray new_eventSubscriptions = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventSubscriptions, patch));
+                    JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(new_eventSubscriptions).orElse(old_eventSubscriptions)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_eventSubscriptions, patch), eventSubscriptions);
+
+                    String old_userPage = HostCheck.staticJsonUserPage(o.getUserPage());
+                    String new_userPage = json.getString(HostCheck.varJson(HostCheck.VAR_userPage, patch));
+                    String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_userPage, patch), userPage);
+
+                    JsonArray old_eventHandlers = HostCheck.staticJsonEventHandlers(o.getEventHandlers());
+                    JsonArray new_eventHandlers = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventHandlers, patch));
+                    JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(new_eventHandlers).orElse(old_eventHandlers)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_eventHandlers, patch), eventHandlers);
+
+                    String old_download = HostCheck.staticJsonDownload(o.getDownload());
+                    String new_download = json.getString(HostCheck.varJson(HostCheck.VAR_download, patch));
+                    String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+                    // json.put(HostCheck.varJson(HostCheck.VAR_download, patch), download);
+
+                  promise.complete(json);
+                  }
+                } catch(Exception ex) {
+                  LOG.error(String.format("upsertHostCheck failed. "), ex);
+                  promise.tryFail(ex);
+                }
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertHostCheck failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertHostCheck failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
   }
 
   public Future<Void> persistHostCheck(HostCheck o, Boolean patch) {

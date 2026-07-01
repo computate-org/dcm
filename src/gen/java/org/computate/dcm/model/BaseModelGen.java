@@ -1,5 +1,20 @@
 package org.computate.dcm.model;
 
+import java.net.URLEncoder;
+import java.text.Normalizer;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.RegExUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.computate.search.wrap.Wrap;
+import org.computate.dcm.config.ConfigKeys;
+import org.computate.dcm.request.SiteRequest;
+import org.computate.vertx.config.ComputateConfigKeys;
+import org.computate.vertx.model.base.ComputateBaseModel;
 import org.computate.dcm.request.SiteRequest;
 import java.lang.Object;
 import org.computate.dcm.model.BaseModel;
@@ -27,6 +42,7 @@ import org.computate.search.serialize.ComputateZonedDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.computate.search.serialize.ComputateBigDecimalDeserializer;
 import java.math.MathContext;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.text.NumberFormat;
@@ -60,7 +76,9 @@ import org.computate.search.response.solr.SolrResponse;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment <b>"Api: true"</b> if you wish to GET, POST, PATCH or PUT these BaseModel objects in a RESTful API. 
+ * <li><p>
+ *   You can add a class comment <kbd><b>Api: true</b></kbd> if you wish to GET, POST, PATCH or PUT these  objects in a RESTful API. 
+ * </p>
  * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class BaseModelGen into the class BaseModel. 
  * </li>
  * <h3>About the BaseModel class and it's generated class BaseModelGen&lt;Object&gt;: </h3>extends BaseModelGen
@@ -79,33 +97,50 @@ import org.computate.search.response.solr.SolrResponse;
  * The generated <code>class BaseModelGen extends Object</code> which means that BaseModel extends BaseModelGen which extends Object. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
- * <h2>Api: true</h2>
+ * <h2>
+ *   Api: true
+ * </h2>
  * <h2>ApiTag.enUS: true</h2>
  * <h2>ApiUri.enUS: null</h2>
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
- * <p>This class contains a comment <b>"Indexed: true"</b>, which means this class will be indexed in the search engine. 
+ * <p>This class contains a comment <kbd><b>Indexed: true</b></kbd>, which means this class will be indexed in the search engine. 
  * Every protected void method that begins with "_" that is marked to be searched with a comment like "Indexed: true", "Stored: true", or "DocValues: true" will be indexed in the search engine. 
  * </p>
  * <h2>{@inheritDoc}</h2>
  * <p>By adding a class comment "{@inheritDoc}", the BaseModel class will inherit the helpful inherited class comments from the super class BaseModelGen. 
  * </p>
- * <h2>Rows: null</h2>
- * <h2>Order: 0</h2>
- * <p>This class contains a comment <b>"Order: 0"</b>, which means this class will be sorted by the given number 0 ascending when code that relates to multiple classes at the same time is generated. 
+ * <h2>
+ *   Rows: 10
+ * </h2>
+ * <p>This class contains a comment <kbd><b>Rows: 10</b></kbd>, which means the  API will return a default of 10 results instead of 10 by default. 
+ * Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * </p>
+ * <p>
+ *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the  API to return more or less than 10 results by default. 
+ *   In this case, the API will return 100 results from the API instead of 10 by default. 
+ *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * </p>
+ * <h2>
+ *   Order: 1
+ * </h2>
+ * <p>
+ *   This class contains a comment <kbd><b>Order: 1</b></kbd>, 
+ *   which means this class will be sorted by the given number 1 
+ *   ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
  * <h2>SqlOrder: 0</h2>
- * <p>This class contains a comment <b>"SqlOrder: 0"</b>, which means this class will be sorted by the given number 0 ascending when SQL code to create and drop the tables is generated. 
+ * <p>This class contains a comment <kbd><b>SqlOrder: 0</b></kbd>, which means this class will be sorted by the given number 0 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
- * <p>This class contains a comment <b>"Model: true"</b>, which means this class will be stored in the database. 
+ * <p>This class contains a comment <kbd><b>Model: true</b></kbd>, which means this class will be stored in the database. 
  * Every protected void method that begins with "_" that contains a "Persist: true" comment will be a persisted field in the database table. 
  * </p>
  * <h2>Page: true</h2>
  * <h2>SuperPage.enUS: null</h2>
  * <h2>Promise: true</h2>
  * <p>
- *   This class contains a comment <b>"Promise: true"</b>
+ *   This class contains a comment <kbd><b>Promise: true</b></kbd>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
  *   This means that the BaseModel Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
@@ -1386,7 +1421,8 @@ public abstract class BaseModelGen<DEV> extends Object {
   //////////////
 
   public Future<BaseModelGen<DEV>> promiseDeepBaseModel(SiteRequest siteRequest_) {
-    setSiteRequest_(siteRequest_);
+    if(this.siteRequest_ == null)
+      setSiteRequest_(siteRequest_);
     return promiseDeepBaseModel();
   }
 
@@ -2412,7 +2448,7 @@ public abstract class BaseModelGen<DEV> extends Object {
     return null;
   }
 
-  public static String varJsonForClass(String var, Boolean patch) {
+  public static String varJson(String var, Boolean patch) {
     return BaseModel.varJsonBaseModel(var, patch);
   }
   public static String varJsonBaseModel(String var, Boolean patch) {

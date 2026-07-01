@@ -1902,19 +1902,24 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           searchpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateSearchPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateSearchPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200SearchPageAiTelemetryPlatform failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -2196,19 +2201,24 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           editpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateEditPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateEditPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200EditPageAiTelemetryPlatform failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
@@ -2490,19 +2500,24 @@ public class AiTelemetryPlatformEnUSGenApiServiceImpl extends BaseApiServiceImpl
           Promise<Void> promise1 = Promise.promise();
           userpageAiTelemetryPlatformPageInit(ctx, page, listAiTelemetryPlatform, promise1);
           promise1.future().onSuccess(b -> {
-            Promise<String> promise2 = Promise.promise();
-            templateUserPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
-            promise2.future().onSuccess(renderedTemplate -> {
-              try {
-                Buffer buffer = Buffer.buffer(renderedTemplate);
-                promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
-              } catch(Throwable ex) {
-                LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
+            try {
+              Promise<String> promise2 = Promise.promise();
+              templateUserPageAiTelemetryPlatform(ctx, page, listAiTelemetryPlatform, promise2);
+              promise2.future().onSuccess(renderedTemplate -> {
+                try {
+                  Buffer buffer = Buffer.buffer(renderedTemplate);
+                  promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
+                } catch(Throwable ex) {
+                  LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
+                  promise.fail(ex);
+                }
+              }).onFailure(ex -> {
                 promise.fail(ex);
-              }
-            }).onFailure(ex -> {
-              promise.fail(ex);
-            });
+              });
+            } catch(Throwable ex) {
+              LOG.error(String.format("response200UserPageAiTelemetryPlatform failed. "), ex);
+              promise.tryFail(ex);
+            }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
