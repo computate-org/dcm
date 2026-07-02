@@ -146,4 +146,9 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    **/
   protected void _realizedState(Wrap<String> w) {
   }
+
+  @Override
+  protected void _tenantDescription(Wrap<String> w) {
+    w.o(String.format("Intent state: %s\n Requested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+  }
 }

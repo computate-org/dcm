@@ -46,6 +46,8 @@ import java.lang.String;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import io.vertx.core.json.JsonArray;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
+import org.computate.dcm.model.eda.requestapproval.RequestApproval;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -235,6 +237,93 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/intent/requested";
 
   public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-buildings\"></i>";
+
+	//////////////////////
+  // requestApprovals //
+	//////////////////////
+
+
+  /**
+   *  The entity requestApprovals
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> requestApprovals = new ArrayList<String>();
+
+  /**
+   * <br> The entity requestApprovals
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.requested.TenantRequested&fq=entiteVar_enUS_indexed_string:requestApprovals">Find the entity requestApprovals in Solr</a>
+   * <br>
+   * @param w is the entity already constructed. 
+   **/
+  protected abstract void _requestApprovals(List<String> w);
+
+  public List<String> getRequestApprovals() {
+    return requestApprovals;
+  }
+
+  public void setRequestApprovals(List<String> requestApprovals) {
+    this.requestApprovals = requestApprovals;
+  }
+  @JsonIgnore
+  public void setRequestApprovals(String o) {
+    String l = TenantRequested.staticSetRequestApprovals(siteRequest_, o);
+    if(l != null)
+      addRequestApprovals(l);
+  }
+  public static String staticSetRequestApprovals(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public TenantRequested addRequestApprovals(String...objects) {
+    for(String o : objects) {
+      addRequestApprovals(o);
+    }
+    return (TenantRequested)this;
+  }
+  public TenantRequested addRequestApprovals(String o) {
+    if(o != null)
+      this.requestApprovals.add(o);
+    return (TenantRequested)this;
+  }
+  @JsonIgnore
+  public void setRequestApprovals(JsonArray objects) {
+    requestApprovals.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addRequestApprovals(o);
+    }
+  }
+  protected TenantRequested requestApprovalsInit() {
+    _requestApprovals(requestApprovals);
+    return (TenantRequested)this;
+  }
+
+  public static String staticSearchRequestApprovals(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRequestApprovals(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRequestApprovals(SiteRequest siteRequest_, String o) {
+    return TenantRequested.staticSearchRequestApprovals(siteRequest_, TenantRequested.staticSetRequestApprovals(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlRequestApprovals() {
+    return requestApprovals.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonRequestApprovals(List<String> requestApprovals) {
+    JsonArray a = new JsonArray();
+    requestApprovals.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
 
 	////////////////////
   // createdByEmail //
@@ -700,6 +789,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
+        requestApprovalsInit();
         createdByEmailInit();
         createdByUserIdInit();
         createdByFullNameInit();
@@ -760,6 +850,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public Object obtainTenantRequested(String var) {
     TenantRequested oTenantRequested = (TenantRequested)this;
     switch(var) {
+      case "requestApprovals":
+        return oTenantRequested.requestApprovals;
       case "createdByEmail":
         return oTenantRequested.createdByEmail;
       case "createdByUserId":
@@ -799,6 +891,11 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public Object relateTenantRequested(String var, Object val) {
     TenantRequested oTenantRequested = (TenantRequested)this;
     switch(var) {
+      case "requestApprovals":
+        oTenantRequested.addRequestApprovals((String)val);
+        if(!saves.contains("requestApprovals"))
+          saves.add("requestApprovals");
+        return val;
       default:
         return super.relateTenant(var, val);
     }
@@ -813,6 +910,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static Object staticSetTenantRequested(String entityVar, SiteRequest siteRequest_, String v, TenantRequested o) {
     switch(entityVar) {
+    case "requestApprovals":
+      return TenantRequested.staticSetRequestApprovals(siteRequest_, v);
     case "createdByEmail":
       return TenantRequested.staticSetCreatedByEmail(siteRequest_, v);
     case "createdByUserId":
@@ -871,6 +970,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static Object staticSearchTenantRequested(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "requestApprovals":
+      return TenantRequested.staticSearchRequestApprovals(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantRequested.staticSearchCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -899,6 +1000,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static String staticSearchStrTenantRequested(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "requestApprovals":
+      return TenantRequested.staticSearchStrRequestApprovals(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantRequested.staticSearchStrCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -927,6 +1030,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static String staticSearchFqTenantRequested(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
+    case "requestApprovals":
+      return TenantRequested.staticSearchFqRequestApprovals(siteRequest_, o);
     case "createdByEmail":
       return TenantRequested.staticSearchFqCreatedByEmail(siteRequest_, o);
     case "createdByUserId":
@@ -967,7 +1072,19 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public Object persistTenantRequested(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("createdbyemail".equals(varLower)) {
+      if("requestapprovals".equals(varLower)) {
+        if(val instanceof List<?>) {
+          ((List<String>)val).stream().forEach(v -> addRequestApprovals(v));
+        } else if(val instanceof String[]) {
+          Arrays.asList((String[])val).stream().forEach(v -> addRequestApprovals((String)v));
+        } else if(val instanceof JsonArray) {
+          ((JsonArray)val).stream().forEach(v -> addRequestApprovals(staticSetRequestApprovals(siteRequest_, v.toString())));
+        }
+        if(!saves.contains("requestApprovals")) {
+          saves.add("requestApprovals");
+        }
+        return val;
+      } else if("createdbyemail".equals(varLower)) {
         if(val instanceof String) {
           setCreatedByEmail((String)val);
         }
@@ -1026,6 +1143,10 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
 
+      List<String> requestApprovals = (List<String>)doc.get("requestApprovals_docvalues_strings");
+      if(requestApprovals != null)
+        oTenantRequested.requestApprovals.addAll(requestApprovals);
+
       if(saves.contains("createdByEmail")) {
         String createdByEmail = (String)doc.get("createdByEmail_docvalues_string");
         if(createdByEmail != null)
@@ -1073,6 +1194,13 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
 
   public void indexTenantRequested(JsonObject doc) {
+    if(requestApprovals != null) {
+      JsonArray l = new JsonArray();
+      doc.put("requestApprovals_docvalues_strings", l);
+      for(String o : requestApprovals) {
+        l.add(TenantRequested.staticSearchRequestApprovals(siteRequest_, o));
+      }
+    }
     if(createdByEmail != null) {
       doc.put("createdByEmail_docvalues_string", createdByEmail);
     }
@@ -1100,6 +1228,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static String varStoredTenantRequested(String entityVar) {
     switch(entityVar) {
+      case "requestApprovals":
+        return "requestApprovals_docvalues_strings";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1121,6 +1251,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static String varIndexedTenantRequested(String entityVar) {
     switch(entityVar) {
+      case "requestApprovals":
+        return "requestApprovals_docvalues_strings";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1142,6 +1274,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static String searchVarTenantRequested(String searchVar) {
     switch(searchVar) {
+      case "requestApprovals_docvalues_strings":
+        return "requestApprovals";
       case "createdByEmail_docvalues_string":
         return "createdByEmail";
       case "createdByUserId_docvalues_string":
@@ -1186,6 +1320,9 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     TenantRequested oTenantRequested = (TenantRequested)this;
     SiteRequest siteRequest = oTenantRequested.getSiteRequest_();
 
+    Optional.ofNullable((List<?>)doc.get("requestApprovals_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oTenantRequested.addRequestApprovals(TenantRequested.staticSetRequestApprovals(siteRequest, v.toString()));
+    });
     oTenantRequested.setCreatedByEmail(Optional.ofNullable(doc.get("createdByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setCreatedByUserId(Optional.ofNullable(doc.get("createdByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setCreatedByFullName(Optional.ofNullable(doc.get("createdByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1206,6 +1343,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof TenantRequested) {
       TenantRequested original = (TenantRequested)o;
+      if(!Objects.equals(requestApprovals, original.getRequestApprovals()))
+        apiRequest.addVars("requestApprovals");
       if(!Objects.equals(createdByEmail, original.getCreatedByEmail()))
         apiRequest.addVars("createdByEmail");
       if(!Objects.equals(createdByUserId, original.getCreatedByUserId()))
@@ -1231,6 +1370,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
+    sb.append(Optional.ofNullable(requestApprovals).map(v -> "requestApprovals: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(createdByEmail).map(v -> "createdByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByUserId).map(v -> "createdByUserId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByFullName).map(v -> "createdByFullName: \"" + v + "\"\n" ).orElse(""));
@@ -1248,6 +1388,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_TenantRequested;
   }
+  public static final String VAR_requestApprovals = "requestApprovals";
+  public static final String SET_requestApprovals = "setRequestApprovals";
   public static final String VAR_createdByEmail = "createdByEmail";
   public static final String SET_createdByEmail = "setCreatedByEmail";
   public static final String VAR_createdByUserId = "createdByUserId";
@@ -1287,6 +1429,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     return vars;
   }
 
+  public static final String DISPLAY_NAME_requestApprovals = "Request approvals";
   public static final String DISPLAY_NAME_createdByEmail = "created by user email";
   public static final String DISPLAY_NAME_createdByUserId = "created by user ID";
   public static final String DISPLAY_NAME_createdByFullName = "created by user full name";
@@ -1325,6 +1468,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static String varJsonTenantRequested(String var, Boolean patch) {
     switch(var) {
+    case VAR_requestApprovals:
+      return patch ? SET_requestApprovals : VAR_requestApprovals;
     case VAR_createdByEmail:
       return patch ? SET_createdByEmail : VAR_createdByEmail;
     case VAR_createdByUserId:
@@ -1349,6 +1494,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   }
   public static String displayNameTenantRequested(String var) {
     switch(var) {
+    case VAR_requestApprovals:
+      return DISPLAY_NAME_requestApprovals;
     case VAR_createdByEmail:
       return DISPLAY_NAME_createdByEmail;
     case VAR_createdByUserId:
@@ -1372,6 +1519,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     if(var == null)
       return null;
     switch(var) {
+    case VAR_requestApprovals:
+      return "A list of request approvals for this request. ";
     case VAR_createdByEmail:
       return "The email address for the user who created the change request. ";
     case VAR_createdByUserId:
@@ -1393,6 +1542,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static String classSimpleNameTenantRequested(String var) {
     switch(var) {
+    case VAR_requestApprovals:
+      return "List";
     case VAR_createdByEmail:
       return "String";
     case VAR_createdByUserId:
@@ -1421,6 +1572,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static Integer htmRowTenantRequested(String var) {
     switch(var) {
+    case VAR_requestApprovals:
+      return 8;
     case VAR_createdByEmail:
       return 10;
     case VAR_createdVia:
@@ -1438,6 +1591,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static Integer htmCellTenantRequested(String var) {
     switch(var) {
+    case VAR_requestApprovals:
+      return 0;
     case VAR_createdByEmail:
       return 0;
     case VAR_createdVia:

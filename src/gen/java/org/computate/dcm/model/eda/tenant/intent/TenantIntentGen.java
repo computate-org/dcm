@@ -1316,6 +1316,11 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
 
   @Override
+  public String descriptionForClass() {
+    return tenantDescription;
+  }
+
+  @Override
   public String enUSStringFormatUrlEditPageForClass() {
     return "%s/en-us/edit/intent/tenant/%s";
   }

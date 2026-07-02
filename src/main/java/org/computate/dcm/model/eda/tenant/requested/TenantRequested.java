@@ -49,6 +49,28 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
   }
 
   /**
+   * DisplayName: tenant intent
+   * Description: The unique authorization resource for the tenant intent for multi-tenancy
+   * Relate: TenantIntent.tenantResource
+   **/
+  @Override
+  protected void _tenantResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: Request approvals
+   * Description: A list of request approvals for this request. 
+   * HtmRow: 8
+   * HtmCell: 0
+   * Relate: RequestApproval.approvalId
+   **/
+  protected void _requestApprovals(List<String> w) {
+  }
+
+  /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
