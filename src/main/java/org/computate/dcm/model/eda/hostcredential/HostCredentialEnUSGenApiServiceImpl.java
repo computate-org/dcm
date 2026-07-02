@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.hostcredential;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -867,13 +867,13 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -887,7 +887,7 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(HostCredential.class, pk).setToNull(HostCredential.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(HostCredential.class, pk).setToNull(HostCredential.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1471,13 +1471,13 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case HostCredential.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2089,13 +2089,13 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case HostCredential.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3878,13 +3878,13 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case HostCredential.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCredential.class, pk).set(HostCredential.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4272,120 +4272,120 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
         String old_tenantResource = HostCredential.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
         String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
           try {
-            if(oTenant == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
 
-              String old_tenantId = HostCredential.staticJsonTenantId(o.getTenantId());
-              String new_tenantId = json.getString(HostCredential.varJson(HostCredential.VAR_tenantId, patch));
-              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // String old_tenantId = HostCredential.staticJsonTenantId(o.getTenantId());
+              // String new_tenantId = json.getString(HostCredential.varJson(HostCredential.VAR_tenantId, patch));
+              // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_tenantId, patch), tenantId);
 
-              String old_created = HostCredential.staticJsonCreated(o.getCreated());
-              String new_created = json.getString(HostCredential.varJson(HostCredential.VAR_created, patch));
-              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // String old_created = HostCredential.staticJsonCreated(o.getCreated());
+              // String new_created = json.getString(HostCredential.varJson(HostCredential.VAR_created, patch));
+              // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_created, patch), created);
 
-              String old_aapOrganizationId = HostCredential.staticJsonAapOrganizationId(o.getAapOrganizationId());
-              String new_aapOrganizationId = json.getString(HostCredential.varJson(HostCredential.VAR_aapOrganizationId, patch));
-              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // String old_aapOrganizationId = HostCredential.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              // String new_aapOrganizationId = json.getString(HostCredential.varJson(HostCredential.VAR_aapOrganizationId, patch));
+              // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-              String old_credentialName = HostCredential.staticJsonCredentialName(o.getCredentialName());
-              String new_credentialName = json.getString(HostCredential.varJson(HostCredential.VAR_credentialName, patch));
-              String credentialName = Optional.ofNullable(Optional.ofNullable(new_credentialName).orElse(old_credentialName)).orElse(null);
+              // String old_credentialName = HostCredential.staticJsonCredentialName(o.getCredentialName());
+              // String new_credentialName = json.getString(HostCredential.varJson(HostCredential.VAR_credentialName, patch));
+              // String credentialName = Optional.ofNullable(Optional.ofNullable(new_credentialName).orElse(old_credentialName)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_credentialName, patch), credentialName);
 
-              Boolean old_archived = HostCredential.staticJsonArchived(o.getArchived());
-              Boolean new_archived = json.getBoolean(HostCredential.varJson(HostCredential.VAR_archived, patch));
-              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // Boolean old_archived = HostCredential.staticJsonArchived(o.getArchived());
+              // Boolean new_archived = json.getBoolean(HostCredential.varJson(HostCredential.VAR_archived, patch));
+              // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_archived, patch), archived);
 
-              String old_credentialId = HostCredential.staticJsonCredentialId(o.getCredentialId());
-              String new_credentialId = json.getString(HostCredential.varJson(HostCredential.VAR_credentialId, patch));
-              String credentialId = Optional.ofNullable(Optional.ofNullable(new_credentialId).orElse(old_credentialId)).orElse(null);
+              // String old_credentialId = HostCredential.staticJsonCredentialId(o.getCredentialId());
+              // String new_credentialId = json.getString(HostCredential.varJson(HostCredential.VAR_credentialId, patch));
+              // String credentialId = Optional.ofNullable(Optional.ofNullable(new_credentialId).orElse(old_credentialId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_credentialId, patch), credentialId);
 
-              String old_credentialResource = HostCredential.staticJsonCredentialResource(o.getCredentialResource());
-              String new_credentialResource = json.getString(HostCredential.varJson(HostCredential.VAR_credentialResource, patch));
-              String credentialResource = Optional.ofNullable(Optional.ofNullable(new_credentialResource).orElse(old_credentialResource)).orElse(null);
+              // String old_credentialResource = HostCredential.staticJsonCredentialResource(o.getCredentialResource());
+              // String new_credentialResource = json.getString(HostCredential.varJson(HostCredential.VAR_credentialResource, patch));
+              // String credentialResource = Optional.ofNullable(Optional.ofNullable(new_credentialResource).orElse(old_credentialResource)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_credentialResource, patch), credentialResource);
 
-              String old_credentialDescription = HostCredential.staticJsonCredentialDescription(o.getCredentialDescription());
-              String new_credentialDescription = json.getString(HostCredential.varJson(HostCredential.VAR_credentialDescription, patch));
-              String credentialDescription = Optional.ofNullable(Optional.ofNullable(new_credentialDescription).orElse(old_credentialDescription)).orElse(null);
+              // String old_credentialDescription = HostCredential.staticJsonCredentialDescription(o.getCredentialDescription());
+              // String new_credentialDescription = json.getString(HostCredential.varJson(HostCredential.VAR_credentialDescription, patch));
+              // String credentialDescription = Optional.ofNullable(Optional.ofNullable(new_credentialDescription).orElse(old_credentialDescription)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_credentialDescription, patch), credentialDescription);
 
-              String old_aapCredentialId = HostCredential.staticJsonAapCredentialId(o.getAapCredentialId());
-              String new_aapCredentialId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialId, patch));
-              String aapCredentialId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialId).orElse(old_aapCredentialId)).orElse(null);
+              // String old_aapCredentialId = HostCredential.staticJsonAapCredentialId(o.getAapCredentialId());
+              // String new_aapCredentialId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialId, patch));
+              // String aapCredentialId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialId).orElse(old_aapCredentialId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_aapCredentialId, patch), aapCredentialId);
 
-              String old_sessionId = HostCredential.staticJsonSessionId(o.getSessionId());
-              String new_sessionId = json.getString(HostCredential.varJson(HostCredential.VAR_sessionId, patch));
-              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // String old_sessionId = HostCredential.staticJsonSessionId(o.getSessionId());
+              // String new_sessionId = json.getString(HostCredential.varJson(HostCredential.VAR_sessionId, patch));
+              // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_sessionId, patch), sessionId);
 
-              String old_aapCredentialTypeId = HostCredential.staticJsonAapCredentialTypeId(o.getAapCredentialTypeId());
-              String new_aapCredentialTypeId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialTypeId, patch));
-              String aapCredentialTypeId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialTypeId).orElse(old_aapCredentialTypeId)).orElse(null);
+              // String old_aapCredentialTypeId = HostCredential.staticJsonAapCredentialTypeId(o.getAapCredentialTypeId());
+              // String new_aapCredentialTypeId = json.getString(HostCredential.varJson(HostCredential.VAR_aapCredentialTypeId, patch));
+              // String aapCredentialTypeId = Optional.ofNullable(Optional.ofNullable(new_aapCredentialTypeId).orElse(old_aapCredentialTypeId)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_aapCredentialTypeId, patch), aapCredentialTypeId);
 
-              String old_userKey = HostCredential.staticJsonUserKey(o.getUserKey());
-              String new_userKey = json.getString(HostCredential.varJson(HostCredential.VAR_userKey, patch));
-              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // String old_userKey = HostCredential.staticJsonUserKey(o.getUserKey());
+              // String new_userKey = json.getString(HostCredential.varJson(HostCredential.VAR_userKey, patch));
+              // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_userKey, patch), userKey);
 
-              String old_userName = HostCredential.staticJsonUserName(o.getUserName());
-              String new_userName = json.getString(HostCredential.varJson(HostCredential.VAR_userName, patch));
-              String userName = Optional.ofNullable(Optional.ofNullable(new_userName).orElse(old_userName)).orElse(null);
+              // String old_userName = HostCredential.staticJsonUserName(o.getUserName());
+              // String new_userName = json.getString(HostCredential.varJson(HostCredential.VAR_userName, patch));
+              // String userName = Optional.ofNullable(Optional.ofNullable(new_userName).orElse(old_userName)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_userName, patch), userName);
 
-              String old_password = HostCredential.staticJsonPassword(o.getPassword());
-              String new_password = json.getString(HostCredential.varJson(HostCredential.VAR_password, patch));
-              String password = Optional.ofNullable(Optional.ofNullable(new_password).orElse(old_password)).orElse(null);
+              // String old_password = HostCredential.staticJsonPassword(o.getPassword());
+              // String new_password = json.getString(HostCredential.varJson(HostCredential.VAR_password, patch));
+              // String password = Optional.ofNullable(Optional.ofNullable(new_password).orElse(old_password)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_password, patch), password);
 
-              String old_becomeMethod = HostCredential.staticJsonBecomeMethod(o.getBecomeMethod());
-              String new_becomeMethod = json.getString(HostCredential.varJson(HostCredential.VAR_becomeMethod, patch));
-              String becomeMethod = Optional.ofNullable(Optional.ofNullable(new_becomeMethod).orElse(old_becomeMethod)).orElse(null);
+              // String old_becomeMethod = HostCredential.staticJsonBecomeMethod(o.getBecomeMethod());
+              // String new_becomeMethod = json.getString(HostCredential.varJson(HostCredential.VAR_becomeMethod, patch));
+              // String becomeMethod = Optional.ofNullable(Optional.ofNullable(new_becomeMethod).orElse(old_becomeMethod)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_becomeMethod, patch), becomeMethod);
 
-              String old_objectTitle = HostCredential.staticJsonObjectTitle(o.getObjectTitle());
-              String new_objectTitle = json.getString(HostCredential.varJson(HostCredential.VAR_objectTitle, patch));
-              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // String old_objectTitle = HostCredential.staticJsonObjectTitle(o.getObjectTitle());
+              // String new_objectTitle = json.getString(HostCredential.varJson(HostCredential.VAR_objectTitle, patch));
+              // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_objectTitle, patch), objectTitle);
 
-              String old_becomePassword = HostCredential.staticJsonBecomePassword(o.getBecomePassword());
-              String new_becomePassword = json.getString(HostCredential.varJson(HostCredential.VAR_becomePassword, patch));
-              String becomePassword = Optional.ofNullable(Optional.ofNullable(new_becomePassword).orElse(old_becomePassword)).orElse(null);
+              // String old_becomePassword = HostCredential.staticJsonBecomePassword(o.getBecomePassword());
+              // String new_becomePassword = json.getString(HostCredential.varJson(HostCredential.VAR_becomePassword, patch));
+              // String becomePassword = Optional.ofNullable(Optional.ofNullable(new_becomePassword).orElse(old_becomePassword)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_becomePassword, patch), becomePassword);
 
-              String old_displayPage = HostCredential.staticJsonDisplayPage(o.getDisplayPage());
-              String new_displayPage = json.getString(HostCredential.varJson(HostCredential.VAR_displayPage, patch));
-              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // String old_displayPage = HostCredential.staticJsonDisplayPage(o.getDisplayPage());
+              // String new_displayPage = json.getString(HostCredential.varJson(HostCredential.VAR_displayPage, patch));
+              // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_displayPage, patch), displayPage);
 
-              String old_editPage = HostCredential.staticJsonEditPage(o.getEditPage());
-              String new_editPage = json.getString(HostCredential.varJson(HostCredential.VAR_editPage, patch));
-              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // String old_editPage = HostCredential.staticJsonEditPage(o.getEditPage());
+              // String new_editPage = json.getString(HostCredential.varJson(HostCredential.VAR_editPage, patch));
+              // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_editPage, patch), editPage);
 
-              String old_userPage = HostCredential.staticJsonUserPage(o.getUserPage());
-              String new_userPage = json.getString(HostCredential.varJson(HostCredential.VAR_userPage, patch));
-              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // String old_userPage = HostCredential.staticJsonUserPage(o.getUserPage());
+              // String new_userPage = json.getString(HostCredential.varJson(HostCredential.VAR_userPage, patch));
+              // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_userPage, patch), userPage);
 
-              String old_download = HostCredential.staticJsonDownload(o.getDownload());
-              String new_download = json.getString(HostCredential.varJson(HostCredential.VAR_download, patch));
-              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // String old_download = HostCredential.staticJsonDownload(o.getDownload());
+              // String new_download = json.getString(HostCredential.varJson(HostCredential.VAR_download, patch));
+              // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
               // json.put(HostCredential.varJson(HostCredential.VAR_download, patch), download);
 
               promise.complete(json);
@@ -4456,7 +4456,7 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(o.getTenantResource())
           ).onSuccess(result -> {
@@ -4585,16 +4585,16 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
 
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
             searchList2.setStore(true);
             searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
+            searchList2.setC(TenantIntent.class);
             searchList2.fq("solrId:" + solrId2);
             searchList2.rows(1L);
             futures.add(Future.future(promise2 -> {
               searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
@@ -4604,7 +4604,7 @@ public class HostCredentialEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))

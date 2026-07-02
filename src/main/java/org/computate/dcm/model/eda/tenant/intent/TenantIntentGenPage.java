@@ -3,6 +3,7 @@ package org.computate.dcm.model.eda.tenant.intent;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import java.util.List;
 import java.lang.String;
+import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;

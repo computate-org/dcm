@@ -4,6 +4,8 @@ import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -127,7 +129,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -140,8 +142,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "GET"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -156,6 +164,39 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("GET")) {
+              List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
+              }
+            }
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
@@ -291,7 +332,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -304,8 +345,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "GET"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -320,6 +367,39 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("GET")) {
+              List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
+              }
+            }
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
@@ -393,7 +473,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -406,8 +486,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "PATCH"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "PATCH"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -422,6 +508,37 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("PATCH")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PATCH")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
+              JsonObject authParams = siteRequest.getServiceRequest().getParams();
+              JsonObject authQuery = authParams.getJsonObject("query");
+              if(authQuery == null) {
+                authQuery = new JsonObject();
+                authParams.put("query", authQuery);
+              }
+              JsonArray fq = authQuery.getJsonArray("fq");
+              if(fq == null) {
+                fq = new JsonArray();
+                authQuery.put("fq", fq);
+              }
+              if(fqs.size() > 0) {
+                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                if(!scopes.contains("PATCH"))
+                  scopes.add("PATCH");
+                siteRequest.setFilteredScope(true);
+              }
+            }
             if(authorizationDecisionResponse.failed() || !scopes.contains("PATCH")) {
               String msg = String.format("403 FORBIDDEN user %s to %s %s", siteRequest.getUser().attributes().getJsonObject("accessToken").getString("preferred_username"), serviceRequest.getExtra().getString("method"), serviceRequest.getExtra().getString("uri"));
               eventHandler.handle(Future.succeededFuture(
@@ -447,7 +564,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
                     apiRequest.setOriginal(listTenantRealized.first());
-                  apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
+                  apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantRealizedId().toString()).orElse(null));
                   apiRequest.setSolrId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getSolrId()).orElse(null));
                   eventBus.publish("websocketTenantRealized", JsonObject.mapFrom(apiRequest).toString());
 
@@ -580,7 +697,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o3 -> o3.getTenantResource().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o3 -> o3.getTenantRealizedId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenantRealized.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
               o2 = jsonObject.mapTo(TenantRealized.class);
@@ -697,86 +814,6 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 
       for(String entityVar : methodNames) {
         switch(entityVar) {
-          case "setTenantName":
-              o2.setTenantName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_tenantName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantName());
-            break;
-          case "setTenantId":
-              o2.setTenantId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_tenantId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantId());
-            break;
-          case "setCreated":
-              o2.setCreated(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_created + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreated());
-            break;
-          case "setTenantResource":
-              o2.setTenantResource(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_tenantResource + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantResource());
-            break;
-          case "setCreatedByEmail":
-              o2.setCreatedByEmail(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_createdByEmail + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreatedByEmail());
-            break;
-          case "setPageId":
-              o2.setPageId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_pageId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlPageId());
-            break;
-          case "setCreatedByUserId":
-              o2.setCreatedByUserId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_createdByUserId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreatedByUserId());
-            break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_archived + "=$" + num);
-              num++;
-              bParams.add(o2.sqlArchived());
-            break;
-          case "setTenantDescription":
-              o2.setTenantDescription(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantDescription());
-            break;
-          case "setCreatedByFullName":
-              o2.setCreatedByFullName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_createdByFullName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreatedByFullName());
-            break;
           case "setHubId":
               o2.setHubId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -784,14 +821,6 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               bSql.append(TenantRealized.VAR_hubId + "=$" + num);
               num++;
               bParams.add(o2.sqlHubId());
-            break;
-          case "setCreatedVia":
-              o2.setCreatedVia(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_createdVia + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreatedVia());
             break;
           case "setClusterName":
               o2.setClusterName(jsonObject.getString(entityVar));
@@ -801,13 +830,13 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlClusterName());
             break;
-          case "setIntentState":
-              o2.setIntentState(jsonObject.getString(entityVar));
+          case "setCreated":
+              o2.setCreated(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRealized.VAR_intentState + "=$" + num);
+              bSql.append(TenantRealized.VAR_created + "=$" + num);
               num++;
-              bParams.add(o2.sqlIntentState());
+              bParams.add(o2.sqlCreated());
             break;
           case "setAapOrganizationId":
               o2.setAapOrganizationId(jsonObject.getString(entityVar));
@@ -817,21 +846,13 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlAapOrganizationId());
             break;
-          case "setRequestedState":
-              o2.setRequestedState(jsonObject.getString(entityVar));
+          case "setTenantName":
+              o2.setTenantName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRealized.VAR_requestedState + "=$" + num);
+              bSql.append(TenantRealized.VAR_tenantName + "=$" + num);
               num++;
-              bParams.add(o2.sqlRequestedState());
-            break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRealized.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
+              bParams.add(o2.sqlTenantName());
             break;
           case "setHostInventoryIds":
             JsonArray setHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
@@ -933,21 +954,21 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case "setRealizedState":
-              o2.setRealizedState(jsonObject.getString(entityVar));
+          case "setTenantId":
+              o2.setTenantId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRealized.VAR_realizedState + "=$" + num);
+              bSql.append(TenantRealized.VAR_tenantId + "=$" + num);
               num++;
-              bParams.add(o2.sqlRealizedState());
+              bParams.add(o2.sqlTenantId());
             break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRealized.VAR_userKey + "=$" + num);
+              bSql.append(TenantRealized.VAR_archived + "=$" + num);
               num++;
-              bParams.add(o2.sqlUserKey());
+              bParams.add(o2.sqlArchived());
             break;
           case "setAnsibleProjectIds":
             JsonArray setAnsibleProjectIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
@@ -1049,6 +1070,109 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
+          case "setTenantDescription":
+              o2.setTenantDescription(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
+              num++;
+              bParams.add(o2.sqlTenantDescription());
+            break;
+          case "setTenantResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantRealized), TenantIntent.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("TenantIntent");
+                  }
+                  sql(siteRequest).update(TenantRealized.class, pk).set(TenantRealized.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "removeTenantResource":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
+              futures2.add(Future.future(promise2 -> {
+                  sql(siteRequest).update(TenantRealized.class, pk).setToNull(TenantRealized.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
+                  promise2.complete();
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case "setTenantRealizedNumber":
+              o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_tenantRealizedNumber + "=$" + num);
+              num++;
+              bParams.add(o2.sqlTenantRealizedNumber());
+            break;
+          case "setTenantRealizedId":
+              o2.setTenantRealizedId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_tenantRealizedId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlTenantRealizedId());
+            break;
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_sessionId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlSessionId());
+            break;
+          case "setCreatedByEmail":
+              o2.setCreatedByEmail(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_createdByEmail + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCreatedByEmail());
+            break;
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_userKey + "=$" + num);
+              num++;
+              bParams.add(o2.sqlUserKey());
+            break;
+          case "setCreatedByUserId":
+              o2.setCreatedByUserId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_createdByUserId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCreatedByUserId());
+            break;
+          case "setCreatedByFullName":
+              o2.setCreatedByFullName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_createdByFullName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCreatedByFullName());
+            break;
+          case "setCreatedVia":
+              o2.setCreatedVia(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_createdVia + "=$" + num);
+              num++;
+              bParams.add(o2.sqlCreatedVia());
+            break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1056,6 +1180,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               bSql.append(TenantRealized.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
+            break;
+          case "setIntentState":
+              o2.setIntentState(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_intentState + "=$" + num);
+              num++;
+              bParams.add(o2.sqlIntentState());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1065,6 +1197,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlDisplayPage());
             break;
+          case "setRequestedState":
+              o2.setRequestedState(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_requestedState + "=$" + num);
+              num++;
+              bParams.add(o2.sqlRequestedState());
+            break;
           case "setEditPage":
               o2.setEditPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1072,6 +1212,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               bSql.append(TenantRealized.VAR_editPage + "=$" + num);
               num++;
               bParams.add(o2.sqlEditPage());
+            break;
+          case "setRealizedState":
+              o2.setRealizedState(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantRealized.VAR_realizedState + "=$" + num);
+              num++;
+              bParams.add(o2.sqlRealizedState());
             break;
           case "setUserPage":
               o2.setUserPage(jsonObject.getString(entityVar));
@@ -1149,7 +1297,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1162,8 +1310,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "POST"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "POST"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1178,6 +1332,37 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("POST")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("POST")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
+              JsonObject authParams = siteRequest.getServiceRequest().getParams();
+              JsonObject authQuery = authParams.getJsonObject("query");
+              if(authQuery == null) {
+                authQuery = new JsonObject();
+                authParams.put("query", authQuery);
+              }
+              JsonArray fq = authQuery.getJsonArray("fq");
+              if(fq == null) {
+                fq = new JsonArray();
+                authQuery.put("fq", fq);
+              }
+              if(fqs.size() > 0) {
+                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                if(!scopes.contains("POST"))
+                  scopes.add("POST");
+                siteRequest.setFilteredScope(true);
+              }
+            }
             if(authorizationDecisionResponse.failed() || !scopes.contains("POST")) {
               String msg = String.format("403 FORBIDDEN user %s to %s %s", siteRequest.getUser().attributes().getJsonObject("accessToken").getString("preferred_username"), serviceRequest.getExtra().getString("method"), serviceRequest.getExtra().getString("uri"));
               eventHandler.handle(Future.succeededFuture(
@@ -1320,7 +1505,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     });
   }
 
-  public Future<TenantRealized> postTenantRealizedFuture(SiteRequest siteRequest, Boolean tenantResource) {
+  public Future<TenantRealized> postTenantRealizedFuture(SiteRequest siteRequest, Boolean tenantRealizedId) {
     Promise<TenantRealized> promise = Promise.promise();
 
     try {
@@ -1329,7 +1514,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         siteRequest.setSqlConnection(sqlConnection);
         varsTenantRealized(siteRequest).onSuccess(a -> {
           createTenantRealized(siteRequest).onSuccess(tenantRealized -> {
-            sqlPOSTTenantRealized(tenantRealized, tenantResource).onSuccess(b -> {
+            sqlPOSTTenantRealized(tenantRealized, tenantRealizedId).onSuccess(b -> {
               persistTenantRealized(tenantRealized, false).onSuccess(c -> {
                 relateTenantRealized(tenantRealized).onSuccess(d -> {
                   indexTenantRealized(tenantRealized).onSuccess(o2 -> {
@@ -1439,96 +1624,6 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantRealized.VAR_tenantName:
-            o2.setTenantName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_tenantName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantName());
-            break;
-          case TenantRealized.VAR_tenantId:
-            o2.setTenantId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_tenantId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantId());
-            break;
-          case TenantRealized.VAR_created:
-            o2.setCreated(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_created + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreated());
-            break;
-          case TenantRealized.VAR_tenantResource:
-            o2.setTenantResource(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_tenantResource + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantResource());
-            break;
-          case TenantRealized.VAR_createdByEmail:
-            o2.setCreatedByEmail(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_createdByEmail + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreatedByEmail());
-            break;
-          case TenantRealized.VAR_pageId:
-            o2.setPageId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_pageId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlPageId());
-            break;
-          case TenantRealized.VAR_createdByUserId:
-            o2.setCreatedByUserId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_createdByUserId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreatedByUserId());
-            break;
-          case TenantRealized.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_archived + "=$" + num);
-            num++;
-            bParams.add(o2.sqlArchived());
-            break;
-          case TenantRealized.VAR_tenantDescription:
-            o2.setTenantDescription(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantDescription());
-            break;
-          case TenantRealized.VAR_createdByFullName:
-            o2.setCreatedByFullName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_createdByFullName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreatedByFullName());
-            break;
           case TenantRealized.VAR_hubId:
             o2.setHubId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1537,15 +1632,6 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(TenantRealized.VAR_hubId + "=$" + num);
             num++;
             bParams.add(o2.sqlHubId());
-            break;
-          case TenantRealized.VAR_createdVia:
-            o2.setCreatedVia(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_createdVia + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreatedVia());
             break;
           case TenantRealized.VAR_clusterName:
             o2.setClusterName(jsonObject.getString(entityVar));
@@ -1556,14 +1642,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlClusterName());
             break;
-          case TenantRealized.VAR_intentState:
-            o2.setIntentState(jsonObject.getString(entityVar));
+          case TenantRealized.VAR_created:
+            o2.setCreated(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRealized.VAR_intentState + "=$" + num);
+            bSql.append(TenantRealized.VAR_created + "=$" + num);
             num++;
-            bParams.add(o2.sqlIntentState());
+            bParams.add(o2.sqlCreated());
             break;
           case TenantRealized.VAR_aapOrganizationId:
             o2.setAapOrganizationId(jsonObject.getString(entityVar));
@@ -1574,23 +1660,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlAapOrganizationId());
             break;
-          case TenantRealized.VAR_requestedState:
-            o2.setRequestedState(jsonObject.getString(entityVar));
+          case TenantRealized.VAR_tenantName:
+            o2.setTenantName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRealized.VAR_requestedState + "=$" + num);
+            bSql.append(TenantRealized.VAR_tenantName + "=$" + num);
             num++;
-            bParams.add(o2.sqlRequestedState());
-            break;
-          case TenantRealized.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRealized.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
+            bParams.add(o2.sqlTenantName());
             break;
           case TenantRealized.VAR_hostInventoryIds:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
@@ -1613,23 +1690,23 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case TenantRealized.VAR_realizedState:
-            o2.setRealizedState(jsonObject.getString(entityVar));
+          case TenantRealized.VAR_tenantId:
+            o2.setTenantId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRealized.VAR_realizedState + "=$" + num);
+            bSql.append(TenantRealized.VAR_tenantId + "=$" + num);
             num++;
-            bParams.add(o2.sqlRealizedState());
+            bParams.add(o2.sqlTenantId());
             break;
-          case TenantRealized.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
+          case TenantRealized.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRealized.VAR_userKey + "=$" + num);
+            bSql.append(TenantRealized.VAR_archived + "=$" + num);
             num++;
-            bParams.add(o2.sqlUserKey());
+            bParams.add(o2.sqlArchived());
             break;
           case TenantRealized.VAR_ansibleProjectIds:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
@@ -1652,6 +1729,107 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
+          case TenantRealized.VAR_tenantDescription:
+            o2.setTenantDescription(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
+            num++;
+            bParams.add(o2.sqlTenantDescription());
+            break;
+          case TenantRealized.VAR_tenantResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantRealized), TenantIntent.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("TenantIntent");
+                  }
+                  sql(siteRequest).update(TenantRealized.class, pk).set(TenantRealized.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case TenantRealized.VAR_tenantRealizedNumber:
+            o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_tenantRealizedNumber + "=$" + num);
+            num++;
+            bParams.add(o2.sqlTenantRealizedNumber());
+            break;
+          case TenantRealized.VAR_tenantRealizedId:
+            o2.setTenantRealizedId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_tenantRealizedId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlTenantRealizedId());
+            break;
+          case TenantRealized.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_sessionId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlSessionId());
+            break;
+          case TenantRealized.VAR_createdByEmail:
+            o2.setCreatedByEmail(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_createdByEmail + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCreatedByEmail());
+            break;
+          case TenantRealized.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_userKey + "=$" + num);
+            num++;
+            bParams.add(o2.sqlUserKey());
+            break;
+          case TenantRealized.VAR_createdByUserId:
+            o2.setCreatedByUserId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_createdByUserId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCreatedByUserId());
+            break;
+          case TenantRealized.VAR_createdByFullName:
+            o2.setCreatedByFullName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_createdByFullName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCreatedByFullName());
+            break;
+          case TenantRealized.VAR_createdVia:
+            o2.setCreatedVia(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_createdVia + "=$" + num);
+            num++;
+            bParams.add(o2.sqlCreatedVia());
+            break;
           case TenantRealized.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1660,6 +1838,15 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(TenantRealized.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
+            break;
+          case TenantRealized.VAR_intentState:
+            o2.setIntentState(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_intentState + "=$" + num);
+            num++;
+            bParams.add(o2.sqlIntentState());
             break;
           case TenantRealized.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1670,6 +1857,15 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
+          case TenantRealized.VAR_requestedState:
+            o2.setRequestedState(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_requestedState + "=$" + num);
+            num++;
+            bParams.add(o2.sqlRequestedState());
+            break;
           case TenantRealized.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1678,6 +1874,15 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(TenantRealized.VAR_editPage + "=$" + num);
             num++;
             bParams.add(o2.sqlEditPage());
+            break;
+          case TenantRealized.VAR_realizedState:
+            o2.setRealizedState(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantRealized.VAR_realizedState + "=$" + num);
+            num++;
+            bParams.add(o2.sqlRealizedState());
             break;
           case TenantRealized.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
@@ -1756,7 +1961,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -1769,8 +1974,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "DELETE"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -1785,6 +1996,37 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("DELETE")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
+              JsonObject authParams = siteRequest.getServiceRequest().getParams();
+              JsonObject authQuery = authParams.getJsonObject("query");
+              if(authQuery == null) {
+                authQuery = new JsonObject();
+                authParams.put("query", authQuery);
+              }
+              JsonArray fq = authQuery.getJsonArray("fq");
+              if(fq == null) {
+                fq = new JsonArray();
+                authQuery.put("fq", fq);
+              }
+              if(fqs.size() > 0) {
+                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
+                siteRequest.setFilteredScope(true);
+              }
+            }
             if(authorizationDecisionResponse.failed() || !scopes.contains("DELETE")) {
               String msg = String.format("403 FORBIDDEN user %s to %s %s", siteRequest.getUser().attributes().getJsonObject("accessToken").getString("preferred_username"), serviceRequest.getExtra().getString("method"), serviceRequest.getExtra().getString("uri"));
               eventHandler.handle(Future.succeededFuture(
@@ -1941,7 +2183,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantRealizedId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deleteTenantRealizedFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -2093,6 +2335,26 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
+          case TenantRealized.VAR_tenantResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantRealized), TenantIntent.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("TenantIntent");
+                  }
+                  sql(siteRequest).update(TenantRealized.class, pk).set(TenantRealized.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
           }
         }
       }
@@ -2149,7 +2411,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2162,8 +2424,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "PUT"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "PUT"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2178,6 +2446,37 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("PUT")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PUT")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
+              JsonObject authParams = siteRequest.getServiceRequest().getParams();
+              JsonObject authQuery = authParams.getJsonObject("query");
+              if(authQuery == null) {
+                authQuery = new JsonObject();
+                authParams.put("query", authQuery);
+              }
+              JsonArray fq = authQuery.getJsonArray("fq");
+              if(fq == null) {
+                fq = new JsonArray();
+                authQuery.put("fq", fq);
+              }
+              if(fqs.size() > 0) {
+                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                if(!scopes.contains("PUT"))
+                  scopes.add("PUT");
+                siteRequest.setFilteredScope(true);
+              }
+            }
             if(authorizationDecisionResponse.failed() || !scopes.contains("PUT")) {
               String msg = String.format("403 FORBIDDEN user %s to %s %s", siteRequest.getUser().attributes().getJsonObject("accessToken").getString("preferred_username"), serviceRequest.getExtra().getString("method"), serviceRequest.getExtra().getString("uri"));
               eventHandler.handle(Future.succeededFuture(
@@ -2318,14 +2617,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String tenantResource = Optional.ofNullable(body.getString(TenantRealized.VAR_tenantResource)).orElse(body.getString(TenantRealized.VAR_solrId));
+        String tenantRealizedId = Optional.ofNullable(body.getString(TenantRealized.VAR_tenantRealizedId)).orElse(body.getString(TenantRealized.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE tenantResource=$1", TenantRealized.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE tenantRealizedId=$1", TenantRealized.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(tenantResource))
+              .execute(Tuple.tuple(Arrays.asList(tenantRealizedId))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
@@ -2375,24 +2674,24 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "tenantResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantRealizedId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "tenantResource", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "tenantRealizedId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getTenantResource()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getTenantRealizedId()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
                   patchTenantRealizedFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import TenantRealized {} succeeded, modified TenantRealized. ", body.getValue(TenantRealized.VAR_tenantResource));
+                    LOG.debug("Import TenantRealized {} succeeded, modified TenantRealized. ", body.getValue(TenantRealized.VAR_tenantRealizedId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportTenantRealizedFuture failed. "), ex);
@@ -2400,7 +2699,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   });
                 } else {
                   postTenantRealizedFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import TenantRealized {} succeeded, created new TenantRealized. ", body.getValue(TenantRealized.VAR_tenantResource));
+                    LOG.debug("Import TenantRealized {} succeeded, created new TenantRealized. ", body.getValue(TenantRealized.VAR_tenantRealizedId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
                     LOG.error(String.format("putimportTenantRealizedFuture failed. "), ex);
@@ -2469,11 +2768,13 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
 
   @Override
   public void searchpageTenantRealized(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    oauth2AuthenticationProvider.refresh(User.create(serviceRequest.getUser())).onSuccess(user -> {
+      serviceRequest.setUser(user.principal());
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2486,8 +2787,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "GET"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2502,6 +2809,39 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("GET")) {
+              List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
+              }
+            }
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
@@ -2527,6 +2867,30 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         LOG.error(String.format("searchpageTenantRealized failed. "), ex);
         error(null, eventHandler, ex);
       }
+    }).onFailure(ex -> {
+      if("Inactive Token".equals(ex.getMessage()) || StringUtils.startsWith(ex.getMessage(), "invalid_grant:")) {
+        try {
+          eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
+        } catch(Exception ex2) {
+          LOG.error(String.format("searchpageTenantRealized failed. ", ex2));
+          error(null, eventHandler, ex2);
+        }
+      } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
+        eventHandler.handle(Future.succeededFuture(
+          new ServiceResponse(401, "UNAUTHORIZED",
+            Buffer.buffer().appendString(
+              new JsonObject()
+                .put("errorCode", "401")
+                .put("errorMessage", "SSO Resource Permission check returned DENY")
+                .encodePrettily()
+              ), MultiMap.caseInsensitiveMultiMap()
+              )
+          ));
+      } else {
+        LOG.error(String.format("searchpageTenantRealized failed. "), ex);
+        error(null, eventHandler, ex);
+      }
+    });
     }).onFailure(ex -> {
       if("Inactive Token".equals(ex.getMessage()) || StringUtils.startsWith(ex.getMessage(), "invalid_grant:")) {
         try {
@@ -2735,7 +3099,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -2748,8 +3112,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "GET"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
               , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -2764,6 +3134,39 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("GET")) {
+              List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
+              if(!classPublicRead) {
+                JsonObject authParams = siteRequest.getServiceRequest().getParams();
+                JsonObject authQuery = authParams.getJsonObject("query");
+                if(authQuery == null) {
+                  authQuery = new JsonObject();
+                  authParams.put("query", authQuery);
+                }
+                JsonArray fq = authQuery.getJsonArray("fq");
+                if(fq == null) {
+                  fq = new JsonArray();
+                  authQuery.put("fq", fq);
+                }
+                if(fqs.size() > 0) {
+                  fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                  if(!scopes.contains("GET"))
+                    scopes.add("GET");
+                  siteRequest.setFilteredScope(true);
+                }
+              }
+            }
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
@@ -2998,7 +3401,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantResource = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantResource");
+        String tenantRealizedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRealizedId");
         String TENANTREALIZED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREALIZED");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
@@ -3011,8 +3414,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "DELETE"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "Admin"));
         form.add("permission", String.format("%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantResource != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantResource, "DELETE"));
+        if(tenantRealizedId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantRealized.CLASS_AUTH_RESOURCE, tenantRealizedId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         webClient.post(
             config.getInteger(ComputateConfigKeys.AUTH_PORT)
             , config.getString(ComputateConfigKeys.AUTH_HOST_NAME)
@@ -3027,6 +3436,37 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
             JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREALIZED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            if(!scopes.contains("DELETE")) {
+            List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantResource", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
+              JsonObject authParams = siteRequest.getServiceRequest().getParams();
+              JsonObject authQuery = authParams.getJsonObject("query");
+              if(authQuery == null) {
+                authQuery = new JsonObject();
+                authParams.put("query", authQuery);
+              }
+              JsonArray fq = authQuery.getJsonArray("fq");
+              if(fq == null) {
+                fq = new JsonArray();
+                authQuery.put("fq", fq);
+              }
+              if(fqs.size() > 0) {
+                fq.add(fqs.stream().collect(Collectors.joining(" OR ")));
+                if(!scopes.contains("DELETE"))
+                  scopes.add("DELETE");
+                siteRequest.setFilteredScope(true);
+              }
+            }
             if(authorizationDecisionResponse.failed() || !scopes.contains("DELETE")) {
               String msg = String.format("403 FORBIDDEN user %s to %s %s", siteRequest.getUser().attributes().getJsonObject("accessToken").getString("preferred_username"), serviceRequest.getExtra().getString("method"), serviceRequest.getExtra().getString("uri"));
               eventHandler.handle(Future.succeededFuture(
@@ -3183,7 +3623,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantResource().toString()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getTenantRealizedId().toString()).orElse(null));
               apiRequest.setSolrId(Optional.ofNullable(listTenantRealized.first()).map(o2 -> o2.getSolrId()).orElse(null));
               deletefilterTenantRealizedFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
@@ -3325,6 +3765,26 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     classes.add("AnsibleProject");
                   }
                   sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRealized.class, null, null).onSuccess(a -> {
+                    promise2.complete();
+                  }).onFailure(ex -> {
+                    promise2.tryFail(ex);
+                  });
+                }).onFailure(ex -> {
+                  promise2.tryFail(ex);
+                });
+              }));
+            });
+            break;
+          case TenantRealized.VAR_tenantResource:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantRealized), TenantIntent.class, val).onSuccess(o3 -> {
+                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
+                  if(solrId2 != null) {
+                    solrIds.add(solrId2);
+                    classes.add("TenantIntent");
+                  }
+                  sql(siteRequest).update(TenantRealized.class, pk).set(TenantRealized.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3511,9 +3971,9 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         }
       }
 
-      String tenantResource = serviceRequest.getParams().getJsonObject("path").getString("tenantResource");
-      if(tenantResource != null) {
-        searchList.fq("tenantResource_docvalues_string:" + SearchTool.escapeQueryChars(tenantResource));
+      String tenantRealizedId = serviceRequest.getParams().getJsonObject("path").getString("tenantRealizedId");
+      if(tenantRealizedId != null) {
+        searchList.fq("tenantRealizedId_docvalues_int:" + SearchTool.escapeQueryChars(tenantRealizedId));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -3711,128 +4171,147 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         promise.complete();
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
-
-        String old_tenantName = TenantRealized.staticJsonTenantName(o.getTenantName());
-        String new_tenantName = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantName, patch));
-        String tenantName = Optional.ofNullable(Optional.ofNullable(new_tenantName).orElse(old_tenantName)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantName, patch), tenantName);
-
-        String old_tenantId = TenantRealized.staticJsonTenantId(o.getTenantId());
-        String new_tenantId = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantId, patch));
-        String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantId, patch), tenantId);
-
-        String old_created = TenantRealized.staticJsonCreated(o.getCreated());
-        String new_created = json.getString(TenantRealized.varJson(TenantRealized.VAR_created, patch));
-        String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_created, patch), created);
-
         String old_tenantResource = TenantRealized.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantResource, patch));
-        String tenantResource = Optional.ofNullable(Optional.ofNullable(new_tenantResource).orElse(old_tenantResource)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantResource, patch), tenantResource);
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantRealized, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantRealized, tenantResource).onSuccess(oTenantIntent -> {
+          try {
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantRealized, patch), tenantResource);
 
-        String old_createdByEmail = TenantRealized.staticJsonCreatedByEmail(o.getCreatedByEmail());
-        String new_createdByEmail = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByEmail, patch));
-        String createdByEmail = siteRequest.getUserEmail();
-        json.put(TenantRealized.varJson(TenantRealized.VAR_createdByEmail, patch), createdByEmail);
+              String old_hubId = TenantRealized.staticJsonHubId(o.getHubId());
+              String new_hubId = json.getString(TenantRealized.varJson(TenantRealized.VAR_hubId, patch));
+              String hubId = Optional.ofNullable(Optional.ofNullable(new_hubId).orElse(old_hubId)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_hubId, patch), hubId);
 
-        String old_pageId = TenantRealized.staticJsonPageId(o.getPageId());
-        String new_pageId = json.getString(TenantRealized.varJson(TenantRealized.VAR_pageId, patch));
-        String pageId = Optional.ofNullable(Optional.ofNullable(new_pageId).orElse(old_pageId)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_pageId, patch), pageId);
+              String old_clusterName = TenantRealized.staticJsonClusterName(o.getClusterName());
+              String new_clusterName = json.getString(TenantRealized.varJson(TenantRealized.VAR_clusterName, patch));
+              String clusterName = Optional.ofNullable(Optional.ofNullable(new_clusterName).orElse(old_clusterName)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_clusterName, patch), clusterName);
 
-        String old_createdByUserId = TenantRealized.staticJsonCreatedByUserId(o.getCreatedByUserId());
-        String new_createdByUserId = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByUserId, patch));
-        String createdByUserId = siteRequest.getUserId();
-        json.put(TenantRealized.varJson(TenantRealized.VAR_createdByUserId, patch), createdByUserId);
+              String old_created = TenantRealized.staticJsonCreated(o.getCreated());
+              String new_created = json.getString(TenantRealized.varJson(TenantRealized.VAR_created, patch));
+              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_created, patch), created);
 
-        Boolean old_archived = TenantRealized.staticJsonArchived(o.getArchived());
-        Boolean new_archived = json.getBoolean(TenantRealized.varJson(TenantRealized.VAR_archived, patch));
-        Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_archived, patch), archived);
+              String old_aapOrganizationId = TenantRealized.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              String new_aapOrganizationId = json.getString(TenantRealized.varJson(TenantRealized.VAR_aapOrganizationId, patch));
+              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-        String old_tenantDescription = TenantRealized.staticJsonTenantDescription(o.getTenantDescription());
-        String new_tenantDescription = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch));
-        String tenantDescription = Optional.ofNullable(Optional.ofNullable(new_tenantDescription).orElse(old_tenantDescription)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch), tenantDescription);
+              String old_tenantName = TenantRealized.staticJsonTenantName(o.getTenantName());
+              String new_tenantName = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantName, patch));
+              String tenantName = oTenantIntent.getTenantName();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_tenantName, patch), tenantName);
 
-        String old_createdByFullName = TenantRealized.staticJsonCreatedByFullName(o.getCreatedByFullName());
-        String new_createdByFullName = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByFullName, patch));
-        String createdByFullName = siteRequest.getUserFullName();
-        json.put(TenantRealized.varJson(TenantRealized.VAR_createdByFullName, patch), createdByFullName);
+              String old_tenantId = TenantRealized.staticJsonTenantId(o.getTenantId());
+              String new_tenantId = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantId, patch));
+              String tenantId = oTenantIntent.getTenantId();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_tenantId, patch), tenantId);
 
-        String old_hubId = TenantRealized.staticJsonHubId(o.getHubId());
-        String new_hubId = json.getString(TenantRealized.varJson(TenantRealized.VAR_hubId, patch));
-        String hubId = Optional.ofNullable(Optional.ofNullable(new_hubId).orElse(old_hubId)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_hubId, patch), hubId);
+              Boolean old_archived = TenantRealized.staticJsonArchived(o.getArchived());
+              Boolean new_archived = json.getBoolean(TenantRealized.varJson(TenantRealized.VAR_archived, patch));
+              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_archived, patch), archived);
 
-        String old_createdVia = TenantRealized.staticJsonCreatedVia(o.getCreatedVia());
-        String new_createdVia = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdVia, patch));
-        String createdVia = Optional.ofNullable(Optional.ofNullable(new_createdVia).orElse(old_createdVia)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_createdVia, patch), createdVia);
+              String old_tenantDescription = TenantRealized.staticJsonTenantDescription(o.getTenantDescription());
+              String new_tenantDescription = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch));
+              String tenantDescription = oTenantIntent.getTenantDescription();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch), tenantDescription);
 
-        String old_clusterName = TenantRealized.staticJsonClusterName(o.getClusterName());
-        String new_clusterName = json.getString(TenantRealized.varJson(TenantRealized.VAR_clusterName, patch));
-        String clusterName = Optional.ofNullable(Optional.ofNullable(new_clusterName).orElse(old_clusterName)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_clusterName, patch), clusterName);
+              String old_tenantRealizedNumber = TenantRealized.staticJsonTenantRealizedNumber(o.getTenantRealizedNumber());
+              String new_tenantRealizedNumber = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantRealizedNumber, patch));
+              String tenantRealizedNumber = Optional.ofNullable(Optional.ofNullable(new_tenantRealizedNumber).orElse(old_tenantRealizedNumber)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantRealizedNumber, patch), tenantRealizedNumber);
 
-        String old_intentState = TenantRealized.staticJsonIntentState(o.getIntentState());
-        String new_intentState = json.getString(TenantRealized.varJson(TenantRealized.VAR_intentState, patch));
-        String intentState = Optional.ofNullable(Optional.ofNullable(new_intentState).orElse(old_intentState)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_intentState, patch), intentState);
+              String old_tenantRealizedId = TenantRealized.staticJsonTenantRealizedId(o.getTenantRealizedId());
+              String new_tenantRealizedId = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantRealizedId, patch));
+              String tenantRealizedId = Optional.ofNullable(Optional.ofNullable(new_tenantRealizedId).orElse(old_tenantRealizedId)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_tenantRealizedId, patch), tenantRealizedId);
 
-        String old_aapOrganizationId = TenantRealized.staticJsonAapOrganizationId(o.getAapOrganizationId());
-        String new_aapOrganizationId = json.getString(TenantRealized.varJson(TenantRealized.VAR_aapOrganizationId, patch));
-        String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_aapOrganizationId, patch), aapOrganizationId);
+              String old_sessionId = TenantRealized.staticJsonSessionId(o.getSessionId());
+              String new_sessionId = json.getString(TenantRealized.varJson(TenantRealized.VAR_sessionId, patch));
+              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_sessionId, patch), sessionId);
 
-        String old_requestedState = TenantRealized.staticJsonRequestedState(o.getRequestedState());
-        String new_requestedState = json.getString(TenantRealized.varJson(TenantRealized.VAR_requestedState, patch));
-        String requestedState = Optional.ofNullable(Optional.ofNullable(new_requestedState).orElse(old_requestedState)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_requestedState, patch), requestedState);
+              String old_createdByEmail = TenantRealized.staticJsonCreatedByEmail(o.getCreatedByEmail());
+              String new_createdByEmail = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByEmail, patch));
+              String createdByEmail = siteRequest.getUserEmail();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_createdByEmail, patch), createdByEmail);
 
-        String old_sessionId = TenantRealized.staticJsonSessionId(o.getSessionId());
-        String new_sessionId = json.getString(TenantRealized.varJson(TenantRealized.VAR_sessionId, patch));
-        String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_sessionId, patch), sessionId);
+              String old_userKey = TenantRealized.staticJsonUserKey(o.getUserKey());
+              String new_userKey = json.getString(TenantRealized.varJson(TenantRealized.VAR_userKey, patch));
+              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_userKey, patch), userKey);
 
-        String old_realizedState = TenantRealized.staticJsonRealizedState(o.getRealizedState());
-        String new_realizedState = json.getString(TenantRealized.varJson(TenantRealized.VAR_realizedState, patch));
-        String realizedState = Optional.ofNullable(Optional.ofNullable(new_realizedState).orElse(old_realizedState)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_realizedState, patch), realizedState);
+              String old_createdByUserId = TenantRealized.staticJsonCreatedByUserId(o.getCreatedByUserId());
+              String new_createdByUserId = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByUserId, patch));
+              String createdByUserId = siteRequest.getUserId();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_createdByUserId, patch), createdByUserId);
 
-        String old_userKey = TenantRealized.staticJsonUserKey(o.getUserKey());
-        String new_userKey = json.getString(TenantRealized.varJson(TenantRealized.VAR_userKey, patch));
-        String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_userKey, patch), userKey);
+              String old_createdByFullName = TenantRealized.staticJsonCreatedByFullName(o.getCreatedByFullName());
+              String new_createdByFullName = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdByFullName, patch));
+              String createdByFullName = siteRequest.getUserFullName();
+              json.put(TenantRealized.varJson(TenantRealized.VAR_createdByFullName, patch), createdByFullName);
 
-        String old_objectTitle = TenantRealized.staticJsonObjectTitle(o.getObjectTitle());
-        String new_objectTitle = json.getString(TenantRealized.varJson(TenantRealized.VAR_objectTitle, patch));
-        String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_objectTitle, patch), objectTitle);
+              String old_createdVia = TenantRealized.staticJsonCreatedVia(o.getCreatedVia());
+              String new_createdVia = json.getString(TenantRealized.varJson(TenantRealized.VAR_createdVia, patch));
+              String createdVia = Optional.ofNullable(Optional.ofNullable(new_createdVia).orElse(old_createdVia)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_createdVia, patch), createdVia);
 
-        String old_displayPage = TenantRealized.staticJsonDisplayPage(o.getDisplayPage());
-        String new_displayPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_displayPage, patch));
-        String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_displayPage, patch), displayPage);
+              String old_objectTitle = TenantRealized.staticJsonObjectTitle(o.getObjectTitle());
+              String new_objectTitle = json.getString(TenantRealized.varJson(TenantRealized.VAR_objectTitle, patch));
+              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_objectTitle, patch), objectTitle);
 
-        String old_editPage = TenantRealized.staticJsonEditPage(o.getEditPage());
-        String new_editPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_editPage, patch));
-        String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_editPage, patch), editPage);
+              String old_intentState = TenantRealized.staticJsonIntentState(o.getIntentState());
+              String new_intentState = json.getString(TenantRealized.varJson(TenantRealized.VAR_intentState, patch));
+              String intentState = Optional.ofNullable(Optional.ofNullable(new_intentState).orElse(old_intentState)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_intentState, patch), intentState);
 
-        String old_userPage = TenantRealized.staticJsonUserPage(o.getUserPage());
-        String new_userPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_userPage, patch));
-        String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_userPage, patch), userPage);
+              String old_displayPage = TenantRealized.staticJsonDisplayPage(o.getDisplayPage());
+              String new_displayPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_displayPage, patch));
+              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_displayPage, patch), displayPage);
 
-        String old_download = TenantRealized.staticJsonDownload(o.getDownload());
-        String new_download = json.getString(TenantRealized.varJson(TenantRealized.VAR_download, patch));
-        String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
-        // json.put(TenantRealized.varJson(TenantRealized.VAR_download, patch), download);
+              String old_requestedState = TenantRealized.staticJsonRequestedState(o.getRequestedState());
+              String new_requestedState = json.getString(TenantRealized.varJson(TenantRealized.VAR_requestedState, patch));
+              String requestedState = Optional.ofNullable(Optional.ofNullable(new_requestedState).orElse(old_requestedState)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_requestedState, patch), requestedState);
 
-          promise.complete(json);
+              String old_editPage = TenantRealized.staticJsonEditPage(o.getEditPage());
+              String new_editPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_editPage, patch));
+              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_editPage, patch), editPage);
+
+              String old_realizedState = TenantRealized.staticJsonRealizedState(o.getRealizedState());
+              String new_realizedState = json.getString(TenantRealized.varJson(TenantRealized.VAR_realizedState, patch));
+              String realizedState = Optional.ofNullable(Optional.ofNullable(new_realizedState).orElse(old_realizedState)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_realizedState, patch), realizedState);
+
+              String old_userPage = TenantRealized.staticJsonUserPage(o.getUserPage());
+              String new_userPage = json.getString(TenantRealized.varJson(TenantRealized.VAR_userPage, patch));
+              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_userPage, patch), userPage);
+
+              String old_download = TenantRealized.staticJsonDownload(o.getDownload());
+              String new_download = json.getString(TenantRealized.varJson(TenantRealized.VAR_download, patch));
+              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // json.put(TenantRealized.varJson(TenantRealized.VAR_download, patch), download);
+
+              promise.complete(json);
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertTenantRealized failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
       }
     } catch(Exception ex) {
       LOG.error(String.format("upsertTenantRealized failed. "), ex);
@@ -3847,7 +4326,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantResource, createdByEmail, pageId, createdByUserId, archived, tenantDescription, createdByFullName, hubId, createdVia, clusterName, intentState, aapOrganizationId, requestedState, sessionId, realizedState, userKey, objectTitle, displayPage, editPage, userPage, download FROM TenantRealized WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, tenantDescription, tenantResource, tenantRealizedNumber, tenantRealizedId, sessionId, createdByEmail, userKey, createdByUserId, createdByFullName, createdVia, objectTitle, intentState, displayPage, requestedState, editPage, realizedState, userPage, download FROM TenantRealized WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3994,6 +4473,42 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         for(int i=0; i < solrIds.size(); i++) {
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
+
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(TenantIntent.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
         }
 
         CompositeFuture.all(futures).onSuccess(b -> {
@@ -4052,28 +4567,29 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       TenantRealized o = new TenantRealized();
       o.setSiteRequest_((SiteRequest)siteRequest);
 
+      o.persistForClass(TenantRealized.VAR_hubId, TenantRealized.staticSetHubId(siteRequest2, (String)result.get(TenantRealized.VAR_hubId)));
+      o.persistForClass(TenantRealized.VAR_clusterName, TenantRealized.staticSetClusterName(siteRequest2, (String)result.get(TenantRealized.VAR_clusterName)));
+      o.persistForClass(TenantRealized.VAR_created, TenantRealized.staticSetCreated(siteRequest2, (String)result.get(TenantRealized.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(TenantRealized.VAR_aapOrganizationId, TenantRealized.staticSetAapOrganizationId(siteRequest2, (String)result.get(TenantRealized.VAR_aapOrganizationId)));
       o.persistForClass(TenantRealized.VAR_tenantName, TenantRealized.staticSetTenantName(siteRequest2, (String)result.get(TenantRealized.VAR_tenantName)));
       o.persistForClass(TenantRealized.VAR_tenantId, TenantRealized.staticSetTenantId(siteRequest2, (String)result.get(TenantRealized.VAR_tenantId)));
-      o.persistForClass(TenantRealized.VAR_created, TenantRealized.staticSetCreated(siteRequest2, (String)result.get(TenantRealized.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(TenantRealized.VAR_tenantResource, TenantRealized.staticSetTenantResource(siteRequest2, (String)result.get(TenantRealized.VAR_tenantResource)));
-      o.persistForClass(TenantRealized.VAR_createdByEmail, TenantRealized.staticSetCreatedByEmail(siteRequest2, (String)result.get(TenantRealized.VAR_createdByEmail)));
-      o.persistForClass(TenantRealized.VAR_pageId, TenantRealized.staticSetPageId(siteRequest2, (String)result.get(TenantRealized.VAR_pageId)));
-      o.persistForClass(TenantRealized.VAR_createdByUserId, TenantRealized.staticSetCreatedByUserId(siteRequest2, (String)result.get(TenantRealized.VAR_createdByUserId)));
       o.persistForClass(TenantRealized.VAR_archived, TenantRealized.staticSetArchived(siteRequest2, (String)result.get(TenantRealized.VAR_archived)));
       o.persistForClass(TenantRealized.VAR_tenantDescription, TenantRealized.staticSetTenantDescription(siteRequest2, (String)result.get(TenantRealized.VAR_tenantDescription)));
-      o.persistForClass(TenantRealized.VAR_createdByFullName, TenantRealized.staticSetCreatedByFullName(siteRequest2, (String)result.get(TenantRealized.VAR_createdByFullName)));
-      o.persistForClass(TenantRealized.VAR_hubId, TenantRealized.staticSetHubId(siteRequest2, (String)result.get(TenantRealized.VAR_hubId)));
-      o.persistForClass(TenantRealized.VAR_createdVia, TenantRealized.staticSetCreatedVia(siteRequest2, (String)result.get(TenantRealized.VAR_createdVia)));
-      o.persistForClass(TenantRealized.VAR_clusterName, TenantRealized.staticSetClusterName(siteRequest2, (String)result.get(TenantRealized.VAR_clusterName)));
-      o.persistForClass(TenantRealized.VAR_intentState, TenantRealized.staticSetIntentState(siteRequest2, (String)result.get(TenantRealized.VAR_intentState)));
-      o.persistForClass(TenantRealized.VAR_aapOrganizationId, TenantRealized.staticSetAapOrganizationId(siteRequest2, (String)result.get(TenantRealized.VAR_aapOrganizationId)));
-      o.persistForClass(TenantRealized.VAR_requestedState, TenantRealized.staticSetRequestedState(siteRequest2, (String)result.get(TenantRealized.VAR_requestedState)));
+      o.persistForClass(TenantRealized.VAR_tenantResource, TenantRealized.staticSetTenantResource(siteRequest2, (String)result.get(TenantRealized.VAR_tenantResource)));
+      o.persistForClass(TenantRealized.VAR_tenantRealizedNumber, TenantRealized.staticSetTenantRealizedNumber(siteRequest2, (String)result.get(TenantRealized.VAR_tenantRealizedNumber)));
+      o.persistForClass(TenantRealized.VAR_tenantRealizedId, TenantRealized.staticSetTenantRealizedId(siteRequest2, (String)result.get(TenantRealized.VAR_tenantRealizedId)));
       o.persistForClass(TenantRealized.VAR_sessionId, TenantRealized.staticSetSessionId(siteRequest2, (String)result.get(TenantRealized.VAR_sessionId)));
-      o.persistForClass(TenantRealized.VAR_realizedState, TenantRealized.staticSetRealizedState(siteRequest2, (String)result.get(TenantRealized.VAR_realizedState)));
+      o.persistForClass(TenantRealized.VAR_createdByEmail, TenantRealized.staticSetCreatedByEmail(siteRequest2, (String)result.get(TenantRealized.VAR_createdByEmail)));
       o.persistForClass(TenantRealized.VAR_userKey, TenantRealized.staticSetUserKey(siteRequest2, (String)result.get(TenantRealized.VAR_userKey)));
+      o.persistForClass(TenantRealized.VAR_createdByUserId, TenantRealized.staticSetCreatedByUserId(siteRequest2, (String)result.get(TenantRealized.VAR_createdByUserId)));
+      o.persistForClass(TenantRealized.VAR_createdByFullName, TenantRealized.staticSetCreatedByFullName(siteRequest2, (String)result.get(TenantRealized.VAR_createdByFullName)));
+      o.persistForClass(TenantRealized.VAR_createdVia, TenantRealized.staticSetCreatedVia(siteRequest2, (String)result.get(TenantRealized.VAR_createdVia)));
       o.persistForClass(TenantRealized.VAR_objectTitle, TenantRealized.staticSetObjectTitle(siteRequest2, (String)result.get(TenantRealized.VAR_objectTitle)));
+      o.persistForClass(TenantRealized.VAR_intentState, TenantRealized.staticSetIntentState(siteRequest2, (String)result.get(TenantRealized.VAR_intentState)));
       o.persistForClass(TenantRealized.VAR_displayPage, TenantRealized.staticSetDisplayPage(siteRequest2, (String)result.get(TenantRealized.VAR_displayPage)));
+      o.persistForClass(TenantRealized.VAR_requestedState, TenantRealized.staticSetRequestedState(siteRequest2, (String)result.get(TenantRealized.VAR_requestedState)));
       o.persistForClass(TenantRealized.VAR_editPage, TenantRealized.staticSetEditPage(siteRequest2, (String)result.get(TenantRealized.VAR_editPage)));
+      o.persistForClass(TenantRealized.VAR_realizedState, TenantRealized.staticSetRealizedState(siteRequest2, (String)result.get(TenantRealized.VAR_realizedState)));
       o.persistForClass(TenantRealized.VAR_userPage, TenantRealized.staticSetUserPage(siteRequest2, (String)result.get(TenantRealized.VAR_userPage)));
       o.persistForClass(TenantRealized.VAR_download, TenantRealized.staticSetDownload(siteRequest2, (String)result.get(TenantRealized.VAR_download)));
 

@@ -3,6 +3,8 @@ package org.computate.dcm.model.eda.tenant.requested;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import java.util.List;
 import java.lang.String;
+import java.lang.Integer;
+import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -109,6 +111,7 @@ import java.lang.Void;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
+import org.computate.search.tool.SearchTool;
 
 /**
  * <ol>

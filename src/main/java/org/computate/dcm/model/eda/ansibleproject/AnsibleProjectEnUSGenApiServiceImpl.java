@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.ansibleproject;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.request.SiteRequest;
@@ -869,13 +869,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -889,7 +889,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(AnsibleProject.class, pk).setToNull(AnsibleProject.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(AnsibleProject.class, pk).setToNull(AnsibleProject.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1565,13 +1565,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case AnsibleProject.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2195,13 +2195,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case AnsibleProject.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3686,13 +3686,13 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           case AnsibleProject.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(AnsibleProject.class, pk).set(AnsibleProject.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4101,115 +4101,115 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
         String old_tenantResource = AnsibleProject.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
         String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
           try {
-            if(oTenant == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
 
-              String old_tenantId = AnsibleProject.staticJsonTenantId(o.getTenantId());
-              String new_tenantId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_tenantId, patch));
-              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // String old_tenantId = AnsibleProject.staticJsonTenantId(o.getTenantId());
+              // String new_tenantId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_tenantId, patch));
+              // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_tenantId, patch), tenantId);
 
-              String old_created = AnsibleProject.staticJsonCreated(o.getCreated());
-              String new_created = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_created, patch));
-              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // String old_created = AnsibleProject.staticJsonCreated(o.getCreated());
+              // String new_created = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_created, patch));
+              // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_created, patch), created);
 
-              String old_aapOrganizationId = AnsibleProject.staticJsonAapOrganizationId(o.getAapOrganizationId());
-              String new_aapOrganizationId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapOrganizationId, patch));
-              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // String old_aapOrganizationId = AnsibleProject.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              // String new_aapOrganizationId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapOrganizationId, patch));
+              // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-              String old_sourceControlType = AnsibleProject.staticJsonSourceControlType(o.getSourceControlType());
-              String new_sourceControlType = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlType, patch));
-              String sourceControlType = Optional.ofNullable(Optional.ofNullable(new_sourceControlType).orElse(old_sourceControlType)).orElse(null);
+              // String old_sourceControlType = AnsibleProject.staticJsonSourceControlType(o.getSourceControlType());
+              // String new_sourceControlType = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlType, patch));
+              // String sourceControlType = Optional.ofNullable(Optional.ofNullable(new_sourceControlType).orElse(old_sourceControlType)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlType, patch), sourceControlType);
 
-              Boolean old_archived = AnsibleProject.staticJsonArchived(o.getArchived());
-              Boolean new_archived = json.getBoolean(AnsibleProject.varJson(AnsibleProject.VAR_archived, patch));
-              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // Boolean old_archived = AnsibleProject.staticJsonArchived(o.getArchived());
+              // Boolean new_archived = json.getBoolean(AnsibleProject.varJson(AnsibleProject.VAR_archived, patch));
+              // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_archived, patch), archived);
 
-              String old_sourceControlUrl = AnsibleProject.staticJsonSourceControlUrl(o.getSourceControlUrl());
-              String new_sourceControlUrl = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlUrl, patch));
-              String sourceControlUrl = Optional.ofNullable(Optional.ofNullable(new_sourceControlUrl).orElse(old_sourceControlUrl)).orElse(null);
+              // String old_sourceControlUrl = AnsibleProject.staticJsonSourceControlUrl(o.getSourceControlUrl());
+              // String new_sourceControlUrl = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlUrl, patch));
+              // String sourceControlUrl = Optional.ofNullable(Optional.ofNullable(new_sourceControlUrl).orElse(old_sourceControlUrl)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlUrl, patch), sourceControlUrl);
 
-              String old_sourceControlBranch = AnsibleProject.staticJsonSourceControlBranch(o.getSourceControlBranch());
-              String new_sourceControlBranch = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlBranch, patch));
-              String sourceControlBranch = Optional.ofNullable(Optional.ofNullable(new_sourceControlBranch).orElse(old_sourceControlBranch)).orElse(null);
+              // String old_sourceControlBranch = AnsibleProject.staticJsonSourceControlBranch(o.getSourceControlBranch());
+              // String new_sourceControlBranch = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlBranch, patch));
+              // String sourceControlBranch = Optional.ofNullable(Optional.ofNullable(new_sourceControlBranch).orElse(old_sourceControlBranch)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sourceControlBranch, patch), sourceControlBranch);
 
-              String old_ansibleProjectName = AnsibleProject.staticJsonAnsibleProjectName(o.getAnsibleProjectName());
-              String new_ansibleProjectName = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectName, patch));
-              String ansibleProjectName = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectName).orElse(old_ansibleProjectName)).orElse(null);
+              // String old_ansibleProjectName = AnsibleProject.staticJsonAnsibleProjectName(o.getAnsibleProjectName());
+              // String new_ansibleProjectName = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectName, patch));
+              // String ansibleProjectName = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectName).orElse(old_ansibleProjectName)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectName, patch), ansibleProjectName);
 
-              String old_ansibleProjectId = AnsibleProject.staticJsonAnsibleProjectId(o.getAnsibleProjectId());
-              String new_ansibleProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectId, patch));
-              String ansibleProjectId = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectId).orElse(old_ansibleProjectId)).orElse(null);
+              // String old_ansibleProjectId = AnsibleProject.staticJsonAnsibleProjectId(o.getAnsibleProjectId());
+              // String new_ansibleProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectId, patch));
+              // String ansibleProjectId = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectId).orElse(old_ansibleProjectId)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectId, patch), ansibleProjectId);
 
-              String old_sessionId = AnsibleProject.staticJsonSessionId(o.getSessionId());
-              String new_sessionId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sessionId, patch));
-              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // String old_sessionId = AnsibleProject.staticJsonSessionId(o.getSessionId());
+              // String new_sessionId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_sessionId, patch));
+              // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_sessionId, patch), sessionId);
 
-              String old_ansibleProjectResource = AnsibleProject.staticJsonAnsibleProjectResource(o.getAnsibleProjectResource());
-              String new_ansibleProjectResource = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectResource, patch));
-              String ansibleProjectResource = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectResource).orElse(old_ansibleProjectResource)).orElse(null);
+              // String old_ansibleProjectResource = AnsibleProject.staticJsonAnsibleProjectResource(o.getAnsibleProjectResource());
+              // String new_ansibleProjectResource = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectResource, patch));
+              // String ansibleProjectResource = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectResource).orElse(old_ansibleProjectResource)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectResource, patch), ansibleProjectResource);
 
-              String old_userKey = AnsibleProject.staticJsonUserKey(o.getUserKey());
-              String new_userKey = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userKey, patch));
-              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // String old_userKey = AnsibleProject.staticJsonUserKey(o.getUserKey());
+              // String new_userKey = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userKey, patch));
+              // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_userKey, patch), userKey);
 
-              String old_aapProjectId = AnsibleProject.staticJsonAapProjectId(o.getAapProjectId());
-              String new_aapProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapProjectId, patch));
-              String aapProjectId = Optional.ofNullable(Optional.ofNullable(new_aapProjectId).orElse(old_aapProjectId)).orElse(null);
+              // String old_aapProjectId = AnsibleProject.staticJsonAapProjectId(o.getAapProjectId());
+              // String new_aapProjectId = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_aapProjectId, patch));
+              // String aapProjectId = Optional.ofNullable(Optional.ofNullable(new_aapProjectId).orElse(old_aapProjectId)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_aapProjectId, patch), aapProjectId);
 
-              String old_ansibleProjectDescription = AnsibleProject.staticJsonAnsibleProjectDescription(o.getAnsibleProjectDescription());
-              String new_ansibleProjectDescription = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectDescription, patch));
-              String ansibleProjectDescription = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectDescription).orElse(old_ansibleProjectDescription)).orElse(null);
+              // String old_ansibleProjectDescription = AnsibleProject.staticJsonAnsibleProjectDescription(o.getAnsibleProjectDescription());
+              // String new_ansibleProjectDescription = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectDescription, patch));
+              // String ansibleProjectDescription = Optional.ofNullable(Optional.ofNullable(new_ansibleProjectDescription).orElse(old_ansibleProjectDescription)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansibleProjectDescription, patch), ansibleProjectDescription);
 
-              String old_objectTitle = AnsibleProject.staticJsonObjectTitle(o.getObjectTitle());
-              String new_objectTitle = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_objectTitle, patch));
-              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // String old_objectTitle = AnsibleProject.staticJsonObjectTitle(o.getObjectTitle());
+              // String new_objectTitle = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_objectTitle, patch));
+              // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_objectTitle, patch), objectTitle);
 
-              JsonArray old_ansiblePlaybooks = AnsibleProject.staticJsonAnsiblePlaybooks(o.getAnsiblePlaybooks());
-              JsonArray new_ansiblePlaybooks = json.getJsonArray(AnsibleProject.varJson(AnsibleProject.VAR_ansiblePlaybooks, patch));
-              JsonArray ansiblePlaybooks = Optional.ofNullable(Optional.ofNullable(new_ansiblePlaybooks).orElse(old_ansiblePlaybooks)).orElse(null);
+              // JsonArray old_ansiblePlaybooks = AnsibleProject.staticJsonAnsiblePlaybooks(o.getAnsiblePlaybooks());
+              // JsonArray new_ansiblePlaybooks = json.getJsonArray(AnsibleProject.varJson(AnsibleProject.VAR_ansiblePlaybooks, patch));
+              // JsonArray ansiblePlaybooks = Optional.ofNullable(Optional.ofNullable(new_ansiblePlaybooks).orElse(old_ansiblePlaybooks)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_ansiblePlaybooks, patch), ansiblePlaybooks);
 
-              String old_displayPage = AnsibleProject.staticJsonDisplayPage(o.getDisplayPage());
-              String new_displayPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_displayPage, patch));
-              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // String old_displayPage = AnsibleProject.staticJsonDisplayPage(o.getDisplayPage());
+              // String new_displayPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_displayPage, patch));
+              // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_displayPage, patch), displayPage);
 
-              String old_editPage = AnsibleProject.staticJsonEditPage(o.getEditPage());
-              String new_editPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_editPage, patch));
-              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // String old_editPage = AnsibleProject.staticJsonEditPage(o.getEditPage());
+              // String new_editPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_editPage, patch));
+              // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_editPage, patch), editPage);
 
-              String old_userPage = AnsibleProject.staticJsonUserPage(o.getUserPage());
-              String new_userPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userPage, patch));
-              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // String old_userPage = AnsibleProject.staticJsonUserPage(o.getUserPage());
+              // String new_userPage = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_userPage, patch));
+              // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_userPage, patch), userPage);
 
-              String old_download = AnsibleProject.staticJsonDownload(o.getDownload());
-              String new_download = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_download, patch));
-              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // String old_download = AnsibleProject.staticJsonDownload(o.getDownload());
+              // String new_download = json.getString(AnsibleProject.varJson(AnsibleProject.VAR_download, patch));
+              // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
               // json.put(AnsibleProject.varJson(AnsibleProject.VAR_download, patch), download);
 
               promise.complete(json);
@@ -4280,7 +4280,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(o.getTenantResource())
           ).onSuccess(result -> {
@@ -4409,16 +4409,16 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
 
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
             searchList2.setStore(true);
             searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
+            searchList2.setC(TenantIntent.class);
             searchList2.fq("solrId:" + solrId2);
             searchList2.rows(1L);
             futures.add(Future.future(promise2 -> {
               searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
@@ -4428,7 +4428,7 @@ public class AnsibleProjectEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))

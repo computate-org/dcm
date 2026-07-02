@@ -13,6 +13,7 @@ import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.request.SiteRequest;
 
 /**
@@ -30,7 +31,7 @@ public class HostCredentialEnUSApiServiceImpl extends HostCredentialEnUSGenApiSe
       } else {
         JsonObject credentialJson = o.getSiteRequest_().getJsonObject();
         String tenantResource = Optional.ofNullable(credentialJson.getString(HostCredential.varJsonHostCredential(HostCredential.VAR_tenantResource, patch))).orElse(o.getTenantResource());
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
           try {
             if(tenant == null) {
               RuntimeException ex = new RuntimeException(String.format("Could not find a matching tenant %s", tenantResource));

@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.jobtemplate;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
@@ -924,13 +924,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -944,7 +944,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(JobTemplate.class, pk).setToNull(JobTemplate.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1662,13 +1662,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2384,13 +2384,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3982,13 +3982,13 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case JobTemplate.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(JobTemplate.class, pk).set(JobTemplate.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4426,6 +4426,183 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
   public void searchJobTemplate2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<JobTemplate> searchList) {
   }
 
+  public Future<JsonObject> upsertJobTemplate(JobTemplate o, Boolean inheritPrimaryKey, Boolean patch) {
+    Promise<JsonObject> promise = Promise.promise();
+    try {
+      SiteRequest siteRequest = o.getSiteRequest_();
+      ServiceRequest serviceRequest = siteRequest.getServiceRequest();
+      if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
+        promise.complete();
+      } else {
+        JsonObject json = o.getSiteRequest_().getJsonObject();
+        String old_tenantResource = JobTemplate.staticJsonTenantResource(o.getTenantResource());
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
+        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
+          try {
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
+              LOG.error(ex.getMessage(), ex);
+              promise.fail(ex);
+            } else {
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
+              String old_inventoryResource = JobTemplate.staticJsonInventoryResource(o.getInventoryResource());
+              String new_inventoryResource = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch));
+              String inventoryResource = Optional.ofNullable(new_inventoryResource).orElse(old_inventoryResource);
+              HostInventory.fqHostInventory(siteRequest, HostInventory.VAR_inventoryResource, inventoryResource).onSuccess(oHostInventory -> {
+                try {
+                  if(oHostInventory == null) {
+                    RuntimeException ex = new RuntimeException(String.format("Could not find a matching HostInventory %s", inventoryResource));
+                    LOG.error(ex.getMessage(), ex);
+                    promise.fail(ex);
+                  } else {
+                    json.put(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch), inventoryResource);
+
+                    // String old_tenantId = JobTemplate.staticJsonTenantId(o.getTenantId());
+                    // String new_tenantId = json.getString(JobTemplate.varJson(JobTemplate.VAR_tenantId, patch));
+                    // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_tenantId, patch), tenantId);
+
+                    // String old_created = JobTemplate.staticJsonCreated(o.getCreated());
+                    // String new_created = json.getString(JobTemplate.varJson(JobTemplate.VAR_created, patch));
+                    // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_created, patch), created);
+
+                    // String old_aapOrganizationId = JobTemplate.staticJsonAapOrganizationId(o.getAapOrganizationId());
+                    // String new_aapOrganizationId = json.getString(JobTemplate.varJson(JobTemplate.VAR_aapOrganizationId, patch));
+                    // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_aapOrganizationId, patch), aapOrganizationId);
+
+                    // Boolean old_archived = JobTemplate.staticJsonArchived(o.getArchived());
+                    // Boolean new_archived = json.getBoolean(JobTemplate.varJson(JobTemplate.VAR_archived, patch));
+                    // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_archived, patch), archived);
+
+                    // String old_aapInventoryId = JobTemplate.staticJsonAapInventoryId(o.getAapInventoryId());
+                    // String new_aapInventoryId = json.getString(JobTemplate.varJson(JobTemplate.VAR_aapInventoryId, patch));
+                    // String aapInventoryId = Optional.ofNullable(Optional.ofNullable(new_aapInventoryId).orElse(old_aapInventoryId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_aapInventoryId, patch), aapInventoryId);
+
+                    // String old_aapHostCredentialId = JobTemplate.staticJsonAapHostCredentialId(o.getAapHostCredentialId());
+                    // String new_aapHostCredentialId = json.getString(JobTemplate.varJson(JobTemplate.VAR_aapHostCredentialId, patch));
+                    // String aapHostCredentialId = Optional.ofNullable(Optional.ofNullable(new_aapHostCredentialId).orElse(old_aapHostCredentialId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_aapHostCredentialId, patch), aapHostCredentialId);
+
+                    // String old_sessionId = JobTemplate.staticJsonSessionId(o.getSessionId());
+                    // String new_sessionId = json.getString(JobTemplate.varJson(JobTemplate.VAR_sessionId, patch));
+                    // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_sessionId, patch), sessionId);
+
+                    // String old_aapProjectId = JobTemplate.staticJsonAapProjectId(o.getAapProjectId());
+                    // String new_aapProjectId = json.getString(JobTemplate.varJson(JobTemplate.VAR_aapProjectId, patch));
+                    // String aapProjectId = Optional.ofNullable(Optional.ofNullable(new_aapProjectId).orElse(old_aapProjectId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_aapProjectId, patch), aapProjectId);
+
+                    // String old_userKey = JobTemplate.staticJsonUserKey(o.getUserKey());
+                    // String new_userKey = json.getString(JobTemplate.varJson(JobTemplate.VAR_userKey, patch));
+                    // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_userKey, patch), userKey);
+
+                    // JsonArray old_ansiblePlaybooks = JobTemplate.staticJsonAnsiblePlaybooks(o.getAnsiblePlaybooks());
+                    // JsonArray new_ansiblePlaybooks = json.getJsonArray(JobTemplate.varJson(JobTemplate.VAR_ansiblePlaybooks, patch));
+                    // JsonArray ansiblePlaybooks = Optional.ofNullable(Optional.ofNullable(new_ansiblePlaybooks).orElse(old_ansiblePlaybooks)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_ansiblePlaybooks, patch), ansiblePlaybooks);
+
+                    // String old_ansiblePlaybook = JobTemplate.staticJsonAnsiblePlaybook(o.getAnsiblePlaybook());
+                    // String new_ansiblePlaybook = json.getString(JobTemplate.varJson(JobTemplate.VAR_ansiblePlaybook, patch));
+                    // String ansiblePlaybook = Optional.ofNullable(Optional.ofNullable(new_ansiblePlaybook).orElse(old_ansiblePlaybook)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_ansiblePlaybook, patch), ansiblePlaybook);
+
+                    // String old_objectTitle = JobTemplate.staticJsonObjectTitle(o.getObjectTitle());
+                    // String new_objectTitle = json.getString(JobTemplate.varJson(JobTemplate.VAR_objectTitle, patch));
+                    // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_objectTitle, patch), objectTitle);
+
+                    // String old_jobTemplateName = JobTemplate.staticJsonJobTemplateName(o.getJobTemplateName());
+                    // String new_jobTemplateName = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateName, patch));
+                    // String jobTemplateName = Optional.ofNullable(Optional.ofNullable(new_jobTemplateName).orElse(old_jobTemplateName)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateName, patch), jobTemplateName);
+
+                    // String old_displayPage = JobTemplate.staticJsonDisplayPage(o.getDisplayPage());
+                    // String new_displayPage = json.getString(JobTemplate.varJson(JobTemplate.VAR_displayPage, patch));
+                    // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_displayPage, patch), displayPage);
+
+                    // String old_jobTemplateId = JobTemplate.staticJsonJobTemplateId(o.getJobTemplateId());
+                    // String new_jobTemplateId = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateId, patch));
+                    // String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateId, patch), jobTemplateId);
+
+                    // String old_editPage = JobTemplate.staticJsonEditPage(o.getEditPage());
+                    // String new_editPage = json.getString(JobTemplate.varJson(JobTemplate.VAR_editPage, patch));
+                    // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_editPage, patch), editPage);
+
+                    // String old_jobTemplateResource = JobTemplate.staticJsonJobTemplateResource(o.getJobTemplateResource());
+                    // String new_jobTemplateResource = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch));
+                    // String jobTemplateResource = Optional.ofNullable(Optional.ofNullable(new_jobTemplateResource).orElse(old_jobTemplateResource)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
+
+                    // String old_userPage = JobTemplate.staticJsonUserPage(o.getUserPage());
+                    // String new_userPage = json.getString(JobTemplate.varJson(JobTemplate.VAR_userPage, patch));
+                    // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_userPage, patch), userPage);
+
+                    // String old_jobTemplateDescription = JobTemplate.staticJsonJobTemplateDescription(o.getJobTemplateDescription());
+                    // String new_jobTemplateDescription = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateDescription, patch));
+                    // String jobTemplateDescription = Optional.ofNullable(Optional.ofNullable(new_jobTemplateDescription).orElse(old_jobTemplateDescription)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateDescription, patch), jobTemplateDescription);
+
+                    // String old_download = JobTemplate.staticJsonDownload(o.getDownload());
+                    // String new_download = json.getString(JobTemplate.varJson(JobTemplate.VAR_download, patch));
+                    // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_download, patch), download);
+
+                    // String old_jobType = JobTemplate.staticJsonJobType(o.getJobType());
+                    // String new_jobType = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobType, patch));
+                    // String jobType = Optional.ofNullable(Optional.ofNullable(new_jobType).orElse(old_jobType)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_jobType, patch), jobType);
+
+                    // Boolean old_askExtraVarsOnLaunch = JobTemplate.staticJsonAskExtraVarsOnLaunch(o.getAskExtraVarsOnLaunch());
+                    // Boolean new_askExtraVarsOnLaunch = json.getBoolean(JobTemplate.varJson(JobTemplate.VAR_askExtraVarsOnLaunch, patch));
+                    // Boolean askExtraVarsOnLaunch = Optional.ofNullable(Optional.ofNullable(new_askExtraVarsOnLaunch).orElse(old_askExtraVarsOnLaunch)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_askExtraVarsOnLaunch, patch), askExtraVarsOnLaunch);
+
+                    // JsonObject old_extraVars = JobTemplate.staticJsonExtraVars(o.getExtraVars());
+                    // JsonObject new_extraVars = json.getJsonObject(JobTemplate.varJson(JobTemplate.VAR_extraVars, patch));
+                    // JsonObject extraVars = Optional.ofNullable(Optional.ofNullable(new_extraVars).orElse(old_extraVars)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_extraVars, patch), extraVars);
+
+                    // String old_aapTemplateId = JobTemplate.staticJsonAapTemplateId(o.getAapTemplateId());
+                    // String new_aapTemplateId = json.getString(JobTemplate.varJson(JobTemplate.VAR_aapTemplateId, patch));
+                    // String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
+                    // json.put(JobTemplate.varJson(JobTemplate.VAR_aapTemplateId, patch), aapTemplateId);
+
+                  promise.complete(json);
+                  }
+                } catch(Exception ex) {
+                  LOG.error(String.format("upsertJobTemplate failed. "), ex);
+                  promise.tryFail(ex);
+                }
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
+            }
+          } catch(Exception ex) {
+            LOG.error(String.format("upsertJobTemplate failed. "), ex);
+            promise.tryFail(ex);
+          }
+        }).onFailure(ex -> {
+          promise.fail(ex);
+        });
+      }
+    } catch(Exception ex) {
+      LOG.error(String.format("upsertJobTemplate failed. "), ex);
+      promise.tryFail(ex);
+    }
+    return promise.future();
+  }
+
   public Future<Void> persistJobTemplate(JobTemplate o, Boolean patch) {
     Promise<Void> promise = Promise.promise();
     try {
@@ -4477,7 +4654,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' FROM HostInventory WHERE inventoryResource=$2 UNION SELECT credentialResource as pk2, 'credentialResource' FROM HostCredential WHERE credentialResource=$3 UNION SELECT ansibleProjectResource as pk2, 'ansibleProjectResource' FROM AnsibleProject WHERE ansibleProjectResource=$4")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1 UNION SELECT inventoryResource as pk2, 'inventoryResource' FROM HostInventory WHERE inventoryResource=$2 UNION SELECT credentialResource as pk2, 'credentialResource' FROM HostCredential WHERE credentialResource=$3 UNION SELECT ansibleProjectResource as pk2, 'ansibleProjectResource' FROM AnsibleProject WHERE ansibleProjectResource=$4")
           .collecting(Collectors.toList())
           .execute(Tuple.of(o.getTenantResource(), o.getInventoryResource(), o.getCredentialResource(), o.getAnsibleProjectResource())
           ).onSuccess(result -> {
@@ -4606,16 +4783,16 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
 
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
             searchList2.setStore(true);
             searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
+            searchList2.setC(TenantIntent.class);
             searchList2.fq("solrId:" + solrId2);
             searchList2.rows(1L);
             futures.add(Future.future(promise2 -> {
               searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
@@ -4625,7 +4802,7 @@ public class JobTemplateEnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))

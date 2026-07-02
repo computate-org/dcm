@@ -73,9 +73,6 @@ import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSGenApiSer
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;
-import org.computate.dcm.model.eda.tenant.Tenant;
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.TenantEnUSGenApiService;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;

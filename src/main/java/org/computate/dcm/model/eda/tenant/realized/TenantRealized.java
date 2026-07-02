@@ -7,7 +7,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
 
 /**
  * Order: 143
- * Description: Requesting a change to create a new Tenant, or modify an existing Tenant. Tenants are separate organizations sharing the same cloud resources. 
+ * Description: An approved and realized Tenant. Tenants are separate organizations sharing the same cloud resources. 
  * AName: a realized tenant
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-buildings"></i>
  *
@@ -46,6 +46,102 @@ public class TenantRealized extends TenantRealizedGen<Tenant> {
 
   @Override
   protected void _ansibleProjectIds(List<String> l) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant name
+   * Description: The name of this tenant
+   * HtmRow: 23
+   * HtmCell: 1
+   * HtmColumn: 1
+   * HtmRowTitleOpen: tenant details
+   * Facet: true
+   * VarName: true
+   * Required: true
+   * StringFormat: oTenantIntent.getTenantName()
+   **/
+  protected void _tenantName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
+   * Facet: true
+   * DefaultFacet: true
+   * StringFormat: oTenantIntent.getTenantId()
+   **/
+  protected void _tenantId(Wrap<String> w) {
+    w.o(toId(tenantName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: description
+   * Description: A description of this tenant
+   * HtmRow: 23
+   * HtmCell: 4
+   * Facet: true
+   * HtmColumn: 3
+   * VarDescription: true
+   * Multiline: true
+   * StringFormat: oTenantIntent.getTenantDescription()
+   **/
+  protected void _tenantDescription(Wrap<String> w) {
+    w.o(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant auth resource
+   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * Facet: true
+   * AuthorizationResource: TENANT
+   * HtmRowTitleOpen: tenant details
+   * HtmRow: 5
+   * HtmCell: 0
+   * HtmColumn: 0
+   * Required: true
+   * Relate: TenantIntent.tenantRealized
+   **/
+  protected void _tenantResource(Wrap<String> w) {
+    w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant realized number
+   * Description: A unique number for each realized version of this tenant. 
+   * Facet: true
+   * Required: true
+   **/
+  protected void _tenantRealizedNumber(Wrap<Integer> w) {
+    // tomorrow, search for the max requested number by tenantResource, and increment by 1 in upsert. 
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant realized ID
+   * Description: The unique ID for this tenant realized. 
+   * Facet: true
+   * Unique: true
+   * Required: true
+   * VarId: true
+   **/
+  protected void _tenantRealizedId(Wrap<Integer> w) {
   }
 
   /**

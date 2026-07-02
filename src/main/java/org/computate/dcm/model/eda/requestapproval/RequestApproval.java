@@ -11,6 +11,7 @@ import org.computate.dcm.model.BaseModel;
  * AName: a request approval
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-thumbs-up"></i>
  *
+ * AuthorizationResource: TENANT
  * SearchPageUri: /en-us/search/approval
  * EditPageUri: /en-us/edit/approval/{approvalResource}
  * ApiUri: /en-us/api/approval

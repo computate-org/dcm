@@ -15,6 +15,7 @@ import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.vertx.search.list.SearchList;
 
@@ -60,7 +61,7 @@ public class HostEnUSApiServiceImpl extends HostEnUSGenApiServiceImpl {
               hostJson.put(Host.varJsonHost(Host.VAR_hostId, patch), hostId);
               String hostResource = String.format("%s-%s-%s", tenantResource, Host.CLASS_AUTH_RESOURCE, hostId);
               hostJson.put(Host.varJsonHost(Host.VAR_hostResource, patch), hostResource);
-              Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+              TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
                 try {
                   if(tenant == null) {
                     RuntimeException ex = new RuntimeException(String.format("Could not find a matching tenant %s", tenantResource));

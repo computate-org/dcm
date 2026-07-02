@@ -55,7 +55,7 @@ public class Host extends HostGen<BaseModel> {
    * DisplayName: tenant
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
-   * Relate: Tenant.tenantResource
+   * Relate: TenantIntent.tenantResource
    **/
   protected void _tenantResource(Wrap<String> w) {
   }

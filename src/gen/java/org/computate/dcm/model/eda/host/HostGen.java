@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import java.math.RoundingMode;
 import java.util.Map;
 import java.lang.String;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import java.lang.Long;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import io.vertx.core.json.JsonArray;

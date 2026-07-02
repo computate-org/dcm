@@ -1542,7 +1542,7 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static final String CLASS_SIMPLE_NAME = "RequestApproval";
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.requestapproval.RequestApproval";
-  public static final String CLASS_AUTH_RESOURCE = "REQUESTAPPROVAL";
+  public static final String CLASS_AUTH_RESOURCE = "TENANT";
   public static final String CLASS_API_ADDRESS_RequestApproval = "dcm-enUS-RequestApproval";
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_RequestApproval;

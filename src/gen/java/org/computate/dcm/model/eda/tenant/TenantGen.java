@@ -56,12 +56,12 @@ import org.computate.search.response.solr.SolrResponse;
 /**
  * <ol>
 <h3>Suggestions that can generate more code for you: </h3> * </ol>
- * <li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class TenantGen into the class Tenant. 
- * </li><li><p>
- *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the discovered tenant API to return more or less than 10 results by default. 
- *   In this case, the API will return 100 results from the API instead of 10 by default. 
- *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
+ * <li><p>
+ *   You can add a class comment <kbd><b>Api: true</b></kbd> if you wish to GET, POST, PATCH or PUT these  objects in a RESTful API. 
  * </p>
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class TenantGen into the class Tenant. 
+ * </li><li>You can add a class comment "SqlOrder: " followed by an Integer to sort this class compared when generating the SQL code to create and drop tables. 
+ * The Order comment allows you do define which order the SQL code is generated. 
  * </li>
  * <h3>About the Tenant class and it's generated class TenantGen&lt;BaseModel&gt;: </h3>extends TenantGen
  * <p>
@@ -82,15 +82,8 @@ import org.computate.search.response.solr.SolrResponse;
  * <h2>
  *   Api: true
  * </h2>
- * <p>
- *   This class contains a comment <kbd><b>Api: true</b></kbd>, which means this class will have Java Vert.x API backend code generated for these objects. 
- * </p>
  * <h2>ApiTag.enUS: true</h2>
- * <p>This class contains a comment <kbd><b>ApiTag: discovered tenants</b></kbd>, which groups all of the OpenAPIs for Tenant objects under the tag "discovered tenants". 
- * </p>
- * <h2>ApiUri.enUS: /en-us/api/tenant</h2>
- * <p>This class contains a comment <kbd><b>ApiUri: /en-us/api/tenant</b></kbd>, which defines the base API URI for Tenant objects as "/en-us/api/tenant" in the OpenAPI spec. 
- * </p>
+ * <h2>ApiUri.enUS: null</h2>
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <p>This class contains a comment <kbd><b>Indexed: true</b></kbd>, which means this class will be indexed in the search engine. 
@@ -102,38 +95,33 @@ import org.computate.search.response.solr.SolrResponse;
  * <h2>
  *   Rows: 10
  * </h2>
- * <p>This class contains a comment <kbd><b>Rows: 10</b></kbd>, which means the discovered tenant API will return a default of 10 results instead of 10 by default. 
+ * <p>This class contains a comment <kbd><b>Rows: 10</b></kbd>, which means the  API will return a default of 10 results instead of 10 by default. 
  * Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
  * <p>
- *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the discovered tenant API to return more or less than 10 results by default. 
+ *   You can add a class comment <kbd><b>Rows: 100</b></kbd> if you wish for the  API to return more or less than 10 results by default. 
  *   In this case, the API will return 100 results from the API instead of 10 by default. 
  *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
  * <h2>
- *   Order: 144
+ *   Order: 1
  * </h2>
  * <p>
- *   This class contains a comment <kbd><b>Order: 144</b></kbd>, 
- *   which means this class will be sorted by the given number 144 
+ *   This class contains a comment <kbd><b>Order: 1</b></kbd>, 
+ *   which means this class will be sorted by the given number 1 
  *   ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 144</h2>
- * <p>This class contains a comment <kbd><b>SqlOrder: 144</b></kbd>, which means this class will be sorted by the given number 144 ascending when SQL code to create and drop the tables is generated. 
+ * <p>
+ *   You can add a class comment <kbd><b>Order: </b></kbd>, followed by an Integer to sort this class compared to other classes in the project. 
+ *   There is code that is generated that queries several classes and writes code for each class in a sequence. 
+ *   The <kbd><b>Order</b></kbd> comment allows you to define which order the class code is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <kbd><b>Model: true</b></kbd>, which means this class will be stored in the database. 
  * Every protected void method that begins with "_" that contains a "Persist: true" comment will be a persisted field in the database table. 
  * </p>
  * <h2>Page: true</h2>
- * <p>This class contains a comment <kbd><b>Page: true</b></kbd>, which means this class will have webpage code generated for these objects. 
- * Java Vert.x backend API code, Handlebars HTML template frontend code, and JavaScript code will all generated and can be extended. 
- * This creates a new Java class org.computate.dcm.model.eda.tenant.TenantPage. 
- * </p>
- * <h2>SuperPage.enUS: PageLayout</h2>
- * <p>This class contains a comment <kbd><b>SuperPage.enUS: PageLayout</b></kbd>, which identifies the Java super class of the page code by it's class simple name "PageLayout". 
- * This means that the newly created class org.computate.dcm.model.eda.tenant.TenantPage extends org.computate.dcm.page.PageLayout. 
- * </p>
+ * <h2>SuperPage.enUS: null</h2>
  * <h2>Promise: true</h2>
  * <p>
  *   This class contains a comment <kbd><b>Promise: true</b></kbd>
@@ -157,9 +145,7 @@ import org.computate.search.response.solr.SolrResponse;
  * <p>
  *   If a super class of this Java class with `Model: true`, then the child class will also inherit `Promise: true`. 
  * </p>
- * <h2>AName.enUS: a discovered tenant</h2>
- * <p>This class contains a comment <kbd><b>AName.enUS: a discovered tenant</b></kbd>, which identifies the language context to describe a Tenant as "a discovered tenant". 
- * </p>
+ * <h2>AName.enUS: null</h2>
  * <p>
  * Delete the class Tenant in Solr: 
  * <pre>
@@ -182,368 +168,6 @@ import org.computate.search.response.solr.SolrResponse;
  **/
 public abstract class TenantGen<DEV> extends BaseModel {
   protected static final Logger LOG = LoggerFactory.getLogger(Tenant.class);
-
-  public static final String Description_enUS = "Tenants are separate organizations sharing the same cloud resources. ";
-  public static final String AName_enUS = "a discovered tenant";
-  public static final String This_enUS = "this ";
-  public static final String ThisName_enUS = "this discovered tenant";
-  public static final String A_enUS = "a ";
-  public static final String TheName_enUS = "the discovered tenant";
-  public static final String SingularName_enUS = "discovered tenant";
-  public static final String PluralName_enUS = "discovered tenants";
-  public static final String NameActual_enUS = "current discovered tenant";
-  public static final String AllName_enUS = "all discovered tenants";
-  public static final String SearchAllNameBy_enUS = "search discovered tenants by ";
-  public static final String SearchAllName_enUS = "search discovered tenants";
-  public static final String Title_enUS = "discovered tenants";
-  public static final String ThePluralName_enUS = "the discovered tenants";
-  public static final String NoNameFound_enUS = "no discovered tenant found";
-  public static final String ApiUri_enUS = "/en-us/api/tenant";
-  public static final String ApiUriSearchPage_enUS = "/en-us/search/tenant";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/tenant/{tenantResource}";
-  public static final String OfName_enUS = "of discovered tenant";
-  public static final String ANameAdjective_enUS = "a discovered tenant";
-  public static final String NameAdjectiveSingular_enUS = "discovered tenant";
-  public static final String NameAdjectivePlural_enUS = "discovered tenants";
-  public static final String Search_enUS_OpenApiUri = "/en-us/api/tenant";
-  public static final String Search_enUS_StringFormatUri = "/en-us/api/tenant";
-  public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/tenant/{tenantResource}";
-  public static final String GET_enUS_StringFormatUri = "/en-us/api/tenant/%s";
-  public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/tenant/%s";
-  public static final String PATCH_enUS_OpenApiUri = "/en-us/api/tenant";
-  public static final String PATCH_enUS_StringFormatUri = "/en-us/api/tenant";
-  public static final String PATCH_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-  public static final String POST_enUS_OpenApiUri = "/en-us/api/tenant";
-  public static final String POST_enUS_StringFormatUri = "/en-us/api/tenant";
-  public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/tenant/{tenantResource}";
-  public static final String DELETE_enUS_StringFormatUri = "/en-us/api/tenant/%s";
-  public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/tenant/%s";
-  public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/tenant-import";
-  public static final String PUTImport_enUS_StringFormatUri = "/en-us/api/tenant-import";
-  public static final String PUTImport_enUS_StringFormatUrl = "%s/en-us/api/tenant-import";
-  public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/tenant";
-  public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/tenant";
-  public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/tenant";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/tenant/{tenantResource}";
-  public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/tenant/%s";
-  public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/tenant/%s";
-  public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/tenant";
-  public static final String DELETEFilter_enUS_StringFormatUri = "/en-us/api/tenant";
-  public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/tenant";
-
-  public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-buildings\"></i>";
-
-	////////////////
-  // tenantName //
-	////////////////
-
-
-  /**
-   *  The entity tenantName
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String tenantName;
-
-  /**
-   * <br> The entity tenantName
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:tenantName">Find the entity tenantName in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _tenantName(Wrap<String> w);
-
-  public String getTenantName() {
-    return tenantName;
-  }
-  public void setTenantName(String o) {
-    this.tenantName = Tenant.staticSetTenantName(siteRequest_, o);
-  }
-  public static String staticSetTenantName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected Tenant tenantNameInit() {
-    Wrap<String> tenantNameWrap = new Wrap<String>().var("tenantName");
-    if(tenantName == null) {
-      _tenantName(tenantNameWrap);
-      Optional.ofNullable(tenantNameWrap.getO()).ifPresent(o -> {
-        setTenantName(o);
-      });
-    }
-    return (Tenant)this;
-  }
-
-  public static String staticSearchTenantName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrTenantName(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqTenantName(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchTenantName(siteRequest_, Tenant.staticSetTenantName(siteRequest_, o)).toString();
-  }
-
-  public String sqlTenantName() {
-    return tenantName;
-  }
-
-  public static String staticJsonTenantName(String tenantName) {
-    return tenantName;
-  }
-
-	//////////////
-  // tenantId //
-	//////////////
-
-
-  /**
-   *  The entity tenantId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String tenantId;
-
-  /**
-   * <br> The entity tenantId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _tenantId(Wrap<String> w);
-
-  public String getTenantId() {
-    return tenantId;
-  }
-  public void setTenantId(String o) {
-    this.tenantId = Tenant.staticSetTenantId(siteRequest_, o);
-  }
-  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected Tenant tenantIdInit() {
-    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
-    if(tenantId == null) {
-      _tenantId(tenantIdWrap);
-      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
-        setTenantId(o);
-      });
-    }
-    return (Tenant)this;
-  }
-
-  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchTenantId(siteRequest_, Tenant.staticSetTenantId(siteRequest_, o)).toString();
-  }
-
-  public String sqlTenantId() {
-    return tenantId;
-  }
-
-  public static String staticJsonTenantId(String tenantId) {
-    return tenantId;
-  }
-
-	////////////////////
-  // tenantResource //
-	////////////////////
-
-
-  /**
-   *  The entity tenantResource
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String tenantResource;
-
-  /**
-   * <br> The entity tenantResource
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:tenantResource">Find the entity tenantResource in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _tenantResource(Wrap<String> w);
-
-  public String getTenantResource() {
-    return tenantResource;
-  }
-  public void setTenantResource(String o) {
-    this.tenantResource = Tenant.staticSetTenantResource(siteRequest_, o);
-  }
-  public static String staticSetTenantResource(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected Tenant tenantResourceInit() {
-    Wrap<String> tenantResourceWrap = new Wrap<String>().var("tenantResource");
-    if(tenantResource == null) {
-      _tenantResource(tenantResourceWrap);
-      Optional.ofNullable(tenantResourceWrap.getO()).ifPresent(o -> {
-        setTenantResource(o);
-      });
-    }
-    return (Tenant)this;
-  }
-
-  public static String staticSearchTenantResource(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrTenantResource(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqTenantResource(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchTenantResource(siteRequest_, Tenant.staticSetTenantResource(siteRequest_, o)).toString();
-  }
-
-  public String sqlTenantResource() {
-    return tenantResource;
-  }
-
-  public static String staticJsonTenantResource(String tenantResource) {
-    return tenantResource;
-  }
-
-	////////////
-  // pageId //
-	////////////
-
-
-  /**
-   *  The entity pageId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String pageId;
-
-  /**
-   * <br> The entity pageId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:pageId">Find the entity pageId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _pageId(Wrap<String> w);
-
-  public String getPageId() {
-    return pageId;
-  }
-  public void setPageId(String o) {
-    this.pageId = Tenant.staticSetPageId(siteRequest_, o);
-  }
-  public static String staticSetPageId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected Tenant pageIdInit() {
-    Wrap<String> pageIdWrap = new Wrap<String>().var("pageId");
-    if(pageId == null) {
-      _pageId(pageIdWrap);
-      Optional.ofNullable(pageIdWrap.getO()).ifPresent(o -> {
-        setPageId(o);
-      });
-    }
-    return (Tenant)this;
-  }
-
-  public static String staticSearchPageId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrPageId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqPageId(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchPageId(siteRequest_, Tenant.staticSetPageId(siteRequest_, o)).toString();
-  }
-
-  public String sqlPageId() {
-    return pageId;
-  }
-
-  public static String staticJsonPageId(String pageId) {
-    return pageId;
-  }
-
-	///////////////////////
-  // tenantDescription //
-	///////////////////////
-
-
-  /**
-   *  The entity tenantDescription
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String tenantDescription;
-
-  /**
-   * <br> The entity tenantDescription
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.Tenant&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _tenantDescription(Wrap<String> w);
-
-  public String getTenantDescription() {
-    return tenantDescription;
-  }
-  public void setTenantDescription(String o) {
-    this.tenantDescription = Tenant.staticSetTenantDescription(siteRequest_, o);
-  }
-  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected Tenant tenantDescriptionInit() {
-    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
-    if(tenantDescription == null) {
-      _tenantDescription(tenantDescriptionWrap);
-      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
-        setTenantDescription(o);
-      });
-    }
-    return (Tenant)this;
-  }
-
-  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
-    return Tenant.staticSearchTenantDescription(siteRequest_, Tenant.staticSetTenantDescription(siteRequest_, o)).toString();
-  }
-
-  public String sqlTenantDescription() {
-    return tenantDescription;
-  }
-
-  public static String staticJsonTenantDescription(String tenantDescription) {
-    return tenantDescription;
-  }
 
 	///////////
   // hubId //
@@ -943,11 +567,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
-        tenantNameInit();
-        tenantIdInit();
-        tenantResourceInit();
-        pageIdInit();
-        tenantDescriptionInit();
         hubIdInit();
         clusterNameInit();
         aapOrganizationIdInit();
@@ -1006,16 +625,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public Object obtainTenant(String var) {
     Tenant oTenant = (Tenant)this;
     switch(var) {
-      case "tenantName":
-        return oTenant.tenantName;
-      case "tenantId":
-        return oTenant.tenantId;
-      case "tenantResource":
-        return oTenant.tenantResource;
-      case "pageId":
-        return oTenant.pageId;
-      case "tenantDescription":
-        return oTenant.tenantDescription;
       case "hubId":
         return oTenant.hubId;
       case "clusterName":
@@ -1075,16 +684,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static Object staticSetTenant(String entityVar, SiteRequest siteRequest_, String v, Tenant o) {
     switch(entityVar) {
-    case "tenantName":
-      return Tenant.staticSetTenantName(siteRequest_, v);
-    case "tenantId":
-      return Tenant.staticSetTenantId(siteRequest_, v);
-    case "tenantResource":
-      return Tenant.staticSetTenantResource(siteRequest_, v);
-    case "pageId":
-      return Tenant.staticSetPageId(siteRequest_, v);
-    case "tenantDescription":
-      return Tenant.staticSetTenantDescription(siteRequest_, v);
     case "hubId":
       return Tenant.staticSetHubId(siteRequest_, v);
     case "clusterName":
@@ -1119,16 +718,16 @@ public abstract class TenantGen<DEV> extends BaseModel {
           try {
             promise.complete(searchList.getList().stream().findFirst().orElse(null));
           } catch(Throwable ex) {
-            LOG.error("Error while querying the discovered tenant", ex);
+            LOG.error("Error while querying null", ex);
             promise.fail(ex);
           }
         }).onFailure(ex -> {
-          LOG.error("Error while querying the discovered tenant", ex);
+          LOG.error("Error while querying null", ex);
           promise.fail(ex);
         });
       }
     } catch(Throwable ex) {
-      LOG.error("Error while querying the discovered tenant", ex);
+      LOG.error("Error while querying null", ex);
       promise.fail(ex);
     }
     return promise.future();
@@ -1139,16 +738,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static Object staticSearchTenant(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "tenantName":
-      return Tenant.staticSearchTenantName(siteRequest_, (String)o);
-    case "tenantId":
-      return Tenant.staticSearchTenantId(siteRequest_, (String)o);
-    case "tenantResource":
-      return Tenant.staticSearchTenantResource(siteRequest_, (String)o);
-    case "pageId":
-      return Tenant.staticSearchPageId(siteRequest_, (String)o);
-    case "tenantDescription":
-      return Tenant.staticSearchTenantDescription(siteRequest_, (String)o);
     case "hubId":
       return Tenant.staticSearchHubId(siteRequest_, (String)o);
     case "clusterName":
@@ -1173,16 +762,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static String staticSearchStrTenant(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "tenantName":
-      return Tenant.staticSearchStrTenantName(siteRequest_, (String)o);
-    case "tenantId":
-      return Tenant.staticSearchStrTenantId(siteRequest_, (String)o);
-    case "tenantResource":
-      return Tenant.staticSearchStrTenantResource(siteRequest_, (String)o);
-    case "pageId":
-      return Tenant.staticSearchStrPageId(siteRequest_, (String)o);
-    case "tenantDescription":
-      return Tenant.staticSearchStrTenantDescription(siteRequest_, (String)o);
     case "hubId":
       return Tenant.staticSearchStrHubId(siteRequest_, (String)o);
     case "clusterName":
@@ -1207,16 +786,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static String staticSearchFqTenant(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
-    case "tenantName":
-      return Tenant.staticSearchFqTenantName(siteRequest_, o);
-    case "tenantId":
-      return Tenant.staticSearchFqTenantId(siteRequest_, o);
-    case "tenantResource":
-      return Tenant.staticSearchFqTenantResource(siteRequest_, o);
-    case "pageId":
-      return Tenant.staticSearchFqPageId(siteRequest_, o);
-    case "tenantDescription":
-      return Tenant.staticSearchFqTenantDescription(siteRequest_, o);
     case "hubId":
       return Tenant.staticSearchFqHubId(siteRequest_, o);
     case "clusterName":
@@ -1253,37 +822,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public Object persistTenant(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("tenantname".equals(varLower)) {
-        if(val instanceof String) {
-          setTenantName((String)val);
-        }
-        saves.add("tenantName");
-        return val;
-      } else if("tenantid".equals(varLower)) {
-        if(val instanceof String) {
-          setTenantId((String)val);
-        }
-        saves.add("tenantId");
-        return val;
-      } else if("tenantresource".equals(varLower)) {
-        if(val instanceof String) {
-          setTenantResource((String)val);
-        }
-        saves.add("tenantResource");
-        return val;
-      } else if("pageid".equals(varLower)) {
-        if(val instanceof String) {
-          setPageId((String)val);
-        }
-        saves.add("pageId");
-        return val;
-      } else if("tenantdescription".equals(varLower)) {
-        if(val instanceof String) {
-          setTenantDescription((String)val);
-        }
-        saves.add("tenantDescription");
-        return val;
-      } else if("hubid".equals(varLower)) {
+      if("hubid".equals(varLower)) {
         if(val instanceof String) {
           setHubId((String)val);
         }
@@ -1320,36 +859,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
 
-      if(saves.contains("tenantName")) {
-        String tenantName = (String)doc.get("tenantName_docvalues_string");
-        if(tenantName != null)
-          oTenant.setTenantName(tenantName);
-      }
-
-      if(saves.contains("tenantId")) {
-        String tenantId = (String)doc.get("tenantId_docvalues_string");
-        if(tenantId != null)
-          oTenant.setTenantId(tenantId);
-      }
-
-      if(saves.contains("tenantResource")) {
-        String tenantResource = (String)doc.get("tenantResource_docvalues_string");
-        if(tenantResource != null)
-          oTenant.setTenantResource(tenantResource);
-      }
-
-      if(saves.contains("pageId")) {
-        String pageId = (String)doc.get("pageId_docvalues_string");
-        if(pageId != null)
-          oTenant.setPageId(pageId);
-      }
-
-      if(saves.contains("tenantDescription")) {
-        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
-        if(tenantDescription != null)
-          oTenant.setTenantDescription(tenantDescription);
-      }
-
       if(saves.contains("hubId")) {
         String hubId = (String)doc.get("hubId_docvalues_string");
         if(hubId != null)
@@ -1381,21 +890,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
 
   public void indexTenant(JsonObject doc) {
-    if(tenantName != null) {
-      doc.put("tenantName_docvalues_string", tenantName);
-    }
-    if(tenantId != null) {
-      doc.put("tenantId_docvalues_string", tenantId);
-    }
-    if(tenantResource != null) {
-      doc.put("tenantResource_docvalues_string", tenantResource);
-    }
-    if(pageId != null) {
-      doc.put("pageId_docvalues_string", pageId);
-    }
-    if(tenantDescription != null) {
-      doc.put("tenantDescription_docvalues_string", tenantDescription);
-    }
     if(hubId != null) {
       doc.put("hubId_docvalues_string", hubId);
     }
@@ -1425,16 +919,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static String varStoredTenant(String entityVar) {
     switch(entityVar) {
-      case "tenantName":
-        return "tenantName_docvalues_string";
-      case "tenantId":
-        return "tenantId_docvalues_string";
-      case "tenantResource":
-        return "tenantResource_docvalues_string";
-      case "pageId":
-        return "pageId_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
       case "hubId":
         return "hubId_docvalues_string";
       case "clusterName":
@@ -1452,16 +936,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static String varIndexedTenant(String entityVar) {
     switch(entityVar) {
-      case "tenantName":
-        return "tenantName_docvalues_string";
-      case "tenantId":
-        return "tenantId_docvalues_string";
-      case "tenantResource":
-        return "tenantResource_docvalues_string";
-      case "pageId":
-        return "pageId_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
       case "hubId":
         return "hubId_docvalues_string";
       case "clusterName":
@@ -1479,16 +953,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static String searchVarTenant(String searchVar) {
     switch(searchVar) {
-      case "tenantName_docvalues_string":
-        return "tenantName";
-      case "tenantId_docvalues_string":
-        return "tenantId";
-      case "tenantResource_docvalues_string":
-        return "tenantResource";
-      case "pageId_docvalues_string":
-        return "pageId";
-      case "tenantDescription_docvalues_string":
-        return "tenantDescription";
       case "hubId_docvalues_string":
         return "hubId";
       case "clusterName_docvalues_string":
@@ -1529,11 +993,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     Tenant oTenant = (Tenant)this;
     SiteRequest siteRequest = oTenant.getSiteRequest_();
 
-    oTenant.setTenantName(Optional.ofNullable(doc.get("tenantName_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenant.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenant.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenant.setPageId(Optional.ofNullable(doc.get("pageId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenant.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setHubId(Optional.ofNullable(doc.get("hubId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setClusterName(Optional.ofNullable(doc.get("clusterName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenant.setAapOrganizationId(Optional.ofNullable(doc.get("aapOrganizationId_docvalues_long")).map(v -> v.toString()).orElse(null));
@@ -1556,16 +1015,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof Tenant) {
       Tenant original = (Tenant)o;
-      if(!Objects.equals(tenantName, original.getTenantName()))
-        apiRequest.addVars("tenantName");
-      if(!Objects.equals(tenantId, original.getTenantId()))
-        apiRequest.addVars("tenantId");
-      if(!Objects.equals(tenantResource, original.getTenantResource()))
-        apiRequest.addVars("tenantResource");
-      if(!Objects.equals(pageId, original.getPageId()))
-        apiRequest.addVars("pageId");
-      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
-        apiRequest.addVars("tenantDescription");
       if(!Objects.equals(hubId, original.getHubId()))
         apiRequest.addVars("hubId");
       if(!Objects.equals(clusterName, original.getClusterName()))
@@ -1587,11 +1036,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
-    sb.append(Optional.ofNullable(tenantName).map(v -> "tenantName: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(pageId).map(v -> "pageId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(hubId).map(v -> "hubId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(clusterName).map(v -> "clusterName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(aapOrganizationId).map(v -> "aapOrganizationId: " + v + "\n").orElse(""));
@@ -1602,21 +1046,7 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static final String CLASS_SIMPLE_NAME = "Tenant";
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.tenant.Tenant";
-  public static final String CLASS_AUTH_RESOURCE = "TENANT";
-  public static final String CLASS_API_ADDRESS_Tenant = "dcm-enUS-Tenant";
-  public static String getClassApiAddress() {
-    return CLASS_API_ADDRESS_Tenant;
-  }
-  public static final String VAR_tenantName = "tenantName";
-  public static final String SET_tenantName = "setTenantName";
-  public static final String VAR_tenantId = "tenantId";
-  public static final String SET_tenantId = "setTenantId";
-  public static final String VAR_tenantResource = "tenantResource";
-  public static final String SET_tenantResource = "setTenantResource";
-  public static final String VAR_pageId = "pageId";
-  public static final String SET_pageId = "setPageId";
-  public static final String VAR_tenantDescription = "tenantDescription";
-  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String CLASS_AUTH_RESOURCE = "";
   public static final String VAR_hubId = "hubId";
   public static final String SET_hubId = "setHubId";
   public static final String VAR_clusterName = "clusterName";
@@ -1640,11 +1070,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return Tenant.varsFqTenant(new ArrayList<String>());
   }
   public static List<String> varsFqTenant(List<String> vars) {
-    vars.add(VAR_tenantName);
-    vars.add(VAR_tenantId);
-    vars.add(VAR_tenantResource);
-    vars.add(VAR_pageId);
-    vars.add(VAR_tenantDescription);
     vars.add(VAR_hubId);
     vars.add(VAR_clusterName);
     BaseModel.varsFqBaseModel(vars);
@@ -1659,11 +1084,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     return vars;
   }
 
-  public static final String DISPLAY_NAME_tenantName = "tenant name";
-  public static final String DISPLAY_NAME_tenantId = "tenant ID";
-  public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
-  public static final String DISPLAY_NAME_pageId = "Page ID";
-  public static final String DISPLAY_NAME_tenantDescription = "description";
   public static final String DISPLAY_NAME_hubId = "ACM Hub";
   public static final String DISPLAY_NAME_clusterName = "cluster name";
   public static final String DISPLAY_NAME_aapOrganizationId = "AAP ID";
@@ -1671,33 +1091,8 @@ public abstract class TenantGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_ansibleProjectIds = "Ansible projects";
 
   @Override
-  public String idForClass() {
-    return tenantResource;
-  }
-
-  @Override
   public String titleForClass() {
     return objectTitle;
-  }
-
-  @Override
-  public String nameForClass() {
-    return tenantName;
-  }
-
-  @Override
-  public String classNameAdjectiveSingularForClass() {
-    return Tenant.NameAdjectiveSingular_enUS;
-  }
-
-  @Override
-  public String descriptionForClass() {
-    return tenantDescription;
-  }
-
-  @Override
-  public String enUSStringFormatUrlEditPageForClass() {
-    return "%s/en-us/edit/tenant/%s";
   }
 
   public static String varJson(String var, Boolean patch) {
@@ -1705,16 +1100,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static String varJsonTenant(String var, Boolean patch) {
     switch(var) {
-    case VAR_tenantName:
-      return patch ? SET_tenantName : VAR_tenantName;
-    case VAR_tenantId:
-      return patch ? SET_tenantId : VAR_tenantId;
-    case VAR_tenantResource:
-      return patch ? SET_tenantResource : VAR_tenantResource;
-    case VAR_pageId:
-      return patch ? SET_pageId : VAR_pageId;
-    case VAR_tenantDescription:
-      return patch ? SET_tenantDescription : VAR_tenantDescription;
     case VAR_hubId:
       return patch ? SET_hubId : VAR_hubId;
     case VAR_clusterName:
@@ -1735,16 +1120,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
   }
   public static String displayNameTenant(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return DISPLAY_NAME_tenantName;
-    case VAR_tenantId:
-      return DISPLAY_NAME_tenantId;
-    case VAR_tenantResource:
-      return DISPLAY_NAME_tenantResource;
-    case VAR_pageId:
-      return DISPLAY_NAME_pageId;
-    case VAR_tenantDescription:
-      return DISPLAY_NAME_tenantDescription;
     case VAR_hubId:
       return DISPLAY_NAME_hubId;
     case VAR_clusterName:
@@ -1764,16 +1139,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
     if(var == null)
       return null;
     switch(var) {
-    case VAR_tenantName:
-      return "The name of this tenant";
-    case VAR_tenantId:
-      return "The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. ";
-    case VAR_tenantResource:
-      return "The unique authorization resource for the tenant for multi-tenancy";
-    case VAR_pageId:
-      return "The ID for this page. ";
-    case VAR_tenantDescription:
-      return "A description of this tenant";
     case VAR_hubId:
       return "The ID of the ACM Hub for this cluster in Prometheus Keycloak Proxy. ";
     case VAR_clusterName:
@@ -1791,16 +1156,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static String classSimpleNameTenant(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return "String";
-    case VAR_tenantId:
-      return "String";
-    case VAR_tenantResource:
-      return "String";
-    case VAR_pageId:
-      return "String";
-    case VAR_tenantDescription:
-      return "String";
     case VAR_hubId:
       return "String";
     case VAR_clusterName:
@@ -1818,10 +1173,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static Integer htmColumnTenant(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 1;
-    case VAR_tenantDescription:
-      return 3;
       default:
         return BaseModel.htmColumnBaseModel(var);
     }
@@ -1829,12 +1180,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static Integer htmRowTenant(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 23;
-    case VAR_pageId:
-      return 299;
-    case VAR_tenantDescription:
-      return 23;
     case VAR_hostInventoryIds:
       return 24;
     case VAR_ansibleProjectIds:
@@ -1846,12 +1191,6 @@ public abstract class TenantGen<DEV> extends BaseModel {
 
   public static Integer htmCellTenant(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 1;
-    case VAR_pageId:
-      return 1;
-    case VAR_tenantDescription:
-      return 4;
     case VAR_hostInventoryIds:
       return 0;
     case VAR_ansibleProjectIds:

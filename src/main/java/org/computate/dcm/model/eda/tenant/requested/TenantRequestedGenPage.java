@@ -3,6 +3,8 @@ package org.computate.dcm.model.eda.tenant.requested;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import java.util.List;
 import java.lang.String;
+import java.lang.Integer;
+import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -484,7 +486,7 @@ public class TenantRequestedGenPage extends TenantRequestedGenPageGen<PageLayout
    * Initialized: false
   **/
   protected void _result(Wrap<TenantRequested> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantResource")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantRequestedId")).orElse(null) != null)
       w.o(searchListTenantRequested_.get(0));
   }
 

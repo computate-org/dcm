@@ -12,7 +12,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-buildings"></i>
  *
  * SearchPageUri: /en-us/search/requested/tenant
- * EditPageUri: /en-us/edit/requested/tenant/{tenantResource}
+ * EditPageUri: /en-us/edit/requested/tenant/{tenantRequestedId}
  * ApiUri: /en-us/api/intent/requested
  * ApiMethod:
  *   Search:
@@ -49,18 +49,87 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
   }
 
   /**
-   * DisplayName: tenant intent
-   * Description: The unique authorization resource for the tenant intent for multi-tenancy
-   * Relate: TenantIntent.tenantResource
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant name
+   * Description: The name of this tenant
+   * HtmRow: 20
+   * HtmCell: 1
+   * HtmColumn: 1
+   * HtmRowTitleOpen: tenant details
+   * Facet: true
+   * VarName: true
+   * StringFormat: oTenantIntent.getTenantName()
    **/
-  @Override
-  protected void _tenantResource(Wrap<String> w) {
+  protected void _tenantName(Wrap<String> w) {
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
+   * Facet: true
+   * DefaultFacet: true
+   * StringFormat: oTenantIntent.getTenantId()
+   **/
+  protected void _tenantId(Wrap<String> w) {
+    w.o(toId(tenantName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant auth resource
+   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * Facet: true
+   * AuthorizationResource: TENANT
+   * HtmRowTitleOpen: tenant details
+   * HtmRow: 5
+   * HtmCell: 0
+   * HtmColumn: 0
+   * Required: true
+   * Relate: TenantIntent.tenantResource
+   * StringFormat: String.format("%s-%s", TenantIntent.CLASS_AUTH_RESOURCE, tenantId)
+   **/
+  protected void _tenantResource(Wrap<String> w) {
+    w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant requested number
+   * Description: A unique number for this change request for this tenant. 
+   * Facet: true
+   * Required: true
+   **/
+  protected void _tenantRequestedNumber(Wrap<Integer> w) {
+    // tomorrow, search for the max requested number by tenantResource, and increment by 1 in upsert. 
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant requested ID
+   * Description: The unique ID for this tenant requested. 
+   * Facet: true
+   * Unique: true
+   * Required: true
+   * VarId: true
+   * StringFormat: String.format("%s-%s", tenantResource, tenantRequestedNumber)
+   **/
+  protected void _tenantRequestedId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
    * DisplayName: Request approvals
    * Description: A list of request approvals for this request. 
    * HtmRow: 8
@@ -88,6 +157,8 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * HtmRow: 10
+   * HtmCell: 0
    * DisplayName: created by user ID
    * Description: The IdP UUID record for the user who created the change request. 
    * StringFormat: siteRequest.getUserId()
@@ -99,6 +170,8 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * HtmRow: 10
+   * HtmCell: 0
    * DisplayName: created by user full name
    * Description: The first and last name for the user who created the change request. 
    * StringFormat: siteRequest.getUserFullName()
@@ -119,6 +192,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    *   api: API
    *   migration: migration
    *   system: system
+   * StringFormat: Optional.ofNullable(new_createdVia).orElse(oTenantIntent.getCreatedVia())
    */
   protected void _createdVia(Wrap<String> w) {
   }
@@ -133,7 +207,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_intentState).orElse(oTenantIntent.getIntentState())
    **/
   protected void _intentState(Wrap<String> w) {
   }
@@ -147,7 +221,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_requestedState).orElse(oTenantIntent.getRequestedState())
    **/
   protected void _requestedState(Wrap<String> w) {
   }
@@ -161,8 +235,53 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_realizedState).orElse(oTenantIntent.getRealizedState())
    **/
   protected void _realizedState(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: description
+   * Description: A description of this tenant
+   * HtmRow: 20
+   * HtmCell: 4
+   * Facet: true
+   * HtmColumn: 3
+   * VarDescription: true
+   * Multiline: true
+   * StringFormat: Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
+   **/
+  protected void _tenantDescription(Wrap<String> w) {
+    w.o(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: tenant realized
+   * Description: Each time the tenant was realized for this tenant intent. 
+   * Relate: TenantRealized.tenantResource
+   * HtmRowTitleOpen: realizations
+   * HtmRow: 21
+   * HtmCell: 0
+   **/
+  protected void _tenantRealized(List<String> l) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: locked
+   * Description: A tenant intent gets locked after creating the first tenant request. 
+   * HtmRow: 21
+   * HtmCell: 0
+   * Facet: true
+   * StringFormat: Optional.ofNullable(Optional.ofNullable(new_locked).orElse(old_locked)).orElse(false)
+   **/
+  protected void _locked(Wrap<Boolean> w) {
   }
 }

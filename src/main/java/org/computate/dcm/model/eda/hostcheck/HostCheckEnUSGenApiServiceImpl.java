@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.hostcheck;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.request.SiteRequest;
@@ -920,13 +920,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -940,7 +940,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(HostCheck.class, pk).setToNull(HostCheck.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(HostCheck.class, pk).setToNull(HostCheck.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1588,13 +1588,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           case HostCheck.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2261,13 +2261,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           case HostCheck.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -3819,13 +3819,13 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           case HostCheck.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheck.class, pk).set(HostCheck.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4233,16 +4233,16 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
         String old_tenantResource = HostCheck.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
         String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
           try {
-            if(oTenant == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
               String old_jobTemplateResource = HostCheck.staticJsonJobTemplateResource(o.getJobTemplateResource());
               String new_jobTemplateResource = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch));
               String jobTemplateResource = Optional.ofNullable(new_jobTemplateResource).orElse(old_jobTemplateResource);
@@ -4255,119 +4255,119 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                   } else {
                     json.put(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch), jobTemplateResource);
 
-                    String old_tenantId = HostCheck.staticJsonTenantId(o.getTenantId());
-                    String new_tenantId = json.getString(HostCheck.varJson(HostCheck.VAR_tenantId, patch));
-                    String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+                    // String old_tenantId = HostCheck.staticJsonTenantId(o.getTenantId());
+                    // String new_tenantId = json.getString(HostCheck.varJson(HostCheck.VAR_tenantId, patch));
+                    // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_tenantId, patch), tenantId);
 
-                    String old_created = HostCheck.staticJsonCreated(o.getCreated());
-                    String new_created = json.getString(HostCheck.varJson(HostCheck.VAR_created, patch));
-                    String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+                    // String old_created = HostCheck.staticJsonCreated(o.getCreated());
+                    // String new_created = json.getString(HostCheck.varJson(HostCheck.VAR_created, patch));
+                    // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_created, patch), created);
 
-                    String old_aapOrganizationId = HostCheck.staticJsonAapOrganizationId(o.getAapOrganizationId());
-                    String new_aapOrganizationId = json.getString(HostCheck.varJson(HostCheck.VAR_aapOrganizationId, patch));
-                    String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+                    // String old_aapOrganizationId = HostCheck.staticJsonAapOrganizationId(o.getAapOrganizationId());
+                    // String new_aapOrganizationId = json.getString(HostCheck.varJson(HostCheck.VAR_aapOrganizationId, patch));
+                    // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-                    Boolean old_archived = HostCheck.staticJsonArchived(o.getArchived());
-                    Boolean new_archived = json.getBoolean(HostCheck.varJson(HostCheck.VAR_archived, patch));
-                    Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+                    // Boolean old_archived = HostCheck.staticJsonArchived(o.getArchived());
+                    // Boolean new_archived = json.getBoolean(HostCheck.varJson(HostCheck.VAR_archived, patch));
+                    // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_archived, patch), archived);
 
-                    String old_jobTemplateId = HostCheck.staticJsonJobTemplateId(o.getJobTemplateId());
-                    String new_jobTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_jobTemplateId, patch));
-                    String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
+                    // String old_jobTemplateId = HostCheck.staticJsonJobTemplateId(o.getJobTemplateId());
+                    // String new_jobTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_jobTemplateId, patch));
+                    // String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_jobTemplateId, patch), jobTemplateId);
 
-                    String old_aapTemplateId = HostCheck.staticJsonAapTemplateId(o.getAapTemplateId());
-                    String new_aapTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_aapTemplateId, patch));
-                    String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
+                    // String old_aapTemplateId = HostCheck.staticJsonAapTemplateId(o.getAapTemplateId());
+                    // String new_aapTemplateId = json.getString(HostCheck.varJson(HostCheck.VAR_aapTemplateId, patch));
+                    // String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_aapTemplateId, patch), aapTemplateId);
 
-                    String old_checkName = HostCheck.staticJsonCheckName(o.getCheckName());
-                    String new_checkName = json.getString(HostCheck.varJson(HostCheck.VAR_checkName, patch));
-                    String checkName = Optional.ofNullable(Optional.ofNullable(new_checkName).orElse(old_checkName)).orElse(null);
+                    // String old_checkName = HostCheck.staticJsonCheckName(o.getCheckName());
+                    // String new_checkName = json.getString(HostCheck.varJson(HostCheck.VAR_checkName, patch));
+                    // String checkName = Optional.ofNullable(Optional.ofNullable(new_checkName).orElse(old_checkName)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkName, patch), checkName);
 
-                    String old_checkId = HostCheck.staticJsonCheckId(o.getCheckId());
-                    String new_checkId = json.getString(HostCheck.varJson(HostCheck.VAR_checkId, patch));
-                    String checkId = Optional.ofNullable(Optional.ofNullable(new_checkId).orElse(old_checkId)).orElse(null);
+                    // String old_checkId = HostCheck.staticJsonCheckId(o.getCheckId());
+                    // String new_checkId = json.getString(HostCheck.varJson(HostCheck.VAR_checkId, patch));
+                    // String checkId = Optional.ofNullable(Optional.ofNullable(new_checkId).orElse(old_checkId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkId, patch), checkId);
 
-                    String old_sessionId = HostCheck.staticJsonSessionId(o.getSessionId());
-                    String new_sessionId = json.getString(HostCheck.varJson(HostCheck.VAR_sessionId, patch));
-                    String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                    // String old_sessionId = HostCheck.staticJsonSessionId(o.getSessionId());
+                    // String new_sessionId = json.getString(HostCheck.varJson(HostCheck.VAR_sessionId, patch));
+                    // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_sessionId, patch), sessionId);
 
-                    String old_checkResource = HostCheck.staticJsonCheckResource(o.getCheckResource());
-                    String new_checkResource = json.getString(HostCheck.varJson(HostCheck.VAR_checkResource, patch));
-                    String checkResource = Optional.ofNullable(Optional.ofNullable(new_checkResource).orElse(old_checkResource)).orElse(null);
+                    // String old_checkResource = HostCheck.staticJsonCheckResource(o.getCheckResource());
+                    // String new_checkResource = json.getString(HostCheck.varJson(HostCheck.VAR_checkResource, patch));
+                    // String checkResource = Optional.ofNullable(Optional.ofNullable(new_checkResource).orElse(old_checkResource)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkResource, patch), checkResource);
 
-                    String old_userKey = HostCheck.staticJsonUserKey(o.getUserKey());
-                    String new_userKey = json.getString(HostCheck.varJson(HostCheck.VAR_userKey, patch));
-                    String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                    // String old_userKey = HostCheck.staticJsonUserKey(o.getUserKey());
+                    // String new_userKey = json.getString(HostCheck.varJson(HostCheck.VAR_userKey, patch));
+                    // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_userKey, patch), userKey);
 
-                    String old_checkDescription = HostCheck.staticJsonCheckDescription(o.getCheckDescription());
-                    String new_checkDescription = json.getString(HostCheck.varJson(HostCheck.VAR_checkDescription, patch));
-                    String checkDescription = Optional.ofNullable(Optional.ofNullable(new_checkDescription).orElse(old_checkDescription)).orElse(null);
+                    // String old_checkDescription = HostCheck.staticJsonCheckDescription(o.getCheckDescription());
+                    // String new_checkDescription = json.getString(HostCheck.varJson(HostCheck.VAR_checkDescription, patch));
+                    // String checkDescription = Optional.ofNullable(Optional.ofNullable(new_checkDescription).orElse(old_checkDescription)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkDescription, patch), checkDescription);
 
-                    String old_checkNamespace = HostCheck.staticJsonCheckNamespace(o.getCheckNamespace());
-                    String new_checkNamespace = json.getString(HostCheck.varJson(HostCheck.VAR_checkNamespace, patch));
-                    String checkNamespace = Optional.ofNullable(Optional.ofNullable(new_checkNamespace).orElse(old_checkNamespace)).orElse(null);
+                    // String old_checkNamespace = HostCheck.staticJsonCheckNamespace(o.getCheckNamespace());
+                    // String new_checkNamespace = json.getString(HostCheck.varJson(HostCheck.VAR_checkNamespace, patch));
+                    // String checkNamespace = Optional.ofNullable(Optional.ofNullable(new_checkNamespace).orElse(old_checkNamespace)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkNamespace, patch), checkNamespace);
 
-                    String old_checkCommand = HostCheck.staticJsonCheckCommand(o.getCheckCommand());
-                    String new_checkCommand = json.getString(HostCheck.varJson(HostCheck.VAR_checkCommand, patch));
-                    String checkCommand = Optional.ofNullable(Optional.ofNullable(new_checkCommand).orElse(old_checkCommand)).orElse(null);
+                    // String old_checkCommand = HostCheck.staticJsonCheckCommand(o.getCheckCommand());
+                    // String new_checkCommand = json.getString(HostCheck.varJson(HostCheck.VAR_checkCommand, patch));
+                    // String checkCommand = Optional.ofNullable(Optional.ofNullable(new_checkCommand).orElse(old_checkCommand)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkCommand, patch), checkCommand);
 
-                    String old_objectTitle = HostCheck.staticJsonObjectTitle(o.getObjectTitle());
-                    String new_objectTitle = json.getString(HostCheck.varJson(HostCheck.VAR_objectTitle, patch));
-                    String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+                    // String old_objectTitle = HostCheck.staticJsonObjectTitle(o.getObjectTitle());
+                    // String new_objectTitle = json.getString(HostCheck.varJson(HostCheck.VAR_objectTitle, patch));
+                    // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_objectTitle, patch), objectTitle);
 
-                    String old_checkInterval = HostCheck.staticJsonCheckInterval(o.getCheckInterval());
-                    String new_checkInterval = json.getString(HostCheck.varJson(HostCheck.VAR_checkInterval, patch));
-                    String checkInterval = Optional.ofNullable(Optional.ofNullable(new_checkInterval).orElse(old_checkInterval)).orElse(null);
+                    // String old_checkInterval = HostCheck.staticJsonCheckInterval(o.getCheckInterval());
+                    // String new_checkInterval = json.getString(HostCheck.varJson(HostCheck.VAR_checkInterval, patch));
+                    // String checkInterval = Optional.ofNullable(Optional.ofNullable(new_checkInterval).orElse(old_checkInterval)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkInterval, patch), checkInterval);
 
-                    String old_displayPage = HostCheck.staticJsonDisplayPage(o.getDisplayPage());
-                    String new_displayPage = json.getString(HostCheck.varJson(HostCheck.VAR_displayPage, patch));
-                    String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+                    // String old_displayPage = HostCheck.staticJsonDisplayPage(o.getDisplayPage());
+                    // String new_displayPage = json.getString(HostCheck.varJson(HostCheck.VAR_displayPage, patch));
+                    // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_displayPage, patch), displayPage);
 
-                    Boolean old_checkPublished = HostCheck.staticJsonCheckPublished(o.getCheckPublished());
-                    Boolean new_checkPublished = json.getBoolean(HostCheck.varJson(HostCheck.VAR_checkPublished, patch));
-                    Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(new_checkPublished).orElse(old_checkPublished)).orElse(null);
+                    // Boolean old_checkPublished = HostCheck.staticJsonCheckPublished(o.getCheckPublished());
+                    // Boolean new_checkPublished = json.getBoolean(HostCheck.varJson(HostCheck.VAR_checkPublished, patch));
+                    // Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(new_checkPublished).orElse(old_checkPublished)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_checkPublished, patch), checkPublished);
 
-                    String old_editPage = HostCheck.staticJsonEditPage(o.getEditPage());
-                    String new_editPage = json.getString(HostCheck.varJson(HostCheck.VAR_editPage, patch));
-                    String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+                    // String old_editPage = HostCheck.staticJsonEditPage(o.getEditPage());
+                    // String new_editPage = json.getString(HostCheck.varJson(HostCheck.VAR_editPage, patch));
+                    // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_editPage, patch), editPage);
 
-                    JsonArray old_eventSubscriptions = HostCheck.staticJsonEventSubscriptions(o.getEventSubscriptions());
-                    JsonArray new_eventSubscriptions = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventSubscriptions, patch));
-                    JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(new_eventSubscriptions).orElse(old_eventSubscriptions)).orElse(null);
+                    // JsonArray old_eventSubscriptions = HostCheck.staticJsonEventSubscriptions(o.getEventSubscriptions());
+                    // JsonArray new_eventSubscriptions = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventSubscriptions, patch));
+                    // JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(new_eventSubscriptions).orElse(old_eventSubscriptions)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_eventSubscriptions, patch), eventSubscriptions);
 
-                    String old_userPage = HostCheck.staticJsonUserPage(o.getUserPage());
-                    String new_userPage = json.getString(HostCheck.varJson(HostCheck.VAR_userPage, patch));
-                    String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+                    // String old_userPage = HostCheck.staticJsonUserPage(o.getUserPage());
+                    // String new_userPage = json.getString(HostCheck.varJson(HostCheck.VAR_userPage, patch));
+                    // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_userPage, patch), userPage);
 
-                    JsonArray old_eventHandlers = HostCheck.staticJsonEventHandlers(o.getEventHandlers());
-                    JsonArray new_eventHandlers = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventHandlers, patch));
-                    JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(new_eventHandlers).orElse(old_eventHandlers)).orElse(null);
+                    // JsonArray old_eventHandlers = HostCheck.staticJsonEventHandlers(o.getEventHandlers());
+                    // JsonArray new_eventHandlers = json.getJsonArray(HostCheck.varJson(HostCheck.VAR_eventHandlers, patch));
+                    // JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(new_eventHandlers).orElse(old_eventHandlers)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_eventHandlers, patch), eventHandlers);
 
-                    String old_download = HostCheck.staticJsonDownload(o.getDownload());
-                    String new_download = json.getString(HostCheck.varJson(HostCheck.VAR_download, patch));
-                    String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+                    // String old_download = HostCheck.staticJsonDownload(o.getDownload());
+                    // String new_download = json.getString(HostCheck.varJson(HostCheck.VAR_download, patch));
+                    // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
                     // json.put(HostCheck.varJson(HostCheck.VAR_download, patch), download);
 
                   promise.complete(json);
@@ -4446,7 +4446,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1 UNION SELECT jobTemplateResource as pk2, 'jobTemplateResource' FROM JobTemplate WHERE jobTemplateResource=$2")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1 UNION SELECT jobTemplateResource as pk2, 'jobTemplateResource' FROM JobTemplate WHERE jobTemplateResource=$2")
           .collecting(Collectors.toList())
           .execute(Tuple.of(o.getTenantResource(), o.getJobTemplateResource())
           ).onSuccess(result -> {
@@ -4575,16 +4575,16 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
 
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
             searchList2.setStore(true);
             searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
+            searchList2.setC(TenantIntent.class);
             searchList2.fq("solrId:" + solrId2);
             searchList2.rows(1L);
             futures.add(Future.future(promise2 -> {
               searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
@@ -4594,7 +4594,7 @@ public class HostCheckEnUSGenApiServiceImpl extends BaseApiServiceImpl implement
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))

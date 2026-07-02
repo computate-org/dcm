@@ -59,7 +59,7 @@ public class AnsibleProject extends AnsibleProjectGen<BaseModel> {
    * DisplayName: tenant
    * Description: The unique authorization resource for the tenant for multi-tenancy
    * AuthorizationResource: TENANT
-   * Relate: Tenant.tenantResource
+   * Relate: TenantIntent.tenantResource
    * HtmRowTitleOpen: tenant details
    * HtmRow: 3
    * HtmCell: 0

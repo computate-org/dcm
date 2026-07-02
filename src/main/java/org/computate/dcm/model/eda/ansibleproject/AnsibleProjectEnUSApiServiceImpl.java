@@ -28,6 +28,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.computate.dcm.config.ConfigKeys;
 import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.request.SiteRequest;
 
 /**
@@ -45,7 +46,7 @@ public class AnsibleProjectEnUSApiServiceImpl extends AnsibleProjectEnUSGenApiSe
       } else {
         JsonObject ansibleProjectJson = o.getSiteRequest_().getJsonObject();
         String tenantResource = Optional.ofNullable(ansibleProjectJson.getString(AnsibleProject.varJsonAnsibleProject(AnsibleProject.VAR_tenantResource, patch))).orElse(o.getTenantResource());
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(tenant -> {
           try {
             if(tenant == null) {
               RuntimeException ex = new RuntimeException(String.format("Could not find a matching tenant %s", tenantResource));

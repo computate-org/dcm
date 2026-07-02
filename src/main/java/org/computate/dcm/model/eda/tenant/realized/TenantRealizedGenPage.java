@@ -3,6 +3,7 @@ package org.computate.dcm.model.eda.tenant.realized;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import java.util.List;
 import java.lang.String;
+import java.lang.Integer;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -484,7 +485,7 @@ public class TenantRealizedGenPage extends TenantRealizedGenPageGen<PageLayout> 
    * Initialized: false
   **/
   protected void _result(Wrap<TenantRealized> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantResource")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantRealizedId")).orElse(null) != null)
       w.o(searchListTenantRealized_.get(0));
   }
 
@@ -543,7 +544,7 @@ public class TenantRealizedGenPage extends TenantRealizedGenPageGen<PageLayout> 
 
   @Override
   protected void _pageDescription(Wrap<String> c) {
-      c.o("Requesting a change to create a new Tenant, or modify an existing Tenant. Tenants are separate organizations sharing the same cloud resources. ");
+      c.o("An approved and realized Tenant. Tenants are separate organizations sharing the same cloud resources. ");
   }
 
   @Override

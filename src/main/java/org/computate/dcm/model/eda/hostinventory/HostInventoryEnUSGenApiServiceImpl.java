@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.hostinventory;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.hostcredential.HostCredentialEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.hostcredential.HostCredential;
 import org.computate.dcm.model.eda.host.HostEnUSApiServiceImpl;
@@ -871,13 +871,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -891,7 +891,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(HostInventory.class, pk).setToNull(HostInventory.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(HostInventory.class, pk).setToNull(HostInventory.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1574,13 +1574,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case HostInventory.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2197,13 +2197,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case HostInventory.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4027,13 +4027,13 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           case HostInventory.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostInventory.class, pk).set(HostInventory.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4462,100 +4462,100 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
         String old_tenantResource = HostInventory.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
         String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
           try {
-            if(oTenant == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
 
-              String old_tenantId = HostInventory.staticJsonTenantId(o.getTenantId());
-              String new_tenantId = json.getString(HostInventory.varJson(HostInventory.VAR_tenantId, patch));
-              String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+              // String old_tenantId = HostInventory.staticJsonTenantId(o.getTenantId());
+              // String new_tenantId = json.getString(HostInventory.varJson(HostInventory.VAR_tenantId, patch));
+              // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_tenantId, patch), tenantId);
 
-              String old_created = HostInventory.staticJsonCreated(o.getCreated());
-              String new_created = json.getString(HostInventory.varJson(HostInventory.VAR_created, patch));
-              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+              // String old_created = HostInventory.staticJsonCreated(o.getCreated());
+              // String new_created = json.getString(HostInventory.varJson(HostInventory.VAR_created, patch));
+              // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_created, patch), created);
 
-              String old_aapOrganizationId = HostInventory.staticJsonAapOrganizationId(o.getAapOrganizationId());
-              String new_aapOrganizationId = json.getString(HostInventory.varJson(HostInventory.VAR_aapOrganizationId, patch));
-              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+              // String old_aapOrganizationId = HostInventory.staticJsonAapOrganizationId(o.getAapOrganizationId());
+              // String new_aapOrganizationId = json.getString(HostInventory.varJson(HostInventory.VAR_aapOrganizationId, patch));
+              // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-              Boolean old_archived = HostInventory.staticJsonArchived(o.getArchived());
-              Boolean new_archived = json.getBoolean(HostInventory.varJson(HostInventory.VAR_archived, patch));
-              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+              // Boolean old_archived = HostInventory.staticJsonArchived(o.getArchived());
+              // Boolean new_archived = json.getBoolean(HostInventory.varJson(HostInventory.VAR_archived, patch));
+              // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_archived, patch), archived);
 
-              String old_inventoryName = HostInventory.staticJsonInventoryName(o.getInventoryName());
-              String new_inventoryName = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryName, patch));
-              String inventoryName = Optional.ofNullable(Optional.ofNullable(new_inventoryName).orElse(old_inventoryName)).orElse(null);
+              // String old_inventoryName = HostInventory.staticJsonInventoryName(o.getInventoryName());
+              // String new_inventoryName = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryName, patch));
+              // String inventoryName = Optional.ofNullable(Optional.ofNullable(new_inventoryName).orElse(old_inventoryName)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_inventoryName, patch), inventoryName);
 
-              String old_inventoryId = HostInventory.staticJsonInventoryId(o.getInventoryId());
-              String new_inventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryId, patch));
-              String inventoryId = Optional.ofNullable(Optional.ofNullable(new_inventoryId).orElse(old_inventoryId)).orElse(null);
+              // String old_inventoryId = HostInventory.staticJsonInventoryId(o.getInventoryId());
+              // String new_inventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryId, patch));
+              // String inventoryId = Optional.ofNullable(Optional.ofNullable(new_inventoryId).orElse(old_inventoryId)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_inventoryId, patch), inventoryId);
 
-              String old_inventoryResource = HostInventory.staticJsonInventoryResource(o.getInventoryResource());
-              String new_inventoryResource = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch));
-              String inventoryResource = Optional.ofNullable(Optional.ofNullable(new_inventoryResource).orElse(old_inventoryResource)).orElse(null);
+              // String old_inventoryResource = HostInventory.staticJsonInventoryResource(o.getInventoryResource());
+              // String new_inventoryResource = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch));
+              // String inventoryResource = Optional.ofNullable(Optional.ofNullable(new_inventoryResource).orElse(old_inventoryResource)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_inventoryResource, patch), inventoryResource);
 
-              String old_inventoryDescription = HostInventory.staticJsonInventoryDescription(o.getInventoryDescription());
-              String new_inventoryDescription = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryDescription, patch));
-              String inventoryDescription = Optional.ofNullable(Optional.ofNullable(new_inventoryDescription).orElse(old_inventoryDescription)).orElse(null);
+              // String old_inventoryDescription = HostInventory.staticJsonInventoryDescription(o.getInventoryDescription());
+              // String new_inventoryDescription = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryDescription, patch));
+              // String inventoryDescription = Optional.ofNullable(Optional.ofNullable(new_inventoryDescription).orElse(old_inventoryDescription)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_inventoryDescription, patch), inventoryDescription);
 
-              String old_sessionId = HostInventory.staticJsonSessionId(o.getSessionId());
-              String new_sessionId = json.getString(HostInventory.varJson(HostInventory.VAR_sessionId, patch));
-              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+              // String old_sessionId = HostInventory.staticJsonSessionId(o.getSessionId());
+              // String new_sessionId = json.getString(HostInventory.varJson(HostInventory.VAR_sessionId, patch));
+              // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_sessionId, patch), sessionId);
 
-              String old_aapInventoryId = HostInventory.staticJsonAapInventoryId(o.getAapInventoryId());
-              String new_aapInventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_aapInventoryId, patch));
-              String aapInventoryId = Optional.ofNullable(Optional.ofNullable(new_aapInventoryId).orElse(old_aapInventoryId)).orElse(null);
+              // String old_aapInventoryId = HostInventory.staticJsonAapInventoryId(o.getAapInventoryId());
+              // String new_aapInventoryId = json.getString(HostInventory.varJson(HostInventory.VAR_aapInventoryId, patch));
+              // String aapInventoryId = Optional.ofNullable(Optional.ofNullable(new_aapInventoryId).orElse(old_aapInventoryId)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_aapInventoryId, patch), aapInventoryId);
 
-              String old_userKey = HostInventory.staticJsonUserKey(o.getUserKey());
-              String new_userKey = json.getString(HostInventory.varJson(HostInventory.VAR_userKey, patch));
-              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+              // String old_userKey = HostInventory.staticJsonUserKey(o.getUserKey());
+              // String new_userKey = json.getString(HostInventory.varJson(HostInventory.VAR_userKey, patch));
+              // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_userKey, patch), userKey);
 
-              String old_inventoryKind = HostInventory.staticJsonInventoryKind(o.getInventoryKind());
-              String new_inventoryKind = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryKind, patch));
-              String inventoryKind = Optional.ofNullable(Optional.ofNullable(new_inventoryKind).orElse(old_inventoryKind)).orElse(null);
+              // String old_inventoryKind = HostInventory.staticJsonInventoryKind(o.getInventoryKind());
+              // String new_inventoryKind = json.getString(HostInventory.varJson(HostInventory.VAR_inventoryKind, patch));
+              // String inventoryKind = Optional.ofNullable(Optional.ofNullable(new_inventoryKind).orElse(old_inventoryKind)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_inventoryKind, patch), inventoryKind);
 
-              String old_objectTitle = HostInventory.staticJsonObjectTitle(o.getObjectTitle());
-              String new_objectTitle = json.getString(HostInventory.varJson(HostInventory.VAR_objectTitle, patch));
-              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+              // String old_objectTitle = HostInventory.staticJsonObjectTitle(o.getObjectTitle());
+              // String new_objectTitle = json.getString(HostInventory.varJson(HostInventory.VAR_objectTitle, patch));
+              // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_objectTitle, patch), objectTitle);
 
-              String old_displayPage = HostInventory.staticJsonDisplayPage(o.getDisplayPage());
-              String new_displayPage = json.getString(HostInventory.varJson(HostInventory.VAR_displayPage, patch));
-              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+              // String old_displayPage = HostInventory.staticJsonDisplayPage(o.getDisplayPage());
+              // String new_displayPage = json.getString(HostInventory.varJson(HostInventory.VAR_displayPage, patch));
+              // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_displayPage, patch), displayPage);
 
-              String old_editPage = HostInventory.staticJsonEditPage(o.getEditPage());
-              String new_editPage = json.getString(HostInventory.varJson(HostInventory.VAR_editPage, patch));
-              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+              // String old_editPage = HostInventory.staticJsonEditPage(o.getEditPage());
+              // String new_editPage = json.getString(HostInventory.varJson(HostInventory.VAR_editPage, patch));
+              // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_editPage, patch), editPage);
 
-              String old_userPage = HostInventory.staticJsonUserPage(o.getUserPage());
-              String new_userPage = json.getString(HostInventory.varJson(HostInventory.VAR_userPage, patch));
-              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+              // String old_userPage = HostInventory.staticJsonUserPage(o.getUserPage());
+              // String new_userPage = json.getString(HostInventory.varJson(HostInventory.VAR_userPage, patch));
+              // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_userPage, patch), userPage);
 
-              String old_download = HostInventory.staticJsonDownload(o.getDownload());
-              String new_download = json.getString(HostInventory.varJson(HostInventory.VAR_download, patch));
-              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+              // String old_download = HostInventory.staticJsonDownload(o.getDownload());
+              // String new_download = json.getString(HostInventory.varJson(HostInventory.VAR_download, patch));
+              // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
               // json.put(HostInventory.varJson(HostInventory.VAR_download, patch), download);
 
               promise.complete(json);
@@ -4626,7 +4626,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM Tenant WHERE tenantResource=$1 UNION SELECT credentialResource as pk2, 'credentialResource' FROM HostCredential WHERE credentialResource=$2")
+      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1 UNION SELECT credentialResource as pk2, 'credentialResource' FROM HostCredential WHERE credentialResource=$2")
           .collecting(Collectors.toList())
           .execute(Tuple.of(o.getTenantResource(), o.getCredentialResource())
           ).onSuccess(result -> {
@@ -4755,16 +4755,16 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
 
-          if("Tenant".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<Tenant> searchList2 = new SearchList<Tenant>();
+          if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
             searchList2.setStore(true);
             searchList2.q("*:*");
-            searchList2.setC(Tenant.class);
+            searchList2.setC(TenantIntent.class);
             searchList2.fq("solrId:" + solrId2);
             searchList2.rows(1L);
             futures.add(Future.future(promise2 -> {
               searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                Tenant o2 = searchList2.getList().stream().findFirst().orElse(null);
+                TenantIntent o2 = searchList2.getList().stream().findFirst().orElse(null);
                 if(o2 != null) {
                   JsonObject params = new JsonObject();
                   params.put("body", new JsonObject());
@@ -4774,7 +4774,7 @@ public class HostInventoryEnUSGenApiServiceImpl extends BaseApiServiceImpl imple
                   params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-Tenant", json, new DeliveryOptions().addHeader("action", "patchTenantFuture")).onSuccess(c -> {
+                  eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))

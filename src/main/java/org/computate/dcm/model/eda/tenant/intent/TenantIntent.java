@@ -14,6 +14,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  * MenuDetails: multi-tenancy
  * MenuDetailsOpen: true
  *
+ * AuthorizationResource: TENANT
  * SearchPageUri: /en-us/search/intent/tenant
  * EditPageUri: /en-us/edit/intent/tenant/{tenantResource}
  * ApiUri: /en-us/api/intent/tenant
@@ -55,6 +56,51 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * DisplayName: tenant name
+   * Description: The name of this tenant
+   * HtmRow: 20
+   * HtmCell: 1
+   * HtmColumn: 1
+   * HtmRowTitleOpen: tenant details
+   * Facet: true
+   * VarName: true
+   * Required: true
+   **/
+  protected void _tenantName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
+   * Facet: true
+   * DefaultFacet: true
+   **/
+  protected void _tenantId(Wrap<String> w) {
+    w.o(toId(tenantName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant auth resource
+   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * Facet: true
+   * AuthorizationResource: TENANT
+   * Unique: true
+   * VarId: true
+   * StringFormat: String.format("%s-%s", TenantIntent.CLASS_AUTH_RESOURCE, tenantId)
+   **/
+  protected void _tenantResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
    * HtmRowTitle: created by
    * HtmRow: 10
    * HtmCell: 0
@@ -69,6 +115,8 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * HtmRow: 10
+   * HtmCell: 0
    * DisplayName: created by user ID
    * Description: The IdP UUID record for the user who created the change request. 
    * StringFormat: siteRequest.getUserId()
@@ -80,6 +128,8 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
+   * HtmRow: 10
+   * HtmCell: 0
    * DisplayName: created by user full name
    * Description: The first and last name for the user who created the change request. 
    * StringFormat: siteRequest.getUserFullName()
@@ -147,8 +197,60 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
   protected void _realizedState(Wrap<String> w) {
   }
 
-  @Override
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: description
+   * Description: A description of this tenant
+   * HtmRow: 20
+   * HtmCell: 4
+   * Facet: true
+   * HtmColumn: 3
+   * VarDescription: true
+   * Multiline: true
+   * StringFormat: Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
+   **/
   protected void _tenantDescription(Wrap<String> w) {
-    w.o(String.format("Intent state: %s\n Requested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: tenant requested
+   * Description: The related tenant requests for this tenant intent. 
+   * Relate: TenantRequested.tenantResource
+   * HtmRowTitleOpen: requests
+   * HtmRow: 21
+   * HtmCell: 0
+   **/
+  protected void _tenantRequested(List<String> l) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: locked
+   * Description: A tenant intent gets locked after creating the first tenant request. 
+   * HtmRow: 21
+   * HtmCell: 0
+   * Facet: true
+   * StringFormat: Optional.ofNullable(Optional.ofNullable(new_locked).orElse(old_locked)).orElse(false)
+   **/
+  protected void _locked(Wrap<Boolean> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: tenant realized
+   * Description: Each time the tenant was realized for this tenant intent. 
+   * Relate: TenantRealized.tenantResource
+   * HtmRowTitleOpen: realizations
+   * HtmRow: 22
+   * HtmCell: 0
+   **/
+  protected void _tenantRealized(List<String> l) {
   }
 }

@@ -1,7 +1,7 @@
 package org.computate.dcm.model.eda.hostcheck.cr;
 
-import org.computate.dcm.model.eda.tenant.TenantEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplateEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.jobtemplate.JobTemplate;
 import org.computate.dcm.model.eda.hostcheck.HostCheckEnUSApiServiceImpl;
@@ -1026,13 +1026,13 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case "setTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1046,7 +1046,7 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(HostCheckCR.class, pk).setToNull(HostCheckCR.VAR_tenantResource, Tenant.class, null).onSuccess(a -> {
+                sql(siteRequest).update(HostCheckCR.class, pk).setToNull(HostCheckCR.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1958,13 +1958,13 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case HostCheckCR.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, Tenant.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2894,13 +2894,13 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case HostCheckCR.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4628,13 +4628,13 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
           case HostCheckCR.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(Tenant.varIndexedTenant(Tenant.VAR_tenantResource), Tenant.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("Tenant");
+                    classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, Tenant.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(HostCheckCR.class, pk).set(HostCheckCR.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -5082,16 +5082,16 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
         String old_tenantResource = HostCheckCR.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(Tenant.varJson(Tenant.VAR_tenantResource, patch));
+        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
         String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        Tenant.fqTenant(siteRequest, Tenant.VAR_tenantResource, tenantResource).onSuccess(oTenant -> {
+        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
           try {
-            if(oTenant == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching Tenant %s", tenantResource));
+            if(oTenantIntent == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(Tenant.varJson(Tenant.VAR_tenantResource, patch), tenantResource);
+              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
               String old_jobTemplateResource = HostCheckCR.staticJsonJobTemplateResource(o.getJobTemplateResource());
               String new_jobTemplateResource = json.getString(JobTemplate.varJson(JobTemplate.VAR_jobTemplateResource, patch));
               String jobTemplateResource = Optional.ofNullable(new_jobTemplateResource).orElse(old_jobTemplateResource);
@@ -5115,34 +5115,34 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                         } else {
                           json.put(HostCheck.varJson(HostCheck.VAR_checkResource, patch), checkResource);
 
-                          String old_tenantId = HostCheckCR.staticJsonTenantId(o.getTenantId());
-                          String new_tenantId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_tenantId, patch));
-                          String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
+                          // String old_tenantId = HostCheckCR.staticJsonTenantId(o.getTenantId());
+                          // String new_tenantId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_tenantId, patch));
+                          // String tenantId = Optional.ofNullable(Optional.ofNullable(new_tenantId).orElse(old_tenantId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_tenantId, patch), tenantId);
 
-                          String old_created = HostCheckCR.staticJsonCreated(o.getCreated());
-                          String new_created = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_created, patch));
-                          String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+                          // String old_created = HostCheckCR.staticJsonCreated(o.getCreated());
+                          // String new_created = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_created, patch));
+                          // String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_created, patch), created);
 
-                          String old_aapOrganizationId = HostCheckCR.staticJsonAapOrganizationId(o.getAapOrganizationId());
-                          String new_aapOrganizationId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationId, patch));
-                          String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
+                          // String old_aapOrganizationId = HostCheckCR.staticJsonAapOrganizationId(o.getAapOrganizationId());
+                          // String new_aapOrganizationId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationId, patch));
+                          // String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationId, patch), aapOrganizationId);
 
-                          String old_changeRequestId = HostCheckCR.staticJsonChangeRequestId(o.getChangeRequestId());
-                          String new_changeRequestId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_changeRequestId, patch));
-                          String changeRequestId = Optional.ofNullable(Optional.ofNullable(new_changeRequestId).orElse(old_changeRequestId)).orElse(null);
+                          // String old_changeRequestId = HostCheckCR.staticJsonChangeRequestId(o.getChangeRequestId());
+                          // String new_changeRequestId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_changeRequestId, patch));
+                          // String changeRequestId = Optional.ofNullable(Optional.ofNullable(new_changeRequestId).orElse(old_changeRequestId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_changeRequestId, patch), changeRequestId);
 
-                          Boolean old_archived = HostCheckCR.staticJsonArchived(o.getArchived());
-                          Boolean new_archived = json.getBoolean(HostCheckCR.varJson(HostCheckCR.VAR_archived, patch));
-                          Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+                          // Boolean old_archived = HostCheckCR.staticJsonArchived(o.getArchived());
+                          // Boolean new_archived = json.getBoolean(HostCheckCR.varJson(HostCheckCR.VAR_archived, patch));
+                          // Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_archived, patch), archived);
 
-                          String old_jobTemplateId = HostCheckCR.staticJsonJobTemplateId(o.getJobTemplateId());
-                          String new_jobTemplateId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateId, patch));
-                          String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
+                          // String old_jobTemplateId = HostCheckCR.staticJsonJobTemplateId(o.getJobTemplateId());
+                          // String new_jobTemplateId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateId, patch));
+                          // String jobTemplateId = Optional.ofNullable(Optional.ofNullable(new_jobTemplateId).orElse(old_jobTemplateId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateId, patch), jobTemplateId);
 
                           String old_createdByEmail = HostCheckCR.staticJsonCreatedByEmail(o.getCreatedByEmail());
@@ -5150,9 +5150,9 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                           String createdByEmail = siteRequest.getUserEmail();
                           json.put(HostCheckCR.varJson(HostCheckCR.VAR_createdByEmail, patch), createdByEmail);
 
-                          String old_aapTemplateId = HostCheckCR.staticJsonAapTemplateId(o.getAapTemplateId());
-                          String new_aapTemplateId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateId, patch));
-                          String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
+                          // String old_aapTemplateId = HostCheckCR.staticJsonAapTemplateId(o.getAapTemplateId());
+                          // String new_aapTemplateId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateId, patch));
+                          // String aapTemplateId = Optional.ofNullable(Optional.ofNullable(new_aapTemplateId).orElse(old_aapTemplateId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateId, patch), aapTemplateId);
 
                           String old_createdByUserId = HostCheckCR.staticJsonCreatedByUserId(o.getCreatedByUserId());
@@ -5160,9 +5160,9 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                           String createdByUserId = siteRequest.getUserId();
                           json.put(HostCheckCR.varJson(HostCheckCR.VAR_createdByUserId, patch), createdByUserId);
 
-                          String old_checkName = HostCheckCR.staticJsonCheckName(o.getCheckName());
-                          String new_checkName = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkName, patch));
-                          String checkName = Optional.ofNullable(Optional.ofNullable(new_checkName).orElse(old_checkName)).orElse(null);
+                          // String old_checkName = HostCheckCR.staticJsonCheckName(o.getCheckName());
+                          // String new_checkName = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkName, patch));
+                          // String checkName = Optional.ofNullable(Optional.ofNullable(new_checkName).orElse(old_checkName)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkName, patch), checkName);
 
                           String old_createdByFullName = HostCheckCR.staticJsonCreatedByFullName(o.getCreatedByFullName());
@@ -5170,169 +5170,169 @@ public class HostCheckCREnUSGenApiServiceImpl extends BaseApiServiceImpl impleme
                           String createdByFullName = siteRequest.getUserFullName();
                           json.put(HostCheckCR.varJson(HostCheckCR.VAR_createdByFullName, patch), createdByFullName);
 
-                          String old_checkId = HostCheckCR.staticJsonCheckId(o.getCheckId());
-                          String new_checkId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkId, patch));
-                          String checkId = Optional.ofNullable(Optional.ofNullable(new_checkId).orElse(old_checkId)).orElse(null);
+                          // String old_checkId = HostCheckCR.staticJsonCheckId(o.getCheckId());
+                          // String new_checkId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkId, patch));
+                          // String checkId = Optional.ofNullable(Optional.ofNullable(new_checkId).orElse(old_checkId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkId, patch), checkId);
 
-                          String old_createdVia = HostCheckCR.staticJsonCreatedVia(o.getCreatedVia());
-                          String new_createdVia = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_createdVia, patch));
-                          String createdVia = Optional.ofNullable(Optional.ofNullable(new_createdVia).orElse(old_createdVia)).orElse(null);
+                          // String old_createdVia = HostCheckCR.staticJsonCreatedVia(o.getCreatedVia());
+                          // String new_createdVia = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_createdVia, patch));
+                          // String createdVia = Optional.ofNullable(Optional.ofNullable(new_createdVia).orElse(old_createdVia)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_createdVia, patch), createdVia);
 
-                          String old_sessionId = HostCheckCR.staticJsonSessionId(o.getSessionId());
-                          String new_sessionId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_sessionId, patch));
-                          String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                          // String old_sessionId = HostCheckCR.staticJsonSessionId(o.getSessionId());
+                          // String new_sessionId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_sessionId, patch));
+                          // String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_sessionId, patch), sessionId);
 
-                          String old_ownedByEmail = HostCheckCR.staticJsonOwnedByEmail(o.getOwnedByEmail());
-                          String new_ownedByEmail = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByEmail, patch));
-                          String ownedByEmail = Optional.ofNullable(Optional.ofNullable(new_ownedByEmail).orElse(old_ownedByEmail)).orElse(null);
+                          // String old_ownedByEmail = HostCheckCR.staticJsonOwnedByEmail(o.getOwnedByEmail());
+                          // String new_ownedByEmail = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByEmail, patch));
+                          // String ownedByEmail = Optional.ofNullable(Optional.ofNullable(new_ownedByEmail).orElse(old_ownedByEmail)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_ownedByEmail, patch), ownedByEmail);
 
-                          String old_userKey = HostCheckCR.staticJsonUserKey(o.getUserKey());
-                          String new_userKey = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_userKey, patch));
-                          String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                          // String old_userKey = HostCheckCR.staticJsonUserKey(o.getUserKey());
+                          // String new_userKey = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_userKey, patch));
+                          // String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_userKey, patch), userKey);
 
-                          String old_checkDescription = HostCheckCR.staticJsonCheckDescription(o.getCheckDescription());
-                          String new_checkDescription = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkDescription, patch));
-                          String checkDescription = Optional.ofNullable(Optional.ofNullable(new_checkDescription).orElse(old_checkDescription)).orElse(null);
+                          // String old_checkDescription = HostCheckCR.staticJsonCheckDescription(o.getCheckDescription());
+                          // String new_checkDescription = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkDescription, patch));
+                          // String checkDescription = Optional.ofNullable(Optional.ofNullable(new_checkDescription).orElse(old_checkDescription)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkDescription, patch), checkDescription);
 
-                          String old_ownedByUserId = HostCheckCR.staticJsonOwnedByUserId(o.getOwnedByUserId());
-                          String new_ownedByUserId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByUserId, patch));
-                          String ownedByUserId = Optional.ofNullable(Optional.ofNullable(new_ownedByUserId).orElse(old_ownedByUserId)).orElse(null);
+                          // String old_ownedByUserId = HostCheckCR.staticJsonOwnedByUserId(o.getOwnedByUserId());
+                          // String new_ownedByUserId = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByUserId, patch));
+                          // String ownedByUserId = Optional.ofNullable(Optional.ofNullable(new_ownedByUserId).orElse(old_ownedByUserId)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_ownedByUserId, patch), ownedByUserId);
 
-                          String old_checkNamespace = HostCheckCR.staticJsonCheckNamespace(o.getCheckNamespace());
-                          String new_checkNamespace = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespace, patch));
-                          String checkNamespace = Optional.ofNullable(Optional.ofNullable(new_checkNamespace).orElse(old_checkNamespace)).orElse(null);
+                          // String old_checkNamespace = HostCheckCR.staticJsonCheckNamespace(o.getCheckNamespace());
+                          // String new_checkNamespace = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespace, patch));
+                          // String checkNamespace = Optional.ofNullable(Optional.ofNullable(new_checkNamespace).orElse(old_checkNamespace)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespace, patch), checkNamespace);
 
-                          String old_ownedByDisplayName = HostCheckCR.staticJsonOwnedByDisplayName(o.getOwnedByDisplayName());
-                          String new_ownedByDisplayName = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByDisplayName, patch));
-                          String ownedByDisplayName = Optional.ofNullable(Optional.ofNullable(new_ownedByDisplayName).orElse(old_ownedByDisplayName)).orElse(null);
+                          // String old_ownedByDisplayName = HostCheckCR.staticJsonOwnedByDisplayName(o.getOwnedByDisplayName());
+                          // String new_ownedByDisplayName = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_ownedByDisplayName, patch));
+                          // String ownedByDisplayName = Optional.ofNullable(Optional.ofNullable(new_ownedByDisplayName).orElse(old_ownedByDisplayName)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_ownedByDisplayName, patch), ownedByDisplayName);
 
-                          String old_checkCommand = HostCheckCR.staticJsonCheckCommand(o.getCheckCommand());
-                          String new_checkCommand = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkCommand, patch));
-                          String checkCommand = Optional.ofNullable(Optional.ofNullable(new_checkCommand).orElse(old_checkCommand)).orElse(null);
+                          // String old_checkCommand = HostCheckCR.staticJsonCheckCommand(o.getCheckCommand());
+                          // String new_checkCommand = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkCommand, patch));
+                          // String checkCommand = Optional.ofNullable(Optional.ofNullable(new_checkCommand).orElse(old_checkCommand)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkCommand, patch), checkCommand);
 
-                          String old_lifecycleState = HostCheckCR.staticJsonLifecycleState(o.getLifecycleState());
-                          String new_lifecycleState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_lifecycleState, patch));
-                          String lifecycleState = Optional.ofNullable(Optional.ofNullable(new_lifecycleState).orElse(old_lifecycleState)).orElse(null);
+                          // String old_lifecycleState = HostCheckCR.staticJsonLifecycleState(o.getLifecycleState());
+                          // String new_lifecycleState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_lifecycleState, patch));
+                          // String lifecycleState = Optional.ofNullable(Optional.ofNullable(new_lifecycleState).orElse(old_lifecycleState)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_lifecycleState, patch), lifecycleState);
 
-                          String old_objectTitle = HostCheckCR.staticJsonObjectTitle(o.getObjectTitle());
-                          String new_objectTitle = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_objectTitle, patch));
-                          String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+                          // String old_objectTitle = HostCheckCR.staticJsonObjectTitle(o.getObjectTitle());
+                          // String new_objectTitle = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_objectTitle, patch));
+                          // String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_objectTitle, patch), objectTitle);
 
-                          String old_checkInterval = HostCheckCR.staticJsonCheckInterval(o.getCheckInterval());
-                          String new_checkInterval = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkInterval, patch));
-                          String checkInterval = Optional.ofNullable(Optional.ofNullable(new_checkInterval).orElse(old_checkInterval)).orElse(null);
+                          // String old_checkInterval = HostCheckCR.staticJsonCheckInterval(o.getCheckInterval());
+                          // String new_checkInterval = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkInterval, patch));
+                          // String checkInterval = Optional.ofNullable(Optional.ofNullable(new_checkInterval).orElse(old_checkInterval)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkInterval, patch), checkInterval);
 
-                          String old_intentState = HostCheckCR.staticJsonIntentState(o.getIntentState());
-                          String new_intentState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_intentState, patch));
-                          String intentState = Optional.ofNullable(Optional.ofNullable(new_intentState).orElse(old_intentState)).orElse(null);
+                          // String old_intentState = HostCheckCR.staticJsonIntentState(o.getIntentState());
+                          // String new_intentState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_intentState, patch));
+                          // String intentState = Optional.ofNullable(Optional.ofNullable(new_intentState).orElse(old_intentState)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_intentState, patch), intentState);
 
-                          String old_displayPage = HostCheckCR.staticJsonDisplayPage(o.getDisplayPage());
-                          String new_displayPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_displayPage, patch));
-                          String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+                          // String old_displayPage = HostCheckCR.staticJsonDisplayPage(o.getDisplayPage());
+                          // String new_displayPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_displayPage, patch));
+                          // String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_displayPage, patch), displayPage);
 
-                          Boolean old_checkPublished = HostCheckCR.staticJsonCheckPublished(o.getCheckPublished());
-                          Boolean new_checkPublished = json.getBoolean(HostCheckCR.varJson(HostCheckCR.VAR_checkPublished, patch));
-                          Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(new_checkPublished).orElse(old_checkPublished)).orElse(null);
+                          // Boolean old_checkPublished = HostCheckCR.staticJsonCheckPublished(o.getCheckPublished());
+                          // Boolean new_checkPublished = json.getBoolean(HostCheckCR.varJson(HostCheckCR.VAR_checkPublished, patch));
+                          // Boolean checkPublished = Optional.ofNullable(Optional.ofNullable(new_checkPublished).orElse(old_checkPublished)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkPublished, patch), checkPublished);
 
-                          String old_requestedState = HostCheckCR.staticJsonRequestedState(o.getRequestedState());
-                          String new_requestedState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_requestedState, patch));
-                          String requestedState = Optional.ofNullable(Optional.ofNullable(new_requestedState).orElse(old_requestedState)).orElse(null);
+                          // String old_requestedState = HostCheckCR.staticJsonRequestedState(o.getRequestedState());
+                          // String new_requestedState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_requestedState, patch));
+                          // String requestedState = Optional.ofNullable(Optional.ofNullable(new_requestedState).orElse(old_requestedState)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_requestedState, patch), requestedState);
 
-                          String old_editPage = HostCheckCR.staticJsonEditPage(o.getEditPage());
-                          String new_editPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_editPage, patch));
-                          String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+                          // String old_editPage = HostCheckCR.staticJsonEditPage(o.getEditPage());
+                          // String new_editPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_editPage, patch));
+                          // String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_editPage, patch), editPage);
 
-                          JsonArray old_eventSubscriptions = HostCheckCR.staticJsonEventSubscriptions(o.getEventSubscriptions());
-                          JsonArray new_eventSubscriptions = json.getJsonArray(HostCheckCR.varJson(HostCheckCR.VAR_eventSubscriptions, patch));
-                          JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(new_eventSubscriptions).orElse(old_eventSubscriptions)).orElse(null);
+                          // JsonArray old_eventSubscriptions = HostCheckCR.staticJsonEventSubscriptions(o.getEventSubscriptions());
+                          // JsonArray new_eventSubscriptions = json.getJsonArray(HostCheckCR.varJson(HostCheckCR.VAR_eventSubscriptions, patch));
+                          // JsonArray eventSubscriptions = Optional.ofNullable(Optional.ofNullable(new_eventSubscriptions).orElse(old_eventSubscriptions)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_eventSubscriptions, patch), eventSubscriptions);
 
-                          String old_realizedState = HostCheckCR.staticJsonRealizedState(o.getRealizedState());
-                          String new_realizedState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_realizedState, patch));
-                          String realizedState = Optional.ofNullable(Optional.ofNullable(new_realizedState).orElse(old_realizedState)).orElse(null);
+                          // String old_realizedState = HostCheckCR.staticJsonRealizedState(o.getRealizedState());
+                          // String new_realizedState = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_realizedState, patch));
+                          // String realizedState = Optional.ofNullable(Optional.ofNullable(new_realizedState).orElse(old_realizedState)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_realizedState, patch), realizedState);
 
-                          String old_userPage = HostCheckCR.staticJsonUserPage(o.getUserPage());
-                          String new_userPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_userPage, patch));
-                          String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+                          // String old_userPage = HostCheckCR.staticJsonUserPage(o.getUserPage());
+                          // String new_userPage = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_userPage, patch));
+                          // String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_userPage, patch), userPage);
 
-                          JsonArray old_eventHandlers = HostCheckCR.staticJsonEventHandlers(o.getEventHandlers());
-                          JsonArray new_eventHandlers = json.getJsonArray(HostCheckCR.varJson(HostCheckCR.VAR_eventHandlers, patch));
-                          JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(new_eventHandlers).orElse(old_eventHandlers)).orElse(null);
+                          // JsonArray old_eventHandlers = HostCheckCR.staticJsonEventHandlers(o.getEventHandlers());
+                          // JsonArray new_eventHandlers = json.getJsonArray(HostCheckCR.varJson(HostCheckCR.VAR_eventHandlers, patch));
+                          // JsonArray eventHandlers = Optional.ofNullable(Optional.ofNullable(new_eventHandlers).orElse(old_eventHandlers)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_eventHandlers, patch), eventHandlers);
 
-                          String old_aapOrganizationIdChange = HostCheckCR.staticJsonAapOrganizationIdChange(o.getAapOrganizationIdChange());
-                          String new_aapOrganizationIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationIdChange, patch));
-                          String aapOrganizationIdChange = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationIdChange).orElse(old_aapOrganizationIdChange)).orElse(null);
+                          // String old_aapOrganizationIdChange = HostCheckCR.staticJsonAapOrganizationIdChange(o.getAapOrganizationIdChange());
+                          // String new_aapOrganizationIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationIdChange, patch));
+                          // String aapOrganizationIdChange = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationIdChange).orElse(old_aapOrganizationIdChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_aapOrganizationIdChange, patch), aapOrganizationIdChange);
 
-                          String old_download = HostCheckCR.staticJsonDownload(o.getDownload());
-                          String new_download = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_download, patch));
-                          String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+                          // String old_download = HostCheckCR.staticJsonDownload(o.getDownload());
+                          // String new_download = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_download, patch));
+                          // String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_download, patch), download);
 
-                          String old_jobTemplateIdChange = HostCheckCR.staticJsonJobTemplateIdChange(o.getJobTemplateIdChange());
-                          String new_jobTemplateIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateIdChange, patch));
-                          String jobTemplateIdChange = Optional.ofNullable(Optional.ofNullable(new_jobTemplateIdChange).orElse(old_jobTemplateIdChange)).orElse(null);
+                          // String old_jobTemplateIdChange = HostCheckCR.staticJsonJobTemplateIdChange(o.getJobTemplateIdChange());
+                          // String new_jobTemplateIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateIdChange, patch));
+                          // String jobTemplateIdChange = Optional.ofNullable(Optional.ofNullable(new_jobTemplateIdChange).orElse(old_jobTemplateIdChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_jobTemplateIdChange, patch), jobTemplateIdChange);
 
-                          String old_aapTemplateIdChange = HostCheckCR.staticJsonAapTemplateIdChange(o.getAapTemplateIdChange());
-                          String new_aapTemplateIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateIdChange, patch));
-                          String aapTemplateIdChange = Optional.ofNullable(Optional.ofNullable(new_aapTemplateIdChange).orElse(old_aapTemplateIdChange)).orElse(null);
+                          // String old_aapTemplateIdChange = HostCheckCR.staticJsonAapTemplateIdChange(o.getAapTemplateIdChange());
+                          // String new_aapTemplateIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateIdChange, patch));
+                          // String aapTemplateIdChange = Optional.ofNullable(Optional.ofNullable(new_aapTemplateIdChange).orElse(old_aapTemplateIdChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_aapTemplateIdChange, patch), aapTemplateIdChange);
 
-                          String old_checkNameChange = HostCheckCR.staticJsonCheckNameChange(o.getCheckNameChange());
-                          String new_checkNameChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNameChange, patch));
-                          String checkNameChange = Optional.ofNullable(Optional.ofNullable(new_checkNameChange).orElse(old_checkNameChange)).orElse(null);
+                          // String old_checkNameChange = HostCheckCR.staticJsonCheckNameChange(o.getCheckNameChange());
+                          // String new_checkNameChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNameChange, patch));
+                          // String checkNameChange = Optional.ofNullable(Optional.ofNullable(new_checkNameChange).orElse(old_checkNameChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkNameChange, patch), checkNameChange);
 
-                          String old_checkIdChange = HostCheckCR.staticJsonCheckIdChange(o.getCheckIdChange());
-                          String new_checkIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkIdChange, patch));
-                          String checkIdChange = Optional.ofNullable(Optional.ofNullable(new_checkIdChange).orElse(old_checkIdChange)).orElse(null);
+                          // String old_checkIdChange = HostCheckCR.staticJsonCheckIdChange(o.getCheckIdChange());
+                          // String new_checkIdChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkIdChange, patch));
+                          // String checkIdChange = Optional.ofNullable(Optional.ofNullable(new_checkIdChange).orElse(old_checkIdChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkIdChange, patch), checkIdChange);
 
-                          String old_checkResourceChange = HostCheckCR.staticJsonCheckResourceChange(o.getCheckResourceChange());
-                          String new_checkResourceChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkResourceChange, patch));
-                          String checkResourceChange = Optional.ofNullable(Optional.ofNullable(new_checkResourceChange).orElse(old_checkResourceChange)).orElse(null);
+                          // String old_checkResourceChange = HostCheckCR.staticJsonCheckResourceChange(o.getCheckResourceChange());
+                          // String new_checkResourceChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkResourceChange, patch));
+                          // String checkResourceChange = Optional.ofNullable(Optional.ofNullable(new_checkResourceChange).orElse(old_checkResourceChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkResourceChange, patch), checkResourceChange);
 
-                          String old_checkDescriptionChange = HostCheckCR.staticJsonCheckDescriptionChange(o.getCheckDescriptionChange());
-                          String new_checkDescriptionChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkDescriptionChange, patch));
-                          String checkDescriptionChange = Optional.ofNullable(Optional.ofNullable(new_checkDescriptionChange).orElse(old_checkDescriptionChange)).orElse(null);
+                          // String old_checkDescriptionChange = HostCheckCR.staticJsonCheckDescriptionChange(o.getCheckDescriptionChange());
+                          // String new_checkDescriptionChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkDescriptionChange, patch));
+                          // String checkDescriptionChange = Optional.ofNullable(Optional.ofNullable(new_checkDescriptionChange).orElse(old_checkDescriptionChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkDescriptionChange, patch), checkDescriptionChange);
 
-                          String old_checkNamespaceChange = HostCheckCR.staticJsonCheckNamespaceChange(o.getCheckNamespaceChange());
-                          String new_checkNamespaceChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespaceChange, patch));
-                          String checkNamespaceChange = Optional.ofNullable(Optional.ofNullable(new_checkNamespaceChange).orElse(old_checkNamespaceChange)).orElse(null);
+                          // String old_checkNamespaceChange = HostCheckCR.staticJsonCheckNamespaceChange(o.getCheckNamespaceChange());
+                          // String new_checkNamespaceChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespaceChange, patch));
+                          // String checkNamespaceChange = Optional.ofNullable(Optional.ofNullable(new_checkNamespaceChange).orElse(old_checkNamespaceChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkNamespaceChange, patch), checkNamespaceChange);
 
-                          String old_checkCommandChange = HostCheckCR.staticJsonCheckCommandChange(o.getCheckCommandChange());
-                          String new_checkCommandChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkCommandChange, patch));
-                          String checkCommandChange = Optional.ofNullable(Optional.ofNullable(new_checkCommandChange).orElse(old_checkCommandChange)).orElse(null);
+                          // String old_checkCommandChange = HostCheckCR.staticJsonCheckCommandChange(o.getCheckCommandChange());
+                          // String new_checkCommandChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkCommandChange, patch));
+                          // String checkCommandChange = Optional.ofNullable(Optional.ofNullable(new_checkCommandChange).orElse(old_checkCommandChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkCommandChange, patch), checkCommandChange);
 
-                          String old_checkIntervalChange = HostCheckCR.staticJsonCheckIntervalChange(o.getCheckIntervalChange());
-                          String new_checkIntervalChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkIntervalChange, patch));
-                          String checkIntervalChange = Optional.ofNullable(Optional.ofNullable(new_checkIntervalChange).orElse(old_checkIntervalChange)).orElse(null);
+                          // String old_checkIntervalChange = HostCheckCR.staticJsonCheckIntervalChange(o.getCheckIntervalChange());
+                          // String new_checkIntervalChange = json.getString(HostCheckCR.varJson(HostCheckCR.VAR_checkIntervalChange, patch));
+                          // String checkIntervalChange = Optional.ofNullable(Optional.ofNullable(new_checkIntervalChange).orElse(old_checkIntervalChange)).orElse(null);
                           // json.put(HostCheckCR.varJson(HostCheckCR.VAR_checkIntervalChange, patch), checkIntervalChange);
 
                       promise.complete(json);

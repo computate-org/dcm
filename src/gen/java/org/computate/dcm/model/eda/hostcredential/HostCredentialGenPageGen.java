@@ -110,6 +110,7 @@ import java.lang.Void;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
+import org.computate.search.tool.SearchTool;
 
 /**
  * <ol>

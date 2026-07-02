@@ -46,6 +46,9 @@ import java.lang.String;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import io.vertx.core.json.JsonArray;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
+import java.lang.Boolean;
+import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -235,6 +238,192 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/intent/tenant";
 
   public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-buildings\"></i>";
+
+	////////////////
+  // tenantName //
+	////////////////
+
+
+  /**
+   *  The entity tenantName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantName;
+
+  /**
+   * <br> The entity tenantName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantName">Find the entity tenantName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantName(Wrap<String> w);
+
+  public String getTenantName() {
+    return tenantName;
+  }
+  public void setTenantName(String o) {
+    this.tenantName = TenantIntent.staticSetTenantName(siteRequest_, o);
+  }
+  public static String staticSetTenantName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantIntent tenantNameInit() {
+    Wrap<String> tenantNameWrap = new Wrap<String>().var("tenantName");
+    if(tenantName == null) {
+      _tenantName(tenantNameWrap);
+      Optional.ofNullable(tenantNameWrap.getO()).ifPresent(o -> {
+        setTenantName(o);
+      });
+    }
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantName(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantName(siteRequest_, TenantIntent.staticSetTenantName(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantName() {
+    return tenantName;
+  }
+
+  public static String staticJsonTenantName(String tenantName) {
+    return tenantName;
+  }
+
+	//////////////
+  // tenantId //
+	//////////////
+
+
+  /**
+   *  The entity tenantId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantId;
+
+  /**
+   * <br> The entity tenantId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantId">Find the entity tenantId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantId(Wrap<String> w);
+
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String o) {
+    this.tenantId = TenantIntent.staticSetTenantId(siteRequest_, o);
+  }
+  public static String staticSetTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantIntent tenantIdInit() {
+    Wrap<String> tenantIdWrap = new Wrap<String>().var("tenantId");
+    if(tenantId == null) {
+      _tenantId(tenantIdWrap);
+      Optional.ofNullable(tenantIdWrap.getO()).ifPresent(o -> {
+        setTenantId(o);
+      });
+    }
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantId(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantId(siteRequest_, TenantIntent.staticSetTenantId(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantId() {
+    return tenantId;
+  }
+
+  public static String staticJsonTenantId(String tenantId) {
+    return tenantId;
+  }
+
+	////////////////////
+  // tenantResource //
+	////////////////////
+
+
+  /**
+   *  The entity tenantResource
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantResource;
+
+  /**
+   * <br> The entity tenantResource
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantResource">Find the entity tenantResource in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantResource(Wrap<String> w);
+
+  public String getTenantResource() {
+    return tenantResource;
+  }
+  public void setTenantResource(String o) {
+    this.tenantResource = TenantIntent.staticSetTenantResource(siteRequest_, o);
+  }
+  public static String staticSetTenantResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantIntent tenantResourceInit() {
+    Wrap<String> tenantResourceWrap = new Wrap<String>().var("tenantResource");
+    if(tenantResource == null) {
+      _tenantResource(tenantResourceWrap);
+      Optional.ofNullable(tenantResourceWrap.getO()).ifPresent(o -> {
+        setTenantResource(o);
+      });
+    }
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantResource(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantResource(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantResource(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantResource(siteRequest_, TenantIntent.staticSetTenantResource(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantResource() {
+    return tenantResource;
+  }
+
+  public static String staticJsonTenantResource(String tenantResource) {
+    return tenantResource;
+  }
 
 	////////////////////
   // createdByEmail //
@@ -670,6 +859,309 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     return realizedState;
   }
 
+	///////////////////////
+  // tenantDescription //
+	///////////////////////
+
+
+  /**
+   *  The entity tenantDescription
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantDescription;
+
+  /**
+   * <br> The entity tenantDescription
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantDescription(Wrap<String> w);
+
+  public String getTenantDescription() {
+    return tenantDescription;
+  }
+  public void setTenantDescription(String o) {
+    this.tenantDescription = TenantIntent.staticSetTenantDescription(siteRequest_, o);
+  }
+  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantIntent tenantDescriptionInit() {
+    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
+    if(tenantDescription == null) {
+      _tenantDescription(tenantDescriptionWrap);
+      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
+        setTenantDescription(o);
+      });
+    }
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantDescription(siteRequest_, TenantIntent.staticSetTenantDescription(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantDescription() {
+    return tenantDescription;
+  }
+
+  public static String staticJsonTenantDescription(String tenantDescription) {
+    return tenantDescription;
+  }
+
+	/////////////////////
+  // tenantRequested //
+	/////////////////////
+
+
+  /**
+   *  The entity tenantRequested
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> tenantRequested = new ArrayList<String>();
+
+  /**
+   * <br> The entity tenantRequested
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantRequested">Find the entity tenantRequested in Solr</a>
+   * <br>
+   * @param l is the entity already constructed. 
+   **/
+  protected abstract void _tenantRequested(List<String> l);
+
+  public List<String> getTenantRequested() {
+    return tenantRequested;
+  }
+
+  public void setTenantRequested(List<String> tenantRequested) {
+    this.tenantRequested = tenantRequested;
+  }
+  @JsonIgnore
+  public void setTenantRequested(String o) {
+    String l = TenantIntent.staticSetTenantRequested(siteRequest_, o);
+    if(l != null)
+      addTenantRequested(l);
+  }
+  public static String staticSetTenantRequested(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public TenantIntent addTenantRequested(String...objects) {
+    for(String o : objects) {
+      addTenantRequested(o);
+    }
+    return (TenantIntent)this;
+  }
+  public TenantIntent addTenantRequested(String o) {
+    if(o != null)
+      this.tenantRequested.add(o);
+    return (TenantIntent)this;
+  }
+  @JsonIgnore
+  public void setTenantRequested(JsonArray objects) {
+    tenantRequested.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addTenantRequested(o);
+    }
+  }
+  protected TenantIntent tenantRequestedInit() {
+    _tenantRequested(tenantRequested);
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantRequested(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantRequested(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantRequested(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantRequested(siteRequest_, TenantIntent.staticSetTenantRequested(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlTenantRequested() {
+    return tenantRequested.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonTenantRequested(List<String> tenantRequested) {
+    JsonArray a = new JsonArray();
+    tenantRequested.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
+	////////////
+  // locked //
+	////////////
+
+
+  /**
+   *  The entity locked
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected Boolean locked;
+
+  /**
+   * <br> The entity locked
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:locked">Find the entity locked in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _locked(Wrap<Boolean> w);
+
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
+  }
+  @JsonIgnore
+  public void setLocked(String o) {
+    this.locked = TenantIntent.staticSetLocked(siteRequest_, o);
+  }
+  public static Boolean staticSetLocked(SiteRequest siteRequest_, String o) {
+    return Boolean.parseBoolean(o);
+  }
+  protected TenantIntent lockedInit() {
+    Wrap<Boolean> lockedWrap = new Wrap<Boolean>().var("locked");
+    if(locked == null) {
+      _locked(lockedWrap);
+      Optional.ofNullable(lockedWrap.getO()).ifPresent(o -> {
+        setLocked(o);
+      });
+    }
+    return (TenantIntent)this;
+  }
+
+  public static Boolean staticSearchLocked(SiteRequest siteRequest_, Boolean o) {
+    return o;
+  }
+
+  public static String staticSearchStrLocked(SiteRequest siteRequest_, Boolean o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqLocked(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchLocked(siteRequest_, TenantIntent.staticSetLocked(siteRequest_, o)).toString();
+  }
+
+  public Boolean sqlLocked() {
+    return locked;
+  }
+
+  public static Boolean staticJsonLocked(Boolean locked) {
+    return locked;
+  }
+
+	////////////////////
+  // tenantRealized //
+	////////////////////
+
+
+  /**
+   *  The entity tenantRealized
+   *	 It is constructed before being initialized with the constructor by default. 
+   */
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.ARRAY)
+  @JsonInclude(Include.NON_NULL)
+  protected List<String> tenantRealized = new ArrayList<String>();
+
+  /**
+   * <br> The entity tenantRealized
+   *  It is constructed before being initialized with the constructor by default. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.intent.TenantIntent&fq=entiteVar_enUS_indexed_string:tenantRealized">Find the entity tenantRealized in Solr</a>
+   * <br>
+   * @param l is the entity already constructed. 
+   **/
+  protected abstract void _tenantRealized(List<String> l);
+
+  public List<String> getTenantRealized() {
+    return tenantRealized;
+  }
+
+  public void setTenantRealized(List<String> tenantRealized) {
+    this.tenantRealized = tenantRealized;
+  }
+  @JsonIgnore
+  public void setTenantRealized(String o) {
+    String l = TenantIntent.staticSetTenantRealized(siteRequest_, o);
+    if(l != null)
+      addTenantRealized(l);
+  }
+  public static String staticSetTenantRealized(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  public TenantIntent addTenantRealized(String...objects) {
+    for(String o : objects) {
+      addTenantRealized(o);
+    }
+    return (TenantIntent)this;
+  }
+  public TenantIntent addTenantRealized(String o) {
+    if(o != null)
+      this.tenantRealized.add(o);
+    return (TenantIntent)this;
+  }
+  @JsonIgnore
+  public void setTenantRealized(JsonArray objects) {
+    tenantRealized.clear();
+    if(objects == null)
+      return;
+    for(int i = 0; i < objects.size(); i++) {
+      String o = objects.getString(i);
+      addTenantRealized(o);
+    }
+  }
+  protected TenantIntent tenantRealizedInit() {
+    _tenantRealized(tenantRealized);
+    return (TenantIntent)this;
+  }
+
+  public static String staticSearchTenantRealized(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantRealized(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantRealized(SiteRequest siteRequest_, String o) {
+    return TenantIntent.staticSearchTenantRealized(siteRequest_, TenantIntent.staticSetTenantRealized(siteRequest_, o)).toString();
+  }
+
+  public String[] sqlTenantRealized() {
+    return tenantRealized.stream().map(v -> (String)v).toArray(String[]::new);
+  }
+
+  public static JsonArray staticJsonTenantRealized(List<String> tenantRealized) {
+    JsonArray a = new JsonArray();
+    tenantRealized.stream().forEach(v -> a.add(v.toString()));
+    return a;
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -700,6 +1192,9 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
+        tenantNameInit();
+        tenantIdInit();
+        tenantResourceInit();
         createdByEmailInit();
         createdByUserIdInit();
         createdByFullNameInit();
@@ -707,6 +1202,10 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         intentStateInit();
         requestedStateInit();
         realizedStateInit();
+        tenantDescriptionInit();
+        tenantRequestedInit();
+        lockedInit();
+        tenantRealizedInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -760,6 +1259,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   public Object obtainTenantIntent(String var) {
     TenantIntent oTenantIntent = (TenantIntent)this;
     switch(var) {
+      case "tenantName":
+        return oTenantIntent.tenantName;
+      case "tenantId":
+        return oTenantIntent.tenantId;
+      case "tenantResource":
+        return oTenantIntent.tenantResource;
       case "createdByEmail":
         return oTenantIntent.createdByEmail;
       case "createdByUserId":
@@ -774,6 +1279,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         return oTenantIntent.requestedState;
       case "realizedState":
         return oTenantIntent.realizedState;
+      case "tenantDescription":
+        return oTenantIntent.tenantDescription;
+      case "tenantRequested":
+        return oTenantIntent.tenantRequested;
+      case "locked":
+        return oTenantIntent.locked;
+      case "tenantRealized":
+        return oTenantIntent.tenantRealized;
       default:
         return super.obtainTenant(var);
     }
@@ -799,6 +1312,16 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   public Object relateTenantIntent(String var, Object val) {
     TenantIntent oTenantIntent = (TenantIntent)this;
     switch(var) {
+      case "tenantRequested":
+        oTenantIntent.addTenantRequested((String)val);
+        if(!saves.contains("tenantRequested"))
+          saves.add("tenantRequested");
+        return val;
+      case "tenantRealized":
+        oTenantIntent.addTenantRealized((String)val);
+        if(!saves.contains("tenantRealized"))
+          saves.add("tenantRealized");
+        return val;
       default:
         return super.relateTenant(var, val);
     }
@@ -813,6 +1336,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static Object staticSetTenantIntent(String entityVar, SiteRequest siteRequest_, String v, TenantIntent o) {
     switch(entityVar) {
+    case "tenantName":
+      return TenantIntent.staticSetTenantName(siteRequest_, v);
+    case "tenantId":
+      return TenantIntent.staticSetTenantId(siteRequest_, v);
+    case "tenantResource":
+      return TenantIntent.staticSetTenantResource(siteRequest_, v);
     case "createdByEmail":
       return TenantIntent.staticSetCreatedByEmail(siteRequest_, v);
     case "createdByUserId":
@@ -827,6 +1356,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return TenantIntent.staticSetRequestedState(siteRequest_, v);
     case "realizedState":
       return TenantIntent.staticSetRealizedState(siteRequest_, v);
+    case "tenantDescription":
+      return TenantIntent.staticSetTenantDescription(siteRequest_, v);
+    case "tenantRequested":
+      return TenantIntent.staticSetTenantRequested(siteRequest_, v);
+    case "locked":
+      return TenantIntent.staticSetLocked(siteRequest_, v);
+    case "tenantRealized":
+      return TenantIntent.staticSetTenantRealized(siteRequest_, v);
       default:
         return Tenant.staticSetTenant(entityVar,  siteRequest_, v, o);
     }
@@ -871,6 +1408,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static Object staticSearchTenantIntent(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "tenantName":
+      return TenantIntent.staticSearchTenantName(siteRequest_, (String)o);
+    case "tenantId":
+      return TenantIntent.staticSearchTenantId(siteRequest_, (String)o);
+    case "tenantResource":
+      return TenantIntent.staticSearchTenantResource(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantIntent.staticSearchCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -885,6 +1428,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return TenantIntent.staticSearchRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantIntent.staticSearchRealizedState(siteRequest_, (String)o);
+    case "tenantDescription":
+      return TenantIntent.staticSearchTenantDescription(siteRequest_, (String)o);
+    case "tenantRequested":
+      return TenantIntent.staticSearchTenantRequested(siteRequest_, (String)o);
+    case "locked":
+      return TenantIntent.staticSearchLocked(siteRequest_, (Boolean)o);
+    case "tenantRealized":
+      return TenantIntent.staticSearchTenantRealized(siteRequest_, (String)o);
       default:
         return Tenant.staticSearchTenant(entityVar,  siteRequest_, o);
     }
@@ -899,6 +1450,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static String staticSearchStrTenantIntent(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "tenantName":
+      return TenantIntent.staticSearchStrTenantName(siteRequest_, (String)o);
+    case "tenantId":
+      return TenantIntent.staticSearchStrTenantId(siteRequest_, (String)o);
+    case "tenantResource":
+      return TenantIntent.staticSearchStrTenantResource(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantIntent.staticSearchStrCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -913,6 +1470,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return TenantIntent.staticSearchStrRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantIntent.staticSearchStrRealizedState(siteRequest_, (String)o);
+    case "tenantDescription":
+      return TenantIntent.staticSearchStrTenantDescription(siteRequest_, (String)o);
+    case "tenantRequested":
+      return TenantIntent.staticSearchStrTenantRequested(siteRequest_, (String)o);
+    case "locked":
+      return TenantIntent.staticSearchStrLocked(siteRequest_, (Boolean)o);
+    case "tenantRealized":
+      return TenantIntent.staticSearchStrTenantRealized(siteRequest_, (String)o);
       default:
         return Tenant.staticSearchStrTenant(entityVar,  siteRequest_, o);
     }
@@ -927,6 +1492,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static String staticSearchFqTenantIntent(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
+    case "tenantName":
+      return TenantIntent.staticSearchFqTenantName(siteRequest_, o);
+    case "tenantId":
+      return TenantIntent.staticSearchFqTenantId(siteRequest_, o);
+    case "tenantResource":
+      return TenantIntent.staticSearchFqTenantResource(siteRequest_, o);
     case "createdByEmail":
       return TenantIntent.staticSearchFqCreatedByEmail(siteRequest_, o);
     case "createdByUserId":
@@ -941,6 +1512,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return TenantIntent.staticSearchFqRequestedState(siteRequest_, o);
     case "realizedState":
       return TenantIntent.staticSearchFqRealizedState(siteRequest_, o);
+    case "tenantDescription":
+      return TenantIntent.staticSearchFqTenantDescription(siteRequest_, o);
+    case "tenantRequested":
+      return TenantIntent.staticSearchFqTenantRequested(siteRequest_, o);
+    case "locked":
+      return TenantIntent.staticSearchFqLocked(siteRequest_, o);
+    case "tenantRealized":
+      return TenantIntent.staticSearchFqTenantRealized(siteRequest_, o);
       default:
         return Tenant.staticSearchFqTenant(entityVar,  siteRequest_, o);
     }
@@ -967,7 +1546,25 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public Object persistTenantIntent(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("createdbyemail".equals(varLower)) {
+      if("tenantname".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantName((String)val);
+        }
+        saves.add("tenantName");
+        return val;
+      } else if("tenantid".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantId((String)val);
+        }
+        saves.add("tenantId");
+        return val;
+      } else if("tenantresource".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantResource((String)val);
+        }
+        saves.add("tenantResource");
+        return val;
+      } else if("createdbyemail".equals(varLower)) {
         if(val instanceof String) {
           setCreatedByEmail((String)val);
         }
@@ -1009,6 +1606,20 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         }
         saves.add("realizedState");
         return val;
+      } else if("tenantdescription".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantDescription((String)val);
+        }
+        saves.add("tenantDescription");
+        return val;
+      } else if("locked".equals(varLower)) {
+        if(val instanceof Boolean) {
+          setLocked((Boolean)val);
+        } else {
+          setLocked(val == null ? null : val.toString());
+        }
+        saves.add("locked");
+        return val;
     } else {
       return super.persistTenant(var, val);
     }
@@ -1025,6 +1636,24 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     TenantIntent oTenantIntent = (TenantIntent)this;
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
+
+      if(saves.contains("tenantName")) {
+        String tenantName = (String)doc.get("tenantName_docvalues_string");
+        if(tenantName != null)
+          oTenantIntent.setTenantName(tenantName);
+      }
+
+      if(saves.contains("tenantId")) {
+        String tenantId = (String)doc.get("tenantId_docvalues_string");
+        if(tenantId != null)
+          oTenantIntent.setTenantId(tenantId);
+      }
+
+      if(saves.contains("tenantResource")) {
+        String tenantResource = (String)doc.get("tenantResource_docvalues_string");
+        if(tenantResource != null)
+          oTenantIntent.setTenantResource(tenantResource);
+      }
 
       if(saves.contains("createdByEmail")) {
         String createdByEmail = (String)doc.get("createdByEmail_docvalues_string");
@@ -1067,12 +1696,41 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         if(realizedState != null)
           oTenantIntent.setRealizedState(realizedState);
       }
+
+      if(saves.contains("tenantDescription")) {
+        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
+        if(tenantDescription != null)
+          oTenantIntent.setTenantDescription(tenantDescription);
+      }
+
+      List<String> tenantRequested = (List<String>)doc.get("tenantRequested_docvalues_strings");
+      if(tenantRequested != null)
+        oTenantIntent.tenantRequested.addAll(tenantRequested);
+
+      if(saves.contains("locked")) {
+        Boolean locked = (Boolean)doc.get("locked_docvalues_boolean");
+        if(locked != null)
+          oTenantIntent.setLocked(locked);
+      }
+
+      List<String> tenantRealized = (List<String>)doc.get("tenantRealized_docvalues_strings");
+      if(tenantRealized != null)
+        oTenantIntent.tenantRealized.addAll(tenantRealized);
     }
 
     super.populateTenant(doc);
   }
 
   public void indexTenantIntent(JsonObject doc) {
+    if(tenantName != null) {
+      doc.put("tenantName_docvalues_string", tenantName);
+    }
+    if(tenantId != null) {
+      doc.put("tenantId_docvalues_string", tenantId);
+    }
+    if(tenantResource != null) {
+      doc.put("tenantResource_docvalues_string", tenantResource);
+    }
     if(createdByEmail != null) {
       doc.put("createdByEmail_docvalues_string", createdByEmail);
     }
@@ -1094,12 +1752,38 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     if(realizedState != null) {
       doc.put("realizedState_docvalues_string", realizedState);
     }
+    if(tenantDescription != null) {
+      doc.put("tenantDescription_docvalues_string", tenantDescription);
+    }
+    if(tenantRequested != null) {
+      JsonArray l = new JsonArray();
+      doc.put("tenantRequested_docvalues_strings", l);
+      for(String o : tenantRequested) {
+        l.add(TenantIntent.staticSearchTenantRequested(siteRequest_, o));
+      }
+    }
+    if(locked != null) {
+      doc.put("locked_docvalues_boolean", locked);
+    }
+    if(tenantRealized != null) {
+      JsonArray l = new JsonArray();
+      doc.put("tenantRealized_docvalues_strings", l);
+      for(String o : tenantRealized) {
+        l.add(TenantIntent.staticSearchTenantRealized(siteRequest_, o));
+      }
+    }
     super.indexTenant(doc);
 
 	}
 
   public static String varStoredTenantIntent(String entityVar) {
     switch(entityVar) {
+      case "tenantName":
+        return "tenantName_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
+      case "tenantResource":
+        return "tenantResource_docvalues_string";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1114,6 +1798,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
+      case "tenantRequested":
+        return "tenantRequested_docvalues_strings";
+      case "locked":
+        return "locked_docvalues_boolean";
+      case "tenantRealized":
+        return "tenantRealized_docvalues_strings";
       default:
         return Tenant.varStoredTenant(entityVar);
     }
@@ -1121,6 +1813,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static String varIndexedTenantIntent(String entityVar) {
     switch(entityVar) {
+      case "tenantName":
+        return "tenantName_docvalues_string";
+      case "tenantId":
+        return "tenantId_docvalues_string";
+      case "tenantResource":
+        return "tenantResource_docvalues_string";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1135,6 +1833,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
+      case "tenantRequested":
+        return "tenantRequested_docvalues_strings";
+      case "locked":
+        return "locked_docvalues_boolean";
+      case "tenantRealized":
+        return "tenantRealized_docvalues_strings";
       default:
         return Tenant.varIndexedTenant(entityVar);
     }
@@ -1142,6 +1848,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static String searchVarTenantIntent(String searchVar) {
     switch(searchVar) {
+      case "tenantName_docvalues_string":
+        return "tenantName";
+      case "tenantId_docvalues_string":
+        return "tenantId";
+      case "tenantResource_docvalues_string":
+        return "tenantResource";
       case "createdByEmail_docvalues_string":
         return "createdByEmail";
       case "createdByUserId_docvalues_string":
@@ -1156,6 +1868,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         return "requestedState";
       case "realizedState_docvalues_string":
         return "realizedState";
+      case "tenantDescription_docvalues_string":
+        return "tenantDescription";
+      case "tenantRequested_docvalues_strings":
+        return "tenantRequested";
+      case "locked_docvalues_boolean":
+        return "locked";
+      case "tenantRealized_docvalues_strings":
+        return "tenantRealized";
       default:
         return Tenant.searchVarTenant(searchVar);
     }
@@ -1186,6 +1906,9 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     TenantIntent oTenantIntent = (TenantIntent)this;
     SiteRequest siteRequest = oTenantIntent.getSiteRequest_();
 
+    oTenantIntent.setTenantName(Optional.ofNullable(doc.get("tenantName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantIntent.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantIntent.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantIntent.setCreatedByEmail(Optional.ofNullable(doc.get("createdByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantIntent.setCreatedByUserId(Optional.ofNullable(doc.get("createdByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantIntent.setCreatedByFullName(Optional.ofNullable(doc.get("createdByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1193,6 +1916,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     oTenantIntent.setIntentState(Optional.ofNullable(doc.get("intentState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantIntent.setRequestedState(Optional.ofNullable(doc.get("requestedState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantIntent.setRealizedState(Optional.ofNullable(doc.get("realizedState_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantIntent.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
+    Optional.ofNullable((List<?>)doc.get("tenantRequested_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oTenantIntent.addTenantRequested(TenantIntent.staticSetTenantRequested(siteRequest, v.toString()));
+    });
+    oTenantIntent.setLocked(Optional.ofNullable(doc.get("locked_docvalues_boolean")).map(v -> v.toString()).orElse(null));
+    Optional.ofNullable((List<?>)doc.get("tenantRealized_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
+      oTenantIntent.addTenantRealized(TenantIntent.staticSetTenantRealized(siteRequest, v.toString()));
+    });
 
     super.storeTenant(doc);
   }
@@ -1206,6 +1937,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof TenantIntent) {
       TenantIntent original = (TenantIntent)o;
+      if(!Objects.equals(tenantName, original.getTenantName()))
+        apiRequest.addVars("tenantName");
+      if(!Objects.equals(tenantId, original.getTenantId()))
+        apiRequest.addVars("tenantId");
+      if(!Objects.equals(tenantResource, original.getTenantResource()))
+        apiRequest.addVars("tenantResource");
       if(!Objects.equals(createdByEmail, original.getCreatedByEmail()))
         apiRequest.addVars("createdByEmail");
       if(!Objects.equals(createdByUserId, original.getCreatedByUserId()))
@@ -1220,6 +1957,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
         apiRequest.addVars("requestedState");
       if(!Objects.equals(realizedState, original.getRealizedState()))
         apiRequest.addVars("realizedState");
+      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
+        apiRequest.addVars("tenantDescription");
+      if(!Objects.equals(tenantRequested, original.getTenantRequested()))
+        apiRequest.addVars("tenantRequested");
+      if(!Objects.equals(locked, original.getLocked()))
+        apiRequest.addVars("locked");
+      if(!Objects.equals(tenantRealized, original.getTenantRealized()))
+        apiRequest.addVars("tenantRealized");
       super.apiRequestTenant();
     }
   }
@@ -1231,6 +1976,9 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
+    sb.append(Optional.ofNullable(tenantName).map(v -> "tenantName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByEmail).map(v -> "createdByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByUserId).map(v -> "createdByUserId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByFullName).map(v -> "createdByFullName: \"" + v + "\"\n" ).orElse(""));
@@ -1238,16 +1986,26 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     sb.append(Optional.ofNullable(intentState).map(v -> "intentState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(requestedState).map(v -> "requestedState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(realizedState).map(v -> "realizedState: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantRequested).map(v -> "tenantRequested: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(locked).map(v -> "locked: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(tenantRealized).map(v -> "tenantRealized: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
   public static final String CLASS_SIMPLE_NAME = "TenantIntent";
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.tenant.intent.TenantIntent";
-  public static final String CLASS_AUTH_RESOURCE = "TENANTINTENT";
+  public static final String CLASS_AUTH_RESOURCE = "TENANT";
   public static final String CLASS_API_ADDRESS_TenantIntent = "dcm-enUS-TenantIntent";
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_TenantIntent;
   }
+  public static final String VAR_tenantName = "tenantName";
+  public static final String SET_tenantName = "setTenantName";
+  public static final String VAR_tenantId = "tenantId";
+  public static final String SET_tenantId = "setTenantId";
+  public static final String VAR_tenantResource = "tenantResource";
+  public static final String SET_tenantResource = "setTenantResource";
   public static final String VAR_createdByEmail = "createdByEmail";
   public static final String SET_createdByEmail = "setCreatedByEmail";
   public static final String VAR_createdByUserId = "createdByUserId";
@@ -1262,6 +2020,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   public static final String SET_requestedState = "setRequestedState";
   public static final String VAR_realizedState = "realizedState";
   public static final String SET_realizedState = "setRealizedState";
+  public static final String VAR_tenantDescription = "tenantDescription";
+  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String VAR_tenantRequested = "tenantRequested";
+  public static final String SET_tenantRequested = "setTenantRequested";
+  public static final String VAR_locked = "locked";
+  public static final String SET_locked = "setLocked";
+  public static final String VAR_tenantRealized = "tenantRealized";
+  public static final String SET_tenantRealized = "setTenantRealized";
 
   public static List<String> varsQForClass() {
     return TenantIntent.varsQTenantIntent(new ArrayList<String>());
@@ -1275,6 +2041,11 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     return TenantIntent.varsFqTenantIntent(new ArrayList<String>());
   }
   public static List<String> varsFqTenantIntent(List<String> vars) {
+    vars.add(VAR_tenantName);
+    vars.add(VAR_tenantId);
+    vars.add(VAR_tenantResource);
+    vars.add(VAR_tenantDescription);
+    vars.add(VAR_locked);
     Tenant.varsFqTenant(vars);
     return vars;
   }
@@ -1287,6 +2058,9 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     return vars;
   }
 
+  public static final String DISPLAY_NAME_tenantName = "tenant name";
+  public static final String DISPLAY_NAME_tenantId = "tenant ID";
+  public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_createdByEmail = "created by user email";
   public static final String DISPLAY_NAME_createdByUserId = "created by user ID";
   public static final String DISPLAY_NAME_createdByFullName = "created by user full name";
@@ -1294,6 +2068,10 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   public static final String DISPLAY_NAME_intentState = "intent state";
   public static final String DISPLAY_NAME_requestedState = "requested state";
   public static final String DISPLAY_NAME_realizedState = "realized state";
+  public static final String DISPLAY_NAME_tenantDescription = "description";
+  public static final String DISPLAY_NAME_tenantRequested = "tenant requested";
+  public static final String DISPLAY_NAME_locked = "locked";
+  public static final String DISPLAY_NAME_tenantRealized = "tenant realized";
 
   @Override
   public String idForClass() {
@@ -1330,6 +2108,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static String varJsonTenantIntent(String var, Boolean patch) {
     switch(var) {
+    case VAR_tenantName:
+      return patch ? SET_tenantName : VAR_tenantName;
+    case VAR_tenantId:
+      return patch ? SET_tenantId : VAR_tenantId;
+    case VAR_tenantResource:
+      return patch ? SET_tenantResource : VAR_tenantResource;
     case VAR_createdByEmail:
       return patch ? SET_createdByEmail : VAR_createdByEmail;
     case VAR_createdByUserId:
@@ -1344,6 +2128,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return patch ? SET_requestedState : VAR_requestedState;
     case VAR_realizedState:
       return patch ? SET_realizedState : VAR_realizedState;
+    case VAR_tenantDescription:
+      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_tenantRequested:
+      return patch ? SET_tenantRequested : VAR_tenantRequested;
+    case VAR_locked:
+      return patch ? SET_locked : VAR_locked;
+    case VAR_tenantRealized:
+      return patch ? SET_tenantRealized : VAR_tenantRealized;
     default:
       return Tenant.varJsonTenant(var, patch);
     }
@@ -1354,6 +2146,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
   }
   public static String displayNameTenantIntent(String var) {
     switch(var) {
+    case VAR_tenantName:
+      return DISPLAY_NAME_tenantName;
+    case VAR_tenantId:
+      return DISPLAY_NAME_tenantId;
+    case VAR_tenantResource:
+      return DISPLAY_NAME_tenantResource;
     case VAR_createdByEmail:
       return DISPLAY_NAME_createdByEmail;
     case VAR_createdByUserId:
@@ -1368,6 +2166,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return DISPLAY_NAME_requestedState;
     case VAR_realizedState:
       return DISPLAY_NAME_realizedState;
+    case VAR_tenantDescription:
+      return DISPLAY_NAME_tenantDescription;
+    case VAR_tenantRequested:
+      return DISPLAY_NAME_tenantRequested;
+    case VAR_locked:
+      return DISPLAY_NAME_locked;
+    case VAR_tenantRealized:
+      return DISPLAY_NAME_tenantRealized;
     default:
       return Tenant.displayNameTenant(var);
     }
@@ -1377,6 +2183,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     if(var == null)
       return null;
     switch(var) {
+    case VAR_tenantName:
+      return "The name of this tenant";
+    case VAR_tenantId:
+      return "The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. ";
+    case VAR_tenantResource:
+      return "The unique authorization resource for the tenant for multi-tenancy";
     case VAR_createdByEmail:
       return "The email address for the user who created the change request. ";
     case VAR_createdByUserId:
@@ -1391,6 +2203,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return "Represents a complete, validated, provider-ready declaration of desired state. ";
     case VAR_realizedState:
       return "Must be a complete representation of the provisioned resource in DCM unified format \u2014 not a status code, but a full state description. ";
+    case VAR_tenantDescription:
+      return "A description of this tenant";
+    case VAR_tenantRequested:
+      return "The related tenant requests for this tenant intent. ";
+    case VAR_locked:
+      return "A tenant intent gets locked after creating the first tenant request. ";
+    case VAR_tenantRealized:
+      return "Each time the tenant was realized for this tenant intent. ";
       default:
         return Tenant.descriptionTenant(var);
     }
@@ -1398,6 +2218,12 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static String classSimpleNameTenantIntent(String var) {
     switch(var) {
+    case VAR_tenantName:
+      return "String";
+    case VAR_tenantId:
+      return "String";
+    case VAR_tenantResource:
+      return "String";
     case VAR_createdByEmail:
       return "String";
     case VAR_createdByUserId:
@@ -1412,6 +2238,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return "String";
     case VAR_realizedState:
       return "String";
+    case VAR_tenantDescription:
+      return "String";
+    case VAR_tenantRequested:
+      return "List";
+    case VAR_locked:
+      return "Boolean";
+    case VAR_tenantRealized:
+      return "List";
       default:
         return Tenant.classSimpleNameTenant(var);
     }
@@ -1419,6 +2253,10 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static Integer htmColumnTenantIntent(String var) {
     switch(var) {
+    case VAR_tenantName:
+      return 1;
+    case VAR_tenantDescription:
+      return 3;
       default:
         return Tenant.htmColumnTenant(var);
     }
@@ -1426,7 +2264,13 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static Integer htmRowTenantIntent(String var) {
     switch(var) {
+    case VAR_tenantName:
+      return 20;
     case VAR_createdByEmail:
+      return 10;
+    case VAR_createdByUserId:
+      return 10;
+    case VAR_createdByFullName:
       return 10;
     case VAR_createdVia:
       return 10;
@@ -1436,6 +2280,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
       return 12;
     case VAR_realizedState:
       return 12;
+    case VAR_tenantDescription:
+      return 20;
+    case VAR_tenantRequested:
+      return 21;
+    case VAR_locked:
+      return 21;
+    case VAR_tenantRealized:
+      return 22;
       default:
         return Tenant.htmRowTenant(var);
     }
@@ -1443,7 +2295,13 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
 
   public static Integer htmCellTenantIntent(String var) {
     switch(var) {
+    case VAR_tenantName:
+      return 1;
     case VAR_createdByEmail:
+      return 0;
+    case VAR_createdByUserId:
+      return 0;
+    case VAR_createdByFullName:
       return 0;
     case VAR_createdVia:
       return 0;
@@ -1452,6 +2310,14 @@ public abstract class TenantIntentGen<DEV> extends Tenant {
     case VAR_requestedState:
       return 0;
     case VAR_realizedState:
+      return 0;
+    case VAR_tenantDescription:
+      return 4;
+    case VAR_tenantRequested:
+      return 0;
+    case VAR_locked:
+      return 0;
+    case VAR_tenantRealized:
       return 0;
       default:
         return Tenant.htmCellTenant(var);
