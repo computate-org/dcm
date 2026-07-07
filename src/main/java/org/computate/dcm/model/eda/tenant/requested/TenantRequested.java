@@ -56,11 +56,8 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * Description: The name of this tenant
    * HtmRow: 20
    * HtmCell: 1
-   * HtmColumn: 1
    * HtmRowTitleOpen: tenant details
    * Facet: true
-   * VarName: true
-   * StringFormat: oTenantIntent.getTenantName()
    **/
   protected void _tenantName(Wrap<String> w) {
   }
@@ -90,7 +87,6 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmRowTitleOpen: tenant details
    * HtmRow: 5
    * HtmCell: 0
-   * HtmColumn: 0
    * Required: true
    * Relate: TenantIntent.tenantResource
    * StringFormat: String.format("%s-%s", TenantIntent.CLASS_AUTH_RESOURCE, tenantId)
@@ -109,7 +105,6 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * Required: true
    **/
   protected void _tenantRequestedNumber(Wrap<Integer> w) {
-    // tomorrow, search for the max requested number by tenantResource, and increment by 1 in upsert. 
   }
 
   /**
@@ -119,10 +114,11 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * DisplayName: tenant requested ID
    * Description: The unique ID for this tenant requested. 
    * Facet: true
-   * Unique: true
    * Required: true
    * VarId: true
    * StringFormat: String.format("%s-%s", tenantResource, tenantRequestedNumber)
+   * HtmColumn: 0
+   * Unique: true
    **/
   protected void _tenantRequestedId(Wrap<String> w) {
   }
@@ -130,11 +126,25 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: Request approvals
-   * Description: A list of request approvals for this request. 
+   * Persist: true
+   * DisplayName: tenant requested name
+   * Description: The name of this tenant requested model
+   * Facet: true
+   * VarName: true
+   * StringFormat: String.format("%s %s", oTenantIntent.getTenantName(), tenantRequestedNumber)
+   * HtmColumn: 1
+   **/
+  protected void _tenantRequestedName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: tenant approvals
+   * Description: A list of Tenant approvals for this request. 
    * HtmRow: 8
    * HtmCell: 0
-   * Relate: RequestApproval.approvalId
+   * Relate: TenantApproval.approvalId
    **/
   protected void _requestApprovals(List<String> w) {
   }
@@ -162,7 +172,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * DisplayName: created by user ID
    * Description: The IdP UUID record for the user who created the change request. 
    * StringFormat: siteRequest.getUserId()
-   */ 
+   */
   protected void _createdByUserId(Wrap<String> w) {
   }
 

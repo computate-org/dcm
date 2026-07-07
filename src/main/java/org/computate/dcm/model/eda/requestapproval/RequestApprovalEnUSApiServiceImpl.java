@@ -1,21 +1,46 @@
 package org.computate.dcm.model.eda.requestapproval;
 
-import io.vertx.ext.auth.authorization.AuthorizationProvider;
-import io.vertx.ext.auth.oauth2.OAuth2Auth;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.core.Vertx;
-import io.vertx.core.WorkerExecutor;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
-import io.vertx.sqlclient.Pool;
-import org.computate.vertx.openapi.ComputateOAuth2AuthHandlerImpl;
-import io.vertx.kafka.client.producer.KafkaProducer;
-import io.vertx.mqtt.MqttClient;
-import io.vertx.amqp.AmqpSender;
-import io.vertx.rabbitmq.RabbitMQClient;
-import com.hubspot.jinjava.Jinjava;
 
 /**
  * Translate: false
  **/
 public class RequestApprovalEnUSApiServiceImpl extends RequestApprovalEnUSGenApiServiceImpl {
+
+  @Override
+  public Future<JsonObject> upsertRequestApproval(RequestApproval o, Boolean inheritPrimaryKey, Boolean patch) {
+    return super.upsertRequestApproval(o, inheritPrimaryKey, patch);
+  }
+
+  @Override
+  public Future<RequestApproval> sqlPOSTRequestApproval(RequestApproval o, Boolean inheritPrimaryKey) {
+    Promise<RequestApproval> promise = Promise.promise();
+    upsertRequestApproval(o, inheritPrimaryKey, false).onSuccess(hostCheckJson -> {
+      super.sqlPOSTRequestApproval(o, inheritPrimaryKey).onSuccess(o2 -> {
+        promise.complete(o2);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
+  }
+
+  @Override
+  public Future<RequestApproval> sqlPATCHRequestApproval(RequestApproval o, Boolean inheritPrimaryKey) {
+    Promise<RequestApproval> promise = Promise.promise();
+    upsertRequestApproval(o, inheritPrimaryKey, true).onSuccess(hostCheckJson -> {
+      super.sqlPATCHRequestApproval(o, inheritPrimaryKey).onSuccess(o2 -> {
+        promise.complete(o2);
+      }).onFailure(ex -> {
+        promise.fail(ex);
+      });
+    }).onFailure(ex -> {
+      promise.fail(ex);
+    });
+    return promise.future();
+  }
 }

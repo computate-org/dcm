@@ -48,7 +48,7 @@ import io.vertx.core.json.JsonArray;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import java.lang.Integer;
-import org.computate.dcm.model.eda.requestapproval.RequestApproval;
+import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import java.lang.Boolean;
 import org.computate.search.wrap.Wrap;
@@ -557,6 +557,68 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static String staticJsonTenantRequestedId(String tenantRequestedId) {
     return tenantRequestedId;
+  }
+
+	/////////////////////////
+  // tenantRequestedName //
+	/////////////////////////
+
+
+  /**
+   *  The entity tenantRequestedName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantRequestedName;
+
+  /**
+   * <br> The entity tenantRequestedName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.requested.TenantRequested&fq=entiteVar_enUS_indexed_string:tenantRequestedName">Find the entity tenantRequestedName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantRequestedName(Wrap<String> w);
+
+  public String getTenantRequestedName() {
+    return tenantRequestedName;
+  }
+  public void setTenantRequestedName(String o) {
+    this.tenantRequestedName = TenantRequested.staticSetTenantRequestedName(siteRequest_, o);
+  }
+  public static String staticSetTenantRequestedName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRequested tenantRequestedNameInit() {
+    Wrap<String> tenantRequestedNameWrap = new Wrap<String>().var("tenantRequestedName");
+    if(tenantRequestedName == null) {
+      _tenantRequestedName(tenantRequestedNameWrap);
+      Optional.ofNullable(tenantRequestedNameWrap.getO()).ifPresent(o -> {
+        setTenantRequestedName(o);
+      });
+    }
+    return (TenantRequested)this;
+  }
+
+  public static String staticSearchTenantRequestedName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantRequestedName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantRequestedName(SiteRequest siteRequest_, String o) {
+    return TenantRequested.staticSearchTenantRequestedName(siteRequest_, TenantRequested.staticSetTenantRequestedName(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantRequestedName() {
+    return tenantRequestedName;
+  }
+
+  public static String staticJsonTenantRequestedName(String tenantRequestedName) {
+    return tenantRequestedName;
   }
 
 	//////////////////////
@@ -1331,6 +1393,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         tenantResourceInit();
         tenantRequestedNumberInit();
         tenantRequestedIdInit();
+        tenantRequestedNameInit();
         requestApprovalsInit();
         createdByEmailInit();
         createdByUserIdInit();
@@ -1405,6 +1468,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return oTenantRequested.tenantRequestedNumber;
       case "tenantRequestedId":
         return oTenantRequested.tenantRequestedId;
+      case "tenantRequestedName":
+        return oTenantRequested.tenantRequestedName;
       case "requestApprovals":
         return oTenantRequested.requestApprovals;
       case "createdByEmail":
@@ -1492,6 +1557,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSetTenantRequestedNumber(siteRequest_, v);
     case "tenantRequestedId":
       return TenantRequested.staticSetTenantRequestedId(siteRequest_, v);
+    case "tenantRequestedName":
+      return TenantRequested.staticSetTenantRequestedName(siteRequest_, v);
     case "requestApprovals":
       return TenantRequested.staticSetRequestApprovals(siteRequest_, v);
     case "createdByEmail":
@@ -1568,6 +1635,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchTenantRequestedNumber(siteRequest_, (Integer)o);
     case "tenantRequestedId":
       return TenantRequested.staticSearchTenantRequestedId(siteRequest_, (String)o);
+    case "tenantRequestedName":
+      return TenantRequested.staticSearchTenantRequestedName(siteRequest_, (String)o);
     case "requestApprovals":
       return TenantRequested.staticSearchRequestApprovals(siteRequest_, (String)o);
     case "createdByEmail":
@@ -1614,6 +1683,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchStrTenantRequestedNumber(siteRequest_, (Integer)o);
     case "tenantRequestedId":
       return TenantRequested.staticSearchStrTenantRequestedId(siteRequest_, (String)o);
+    case "tenantRequestedName":
+      return TenantRequested.staticSearchStrTenantRequestedName(siteRequest_, (String)o);
     case "requestApprovals":
       return TenantRequested.staticSearchStrRequestApprovals(siteRequest_, (String)o);
     case "createdByEmail":
@@ -1660,6 +1731,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchFqTenantRequestedNumber(siteRequest_, o);
     case "tenantRequestedId":
       return TenantRequested.staticSearchFqTenantRequestedId(siteRequest_, o);
+    case "tenantRequestedName":
+      return TenantRequested.staticSearchFqTenantRequestedName(siteRequest_, o);
     case "requestApprovals":
       return TenantRequested.staticSearchFqRequestApprovals(siteRequest_, o);
     case "createdByEmail":
@@ -1739,6 +1812,12 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
           setTenantRequestedId((String)val);
         }
         saves.add("tenantRequestedId");
+        return val;
+      } else if("tenantrequestedname".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantRequestedName((String)val);
+        }
+        saves.add("tenantRequestedName");
         return val;
       } else if("createdbyemail".equals(varLower)) {
         if(val instanceof String) {
@@ -1841,6 +1920,12 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
           oTenantRequested.setTenantRequestedId(tenantRequestedId);
       }
 
+      if(saves.contains("tenantRequestedName")) {
+        String tenantRequestedName = (String)doc.get("tenantRequestedName_docvalues_string");
+        if(tenantRequestedName != null)
+          oTenantRequested.setTenantRequestedName(tenantRequestedName);
+      }
+
       List<String> requestApprovals = (List<String>)doc.get("requestApprovals_docvalues_strings");
       if(requestApprovals != null)
         oTenantRequested.requestApprovals.addAll(requestApprovals);
@@ -1923,6 +2008,9 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     if(tenantRequestedId != null) {
       doc.put("tenantRequestedId_docvalues_string", tenantRequestedId);
     }
+    if(tenantRequestedName != null) {
+      doc.put("tenantRequestedName_docvalues_string", tenantRequestedName);
+    }
     if(requestApprovals != null) {
       JsonArray l = new JsonArray();
       doc.put("requestApprovals_docvalues_strings", l);
@@ -1980,6 +2068,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "tenantRequestedNumber_docvalues_int";
       case "tenantRequestedId":
         return "tenantRequestedId_docvalues_string";
+      case "tenantRequestedName":
+        return "tenantRequestedName_docvalues_string";
       case "requestApprovals":
         return "requestApprovals_docvalues_strings";
       case "createdByEmail":
@@ -2019,6 +2109,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "tenantRequestedNumber_docvalues_int";
       case "tenantRequestedId":
         return "tenantRequestedId_docvalues_string";
+      case "tenantRequestedName":
+        return "tenantRequestedName_docvalues_string";
       case "requestApprovals":
         return "requestApprovals_docvalues_strings";
       case "createdByEmail":
@@ -2058,6 +2150,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "tenantRequestedNumber";
       case "tenantRequestedId_docvalues_string":
         return "tenantRequestedId";
+      case "tenantRequestedName_docvalues_string":
+        return "tenantRequestedName";
       case "requestApprovals_docvalues_strings":
         return "requestApprovals";
       case "createdByEmail_docvalues_string":
@@ -2115,6 +2209,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     oTenantRequested.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setTenantRequestedNumber(Optional.ofNullable(doc.get("tenantRequestedNumber_docvalues_int")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setTenantRequestedId(Optional.ofNullable(doc.get("tenantRequestedId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRequested.setTenantRequestedName(Optional.ofNullable(doc.get("tenantRequestedName_docvalues_string")).map(v -> v.toString()).orElse(null));
     Optional.ofNullable((List<?>)doc.get("requestApprovals_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
       oTenantRequested.addRequestApprovals(TenantRequested.staticSetRequestApprovals(siteRequest, v.toString()));
     });
@@ -2153,6 +2248,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         apiRequest.addVars("tenantRequestedNumber");
       if(!Objects.equals(tenantRequestedId, original.getTenantRequestedId()))
         apiRequest.addVars("tenantRequestedId");
+      if(!Objects.equals(tenantRequestedName, original.getTenantRequestedName()))
+        apiRequest.addVars("tenantRequestedName");
       if(!Objects.equals(requestApprovals, original.getRequestApprovals()))
         apiRequest.addVars("requestApprovals");
       if(!Objects.equals(createdByEmail, original.getCreatedByEmail()))
@@ -2191,6 +2288,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantRequestedNumber).map(v -> "tenantRequestedNumber: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(tenantRequestedId).map(v -> "tenantRequestedId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantRequestedName).map(v -> "tenantRequestedName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(requestApprovals).map(v -> "requestApprovals: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(createdByEmail).map(v -> "createdByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByUserId).map(v -> "createdByUserId: \"" + v + "\"\n" ).orElse(""));
@@ -2222,6 +2320,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static final String SET_tenantRequestedNumber = "setTenantRequestedNumber";
   public static final String VAR_tenantRequestedId = "tenantRequestedId";
   public static final String SET_tenantRequestedId = "setTenantRequestedId";
+  public static final String VAR_tenantRequestedName = "tenantRequestedName";
+  public static final String SET_tenantRequestedName = "setTenantRequestedName";
   public static final String VAR_requestApprovals = "requestApprovals";
   public static final String SET_requestApprovals = "setRequestApprovals";
   public static final String VAR_createdByEmail = "createdByEmail";
@@ -2262,6 +2362,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     vars.add(VAR_tenantResource);
     vars.add(VAR_tenantRequestedNumber);
     vars.add(VAR_tenantRequestedId);
+    vars.add(VAR_tenantRequestedName);
     vars.add(VAR_tenantDescription);
     vars.add(VAR_locked);
     Tenant.varsFqTenant(vars);
@@ -2282,7 +2383,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
   public static final String DISPLAY_NAME_tenantRequestedNumber = "tenant requested number";
   public static final String DISPLAY_NAME_tenantRequestedId = "tenant requested ID";
-  public static final String DISPLAY_NAME_requestApprovals = "Request approvals";
+  public static final String DISPLAY_NAME_tenantRequestedName = "tenant requested name";
+  public static final String DISPLAY_NAME_requestApprovals = "tenant approvals";
   public static final String DISPLAY_NAME_createdByEmail = "created by user email";
   public static final String DISPLAY_NAME_createdByUserId = "created by user ID";
   public static final String DISPLAY_NAME_createdByFullName = "created by user full name";
@@ -2306,7 +2408,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   @Override
   public String nameForClass() {
-    return tenantName;
+    return tenantRequestedName;
   }
 
   @Override
@@ -2339,6 +2441,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return patch ? SET_tenantRequestedNumber : VAR_tenantRequestedNumber;
     case VAR_tenantRequestedId:
       return patch ? SET_tenantRequestedId : VAR_tenantRequestedId;
+    case VAR_tenantRequestedName:
+      return patch ? SET_tenantRequestedName : VAR_tenantRequestedName;
     case VAR_requestApprovals:
       return patch ? SET_requestApprovals : VAR_requestApprovals;
     case VAR_createdByEmail:
@@ -2381,6 +2485,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return DISPLAY_NAME_tenantRequestedNumber;
     case VAR_tenantRequestedId:
       return DISPLAY_NAME_tenantRequestedId;
+    case VAR_tenantRequestedName:
+      return DISPLAY_NAME_tenantRequestedName;
     case VAR_requestApprovals:
       return DISPLAY_NAME_requestApprovals;
     case VAR_createdByEmail:
@@ -2422,8 +2528,10 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return "A unique number for this change request for this tenant. ";
     case VAR_tenantRequestedId:
       return "The unique ID for this tenant requested. ";
+    case VAR_tenantRequestedName:
+      return "The name of this tenant requested model";
     case VAR_requestApprovals:
-      return "A list of request approvals for this request. ";
+      return "A list of Tenant approvals for this request. ";
     case VAR_createdByEmail:
       return "The email address for the user who created the change request. ";
     case VAR_createdByUserId:
@@ -2461,6 +2569,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return "Integer";
     case VAR_tenantRequestedId:
       return "String";
+    case VAR_tenantRequestedName:
+      return "String";
     case VAR_requestApprovals:
       return "List";
     case VAR_createdByEmail:
@@ -2490,10 +2600,10 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   public static Integer htmColumnTenantRequested(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 1;
-    case VAR_tenantResource:
+    case VAR_tenantRequestedId:
       return 0;
+    case VAR_tenantRequestedName:
+      return 1;
     case VAR_tenantDescription:
       return 3;
       default:

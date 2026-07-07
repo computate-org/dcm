@@ -1,7 +1,7 @@
-package org.computate.dcm.model.eda.requestapproval;
+package org.computate.dcm.model.eda.tenant.approval;
 
 import org.computate.dcm.request.SiteRequest;
-import org.computate.dcm.model.eda.requestapproval.RequestApprovalGenPage;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalGenPage;
 import org.computate.dcm.model.BaseModel;
 import org.computate.vertx.api.ApiRequest;
 import org.computate.dcm.config.ConfigKeys;
@@ -48,22 +48,22 @@ import org.computate.search.tool.SearchTool;
  * <li><p>
  *   You can add a class comment <kbd><b>Api: true</b></kbd> if you wish to GET, POST, PATCH or PUT these  objects in a RESTful API. 
  * </p>
- * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class RequestApprovalPageGen into the class RequestApprovalPage. 
+ * </li><li>You can add a class comment "{@inheritDoc}" if you wish to inherit the helpful inherited class comments from class TenantApprovalPageGen into the class TenantApprovalPage. 
  * </li>
- * <h3>About the RequestApprovalPage class and it's generated class RequestApprovalPageGen&lt;RequestApprovalGenPage&gt;: </h3>extends RequestApprovalPageGen
+ * <h3>About the TenantApprovalPage class and it's generated class TenantApprovalPageGen&lt;TenantApprovalGenPage&gt;: </h3>extends TenantApprovalPageGen
  * <p>
- * This Java class extends a generated Java class RequestApprovalPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
+ * This Java class extends a generated Java class TenantApprovalPageGen built by the <a href="https://github.com/computate-org/computate">https://github.com/computate-org/computate</a> project. 
  * Whenever this Java class is modified or touched, the watch service installed as described in the README, indexes all the information about this Java class in a local Apache Solr Search Engine. 
  * If you are running the service, you can see the indexed data about this Java Class here: 
  * </p>
- * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApprovalPage">Find the class RequestApprovalPage in Solr. </a></p>
+ * <p><a href="https://solr.apps-crc.testing/solr/computate/select?q=*:*&fq=partEstClasse_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApprovalPage">Find the class TenantApprovalPage in Solr. </a></p>
  * <p>
  * The extended class ending with "Gen" did not exist at first, but was automatically created by the same watch service based on the data retrieved from the local Apache Server search engine. 
  * The extended class contains many generated fields, getters, setters, initialization code, and helper methods to help build a website and API fast, reactive, and scalable. 
  * </p>
- * extends RequestApprovalPageGen<RequestApprovalGenPage>
- * <p>This <code>class RequestApprovalPage extends RequestApprovalPageGen&lt;RequestApprovalGenPage&gt;</code>, which means it extends a newly generated RequestApprovalPageGen. 
- * The generated <code>class RequestApprovalPageGen extends RequestApprovalGenPage</code> which means that RequestApprovalPage extends RequestApprovalPageGen which extends RequestApprovalGenPage. 
+ * extends TenantApprovalPageGen<TenantApprovalGenPage>
+ * <p>This <code>class TenantApprovalPage extends TenantApprovalPageGen&lt;TenantApprovalGenPage&gt;</code>, which means it extends a newly generated TenantApprovalPageGen. 
+ * The generated <code>class TenantApprovalPageGen extends TenantApprovalGenPage</code> which means that TenantApprovalPage extends TenantApprovalPageGen which extends TenantApprovalGenPage. 
  * This generated inheritance is a powerful feature that allows a lot of boiler plate code to be created for you automatically while still preserving inheritance through the power of Java Generic classes. 
  * </p>
  * <h2>
@@ -74,7 +74,7 @@ import org.computate.search.tool.SearchTool;
  * <h2>Color: null</h2>
  * <h2>Indexed: true</h2>
  * <h2>{@inheritDoc}</h2>
- * <p>By adding a class comment "{@inheritDoc}", the RequestApprovalPage class will inherit the helpful inherited class comments from the super class RequestApprovalPageGen. 
+ * <p>By adding a class comment "{@inheritDoc}", the TenantApprovalPage class will inherit the helpful inherited class comments from the super class TenantApprovalPageGen. 
  * </p>
  * <h2>
  *   Rows: 10
@@ -107,7 +107,7 @@ import org.computate.search.tool.SearchTool;
  * <p>
  *   This class contains a comment <kbd><b>Promise: true</b></kbd>
  *   Sometimes a Java class must be initialized asynchronously when it involves calling a blocking API. 
- *   This means that the RequestApprovalPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
+ *   This means that the TenantApprovalPage Java class has promiseDeep methods which must be initialized asynchronously as a Vert.x Promise  instead of initDeep methods which are a simple non-asynchronous method. 
  * </p>
  * <p>
  *   Adding protected void methods beginning with an underscore with a Promise as the only parameter will automatically set `Promise: true`. 
@@ -128,15 +128,15 @@ import org.computate.search.tool.SearchTool;
  * </p>
  * <h2>AName.enUS: null</h2>
  * <p>
- * Delete the class RequestApprovalPage in Solr: 
+ * Delete the class TenantApprovalPage in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApprovalPage&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApprovalPage&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
- * Delete  the package org.computate.dcm.model.eda.requestapproval in Solr: 
+ * Delete  the package org.computate.dcm.model.eda.tenant.approval in Solr: 
  * <pre>
- * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval&lt;/query&gt;&lt;/delete&gt;'
+ * curl -k 'https://solr.apps-crc.testing/solr/computate/update?commitWithin=1000&amp;overwrite=true&amp;wt=json' -X POST -H 'Content-type: text/xml' -u "admin:$(oc -n solr get secret/solr-solrcloud-security-bootstrap -o jsonpath={.data.admin} | base64 -d)" --data-raw '&lt;delete&gt;&lt;query&gt;classeNomEnsemble_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval&lt;/query&gt;&lt;/delete&gt;'
  * </pre>
  * </p>
  * <p>
@@ -147,25 +147,25 @@ import org.computate.search.tool.SearchTool;
  * </p>
  * Generated: true
  **/
-public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage {
-  protected static final Logger LOG = LoggerFactory.getLogger(RequestApprovalPage.class);
+public abstract class TenantApprovalPageGen<DEV> extends TenantApprovalGenPage {
+  protected static final Logger LOG = LoggerFactory.getLogger(TenantApprovalPage.class);
 
   //////////////
   // initDeep //
   //////////////
 
-  public Future<RequestApprovalPageGen<DEV>> promiseDeepRequestApprovalPage(SiteRequest siteRequest_) {
+  public Future<TenantApprovalPageGen<DEV>> promiseDeepTenantApprovalPage(SiteRequest siteRequest_) {
     if(this.siteRequest_ == null)
       setSiteRequest_(siteRequest_);
-    return promiseDeepRequestApprovalPage();
+    return promiseDeepTenantApprovalPage();
   }
 
-  public Future<RequestApprovalPageGen<DEV>> promiseDeepRequestApprovalPage() {
-    Promise<RequestApprovalPageGen<DEV>> promise = Promise.promise();
+  public Future<TenantApprovalPageGen<DEV>> promiseDeepTenantApprovalPage() {
+    Promise<TenantApprovalPageGen<DEV>> promise = Promise.promise();
     Promise<Void> promise2 = Promise.promise();
-    promiseRequestApprovalPage(promise2);
+    promiseTenantApprovalPage(promise2);
     promise2.future().onSuccess(a -> {
-      super.promiseDeepRequestApprovalGenPage(siteRequest_).onSuccess(b -> {
+      super.promiseDeepTenantApprovalGenPage(siteRequest_).onSuccess(b -> {
         promise.complete(this);
       }).onFailure(ex -> {
         promise.fail(ex);
@@ -176,7 +176,7 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     return promise.future();
   }
 
-  public Future<Void> promiseRequestApprovalPage(Promise<Void> promise) {
+  public Future<Void> promiseTenantApprovalPage(Promise<Void> promise) {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
@@ -193,20 +193,20 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     return promise.future();
   }
 
-  @Override public Future<? extends RequestApprovalPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
-    return promiseDeepRequestApprovalPage(siteRequest_);
+  @Override public Future<? extends TenantApprovalPageGen<DEV>> promiseDeepForClass(SiteRequest siteRequest_) {
+    return promiseDeepTenantApprovalPage(siteRequest_);
   }
 
   /////////////////
   // siteRequest //
   /////////////////
 
-  public void siteRequestRequestApprovalPage(SiteRequest siteRequest_) {
-      super.siteRequestRequestApprovalGenPage(siteRequest_);
+  public void siteRequestTenantApprovalPage(SiteRequest siteRequest_) {
+      super.siteRequestTenantApprovalGenPage(siteRequest_);
   }
 
   public void siteRequestForClass(SiteRequest siteRequest_) {
-    siteRequestRequestApprovalPage(siteRequest_);
+    siteRequestTenantApprovalPage(siteRequest_);
   }
 
   /////////////
@@ -218,7 +218,7 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = obtainRequestApprovalPage(v);
+        o = obtainTenantApprovalPage(v);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.obtainForClass(v);
@@ -230,11 +230,11 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     }
     return o;
   }
-  public Object obtainRequestApprovalPage(String var) {
-    RequestApprovalPage oRequestApprovalPage = (RequestApprovalPage)this;
+  public Object obtainTenantApprovalPage(String var) {
+    TenantApprovalPage oTenantApprovalPage = (TenantApprovalPage)this;
     switch(var) {
       default:
-        return super.obtainRequestApprovalGenPage(var);
+        return super.obtainTenantApprovalGenPage(var);
     }
   }
 
@@ -247,7 +247,7 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     Object o = null;
     for(String v : vars) {
       if(o == null)
-        o = relateRequestApprovalPage(v, val);
+        o = relateTenantApprovalPage(v, val);
       else if(o instanceof BaseModel) {
         BaseModel baseModel = (BaseModel)o;
         o = baseModel.relateForClass(v, val);
@@ -255,11 +255,11 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     }
     return o != null;
   }
-  public Object relateRequestApprovalPage(String var, Object val) {
-    RequestApprovalPage oRequestApprovalPage = (RequestApprovalPage)this;
+  public Object relateTenantApprovalPage(String var, Object val) {
+    TenantApprovalPage oTenantApprovalPage = (TenantApprovalPage)this;
     switch(var) {
       default:
-        return super.relateRequestApprovalGenPage(var, val);
+        return super.relateTenantApprovalGenPage(var, val);
     }
   }
 
@@ -267,13 +267,13 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
   // staticSet //
   ///////////////
 
-  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, RequestApprovalPage o) {
-    return staticSetRequestApprovalPage(entityVar,  siteRequest_, v, o);
+  public static Object staticSetForClass(String entityVar, SiteRequest siteRequest_, String v, TenantApprovalPage o) {
+    return staticSetTenantApprovalPage(entityVar,  siteRequest_, v, o);
   }
-  public static Object staticSetRequestApprovalPage(String entityVar, SiteRequest siteRequest_, String v, RequestApprovalPage o) {
+  public static Object staticSetTenantApprovalPage(String entityVar, SiteRequest siteRequest_, String v, TenantApprovalPage o) {
     switch(entityVar) {
       default:
-        return RequestApprovalGenPage.staticSetRequestApprovalGenPage(entityVar,  siteRequest_, v, o);
+        return TenantApprovalGenPage.staticSetTenantApprovalGenPage(entityVar,  siteRequest_, v, o);
     }
   }
 
@@ -282,12 +282,12 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
   //////////////////
 
   public static Object staticSearchForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchRequestApprovalPage(entityVar,  siteRequest_, o);
+    return staticSearchTenantApprovalPage(entityVar,  siteRequest_, o);
   }
-  public static Object staticSearchRequestApprovalPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static Object staticSearchTenantApprovalPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return RequestApprovalGenPage.staticSearchRequestApprovalGenPage(entityVar,  siteRequest_, o);
+        return TenantApprovalGenPage.staticSearchTenantApprovalGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -296,12 +296,12 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
   ///////////////////
 
   public static String staticSearchStrForClass(String entityVar, SiteRequest siteRequest_, Object o) {
-    return staticSearchStrRequestApprovalPage(entityVar,  siteRequest_, o);
+    return staticSearchStrTenantApprovalPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchStrRequestApprovalPage(String entityVar, SiteRequest siteRequest_, Object o) {
+  public static String staticSearchStrTenantApprovalPage(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
       default:
-        return RequestApprovalGenPage.staticSearchStrRequestApprovalGenPage(entityVar,  siteRequest_, o);
+        return TenantApprovalGenPage.staticSearchStrTenantApprovalGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -310,12 +310,12 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
   //////////////////
 
   public static String staticSearchFqForClass(String entityVar, SiteRequest siteRequest_, String o) {
-    return staticSearchFqRequestApprovalPage(entityVar,  siteRequest_, o);
+    return staticSearchFqTenantApprovalPage(entityVar,  siteRequest_, o);
   }
-  public static String staticSearchFqRequestApprovalPage(String entityVar, SiteRequest siteRequest_, String o) {
+  public static String staticSearchFqTenantApprovalPage(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
       default:
-        return RequestApprovalGenPage.staticSearchFqRequestApprovalGenPage(entityVar,  siteRequest_, o);
+        return TenantApprovalGenPage.staticSearchFqTenantApprovalGenPage(entityVar,  siteRequest_, o);
     }
   }
 
@@ -329,18 +329,18 @@ public abstract class RequestApprovalPageGen<DEV> extends RequestApprovalGenPage
     return sb.toString();
   }
 
-  public static final String CLASS_SIMPLE_NAME = "RequestApprovalPage";
-  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.requestapproval.RequestApprovalPage";
+  public static final String CLASS_SIMPLE_NAME = "TenantApprovalPage";
+  public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.tenant.approval.TenantApprovalPage";
   public static final String CLASS_AUTH_RESOURCE = "";
 
 
   public static String displayNameForClass(String var) {
-    return RequestApprovalPage.displayNameRequestApprovalPage(var);
+    return TenantApprovalPage.displayNameTenantApprovalPage(var);
   }
-  public static String displayNameRequestApprovalPage(String var) {
+  public static String displayNameTenantApprovalPage(String var) {
     switch(var) {
     default:
-      return RequestApprovalGenPage.displayNameRequestApprovalGenPage(var);
+      return TenantApprovalGenPage.displayNameTenantApprovalGenPage(var);
     }
   }
 }

@@ -6646,7 +6646,7 @@ paths:
             type: array
             items:
               type: string
-            default: ["approvalId", "approved", "modelType", "modelResource"]
+            default: ["approved", "modelType", "modelResource", "approvalId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -7114,7 +7114,7 @@ paths:
             application/json; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/DELETERequestApprovalResponse'
-  /en-us/edit/approval/{approvalResource}:
+  /en-us/edit/approval/{approvalId}:
     get:
       operationId: editpageRequestApproval
       x-vertx-event-bus: dcm-enUS-RequestApproval
@@ -7156,7 +7156,7 @@ paths:
             type: array
             items:
                 type: string
-        - name: approvalResource
+        - name: approvalId
           in: path
           description: >+
           required: true
@@ -7210,7 +7210,7 @@ paths:
             type: array
             items:
               type: string
-            default: ["approvalId", "approved", "modelType", "modelResource"]
+            default: ["approved", "modelType", "modelResource", "approvalId"]
       responses:
         '200':
           description: >+
@@ -7359,7 +7359,7 @@ paths:
             type: array
             items:
               type: string
-            default: ["approvalId", "approved", "modelType", "modelResource"]
+            default: ["approved", "modelType", "modelResource", "approvalId"]
         - in: query
           name: d
           description: 'The radial distance, usually in kilometers. '
@@ -7412,6 +7412,913 @@ paths:
             text/html; charset=utf-8:
               schema:
                 $ref: '#/components/schemas/SearchPageRequestApprovalResponse'
+  /en-us/api/approval/tenant:
+    get:
+      operationId: searchTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: 'The field list parameter limits the information included in a query response to a specified list of fields. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: 'The sort parameter arranges search results in either ascending (asc) or descending (desc) order. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: 'The start parameter specifies an offset into a query result set and instructs Solr to begin displaying results from this offset. '
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: 'The rows parameter specifies the maximum number of documents from the complete result set that Solr should return to the client at one time. '
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: facet
+          description: 'The facet parameter enables facet counts in the query response. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: facet.range.start
+          description: 'The facet.range.start parameter specifies the lower bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: 'The facet.range.end specifies the upper bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: 'The span of each range expressed as a value to be added to the lower bound. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: 'The facet.pivot parameter defines the fields to use for the pivot. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: 'The facet.range parameter defines the field for which Solr should create range facets. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: 'The facet.field parameter identifies a field that should be treated as a facet. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: ["tenantId", "approved", "approvalId"]
+        - in: query
+          name: d
+          description: 'The radial distance, usually in kilometers. '
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: pt
+          description: 'he center point using the format lat,lon if latitude & longitude. Otherwise, x,y for PointType or x y for RPT field types. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sfield
+          description: 'A spatial indexed field. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: score
+          description: '(Advanced option; not supported by LatLonType (deprecated) or PointType) If the query is used in a scoring context (e.g., as the main query in q), this local parameter determines what scores will be produced. Valid values are: none, kilometers, miles, degrees, distance, recipDistance, overlapRatio, area, area2D'
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: distanceUnits
+          description: 'This is used to specify the units for distance measurements used throughout the use of this field. This can be degrees, kilometers or miles. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: stats
+          description: 'The Stats component returns simple statistics for numeric, string, and date fields within the document set. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: stats.field
+          description: 'Specifies a field for which statistics should be generated. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchTenantApprovalResponse'
+    patch:
+      operationId: patchTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PATCHTenantApprovalRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PATCHTenantApprovalResponse'
+    post:
+      operationId: postTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/POSTTenantApprovalRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/POSTTenantApprovalResponse'
+    delete:
+      operationId: deletefilterTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: commitWithin
+          description: 'The number of milliseconds to commit the record to Solr. '
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: softCommit
+          description: 'Does a soft commit for the record in Solr immediately. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: rows
+          description: 'The rows parameter specifies the maximum number of documents from the complete result set that Solr should return to the client at one time. '
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DELETEFilterTenantApprovalResponse'
+  /en-us/api/approval/tenant-import:
+    put:
+      operationId: putimportTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        description: >+
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PUTImportTenantApprovalRequest'
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/PUTImportTenantApprovalResponse'
+  /en-us/api/approval/tenant/{approvalId}:
+    get:
+      operationId: getTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - name: approvalId
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/GETTenantApprovalResponse'
+    delete:
+      operationId: deleteTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - name: approvalId
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: commitWithin
+          description: 'The number of milliseconds to commit the record to Solr. '
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: softCommit
+          description: 'Does a soft commit for the record in Solr immediately. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: rows
+          description: 'The rows parameter specifies the maximum number of documents from the complete result set that Solr should return to the client at one time. '
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+      responses:
+        '200':
+          description: >+
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/DELETETenantApprovalResponse'
+  /en-us/edit/approval/tenant/{approvalId}:
+    get:
+      operationId: editpageTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - name: approvalId
+          in: path
+          description: >+
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: facet.range.start
+          description: 'The facet.range.start parameter specifies the lower bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: 'The facet.range.end specifies the upper bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: 'The span of each range expressed as a value to be added to the lower bound. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: 'The facet.pivot parameter defines the fields to use for the pivot. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: 'The facet.range parameter defines the field for which Solr should create range facets. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: 'The facet.field parameter identifies a field that should be treated as a facet. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: ["tenantId", "approved", "approvalId"]
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/EditPageTenantApprovalResponse'
+  /en-us/search/approval/tenant:
+    get:
+      operationId: searchpageTenantApproval
+      x-vertx-event-bus: dcm-enUS-TenantApproval
+      security:
+        - openIdConnect:
+          - openid
+          - profile
+          - customerProfileId
+      description: >+
+      summary: >+
+      tags:
+        - tenant approvals
+      parameters:
+        - name: vertx-web.session
+          in: cookie
+          schema:
+            type: string
+        - name: sessionIdBefore
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_FONT_SIZE
+          in: cookie
+          schema:
+            type: string
+        - name: SITE_THEME
+          in: cookie
+          schema:
+            type: string
+        - name: WEB_COMPONENTS_THEME
+          in: cookie
+          schema:
+            type: string
+        - in: query
+          name: var
+          description: 'The var parameters are additional optional variables and values to pass into the application. '
+          required: false
+          schema:
+            type: array
+            items:
+                type: string
+        - in: query
+          name: q
+          description: 'The query parameter defines a query using standard query syntax. This parameter is mandatory.'
+          required: false
+          schema:
+            type: string
+            default: '*:*'
+        - in: query
+          name: fq
+          description: 'The filter query parameter defines a query that can be used to restrict the superset of documents that can be returned, without influencing score. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: fl
+          description: 'The field list parameter limits the information included in a query response to a specified list of fields. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          description: 'The sort parameter arranges search results in either ascending (asc) or descending (desc) order. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: start
+          description: 'The start parameter specifies an offset into a query result set and instructs Solr to begin displaying results from this offset. '
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: rows
+          description: 'The rows parameter specifies the maximum number of documents from the complete result set that Solr should return to the client at one time. '
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+        - in: query
+          name: facet
+          description: 'The facet parameter enables facet counts in the query response. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: facet.range.start
+          description: 'The facet.range.start parameter specifies the lower bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.end
+          description: 'The facet.range.end specifies the upper bound of the ranges. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range.gap
+          description: 'The span of each range expressed as a value to be added to the lower bound. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.pivot
+          description: 'The facet.pivot parameter defines the fields to use for the pivot. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.range
+          description: 'The facet.range parameter defines the field for which Solr should create range facets. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: facet.field
+          description: 'The facet.field parameter identifies a field that should be treated as a facet. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: ["tenantId", "approved", "approvalId"]
+        - in: query
+          name: d
+          description: 'The radial distance, usually in kilometers. '
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: pt
+          description: 'he center point using the format lat,lon if latitude & longitude. Otherwise, x,y for PointType or x y for RPT field types. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sfield
+          description: 'A spatial indexed field. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: score
+          description: '(Advanced option; not supported by LatLonType (deprecated) or PointType) If the query is used in a scoring context (e.g., as the main query in q), this local parameter determines what scores will be produced. Valid values are: none, kilometers, miles, degrees, distance, recipDistance, overlapRatio, area, area2D'
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: distanceUnits
+          description: 'This is used to specify the units for distance measurements used throughout the use of this field. This can be degrees, kilometers or miles. '
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: stats
+          description: 'The Stats component returns simple statistics for numeric, string, and date fields within the document set. '
+          required: false
+          schema:
+            type: boolean
+        - in: query
+          name: stats.field
+          description: 'Specifies a field for which statistics should be generated. '
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: >+
+          content:
+            text/html; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/SearchPageTenantApprovalResponse'
   /en-us/api/intent/tenant:
     get:
       operationId: searchTenantIntent
@@ -15012,6 +15919,66 @@ components:
         text/html; charset=utf-8:
           schema:
             $ref: '#/components/schemas/SearchPageRequestApprovalResponse'
+    SearchTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchTenantApprovalResponse'
+    PATCHTenantApprovalRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PATCHTenantApprovalRequest'
+    PATCHTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PATCHTenantApprovalResponse'
+    POSTTenantApprovalRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/POSTTenantApprovalRequest'
+    POSTTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/POSTTenantApprovalResponse'
+    DELETEFilterTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/DELETEFilterTenantApprovalResponse'
+    PUTImportTenantApprovalRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PUTImportTenantApprovalRequest'
+    PUTImportTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/PUTImportTenantApprovalResponse'
+    GETTenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/GETTenantApprovalResponse'
+    DELETETenantApprovalResponse:
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/DELETETenantApprovalResponse'
+    EditPageTenantApprovalResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/EditPageTenantApprovalResponse'
+    SearchPageTenantApprovalResponse:
+      content:
+        text/html; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/SearchPageTenantApprovalResponse'
     SearchTenantIntentResponse:
       content:
         application/json; charset=utf-8:
@@ -19845,23 +20812,23 @@ components:
               items:
                 type: object
                 properties:
-                  approvalName:
-                    type: string
-                  approvalId:
-                    type: string
                   approvedByEmail:
                     type: string
                   approvedByUserId:
                     type: string
                   approvedByFullName:
                     type: string
-                  approvalNote:
-                    type: string
                   approved:
                     type: boolean
+                  approvalNote:
+                    type: string
                   modelType:
                     type: string
                   modelResource:
+                    type: string
+                  approvalName:
+                    type: string
+                  approvalId:
                     type: string
                   approvalTitle:
                     type: string
@@ -19869,20 +20836,6 @@ components:
       allOf:
         - type: object
           properties:
-            setApprovalName:
-              type: string
-              nullable: true
-            removeApprovalName:
-              type: string
-            removeAllApprovalName:
-              type: string
-            setApprovalId:
-              type: string
-              nullable: true
-            removeApprovalId:
-              type: string
-            removeAllApprovalId:
-              type: string
             setApprovedByEmail:
               type: string
               nullable: true
@@ -19904,13 +20857,6 @@ components:
               type: string
             removeAllApprovedByFullName:
               type: string
-            setApprovalNote:
-              type: string
-              nullable: true
-            removeApprovalNote:
-              type: string
-            removeAllApprovalNote:
-              type: string
             setApproved:
               type: boolean
               nullable: true
@@ -19918,6 +20864,13 @@ components:
               type: boolean
             removeAllApproved:
               type: boolean
+            setApprovalNote:
+              type: string
+              nullable: true
+            removeApprovalNote:
+              type: string
+            removeAllApprovalNote:
+              type: string
             setModelType:
               type: string
               nullable: true
@@ -19931,6 +20884,20 @@ components:
             removeModelResource:
               type: string
             removeAllModelResource:
+              type: string
+            setApprovalName:
+              type: string
+              nullable: true
+            removeApprovalName:
+              type: string
+            removeAllApprovalName:
+              type: string
+            setApprovalId:
+              type: string
+              nullable: true
+            removeApprovalId:
+              type: string
+            removeAllApprovalId:
               type: string
             setApprovalTitle:
               type: string
@@ -19943,6 +20910,55 @@ components:
       allOf:
         - type: object
           properties:
+            setApprovedByEmail:
+              type: string
+              nullable: true
+            removeApprovedByEmail:
+              type: string
+            removeAllApprovedByEmail:
+              type: string
+            setApprovedByUserId:
+              type: string
+              nullable: true
+            removeApprovedByUserId:
+              type: string
+            removeAllApprovedByUserId:
+              type: string
+            setApprovedByFullName:
+              type: string
+              nullable: true
+            removeApprovedByFullName:
+              type: string
+            removeAllApprovedByFullName:
+              type: string
+            setApproved:
+              type: boolean
+              nullable: true
+            removeApproved:
+              type: boolean
+            removeAllApproved:
+              type: boolean
+            setApprovalNote:
+              type: string
+              nullable: true
+            removeApprovalNote:
+              type: string
+            removeAllApprovalNote:
+              type: string
+            setModelType:
+              type: string
+              nullable: true
+            removeModelType:
+              type: string
+            removeAllModelType:
+              type: string
+            setModelResource:
+              type: string
+              nullable: true
+            removeModelResource:
+              type: string
+            removeAllModelResource:
+              type: string
             setApprovalName:
               type: string
               nullable: true
@@ -19956,6 +20972,275 @@ components:
             removeApprovalId:
               type: string
             removeAllApprovalId:
+              type: string
+            setApprovalTitle:
+              type: string
+              nullable: true
+            removeApprovalTitle:
+              type: string
+            removeAllApprovalTitle:
+              type: string
+    POSTRequestApprovalRequest:
+      allOf:
+        - type: object
+          properties:
+            approvedByEmail:
+              type: string
+            approvedByUserId:
+              type: string
+            approvedByFullName:
+              type: string
+            approved:
+              type: boolean
+            approvalNote:
+              type: string
+            modelType:
+              type: string
+            modelResource:
+              type: string
+            approvalName:
+              type: string
+            approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    POSTRequestApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            approvedByEmail:
+              type: string
+            approvedByUserId:
+              type: string
+            approvedByFullName:
+              type: string
+            approved:
+              type: boolean
+            approvalNote:
+              type: string
+            modelType:
+              type: string
+            modelResource:
+              type: string
+            approvalName:
+              type: string
+            approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    DELETEFilterRequestApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            approvedByEmail:
+              type: string
+            approvedByUserId:
+              type: string
+            approvedByFullName:
+              type: string
+            approved:
+              type: boolean
+            approvalNote:
+              type: string
+            modelType:
+              type: string
+            modelResource:
+              type: string
+            approvalName:
+              type: string
+            approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    PUTImportRequestApprovalRequest:
+      allOf:
+        - type: object
+          properties:
+            list:
+              type: array
+              items:
+                type: object
+                properties:
+                  approvedByEmail:
+                    type: string
+                  approvedByUserId:
+                    type: string
+                  approvedByFullName:
+                    type: string
+                  approved:
+                    type: boolean
+                  approvalNote:
+                    type: string
+                  modelType:
+                    type: string
+                  modelResource:
+                    type: string
+                  approvalName:
+                    type: string
+                  approvalId:
+                    type: string
+                  approvalTitle:
+                    type: string
+    PUTImportRequestApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+                  approvedByEmail:
+                    type: string
+                  approvedByUserId:
+                    type: string
+                  approvedByFullName:
+                    type: string
+                  approved:
+                    type: boolean
+                  approvalNote:
+                    type: string
+                  modelType:
+                    type: string
+                  modelResource:
+                    type: string
+                  approvalName:
+                    type: string
+                  approvalId:
+                    type: string
+                  approvalTitle:
+                    type: string
+    GETRequestApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            approvedByEmail:
+              type: string
+            approvedByUserId:
+              type: string
+            approvedByFullName:
+              type: string
+            approved:
+              type: boolean
+            approvalNote:
+              type: string
+            modelType:
+              type: string
+            modelResource:
+              type: string
+            approvalName:
+              type: string
+            approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    DELETERequestApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            approvedByEmail:
+              type: string
+            approvedByUserId:
+              type: string
+            approvedByFullName:
+              type: string
+            approved:
+              type: boolean
+            approvalNote:
+              type: string
+            modelType:
+              type: string
+            modelResource:
+              type: string
+            approvalName:
+              type: string
+            approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    EditPageRequestApprovalResponse:
+      allOf:
+        - type: string
+    SearchPageRequestApprovalResponse:
+      allOf:
+        - type: string
+    SearchTenantApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            startNum:
+              type: integer
+              minimum: 0
+            foundNum:
+              type: integer
+              minimum: 0
+            returnedNum:
+              type: integer
+              minimum: 0
+            list:
+              type: array
+              items:
+                type: object
+                properties:
+                  tenantName:
+                    type: string
+                  tenantId:
+                    type: string
+                  tenantRequestedId:
+                    type: string
+                  tenantResource:
+                    type: string
+                  tenantRealizedNumber:
+                    type: string
+                  approvedByEmail:
+                    type: string
+                  approvedByUserId:
+                    type: string
+                  approvedByFullName:
+                    type: string
+                  approved:
+                    type: boolean
+                  approvalNote:
+                    type: string
+                  approvalName:
+                    type: string
+                  approvalId:
+                    type: string
+                  approvalTitle:
+                    type: string
+    PATCHTenantApprovalRequest:
+      allOf:
+        - type: object
+          properties:
+            setTenantName:
+              type: string
+              nullable: true
+            removeTenantName:
+              type: string
+            removeAllTenantName:
+              type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setTenantRequestedId:
+              type: string
+              nullable: true
+            removeTenantRequestedId:
+              type: string
+            removeAllTenantRequestedId:
+              type: string
+            setTenantResource:
+              type: string
+              nullable: true
+            removeTenantResource:
+              type: string
+            removeAllTenantResource:
+              type: string
+            setTenantRealizedNumber:
+              type: string
+              nullable: true
+            removeTenantRealizedNumber:
+              type: string
+            removeAllTenantRealizedNumber:
               type: string
             setApprovedByEmail:
               type: string
@@ -19978,13 +21263,6 @@ components:
               type: string
             removeAllApprovedByFullName:
               type: string
-            setApprovalNote:
-              type: string
-              nullable: true
-            removeApprovalNote:
-              type: string
-            removeAllApprovalNote:
-              type: string
             setApproved:
               type: boolean
               nullable: true
@@ -19992,19 +21270,26 @@ components:
               type: boolean
             removeAllApproved:
               type: boolean
-            setModelType:
+            setApprovalNote:
               type: string
               nullable: true
-            removeModelType:
+            removeApprovalNote:
               type: string
-            removeAllModelType:
+            removeAllApprovalNote:
               type: string
-            setModelResource:
+            setApprovalName:
               type: string
               nullable: true
-            removeModelResource:
+            removeApprovalName:
               type: string
-            removeAllModelResource:
+            removeAllApprovalName:
+              type: string
+            setApprovalId:
+              type: string
+              nullable: true
+            removeApprovalId:
+              type: string
+            removeAllApprovalId:
               type: string
             setApprovalTitle:
               type: string
@@ -20013,13 +21298,114 @@ components:
               type: string
             removeAllApprovalTitle:
               type: string
-    POSTRequestApprovalRequest:
+    PATCHTenantApprovalResponse:
       allOf:
         - type: object
           properties:
-            approvalName:
+            setTenantName:
               type: string
-            approvalId:
+              nullable: true
+            removeTenantName:
+              type: string
+            removeAllTenantName:
+              type: string
+            setTenantId:
+              type: string
+              nullable: true
+            removeTenantId:
+              type: string
+            removeAllTenantId:
+              type: string
+            setTenantRequestedId:
+              type: string
+              nullable: true
+            removeTenantRequestedId:
+              type: string
+            removeAllTenantRequestedId:
+              type: string
+            setTenantResource:
+              type: string
+              nullable: true
+            removeTenantResource:
+              type: string
+            removeAllTenantResource:
+              type: string
+            setTenantRealizedNumber:
+              type: string
+              nullable: true
+            removeTenantRealizedNumber:
+              type: string
+            removeAllTenantRealizedNumber:
+              type: string
+            setApprovedByEmail:
+              type: string
+              nullable: true
+            removeApprovedByEmail:
+              type: string
+            removeAllApprovedByEmail:
+              type: string
+            setApprovedByUserId:
+              type: string
+              nullable: true
+            removeApprovedByUserId:
+              type: string
+            removeAllApprovedByUserId:
+              type: string
+            setApprovedByFullName:
+              type: string
+              nullable: true
+            removeApprovedByFullName:
+              type: string
+            removeAllApprovedByFullName:
+              type: string
+            setApproved:
+              type: boolean
+              nullable: true
+            removeApproved:
+              type: boolean
+            removeAllApproved:
+              type: boolean
+            setApprovalNote:
+              type: string
+              nullable: true
+            removeApprovalNote:
+              type: string
+            removeAllApprovalNote:
+              type: string
+            setApprovalName:
+              type: string
+              nullable: true
+            removeApprovalName:
+              type: string
+            removeAllApprovalName:
+              type: string
+            setApprovalId:
+              type: string
+              nullable: true
+            removeApprovalId:
+              type: string
+            removeAllApprovalId:
+              type: string
+            setApprovalTitle:
+              type: string
+              nullable: true
+            removeApprovalTitle:
+              type: string
+            removeAllApprovalTitle:
+              type: string
+    POSTTenantApprovalRequest:
+      allOf:
+        - type: object
+          properties:
+            tenantName:
+              type: string
+            tenantId:
+              type: string
+            tenantRequestedId:
+              type: string
+            tenantResource:
+              type: string
+            tenantRealizedNumber:
               type: string
             approvedByEmail:
               type: string
@@ -20027,23 +21413,29 @@ components:
               type: string
             approvedByFullName:
               type: string
-            approvalNote:
-              type: string
             approved:
               type: boolean
-            modelType:
+            approvalNote:
               type: string
-            modelResource:
-              type: string
-            approvalTitle:
-              type: string
-    POSTRequestApprovalResponse:
-      allOf:
-        - type: object
-          properties:
             approvalName:
               type: string
             approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    POSTTenantApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            tenantName:
+              type: string
+            tenantId:
+              type: string
+            tenantRequestedId:
+              type: string
+            tenantResource:
+              type: string
+            tenantRealizedNumber:
               type: string
             approvedByEmail:
               type: string
@@ -20051,23 +21443,29 @@ components:
               type: string
             approvedByFullName:
               type: string
-            approvalNote:
-              type: string
             approved:
               type: boolean
-            modelType:
+            approvalNote:
               type: string
-            modelResource:
-              type: string
-            approvalTitle:
-              type: string
-    DELETEFilterRequestApprovalResponse:
-      allOf:
-        - type: object
-          properties:
             approvalName:
               type: string
             approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    DELETEFilterTenantApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            tenantName:
+              type: string
+            tenantId:
+              type: string
+            tenantRequestedId:
+              type: string
+            tenantResource:
+              type: string
+            tenantRealizedNumber:
               type: string
             approvedByEmail:
               type: string
@@ -20075,17 +21473,17 @@ components:
               type: string
             approvedByFullName:
               type: string
-            approvalNote:
-              type: string
             approved:
               type: boolean
-            modelType:
+            approvalNote:
               type: string
-            modelResource:
+            approvalName:
+              type: string
+            approvalId:
               type: string
             approvalTitle:
               type: string
-    PUTImportRequestApprovalRequest:
+    PUTImportTenantApprovalRequest:
       allOf:
         - type: object
           properties:
@@ -20094,33 +21492,15 @@ components:
               items:
                 type: object
                 properties:
-                  approvalName:
+                  tenantName:
                     type: string
-                  approvalId:
+                  tenantId:
                     type: string
-                  approvedByEmail:
+                  tenantRequestedId:
                     type: string
-                  approvedByUserId:
+                  tenantResource:
                     type: string
-                  approvedByFullName:
-                    type: string
-                  approvalNote:
-                    type: string
-                  approved:
-                    type: boolean
-                  modelType:
-                    type: string
-                  modelResource:
-                    type: string
-                  approvalTitle:
-                    type: string
-    PUTImportRequestApprovalResponse:
-      allOf:
-        - type: object
-          properties:
-                  approvalName:
-                    type: string
-                  approvalId:
+                  tenantRealizedNumber:
                     type: string
                   approvedByEmail:
                     type: string
@@ -20128,23 +21508,59 @@ components:
                     type: string
                   approvedByFullName:
                     type: string
-                  approvalNote:
-                    type: string
                   approved:
                     type: boolean
-                  modelType:
+                  approvalNote:
                     type: string
-                  modelResource:
+                  approvalName:
+                    type: string
+                  approvalId:
                     type: string
                   approvalTitle:
                     type: string
-    GETRequestApprovalResponse:
+    PUTImportTenantApprovalResponse:
       allOf:
         - type: object
           properties:
-            approvalName:
+                  tenantName:
+                    type: string
+                  tenantId:
+                    type: string
+                  tenantRequestedId:
+                    type: string
+                  tenantResource:
+                    type: string
+                  tenantRealizedNumber:
+                    type: string
+                  approvedByEmail:
+                    type: string
+                  approvedByUserId:
+                    type: string
+                  approvedByFullName:
+                    type: string
+                  approved:
+                    type: boolean
+                  approvalNote:
+                    type: string
+                  approvalName:
+                    type: string
+                  approvalId:
+                    type: string
+                  approvalTitle:
+                    type: string
+    GETTenantApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            tenantName:
               type: string
-            approvalId:
+            tenantId:
+              type: string
+            tenantRequestedId:
+              type: string
+            tenantResource:
+              type: string
+            tenantRealizedNumber:
               type: string
             approvedByEmail:
               type: string
@@ -20152,23 +21568,29 @@ components:
               type: string
             approvedByFullName:
               type: string
-            approvalNote:
-              type: string
             approved:
               type: boolean
-            modelType:
+            approvalNote:
               type: string
-            modelResource:
-              type: string
-            approvalTitle:
-              type: string
-    DELETERequestApprovalResponse:
-      allOf:
-        - type: object
-          properties:
             approvalName:
               type: string
             approvalId:
+              type: string
+            approvalTitle:
+              type: string
+    DELETETenantApprovalResponse:
+      allOf:
+        - type: object
+          properties:
+            tenantName:
+              type: string
+            tenantId:
+              type: string
+            tenantRequestedId:
+              type: string
+            tenantResource:
+              type: string
+            tenantRealizedNumber:
               type: string
             approvedByEmail:
               type: string
@@ -20176,20 +21598,20 @@ components:
               type: string
             approvedByFullName:
               type: string
-            approvalNote:
-              type: string
             approved:
               type: boolean
-            modelType:
+            approvalNote:
               type: string
-            modelResource:
+            approvalName:
+              type: string
+            approvalId:
               type: string
             approvalTitle:
               type: string
-    EditPageRequestApprovalResponse:
+    EditPageTenantApprovalResponse:
       allOf:
         - type: string
-    SearchPageRequestApprovalResponse:
+    SearchPageTenantApprovalResponse:
       allOf:
         - type: string
     SearchTenantIntentResponse:
@@ -21504,6 +22926,8 @@ components:
                     type: string
                   tenantRequestedId:
                     type: string
+                  tenantRequestedName:
+                    type: string
                   requestApprovals:
                     type: array
                     items:
@@ -21602,6 +23026,13 @@ components:
             removeTenantRequestedId:
               type: string
             removeAllTenantRequestedId:
+              type: string
+            setTenantRequestedName:
+              type: string
+              nullable: true
+            removeTenantRequestedName:
+              type: string
+            removeAllTenantRequestedName:
               type: string
             setRequestApprovals:
               type: array
@@ -21773,6 +23204,13 @@ components:
               type: string
             removeAllTenantRequestedId:
               type: string
+            setTenantRequestedName:
+              type: string
+              nullable: true
+            removeTenantRequestedName:
+              type: string
+            removeAllTenantRequestedName:
+              type: string
             setRequestApprovals:
               type: array
               nullable: true
@@ -21892,6 +23330,8 @@ components:
               type: string
             tenantRequestedId:
               type: string
+            tenantRequestedName:
+              type: string
             requestApprovals:
               type: array
               items:
@@ -21940,6 +23380,8 @@ components:
               type: string
             tenantRequestedId:
               type: string
+            tenantRequestedName:
+              type: string
             requestApprovals:
               type: array
               items:
@@ -21987,6 +23429,8 @@ components:
             tenantRequestedNumber:
               type: string
             tenantRequestedId:
+              type: string
+            tenantRequestedName:
               type: string
             requestApprovals:
               type: array
@@ -22041,6 +23485,8 @@ components:
                     type: string
                   tenantRequestedId:
                     type: string
+                  tenantRequestedName:
+                    type: string
                   requestApprovals:
                     type: array
                     items:
@@ -22088,6 +23534,8 @@ components:
                   tenantRequestedNumber:
                     type: string
                   tenantRequestedId:
+                    type: string
+                  tenantRequestedName:
                     type: string
                   requestApprovals:
                     type: array
@@ -22137,6 +23585,8 @@ components:
               type: string
             tenantRequestedId:
               type: string
+            tenantRequestedName:
+              type: string
             requestApprovals:
               type: array
               items:
@@ -22184,6 +23634,8 @@ components:
             tenantRequestedNumber:
               type: string
             tenantRequestedId:
+              type: string
+            tenantRequestedName:
               type: string
             requestApprovals:
               type: array

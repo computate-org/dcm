@@ -72,6 +72,9 @@ import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;
@@ -477,6 +480,8 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
       initializeApiService(apiTenantIntent);
       TenantRequestedEnUSApiServiceImpl apiTenantRequested = new TenantRequestedEnUSApiServiceImpl();
       initializeApiService(apiTenantRequested);
+      TenantApprovalEnUSApiServiceImpl apiTenantApproval = new TenantApprovalEnUSApiServiceImpl();
+      initializeApiService(apiTenantApproval);
       TenantRealizedEnUSApiServiceImpl apiTenantRealized = new TenantRealizedEnUSApiServiceImpl();
       initializeApiService(apiTenantRealized);
       AiTelemetryPlatformEnUSApiServiceImpl apiAiTelemetryPlatform = new AiTelemetryPlatformEnUSApiServiceImpl();
@@ -496,11 +501,13 @@ public class WorkerVerticle extends WorkerVerticleGen<AbstractVerticle> {
                         apiHostCheck.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, HostCheck.CLASS_CANONICAL_NAME, HostCheck.CLASS_SIMPLE_NAME, HostCheck.CLASS_API_ADDRESS_HostCheck, HostCheck.CLASS_AUTH_RESOURCE, "checkResource", "userPage", "download").onSuccess(q10 -> {
                           apiTenantIntent.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TenantIntent.CLASS_CANONICAL_NAME, TenantIntent.CLASS_SIMPLE_NAME, TenantIntent.CLASS_API_ADDRESS_TenantIntent, TenantIntent.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q11 -> {
                             apiTenantRequested.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TenantRequested.CLASS_CANONICAL_NAME, TenantRequested.CLASS_SIMPLE_NAME, TenantRequested.CLASS_API_ADDRESS_TenantRequested, TenantRequested.CLASS_AUTH_RESOURCE, "tenantRequestedId", "userPage", "download").onSuccess(q12 -> {
-                              apiTenantRealized.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TenantRealized.CLASS_CANONICAL_NAME, TenantRealized.CLASS_SIMPLE_NAME, TenantRealized.CLASS_API_ADDRESS_TenantRealized, TenantRealized.CLASS_AUTH_RESOURCE, "tenantResource", "userPage", "download").onSuccess(q13 -> {
-                                apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q14 -> {
-                                  apiRequestApproval.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, RequestApproval.CLASS_CANONICAL_NAME, RequestApproval.CLASS_SIMPLE_NAME, RequestApproval.CLASS_API_ADDRESS_RequestApproval, RequestApproval.CLASS_AUTH_RESOURCE, "approvalId", "userPage", "download").onSuccess(q15 -> {
-                                    LOG.info("data import complete");
-                                    promise.complete();
+                              apiTenantApproval.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TenantApproval.CLASS_CANONICAL_NAME, TenantApproval.CLASS_SIMPLE_NAME, TenantApproval.CLASS_API_ADDRESS_TenantApproval, TenantApproval.CLASS_AUTH_RESOURCE, "approvalId", "userPage", "download").onSuccess(q13 -> {
+                                apiTenantRealized.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, TenantRealized.CLASS_CANONICAL_NAME, TenantRealized.CLASS_SIMPLE_NAME, TenantRealized.CLASS_API_ADDRESS_TenantRealized, TenantRealized.CLASS_AUTH_RESOURCE, "tenantRealizedId", "userPage", "download").onSuccess(q14 -> {
+                                  apiAiTelemetryPlatform.importTimer(Paths.get(templatePath, "/en-us/ai-telemetry-platform/learn"), vertx, siteRequest, AiTelemetryPlatform.CLASS_CANONICAL_NAME, AiTelemetryPlatform.CLASS_SIMPLE_NAME, AiTelemetryPlatform.CLASS_API_ADDRESS_AiTelemetryPlatform, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "pageId", "userPage", "download").onSuccess(q15 -> {
+                                    apiRequestApproval.importTimer(Paths.get(templatePath, "TODO"), vertx, siteRequest, RequestApproval.CLASS_CANONICAL_NAME, RequestApproval.CLASS_SIMPLE_NAME, RequestApproval.CLASS_API_ADDRESS_RequestApproval, RequestApproval.CLASS_AUTH_RESOURCE, "approvalId", "userPage", "download").onSuccess(q16 -> {
+                                      LOG.info("data import complete");
+                                      promise.complete();
+                                    }).onFailure(ex -> promise.fail(ex));
                                   }).onFailure(ex -> promise.fail(ex));
                                 }).onFailure(ex -> promise.fail(ex));
                               }).onFailure(ex -> promise.fail(ex));

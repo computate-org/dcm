@@ -209,6 +209,9 @@ import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
@@ -402,6 +405,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       apiTenantRequested.setVertx(vertx);
       apiTenantRequested.setConfig(config);
       apiTenantRequested.setWebClient(webClient);
+      TenantApprovalEnUSApiServiceImpl apiTenantApproval = new TenantApprovalEnUSApiServiceImpl();
+      apiTenantApproval.setVertx(vertx);
+      apiTenantApproval.setConfig(config);
+      apiTenantApproval.setWebClient(webClient);
       TenantRealizedEnUSApiServiceImpl apiTenantRealized = new TenantRealizedEnUSApiServiceImpl();
       apiTenantRealized.setVertx(vertx);
       apiTenantRealized.setConfig(config);
@@ -468,21 +475,26 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
                                     .compose(q13 -> apiTenantRequested.authorizeGroupData(authToken, TenantRequested.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
                                     .compose(q13 -> apiTenantRequested.authorizeGroupData(authToken, TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
                                     .onSuccess(q13 -> {
-                                  apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
-                                      .compose(q14 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
-                                      .compose(q14 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                  apiTenantApproval.authorizeGroupData(authToken, TenantApproval.CLASS_AUTH_RESOURCE, "ApprovalAdmin", new String[] { "GET" })
+                                      .compose(q14 -> apiTenantApproval.authorizeGroupData(authToken, TenantApproval.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                      .compose(q14 -> apiTenantApproval.authorizeGroupData(authToken, TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
                                       .onSuccess(q14 -> {
-                                    apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
-                                        .compose(q15 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
-                                        .compose(q15 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
+                                    apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "TenantAdmin", new String[] { "GET" })
+                                        .compose(q15 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                        .compose(q15 -> apiTenantRealized.authorizeGroupData(authToken, TenantRealized.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
                                         .onSuccess(q15 -> {
-                                      apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "ApprovalAdmin", new String[] { "GET" })
-                                          .compose(q16 -> apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
-                                          .compose(q16 -> apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                      apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "COMPANYPRODUCT-ai-telemetry-platform-GET", new String[] { "GET" })
+                                          .compose(q16 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin" }))
+                                          .compose(q16 -> apiAiTelemetryPlatform.authorizeGroupData(authToken, AiTelemetryPlatform.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "SuperAdmin" }))
                                           .onSuccess(q16 -> {
-                                        LOG.info("authorize data complete");
-                                        promise.complete();
-                                      }).onFailure(ex -> promise.fail(ex));
+                                        apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "ApprovalAdmin", new String[] { "GET" })
+                                            .compose(q17 -> apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "Admin", new String[] { "POST", "PATCH", "GET", "DELETE" }))
+                                            .compose(q17 -> apiRequestApproval.authorizeGroupData(authToken, RequestApproval.CLASS_AUTH_RESOURCE, "SuperAdmin", new String[] { "POST", "PATCH", "GET", "DELETE", "Admin", "SuperAdmin" }))
+                                            .onSuccess(q17 -> {
+                                          LOG.info("authorize data complete");
+                                          promise.complete();
+                                        }).onFailure(ex -> promise.fail(ex));
+                                    }).onFailure(ex -> promise.fail(ex));
                                   }).onFailure(ex -> promise.fail(ex));
                                 }).onFailure(ex -> promise.fail(ex));
                               }).onFailure(ex -> promise.fail(ex));
@@ -1499,8 +1511,8 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
     Promise<Void> promise = Promise.promise();
     try {
       List<Future<?>> futures = new ArrayList<>();
-      List<String> authClassSimpleNames = Arrays.asList("JobTemplate","SitePage","HostCredential","HostInventory","Host","AnsibleProject","Project","HostCheckCR","HostCheck","TenantIntent","TenantRequested","TenantRealized","AiTelemetryPlatform","RequestApproval");
-      List<String> authResources = Arrays.asList("JOBTEMPLATE","SITEPAGE","HOSTCREDENTIAL","HOSTINVENTORY","HOST","ANSIBLEPROJECT","PROJECT","HOSTCHECKCR","HOSTCHECK","TENANT","TENANTREQUESTED","TENANTREALIZED","AITELEMETRYPLATFORM","TENANT");
+      List<String> authClassSimpleNames = Arrays.asList("JobTemplate","SitePage","HostCredential","HostInventory","Host","AnsibleProject","Project","HostCheckCR","HostCheck","TenantIntent","TenantRequested","TenantApproval","TenantRealized","AiTelemetryPlatform","RequestApproval");
+      List<String> authResources = Arrays.asList("JOBTEMPLATE","SITEPAGE","HOSTCREDENTIAL","HOSTINVENTORY","HOST","ANSIBLEPROJECT","PROJECT","HOSTCHECKCR","HOSTCHECK","TENANT","TENANTREQUESTED","TENANT","TENANTREALIZED","AITELEMETRYPLATFORM","TENANT");
       List<String> publicClassSimpleNames = Arrays.asList("SitePage");
       SiteUserEnUSApiServiceImpl apiSiteUser = new SiteUserEnUSApiServiceImpl();
       initializeApiService(apiSiteUser);
@@ -1555,6 +1567,10 @@ public class MainVerticle extends MainVerticleGen<AbstractVerticle> {
       TenantRequestedEnUSApiServiceImpl apiTenantRequested = new TenantRequestedEnUSApiServiceImpl();
       initializeApiService(apiTenantRequested);
       registerApiService(TenantRequestedEnUSGenApiService.class, apiTenantRequested, TenantRequested.getClassApiAddress());
+
+      TenantApprovalEnUSApiServiceImpl apiTenantApproval = new TenantApprovalEnUSApiServiceImpl();
+      initializeApiService(apiTenantApproval);
+      registerApiService(TenantApprovalEnUSGenApiService.class, apiTenantApproval, TenantApproval.getClassApiAddress());
 
       TenantRealizedEnUSApiServiceImpl apiTenantRealized = new TenantRealizedEnUSApiServiceImpl();
       initializeApiService(apiTenantRealized);

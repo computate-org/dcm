@@ -693,30 +693,6 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
 
       for(String entityVar : methodNames) {
         switch(entityVar) {
-          case "setApprovalName":
-              o2.setApprovalName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(RequestApproval.VAR_approvalName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlApprovalName());
-            break;
-          case "setApprovalId":
-              o2.setApprovalId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(RequestApproval.VAR_approvalId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlApprovalId());
-            break;
-          case "setCreated":
-              o2.setCreated(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(RequestApproval.VAR_created + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreated());
-            break;
           case "setApprovedByEmail":
               o2.setApprovedByEmail(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -733,13 +709,13 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               num++;
               bParams.add(o2.sqlApprovedByUserId());
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
+          case "setCreated":
+              o2.setCreated(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(RequestApproval.VAR_archived + "=$" + num);
+              bSql.append(RequestApproval.VAR_created + "=$" + num);
               num++;
-              bParams.add(o2.sqlArchived());
+              bParams.add(o2.sqlCreated());
             break;
           case "setApprovedByFullName":
               o2.setApprovedByFullName(jsonObject.getString(entityVar));
@@ -749,14 +725,6 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               num++;
               bParams.add(o2.sqlApprovedByFullName());
             break;
-          case "setApprovalNote":
-              o2.setApprovalNote(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(RequestApproval.VAR_approvalNote + "=$" + num);
-              num++;
-              bParams.add(o2.sqlApprovalNote());
-            break;
           case "setApproved":
               o2.setApproved(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -764,6 +732,22 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               bSql.append(RequestApproval.VAR_approved + "=$" + num);
               num++;
               bParams.add(o2.sqlApproved());
+            break;
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(RequestApproval.VAR_archived + "=$" + num);
+              num++;
+              bParams.add(o2.sqlArchived());
+            break;
+          case "setApprovalNote":
+              o2.setApprovalNote(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(RequestApproval.VAR_approvalNote + "=$" + num);
+              num++;
+              bParams.add(o2.sqlApprovalNote());
             break;
           case "setModelType":
               o2.setModelType(jsonObject.getString(entityVar));
@@ -773,6 +757,22 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               num++;
               bParams.add(o2.sqlModelType());
             break;
+          case "setModelResource":
+              o2.setModelResource(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(RequestApproval.VAR_modelResource + "=$" + num);
+              num++;
+              bParams.add(o2.sqlModelResource());
+            break;
+          case "setApprovalName":
+              o2.setApprovalName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(RequestApproval.VAR_approvalName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlApprovalName());
+            break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -781,13 +781,13 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               num++;
               bParams.add(o2.sqlSessionId());
             break;
-          case "setModelResource":
-              o2.setModelResource(jsonObject.getString(entityVar));
+          case "setApprovalId":
+              o2.setApprovalId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(RequestApproval.VAR_modelResource + "=$" + num);
+              bSql.append(RequestApproval.VAR_approvalId + "=$" + num);
               num++;
-              bParams.add(o2.sqlModelResource());
+              bParams.add(o2.sqlApprovalId());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
@@ -1195,33 +1195,6 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case RequestApproval.VAR_approvalName:
-            o2.setApprovalName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(RequestApproval.VAR_approvalName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlApprovalName());
-            break;
-          case RequestApproval.VAR_approvalId:
-            o2.setApprovalId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(RequestApproval.VAR_approvalId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlApprovalId());
-            break;
-          case RequestApproval.VAR_created:
-            o2.setCreated(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(RequestApproval.VAR_created + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreated());
-            break;
           case RequestApproval.VAR_approvedByEmail:
             o2.setApprovedByEmail(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1240,14 +1213,14 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             num++;
             bParams.add(o2.sqlApprovedByUserId());
             break;
-          case RequestApproval.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
+          case RequestApproval.VAR_created:
+            o2.setCreated(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(RequestApproval.VAR_archived + "=$" + num);
+            bSql.append(RequestApproval.VAR_created + "=$" + num);
             num++;
-            bParams.add(o2.sqlArchived());
+            bParams.add(o2.sqlCreated());
             break;
           case RequestApproval.VAR_approvedByFullName:
             o2.setApprovedByFullName(jsonObject.getString(entityVar));
@@ -1258,15 +1231,6 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             num++;
             bParams.add(o2.sqlApprovedByFullName());
             break;
-          case RequestApproval.VAR_approvalNote:
-            o2.setApprovalNote(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(RequestApproval.VAR_approvalNote + "=$" + num);
-            num++;
-            bParams.add(o2.sqlApprovalNote());
-            break;
           case RequestApproval.VAR_approved:
             o2.setApproved(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1275,6 +1239,24 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             bSql.append(RequestApproval.VAR_approved + "=$" + num);
             num++;
             bParams.add(o2.sqlApproved());
+            break;
+          case RequestApproval.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(RequestApproval.VAR_archived + "=$" + num);
+            num++;
+            bParams.add(o2.sqlArchived());
+            break;
+          case RequestApproval.VAR_approvalNote:
+            o2.setApprovalNote(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(RequestApproval.VAR_approvalNote + "=$" + num);
+            num++;
+            bParams.add(o2.sqlApprovalNote());
             break;
           case RequestApproval.VAR_modelType:
             o2.setModelType(jsonObject.getString(entityVar));
@@ -1285,6 +1267,24 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             num++;
             bParams.add(o2.sqlModelType());
             break;
+          case RequestApproval.VAR_modelResource:
+            o2.setModelResource(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(RequestApproval.VAR_modelResource + "=$" + num);
+            num++;
+            bParams.add(o2.sqlModelResource());
+            break;
+          case RequestApproval.VAR_approvalName:
+            o2.setApprovalName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(RequestApproval.VAR_approvalName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlApprovalName());
+            break;
           case RequestApproval.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1294,14 +1294,14 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case RequestApproval.VAR_modelResource:
-            o2.setModelResource(jsonObject.getString(entityVar));
+          case RequestApproval.VAR_approvalId:
+            o2.setApprovalId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(RequestApproval.VAR_modelResource + "=$" + num);
+            bSql.append(RequestApproval.VAR_approvalId + "=$" + num);
             num++;
-            bParams.add(o2.sqlModelResource());
+            bParams.add(o2.sqlApprovalId());
             break;
           case RequestApproval.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
@@ -3297,21 +3297,6 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
 
-        String old_approvalName = RequestApproval.staticJsonApprovalName(o.getApprovalName());
-        String new_approvalName = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalName, patch));
-        String approvalName = Optional.ofNullable(Optional.ofNullable(new_approvalName).orElse(old_approvalName)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_approvalName, patch), approvalName);
-
-        String old_approvalId = RequestApproval.staticJsonApprovalId(o.getApprovalId());
-        String new_approvalId = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalId, patch));
-        String approvalId = Optional.ofNullable(Optional.ofNullable(new_approvalId).orElse(old_approvalId)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_approvalId, patch), approvalId);
-
-        String old_created = RequestApproval.staticJsonCreated(o.getCreated());
-        String new_created = json.getString(RequestApproval.varJson(RequestApproval.VAR_created, patch));
-        String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_created, patch), created);
-
         String old_approvedByEmail = RequestApproval.staticJsonApprovedByEmail(o.getApprovedByEmail());
         String new_approvedByEmail = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvedByEmail, patch));
         String approvedByEmail = siteRequest.getUserEmail();
@@ -3322,40 +3307,55 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         String approvedByUserId = siteRequest.getUserId();
         json.put(RequestApproval.varJson(RequestApproval.VAR_approvedByUserId, patch), approvedByUserId);
 
-        Boolean old_archived = RequestApproval.staticJsonArchived(o.getArchived());
-        Boolean new_archived = json.getBoolean(RequestApproval.varJson(RequestApproval.VAR_archived, patch));
-        Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_archived, patch), archived);
+        String old_created = RequestApproval.staticJsonCreated(o.getCreated());
+        String new_created = json.getString(RequestApproval.varJson(RequestApproval.VAR_created, patch));
+        String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+        // json.put(RequestApproval.varJson(RequestApproval.VAR_created, patch), created);
 
         String old_approvedByFullName = RequestApproval.staticJsonApprovedByFullName(o.getApprovedByFullName());
         String new_approvedByFullName = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvedByFullName, patch));
         String approvedByFullName = siteRequest.getUserFullName();
         json.put(RequestApproval.varJson(RequestApproval.VAR_approvedByFullName, patch), approvedByFullName);
 
-        String old_approvalNote = RequestApproval.staticJsonApprovalNote(o.getApprovalNote());
-        String new_approvalNote = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalNote, patch));
-        String approvalNote = Optional.ofNullable(Optional.ofNullable(new_approvalNote).orElse(old_approvalNote)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_approvalNote, patch), approvalNote);
-
         Boolean old_approved = RequestApproval.staticJsonApproved(o.getApproved());
         Boolean new_approved = json.getBoolean(RequestApproval.varJson(RequestApproval.VAR_approved, patch));
         Boolean approved = Optional.ofNullable(Optional.ofNullable(new_approved).orElse(old_approved)).orElse(null);
         // json.put(RequestApproval.varJson(RequestApproval.VAR_approved, patch), approved);
+
+        Boolean old_archived = RequestApproval.staticJsonArchived(o.getArchived());
+        Boolean new_archived = json.getBoolean(RequestApproval.varJson(RequestApproval.VAR_archived, patch));
+        Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+        // json.put(RequestApproval.varJson(RequestApproval.VAR_archived, patch), archived);
+
+        String old_approvalNote = RequestApproval.staticJsonApprovalNote(o.getApprovalNote());
+        String new_approvalNote = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalNote, patch));
+        String approvalNote = Optional.ofNullable(Optional.ofNullable(new_approvalNote).orElse(old_approvalNote)).orElse(null);
+        // json.put(RequestApproval.varJson(RequestApproval.VAR_approvalNote, patch), approvalNote);
 
         String old_modelType = RequestApproval.staticJsonModelType(o.getModelType());
         String new_modelType = json.getString(RequestApproval.varJson(RequestApproval.VAR_modelType, patch));
         String modelType = Optional.ofNullable(Optional.ofNullable(new_modelType).orElse(old_modelType)).orElse(null);
         // json.put(RequestApproval.varJson(RequestApproval.VAR_modelType, patch), modelType);
 
+        String old_modelResource = RequestApproval.staticJsonModelResource(o.getModelResource());
+        String new_modelResource = json.getString(RequestApproval.varJson(RequestApproval.VAR_modelResource, patch));
+        String modelResource = Optional.ofNullable(Optional.ofNullable(new_modelResource).orElse(old_modelResource)).orElse(null);
+        // json.put(RequestApproval.varJson(RequestApproval.VAR_modelResource, patch), modelResource);
+
+        String old_approvalName = RequestApproval.staticJsonApprovalName(o.getApprovalName());
+        String new_approvalName = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalName, patch));
+        String approvalName = String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", modelResource);
+        json.put(RequestApproval.varJson(RequestApproval.VAR_approvalName, patch), approvalName);
+
         String old_sessionId = RequestApproval.staticJsonSessionId(o.getSessionId());
         String new_sessionId = json.getString(RequestApproval.varJson(RequestApproval.VAR_sessionId, patch));
         String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
         // json.put(RequestApproval.varJson(RequestApproval.VAR_sessionId, patch), sessionId);
 
-        String old_modelResource = RequestApproval.staticJsonModelResource(o.getModelResource());
-        String new_modelResource = json.getString(RequestApproval.varJson(RequestApproval.VAR_modelResource, patch));
-        String modelResource = Optional.ofNullable(Optional.ofNullable(new_modelResource).orElse(old_modelResource)).orElse(null);
-        // json.put(RequestApproval.varJson(RequestApproval.VAR_modelResource, patch), modelResource);
+        String old_approvalId = RequestApproval.staticJsonApprovalId(o.getApprovalId());
+        String new_approvalId = json.getString(RequestApproval.varJson(RequestApproval.VAR_approvalId, patch));
+        String approvalId = String.format("%s-%s-by-%s-%s", modelResource, approved ? "approved" : "rejected", RequestApproval.toId(approvedByFullName), RequestApproval.toId(approvedByEmail));
+        json.put(RequestApproval.varJson(RequestApproval.VAR_approvalId, patch), approvalId);
 
         String old_userKey = RequestApproval.staticJsonUserKey(o.getUserKey());
         String new_userKey = json.getString(RequestApproval.varJson(RequestApproval.VAR_userKey, patch));
@@ -3392,7 +3392,7 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
         // json.put(RequestApproval.varJson(RequestApproval.VAR_download, patch), download);
 
-          promise.complete(json);
+        promise.complete(json);
       }
     } catch(Exception ex) {
       LOG.error(String.format("upsertRequestApproval failed. "), ex);
@@ -3407,7 +3407,7 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT approvalName, approvalId, created, approvedByEmail, approvedByUserId, archived, approvedByFullName, approvalNote, approved, modelType, sessionId, modelResource, userKey, approvalTitle, objectTitle, displayPage, editPage, userPage, download FROM RequestApproval WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT approvedByEmail, approvedByUserId, created, approvedByFullName, approved, archived, approvalNote, modelType, modelResource, approvalName, sessionId, approvalId, userKey, approvalTitle, objectTitle, displayPage, editPage, userPage, download FROM RequestApproval WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -3612,18 +3612,18 @@ public class RequestApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       RequestApproval o = new RequestApproval();
       o.setSiteRequest_((SiteRequest)siteRequest);
 
-      o.persistForClass(RequestApproval.VAR_approvalName, RequestApproval.staticSetApprovalName(siteRequest2, (String)result.get(RequestApproval.VAR_approvalName)));
-      o.persistForClass(RequestApproval.VAR_approvalId, RequestApproval.staticSetApprovalId(siteRequest2, (String)result.get(RequestApproval.VAR_approvalId)));
-      o.persistForClass(RequestApproval.VAR_created, RequestApproval.staticSetCreated(siteRequest2, (String)result.get(RequestApproval.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(RequestApproval.VAR_approvedByEmail, RequestApproval.staticSetApprovedByEmail(siteRequest2, (String)result.get(RequestApproval.VAR_approvedByEmail)));
       o.persistForClass(RequestApproval.VAR_approvedByUserId, RequestApproval.staticSetApprovedByUserId(siteRequest2, (String)result.get(RequestApproval.VAR_approvedByUserId)));
-      o.persistForClass(RequestApproval.VAR_archived, RequestApproval.staticSetArchived(siteRequest2, (String)result.get(RequestApproval.VAR_archived)));
+      o.persistForClass(RequestApproval.VAR_created, RequestApproval.staticSetCreated(siteRequest2, (String)result.get(RequestApproval.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
       o.persistForClass(RequestApproval.VAR_approvedByFullName, RequestApproval.staticSetApprovedByFullName(siteRequest2, (String)result.get(RequestApproval.VAR_approvedByFullName)));
-      o.persistForClass(RequestApproval.VAR_approvalNote, RequestApproval.staticSetApprovalNote(siteRequest2, (String)result.get(RequestApproval.VAR_approvalNote)));
       o.persistForClass(RequestApproval.VAR_approved, RequestApproval.staticSetApproved(siteRequest2, (String)result.get(RequestApproval.VAR_approved)));
+      o.persistForClass(RequestApproval.VAR_archived, RequestApproval.staticSetArchived(siteRequest2, (String)result.get(RequestApproval.VAR_archived)));
+      o.persistForClass(RequestApproval.VAR_approvalNote, RequestApproval.staticSetApprovalNote(siteRequest2, (String)result.get(RequestApproval.VAR_approvalNote)));
       o.persistForClass(RequestApproval.VAR_modelType, RequestApproval.staticSetModelType(siteRequest2, (String)result.get(RequestApproval.VAR_modelType)));
-      o.persistForClass(RequestApproval.VAR_sessionId, RequestApproval.staticSetSessionId(siteRequest2, (String)result.get(RequestApproval.VAR_sessionId)));
       o.persistForClass(RequestApproval.VAR_modelResource, RequestApproval.staticSetModelResource(siteRequest2, (String)result.get(RequestApproval.VAR_modelResource)));
+      o.persistForClass(RequestApproval.VAR_approvalName, RequestApproval.staticSetApprovalName(siteRequest2, (String)result.get(RequestApproval.VAR_approvalName)));
+      o.persistForClass(RequestApproval.VAR_sessionId, RequestApproval.staticSetSessionId(siteRequest2, (String)result.get(RequestApproval.VAR_sessionId)));
+      o.persistForClass(RequestApproval.VAR_approvalId, RequestApproval.staticSetApprovalId(siteRequest2, (String)result.get(RequestApproval.VAR_approvalId)));
       o.persistForClass(RequestApproval.VAR_userKey, RequestApproval.staticSetUserKey(siteRequest2, (String)result.get(RequestApproval.VAR_userKey)));
       o.persistForClass(RequestApproval.VAR_approvalTitle, RequestApproval.staticSetApprovalTitle(siteRequest2, (String)result.get(RequestApproval.VAR_approvalTitle)));
       o.persistForClass(RequestApproval.VAR_objectTitle, RequestApproval.staticSetObjectTitle(siteRequest2, (String)result.get(RequestApproval.VAR_objectTitle)));

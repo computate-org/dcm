@@ -1,19 +1,20 @@
-package org.computate.dcm.model.eda.requestapproval;
+package org.computate.dcm.model.eda.tenant.approval;
 
 import java.time.format.DateTimeFormatter;
 import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
+import org.computate.dcm.model.eda.tenant.Tenant;
 
 /**
- * Order: 900
- * Description: Individual approvals per request and per approver. 
- * AName: a request approval
+ * Order: 143
+ * Description: Individual tenant approvals per request and per approver. 
+ * AName: a tenant approval
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-thumbs-up"></i>
  *
  * AuthorizationResource: TENANT
- * SearchPageUri: /en-us/search/approval
- * EditPageUri: /en-us/edit/approval/{approvalId}
- * ApiUri: /en-us/api/approval
+ * SearchPageUri: /en-us/search/approval/tenant
+ * EditPageUri: /en-us/edit/approval/tenant/{approvalId}
+ * ApiUri: /en-us/api/approval/tenant
  * ApiMethod:
  *   Search:
  *   GET:
@@ -38,7 +39,81 @@ import org.computate.dcm.model.BaseModel;
  *     Admin:
  *     SuperAdmin:
  **/
-public class RequestApproval extends RequestApprovalGen<BaseModel> {
+public class TenantApproval extends TenantApprovalGen<BaseModel> {
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant name
+   * Description: The name of this tenant
+   * HtmRowTitleOpen: tenant details
+   * Facet: true
+   * StringFormat: oTenantIntent.getTenantName()
+   **/
+  protected void _tenantName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant ID
+   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
+   * Facet: true
+   * DefaultFacet: true
+   * StringFormat: oTenantIntent.getTenantId()
+   **/
+  protected void _tenantId(Wrap<String> w) {
+    w.o(toId(tenantName));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant requested
+   * Description: The tenant requested being approved. 
+   * Facet: true
+   * HtmRowTitleOpen: tenant details
+   * HtmRow: 5
+   * HtmCell: 0
+   * HtmColumn: 0
+   * Required: true
+   * AuthorizationResource: TENANT
+   * Relate: TenantRequested.tenantRequestedId
+   **/
+  protected void _tenantRequestedId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant auth resource
+   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * Facet: true
+   * Required: true
+   * AuthorizationResource: TENANT
+   * Relate: TenantIntent.tenantResource
+   * StringFormat: oTenantRequested.getTenantResource()
+   **/
+  protected void _tenantResource(Wrap<String> w) {
+    w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: tenant realized number
+   * Description: A unique number for each realized version of this tenant. 
+   * Facet: true
+   * Required: true
+   **/
+  protected void _tenantRealizedNumber(Wrap<Integer> w) {
+    // tomorrow, search for the max requested number by tenantResource, and increment by 1 in upsert. 
+  }
 
   /**
    * {@inheritDoc}
@@ -115,35 +190,13 @@ public class RequestApproval extends RequestApprovalGen<BaseModel> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: model type
-   * Description: The Java Class simple name of this approval. 
-   * Facet: true
-   * DefaultFacet: true
-   **/
-  protected void _modelType(Wrap<String> w) {}
-
-  /**
-   * {@inheritDoc}
-   * DocValues: true
-   * Persist: true
-   * DisplayName: model resource
-   * Description: The unique model resource of this approval. 
-   * Facet: true
-   * DefaultFacet: true
-   **/
-  protected void _modelResource(Wrap<String> w) {}
-
-  /**
-   * {@inheritDoc}
-   * DocValues: true
-   * Persist: true
    * DisplayName: approval name
    * Description: The name of this approval
    * HtmColumn: 1
    * Facet: true
    * VarName: true
    * Required: true
-   * StringFormat: String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", modelResource)
+   * StringFormat: String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", tenantRequestedId)
    **/
   protected void _approvalName(Wrap<String> w) {
   }
@@ -158,7 +211,7 @@ public class RequestApproval extends RequestApprovalGen<BaseModel> {
    * DefaultFacet: true
    * Unique: true
    * VarId: true
-   * StringFormat: String.format("%s-%s-by-%s-%s", modelResource, approved ? "approved" : "rejected", RequestApproval.toId(approvedByFullName), RequestApproval.toId(approvedByEmail))
+   * StringFormat: String.format("%s-%s-by-%s-%s", tenantRequestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail))
    **/
   protected void _approvalId(Wrap<String> w) {
     w.o(toId(approvalName));
@@ -195,6 +248,6 @@ public class RequestApproval extends RequestApprovalGen<BaseModel> {
     else
       dateStr = " " + created.format(DateTimeFormatter.ISO_DATE_TIME);
 
-    w.o(String.format("%s %s by %s <%s>%s%s", modelResource, approvedStr, approvedByFullName, approvedByEmail, dateStr, noteStr));
+    w.o(String.format("%s %s by %s <%s>%s%s", tenantRequestedId, approvedStr, approvedByFullName, approvedByEmail, dateStr, noteStr));
   }
 }

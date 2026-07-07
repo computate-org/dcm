@@ -1,15 +1,9 @@
-package org.computate.dcm.model.eda.tenant.requested;
+package org.computate.dcm.model.eda.tenant.approval;
 
-import org.computate.dcm.model.eda.hostinventory.HostInventoryEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.hostinventory.HostInventory;
-import org.computate.dcm.model.eda.ansibleproject.AnsibleProjectEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntentEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
-import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
-import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
-import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
 import org.computate.vertx.api.ApiRequest;
@@ -114,40 +108,46 @@ import java.util.Base64;
 import java.time.ZonedDateTime;
 import org.apache.commons.lang3.BooleanUtils;
 import org.computate.vertx.search.list.SearchList;
-import org.computate.dcm.model.eda.tenant.requested.TenantRequestedPage;
+import org.computate.dcm.model.eda.tenant.approval.TenantApprovalPage;
 
 
 /**
  * Translate: false
  * Generated: true
  **/
-public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl implements TenantRequestedEnUSGenApiService {
+public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl implements TenantApprovalEnUSGenApiService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(TenantRequestedEnUSGenApiServiceImpl.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(TenantApprovalEnUSGenApiServiceImpl.class);
 
   // Search //
 
   @Override
-  public void searchTenantRequested(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchTenantApproval(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -167,9 +167,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
@@ -204,26 +215,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, false, "GET").onSuccess(listTenantRequested -> {
-                response200SearchTenantRequested(listTenantRequested).onSuccess(response -> {
+              searchTenantApprovalList(siteRequest, false, true, false, "GET").onSuccess(listTenantApproval -> {
+                response200SearchTenantApproval(listTenantApproval).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchTenantRequested succeeded. "));
+                  LOG.debug(String.format("searchTenantApproval succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchTenantRequested failed. "), ex);
+                  LOG.error(String.format("searchTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchTenantRequested failed. "), ex);
+                LOG.error(String.format("searchTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchTenantRequested failed. "), ex);
+            LOG.error(String.format("searchTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchTenantRequested failed. "), ex);
+        LOG.error(String.format("searchTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -231,7 +242,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchTenantRequested failed. ", ex2));
+          LOG.error(String.format("searchTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -246,28 +257,28 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("searchTenantRequested failed. "), ex);
+        LOG.error(String.format("searchTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200SearchTenantRequested(SearchList<TenantRequested> listTenantRequested) {
+  public Future<ServiceResponse> response200SearchTenantApproval(SearchList<TenantApproval> listTenantApproval) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-      List<String> fls = listTenantRequested.getRequest().getFields();
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+      List<String> fls = listTenantApproval.getRequest().getFields();
       JsonObject json = new JsonObject();
       JsonArray l = new JsonArray();
       List<String> scopes = siteRequest.getScopes();
-      listTenantRequested.getList().stream().forEach(o -> {
+      listTenantApproval.getList().stream().forEach(o -> {
         JsonObject json2 = JsonObject.mapFrom(o);
         if(fls.size() > 0) {
           Set<String> fieldNames = new HashSet<String>();
           for(String fieldName : json2.fieldNames()) {
-            String v = TenantRequested.varIndexedTenantRequested(fieldName);
+            String v = TenantApproval.varIndexedTenantApproval(fieldName);
             if(v != null)
-              fieldNames.add(TenantRequested.varIndexedTenantRequested(fieldName));
+              fieldNames.add(TenantApproval.varIndexedTenantApproval(fieldName));
           }
           if(fls.size() == 1 && fls.stream().findFirst().orElse(null).equals("saves_docvalues_strings")) {
             fieldNames.removeAll(Optional.ofNullable(json2.getJsonArray("saves_docvalues_strings")).orElse(new JsonArray()).stream().map(s -> s.toString()).collect(Collectors.toList()));
@@ -285,15 +296,15 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         l.add(json2);
       });
       json.put("list", l);
-      response200Search(listTenantRequested.getRequest(), listTenantRequested.getResponse(), json);
+      response200Search(listTenantApproval.getRequest(), listTenantApproval.getResponse(), json);
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchTenantRequested failed. "), ex);
+      LOG.error(String.format("response200SearchTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchTenantRequested(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchTenantApproval(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -322,7 +333,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchTenantRequested(pivotFields2, pivotArray2);
+          responsePivotSearchTenantApproval(pivotFields2, pivotArray2);
         }
       }
     }
@@ -331,26 +342,32 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // GET //
 
   @Override
-  public void getTenantRequested(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void getTenantApproval(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -370,9 +387,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
@@ -407,26 +435,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, false, "GET").onSuccess(listTenantRequested -> {
-                response200GETTenantRequested(listTenantRequested).onSuccess(response -> {
+              searchTenantApprovalList(siteRequest, false, true, false, "GET").onSuccess(listTenantApproval -> {
+                response200GETTenantApproval(listTenantApproval).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("getTenantRequested succeeded. "));
+                  LOG.debug(String.format("getTenantApproval succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("getTenantRequested failed. "), ex);
+                  LOG.error(String.format("getTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("getTenantRequested failed. "), ex);
+                LOG.error(String.format("getTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("getTenantRequested failed. "), ex);
+            LOG.error(String.format("getTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("getTenantRequested failed. "), ex);
+        LOG.error(String.format("getTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -434,7 +462,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("getTenantRequested failed. ", ex2));
+          LOG.error(String.format("getTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -449,20 +477,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("getTenantRequested failed. "), ex);
+        LOG.error(String.format("getTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200GETTenantRequested(SearchList<TenantRequested> listTenantRequested) {
+  public Future<ServiceResponse> response200GETTenantApproval(SearchList<TenantApproval> listTenantApproval) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-      JsonObject json = JsonObject.mapFrom(listTenantRequested.getList().stream().findFirst().orElse(null));
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+      JsonObject json = JsonObject.mapFrom(listTenantApproval.getList().stream().findFirst().orElse(null));
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200GETTenantRequested failed. "), ex);
+      LOG.error(String.format("response200GETTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -471,27 +499,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // PATCH //
 
   @Override
-  public void patchTenantRequested(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("patchTenantRequested started. "));
+  public void patchTenantApproval(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("patchTenantApproval started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "PATCH"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -511,9 +545,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PATCH")) {
             List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PATCH")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
             authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                   Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                   return permission.getJsonArray("scopes").contains("PATCH")
@@ -558,48 +603,48 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, true, "PATCH").onSuccess(listTenantRequested -> {
+              searchTenantApprovalList(siteRequest, false, true, true, "PATCH").onSuccess(listTenantApproval -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listTenantRequested.getRequest().getRows());
-                  apiRequest.setNumFound(listTenantRequested.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenantApproval.getRequest().getRows());
+                  apiRequest.setNumFound(listTenantApproval.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listTenantRequested.first());
-                  apiRequest.setId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getTenantRequestedId().toString()).orElse(null));
-                  apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenantApproval.first());
+                  apiRequest.setId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getApprovalId().toString()).orElse(null));
+                  apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
 
-                  listPATCHTenantRequested(apiRequest, listTenantRequested).onSuccess(e -> {
-                    response200PATCHTenantRequested(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("patchTenantRequested succeeded. "));
+                  listPATCHTenantApproval(apiRequest, listTenantApproval).onSuccess(e -> {
+                    response200PATCHTenantApproval(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("patchTenantApproval succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("patchTenantRequested failed. "), ex);
+                      LOG.error(String.format("patchTenantApproval failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("patchTenantRequested failed. "), ex);
+                    LOG.error(String.format("patchTenantApproval failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("patchTenantRequested failed. "), ex);
+                  LOG.error(String.format("patchTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("patchTenantRequested failed. "), ex);
+                LOG.error(String.format("patchTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchTenantRequested failed. "), ex);
+            LOG.error(String.format("patchTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchTenantRequested failed. "), ex);
+        LOG.error(String.format("patchTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -607,7 +652,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("patchTenantRequested failed. ", ex2));
+          LOG.error(String.format("patchTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -622,58 +667,58 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("patchTenantRequested failed. "), ex);
+        LOG.error(String.format("patchTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPATCHTenantRequested(ApiRequest apiRequest, SearchList<TenantRequested> listTenantRequested) {
+  public Future<Void> listPATCHTenantApproval(ApiRequest apiRequest, SearchList<TenantApproval> listTenantApproval) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-    listTenantRequested.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+    listTenantApproval.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      TenantRequested o2 = jsonObject.mapTo(TenantRequested.class);
+      TenantApproval o2 = jsonObject.mapTo(TenantApproval.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        patchTenantRequestedFuture(o2, false).onSuccess(a -> {
+        patchTenantApprovalFuture(o2, false).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listPATCHTenantRequested failed. "), ex);
+          LOG.error(String.format("listPATCHTenantApproval failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listTenantRequested.next().onSuccess(next -> {
+      listTenantApproval.next().onSuccess(next -> {
         if(next) {
-          listPATCHTenantRequested(apiRequest, listTenantRequested).onSuccess(b -> {
+          listPATCHTenantApproval(apiRequest, listTenantApproval).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPATCHTenantRequested failed. "), ex);
+            LOG.error(String.format("listPATCHTenantApproval failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listPATCHTenantRequested failed. "), ex);
+        LOG.error(String.format("listPATCHTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listPATCHTenantRequested failed. "), ex);
+      LOG.error(String.format("listPATCHTenantApproval failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void patchTenantRequestedFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void patchTenantApprovalFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -685,9 +730,9 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             siteRequest.addScopes(scope);
           });
         });
-        searchTenantRequestedList(siteRequest, false, true, true, "PATCH").onSuccess(listTenantRequested -> {
+        searchTenantApprovalList(siteRequest, false, true, true, "PATCH").onSuccess(listTenantApproval -> {
           try {
-            TenantRequested o = listTenantRequested.first();
+            TenantApproval o = listTenantApproval.first();
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.setRows(1L);
             apiRequest.setNumFound(1L);
@@ -697,65 +742,65 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
               siteRequest.getRequestVars().put( "refresh", "false" );
             }
-            TenantRequested o2;
+            TenantApproval o2;
             if(o != null) {
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRequested.first()).map(o3 -> o3.getTenantRequestedId().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o3 -> o3.getSolrId()).orElse(null));
+              apiRequest.setId(Optional.ofNullable(listTenantApproval.first()).map(o3 -> o3.getApprovalId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o3 -> o3.getSolrId()).orElse(null));
               JsonObject jsonObject = JsonObject.mapFrom(o);
-              o2 = jsonObject.mapTo(TenantRequested.class);
+              o2 = jsonObject.mapTo(TenantApproval.class);
               o2.setSiteRequest_(siteRequest);
-              patchTenantRequestedFuture(o2, false).onSuccess(o3 -> {
+              patchTenantApprovalFuture(o2, false).onSuccess(o3 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
               });
             } else {
-              String m = String.format("%s %s not found", "requested tenant", null);
+              String m = String.format("%s %s not found", "tenant approval", null);
               eventHandler.handle(Future.failedFuture(m));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("patchTenantRequested failed. "), ex);
+            LOG.error(String.format("patchTenantApproval failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("patchTenantRequested failed. "), ex);
+          LOG.error(String.format("patchTenantApproval failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("patchTenantRequested failed. "), ex);
+        LOG.error(String.format("patchTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("patchTenantRequested failed. "), ex);
+      LOG.error(String.format("patchTenantApproval failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<TenantRequested> patchTenantRequestedFuture(TenantRequested o, Boolean inheritPrimaryKey) {
+  public Future<TenantApproval> patchTenantApprovalFuture(TenantApproval o, Boolean inheritPrimaryKey) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<TenantRequested> promise = Promise.promise();
+    Promise<TenantApproval> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<TenantRequested> promise1 = Promise.promise();
+      Promise<TenantApproval> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsTenantRequested(siteRequest).onSuccess(a -> {
-          sqlPATCHTenantRequested(o, inheritPrimaryKey).onSuccess(tenantRequested -> {
-            persistTenantRequested(tenantRequested, true).onSuccess(c -> {
-              relateTenantRequested(tenantRequested).onSuccess(d -> {
-                indexTenantRequested(tenantRequested).onSuccess(o2 -> {
+        varsTenantApproval(siteRequest).onSuccess(a -> {
+          sqlPATCHTenantApproval(o, inheritPrimaryKey).onSuccess(tenantApproval -> {
+            persistTenantApproval(tenantApproval, true).onSuccess(c -> {
+              relateTenantApproval(tenantApproval).onSuccess(d -> {
+                indexTenantApproval(tenantApproval).onSuccess(o2 -> {
                   if(apiRequest != null) {
                     apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                     if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                      o2.apiRequestTenantRequested();
+                      o2.apiRequestTenantApproval();
                       if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                        eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                        eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
                     }
                   }
-                  promise1.complete(tenantRequested);
+                  promise1.complete(tenantApproval);
                 }).onFailure(ex -> {
                   promise1.tryFail(ex);
                 });
@@ -777,28 +822,28 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(tenantRequested -> {
-        Promise<TenantRequested> promise2 = Promise.promise();
-        refreshTenantRequested(tenantRequested).onSuccess(a -> {
-          promise2.complete(tenantRequested);
+      }).compose(tenantApproval -> {
+        Promise<TenantApproval> promise2 = Promise.promise();
+        refreshTenantApproval(tenantApproval).onSuccess(a -> {
+          promise2.complete(tenantApproval);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(tenantRequested -> {
-        promise.complete(tenantRequested);
+      }).onSuccess(tenantApproval -> {
+        promise.complete(tenantApproval);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("patchTenantRequestedFuture failed. "), ex);
+      LOG.error(String.format("patchTenantApprovalFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<TenantRequested> sqlPATCHTenantRequested(TenantRequested o, Boolean inheritPrimaryKey) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> sqlPATCHTenantApproval(TenantApproval o, Boolean inheritPrimaryKey) {
+    Promise<TenantApproval> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -806,248 +851,52 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE TenantRequested SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE TenantApproval SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
       Set<String> methodNames = jsonObject.fieldNames();
-      TenantRequested o2 = new TenantRequested();
+      TenantApproval o2 = new TenantApproval();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
 
       for(String entityVar : methodNames) {
         switch(entityVar) {
-          case "setHubId":
-              o2.setHubId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_hubId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlHubId());
-            break;
-          case "setClusterName":
-              o2.setClusterName(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_clusterName + "=$" + num);
-              num++;
-              bParams.add(o2.sqlClusterName());
-            break;
-          case "setCreated":
-              o2.setCreated(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_created + "=$" + num);
-              num++;
-              bParams.add(o2.sqlCreated());
-            break;
-          case "setAapOrganizationId":
-              o2.setAapOrganizationId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_aapOrganizationId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlAapOrganizationId());
-            break;
           case "setTenantName":
               o2.setTenantName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantName + "=$" + num);
+              bSql.append(TenantApproval.VAR_tenantName + "=$" + num);
               num++;
               bParams.add(o2.sqlTenantName());
-            break;
-          case "setHostInventoryIds":
-            JsonArray setHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setHostInventoryIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("HostInventory");
-                  }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            Optional.ofNullable(o.getHostInventoryIds()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setHostInventoryIdsValues.contains(oVal.toString())).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("HostInventory");
-                  }
-                  sql(siteRequest).update(HostInventory.class, pk2).setToNull(HostInventory.VAR_tenantResource, TenantRequested.class, solrId2).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAllHostInventoryIds":
-            JsonArray addAllHostInventoryIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllHostInventoryIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("HostInventory");
-                  }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addHostInventoryIds":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("HostInventory");
-                  }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "removeHostInventoryIds":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  sql(siteRequest).update(HostInventory.class, pk2).setToNull(HostInventory.VAR_tenantResource, TenantRequested.class, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
             break;
           case "setTenantId":
               o2.setTenantId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantId + "=$" + num);
+              bSql.append(TenantApproval.VAR_tenantId + "=$" + num);
               num++;
               bParams.add(o2.sqlTenantId());
             break;
-          case "setArchived":
-              o2.setArchived(jsonObject.getString(entityVar));
+          case "setCreated":
+              o2.setCreated(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_archived + "=$" + num);
+              bSql.append(TenantApproval.VAR_created + "=$" + num);
               num++;
-              bParams.add(o2.sqlArchived());
+              bParams.add(o2.sqlCreated());
             break;
-          case "setAnsibleProjectIds":
-            JsonArray setAnsibleProjectIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setAnsibleProjectIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            Optional.ofNullable(o.getAnsibleProjectIds()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setAnsibleProjectIdsValues.contains(oVal.toString())).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).setToNull(AnsibleProject.VAR_tenantResource, TenantRequested.class, solrId2).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAllAnsibleProjectIds":
-            JsonArray addAllAnsibleProjectIdsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllAnsibleProjectIdsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAnsibleProjectIds":
+          case "setTenantRequestedId":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
+                    classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1058,16 +907,11 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case "removeAnsibleProjectIds":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+          case "removeTenantRequestedId":
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  sql(siteRequest).update(AnsibleProject.class, pk2).setToNull(AnsibleProject.VAR_tenantResource, TenantRequested.class, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
+                sql(siteRequest).update(TenantApproval.class, pk).setToNull(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null).onSuccess(a -> {
+                  promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
                 });
@@ -1083,7 +927,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                     solrIds.add(solrId2);
                     classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(TenantRequested.class, pk).set(TenantRequested.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1097,7 +941,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           case "removeTenantResource":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(TenantRequested.class, pk).setToNull(TenantRequested.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
+                sql(siteRequest).update(TenantApproval.class, pk).setToNull(TenantApproval.VAR_tenantResource, TenantIntent.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -1105,357 +949,141 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case "setTenantRequestedNumber":
-              o2.setTenantRequestedNumber(jsonObject.getString(entityVar));
+          case "setArchived":
+              o2.setArchived(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantRequestedNumber + "=$" + num);
+              bSql.append(TenantApproval.VAR_archived + "=$" + num);
               num++;
-              bParams.add(o2.sqlTenantRequestedNumber());
+              bParams.add(o2.sqlArchived());
             break;
-          case "setTenantRequestedId":
-              o2.setTenantRequestedId(jsonObject.getString(entityVar));
+          case "setTenantRealizedNumber":
+              o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantRequestedId + "=$" + num);
+              bSql.append(TenantApproval.VAR_tenantRealizedNumber + "=$" + num);
               num++;
-              bParams.add(o2.sqlTenantRequestedId());
+              bParams.add(o2.sqlTenantRealizedNumber());
             break;
-          case "setTenantRequestedName":
-              o2.setTenantRequestedName(jsonObject.getString(entityVar));
+          case "setApprovedByEmail":
+              o2.setApprovedByEmail(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantRequestedName + "=$" + num);
+              bSql.append(TenantApproval.VAR_approvedByEmail + "=$" + num);
               num++;
-              bParams.add(o2.sqlTenantRequestedName());
+              bParams.add(o2.sqlApprovedByEmail());
+            break;
+          case "setApprovedByUserId":
+              o2.setApprovedByUserId(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantApproval.VAR_approvedByUserId + "=$" + num);
+              num++;
+              bParams.add(o2.sqlApprovedByUserId());
+            break;
+          case "setApprovedByFullName":
+              o2.setApprovedByFullName(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantApproval.VAR_approvedByFullName + "=$" + num);
+              num++;
+              bParams.add(o2.sqlApprovedByFullName());
             break;
           case "setSessionId":
               o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_sessionId + "=$" + num);
+              bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
               num++;
               bParams.add(o2.sqlSessionId());
             break;
-          case "setRequestApprovals":
-            JsonArray setRequestApprovalsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setRequestApprovalsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            Optional.ofNullable(o.getRequestApprovals()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setRequestApprovalsValues.contains(oVal.toString())).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).setToNull(TenantApproval.VAR_approvalId, TenantRequested.class, solrId2).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAllRequestApprovals":
-            JsonArray addAllRequestApprovalsValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllRequestApprovalsValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addRequestApprovals":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "removeRequestApprovals":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  sql(siteRequest).update(TenantApproval.class, pk2).setToNull(TenantApproval.VAR_approvalId, TenantRequested.class, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
+          case "setApproved":
+              o2.setApproved(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantApproval.VAR_approved + "=$" + num);
+              num++;
+              bParams.add(o2.sqlApproved());
             break;
           case "setUserKey":
               o2.setUserKey(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_userKey + "=$" + num);
+              bSql.append(TenantApproval.VAR_userKey + "=$" + num);
               num++;
               bParams.add(o2.sqlUserKey());
             break;
-          case "setCreatedByEmail":
-              o2.setCreatedByEmail(jsonObject.getString(entityVar));
+          case "setApprovalNote":
+              o2.setApprovalNote(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_createdByEmail + "=$" + num);
+              bSql.append(TenantApproval.VAR_approvalNote + "=$" + num);
               num++;
-              bParams.add(o2.sqlCreatedByEmail());
+              bParams.add(o2.sqlApprovalNote());
             break;
-          case "setCreatedByUserId":
-              o2.setCreatedByUserId(jsonObject.getString(entityVar));
+          case "setApprovalName":
+              o2.setApprovalName(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_createdByUserId + "=$" + num);
+              bSql.append(TenantApproval.VAR_approvalName + "=$" + num);
               num++;
-              bParams.add(o2.sqlCreatedByUserId());
+              bParams.add(o2.sqlApprovalName());
             break;
-          case "setCreatedByFullName":
-              o2.setCreatedByFullName(jsonObject.getString(entityVar));
+          case "setApprovalId":
+              o2.setApprovalId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_createdByFullName + "=$" + num);
+              bSql.append(TenantApproval.VAR_approvalId + "=$" + num);
               num++;
-              bParams.add(o2.sqlCreatedByFullName());
+              bParams.add(o2.sqlApprovalId());
             break;
           case "setObjectTitle":
               o2.setObjectTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_objectTitle + "=$" + num);
+              bSql.append(TenantApproval.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
-          case "setCreatedVia":
-              o2.setCreatedVia(jsonObject.getString(entityVar));
+          case "setApprovalTitle":
+              o2.setApprovalTitle(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_createdVia + "=$" + num);
+              bSql.append(TenantApproval.VAR_approvalTitle + "=$" + num);
               num++;
-              bParams.add(o2.sqlCreatedVia());
+              bParams.add(o2.sqlApprovalTitle());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_displayPage + "=$" + num);
+              bSql.append(TenantApproval.VAR_displayPage + "=$" + num);
               num++;
               bParams.add(o2.sqlDisplayPage());
-            break;
-          case "setIntentState":
-              o2.setIntentState(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_intentState + "=$" + num);
-              num++;
-              bParams.add(o2.sqlIntentState());
             break;
           case "setEditPage":
               o2.setEditPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_editPage + "=$" + num);
+              bSql.append(TenantApproval.VAR_editPage + "=$" + num);
               num++;
               bParams.add(o2.sqlEditPage());
-            break;
-          case "setRequestedState":
-              o2.setRequestedState(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_requestedState + "=$" + num);
-              num++;
-              bParams.add(o2.sqlRequestedState());
             break;
           case "setUserPage":
               o2.setUserPage(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_userPage + "=$" + num);
+              bSql.append(TenantApproval.VAR_userPage + "=$" + num);
               num++;
               bParams.add(o2.sqlUserPage());
-            break;
-          case "setRealizedState":
-              o2.setRealizedState(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_realizedState + "=$" + num);
-              num++;
-              bParams.add(o2.sqlRealizedState());
             break;
           case "setDownload":
               o2.setDownload(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRequested.VAR_download + "=$" + num);
+              bSql.append(TenantApproval.VAR_download + "=$" + num);
               num++;
               bParams.add(o2.sqlDownload());
-            break;
-          case "setTenantDescription":
-              o2.setTenantDescription(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_tenantDescription + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantDescription());
-            break;
-          case "setTenantRealized":
-            JsonArray setTenantRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setTenantRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            Optional.ofNullable(o.getTenantRealized()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setTenantRealizedValues.contains(oVal.toString())).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).setToNull(TenantRealized.VAR_tenantResource, TenantRequested.class, solrId2).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addAllTenantRealized":
-            JsonArray addAllTenantRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllTenantRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "addTenantRealized":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "removeTenantRealized":
-            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  sql(siteRequest).update(TenantRealized.class, pk2).setToNull(TenantRealized.VAR_tenantResource, TenantRequested.class, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case "setLocked":
-              o2.setLocked(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantRequested.VAR_locked + "=$" + num);
-              num++;
-              bParams.add(o2.sqlLocked());
             break;
         }
       }
@@ -1469,40 +1097,40 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value TenantRequested failed", ex);
-            LOG.error(String.format("relateTenantRequested failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value TenantApproval failed", ex);
+            LOG.error(String.format("relateTenantApproval failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
       }
       CompositeFuture.all(futures1).onSuccess(a -> {
         CompositeFuture.all(futures2).onSuccess(b -> {
-          TenantRequested o3 = new TenantRequested();
+          TenantApproval o3 = new TenantApproval();
           o3.setSiteRequest_(o.getSiteRequest_());
           o3.setPk(pk);
           promise.complete(o3);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPATCHTenantRequested failed. "), ex);
+          LOG.error(String.format("sqlPATCHTenantApproval failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPATCHTenantRequested failed. "), ex);
+        LOG.error(String.format("sqlPATCHTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPATCHTenantRequested failed. "), ex);
+      LOG.error(String.format("sqlPATCHTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200PATCHTenantRequested(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PATCHTenantApproval(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200PATCHTenantRequested failed. "), ex);
+      LOG.error(String.format("response200PATCHTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -1511,27 +1139,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // POST //
 
   @Override
-  public void postTenantRequested(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("postTenantRequested started. "));
+  public void postTenantApproval(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("postTenantApproval started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "POST"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -1551,9 +1185,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("POST")) {
             List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("POST")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
             authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                   Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                   return permission.getJsonArray("scopes").contains("POST")
@@ -1604,7 +1249,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+              eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
               JsonObject params = new JsonObject();
               params.put("body", siteRequest.getJsonObject());
               params.put("path", new JsonObject());
@@ -1624,24 +1269,24 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               params.put("query", query);
               JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
               JsonObject json = new JsonObject().put("context", context);
-              eventBus.request(TenantRequested.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postTenantRequestedFuture")).onSuccess(a -> {
+              eventBus.request(TenantApproval.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "postTenantApprovalFuture")).onSuccess(a -> {
                 JsonObject responseMessage = (JsonObject)a.body();
                 JsonObject responseBody = new JsonObject(Buffer.buffer(JsonUtil.BASE64_DECODER.decode(responseMessage.getString("payload"))));
-                apiRequest.setSolrId(responseBody.getString(TenantRequested.VAR_solrId));
+                apiRequest.setSolrId(responseBody.getString(TenantApproval.VAR_solrId));
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(responseBody.encodePrettily()))));
-                LOG.debug(String.format("postTenantRequested succeeded. "));
+                LOG.debug(String.format("postTenantApproval succeeded. "));
               }).onFailure(ex -> {
-                LOG.error(String.format("postTenantRequested failed. "), ex);
+                LOG.error(String.format("postTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("postTenantRequested failed. "), ex);
+            LOG.error(String.format("postTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("postTenantRequested failed. "), ex);
+        LOG.error(String.format("postTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1649,7 +1294,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postTenantRequested failed. ", ex2));
+          LOG.error(String.format("postTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1664,14 +1309,14 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("postTenantRequested failed. "), ex);
+        LOG.error(String.format("postTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
   @Override
-  public void postTenantRequestedFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void postTenantApprovalFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -1690,13 +1335,13 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
-        postTenantRequestedFuture(siteRequest, false).onSuccess(o -> {
+        postTenantApprovalFuture(siteRequest, false).onSuccess(o -> {
           eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(JsonObject.mapFrom(o).encodePrettily()))));
         }).onFailure(ex -> {
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Throwable ex) {
-        LOG.error(String.format("postTenantRequested failed. "), ex);
+        LOG.error(String.format("postTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -1704,7 +1349,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("postTenantRequested failed. ", ex2));
+          LOG.error(String.format("postTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -1719,26 +1364,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("postTenantRequested failed. "), ex);
+        LOG.error(String.format("postTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<TenantRequested> postTenantRequestedFuture(SiteRequest siteRequest, Boolean tenantRequestedId) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> postTenantApprovalFuture(SiteRequest siteRequest, Boolean approvalId) {
+    Promise<TenantApproval> promise = Promise.promise();
 
     try {
       pgPool.withTransaction(sqlConnection -> {
-        Promise<TenantRequested> promise1 = Promise.promise();
+        Promise<TenantApproval> promise1 = Promise.promise();
         siteRequest.setSqlConnection(sqlConnection);
-        varsTenantRequested(siteRequest).onSuccess(a -> {
-          createTenantRequested(siteRequest).onSuccess(tenantRequested -> {
-            sqlPOSTTenantRequested(tenantRequested, tenantRequestedId).onSuccess(b -> {
-              persistTenantRequested(tenantRequested, false).onSuccess(c -> {
-                relateTenantRequested(tenantRequested).onSuccess(d -> {
-                  indexTenantRequested(tenantRequested).onSuccess(o2 -> {
-                    promise1.complete(tenantRequested);
+        varsTenantApproval(siteRequest).onSuccess(a -> {
+          createTenantApproval(siteRequest).onSuccess(tenantApproval -> {
+            sqlPOSTTenantApproval(tenantApproval, approvalId).onSuccess(b -> {
+              persistTenantApproval(tenantApproval, false).onSuccess(c -> {
+                relateTenantApproval(tenantApproval).onSuccess(d -> {
+                  indexTenantApproval(tenantApproval).onSuccess(o2 -> {
+                    promise1.complete(tenantApproval);
                   }).onFailure(ex -> {
                     promise1.tryFail(ex);
                   });
@@ -1763,50 +1408,50 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(tenantRequested -> {
-        Promise<TenantRequested> promise2 = Promise.promise();
-        refreshTenantRequested(tenantRequested).onSuccess(a -> {
+      }).compose(tenantApproval -> {
+        Promise<TenantApproval> promise2 = Promise.promise();
+        refreshTenantApproval(tenantApproval).onSuccess(a -> {
           try {
             ApiRequest apiRequest = siteRequest.getApiRequest_();
             if(apiRequest != null) {
               apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-              tenantRequested.apiRequestTenantRequested();
-              eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+              tenantApproval.apiRequestTenantApproval();
+              eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
             }
-            promise2.complete(tenantRequested);
+            promise2.complete(tenantApproval);
           } catch(Exception ex) {
-            LOG.error(String.format("postTenantRequestedFuture failed. "), ex);
+            LOG.error(String.format("postTenantApprovalFuture failed. "), ex);
             promise2.tryFail(ex);
           }
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(tenantRequested -> {
+      }).onSuccess(tenantApproval -> {
         try {
           ApiRequest apiRequest = siteRequest.getApiRequest_();
           if(apiRequest != null) {
             apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
-            tenantRequested.apiRequestTenantRequested();
-            eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+            tenantApproval.apiRequestTenantApproval();
+            eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
           }
-          promise.complete(tenantRequested);
+          promise.complete(tenantApproval);
         } catch(Exception ex) {
-          LOG.error(String.format("postTenantRequestedFuture failed. "), ex);
+          LOG.error(String.format("postTenantApprovalFuture failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("postTenantRequestedFuture failed. "), ex);
+      LOG.error(String.format("postTenantApprovalFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<TenantRequested> sqlPOSTTenantRequested(TenantRequested o, Boolean inheritPrimaryKey) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> sqlPOSTTenantApproval(TenantApproval o, Boolean inheritPrimaryKey) {
+    Promise<TenantApproval> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -1814,11 +1459,11 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("UPDATE TenantRequested SET ");
+      StringBuilder bSql = new StringBuilder("UPDATE TenantApproval SET ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      TenantRequested o2 = new TenantRequested();
+      TenantApproval o2 = new TenantApproval();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -1844,101 +1489,43 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantRequested.VAR_hubId:
-            o2.setHubId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_hubId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlHubId());
-            break;
-          case TenantRequested.VAR_clusterName:
-            o2.setClusterName(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_clusterName + "=$" + num);
-            num++;
-            bParams.add(o2.sqlClusterName());
-            break;
-          case TenantRequested.VAR_created:
-            o2.setCreated(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_created + "=$" + num);
-            num++;
-            bParams.add(o2.sqlCreated());
-            break;
-          case TenantRequested.VAR_aapOrganizationId:
-            o2.setAapOrganizationId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_aapOrganizationId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlAapOrganizationId());
-            break;
-          case TenantRequested.VAR_tenantName:
+          case TenantApproval.VAR_tenantName:
             o2.setTenantName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_tenantName + "=$" + num);
+            bSql.append(TenantApproval.VAR_tenantName + "=$" + num);
             num++;
             bParams.add(o2.sqlTenantName());
             break;
-          case TenantRequested.VAR_hostInventoryIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("HostInventory");
-                  }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_tenantId:
+          case TenantApproval.VAR_tenantId:
             o2.setTenantId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_tenantId + "=$" + num);
+            bSql.append(TenantApproval.VAR_tenantId + "=$" + num);
             num++;
             bParams.add(o2.sqlTenantId());
             break;
-          case TenantRequested.VAR_archived:
-            o2.setArchived(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_created:
+            o2.setCreated(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_archived + "=$" + num);
+            bSql.append(TenantApproval.VAR_created + "=$" + num);
             num++;
-            bParams.add(o2.sqlArchived());
+            bParams.add(o2.sqlCreated());
             break;
-          case TenantRequested.VAR_ansibleProjectIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
+          case TenantApproval.VAR_tenantRequestedId:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
+                    classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1949,7 +1536,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case TenantRequested.VAR_tenantResource:
+          case TenantApproval.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
@@ -1958,7 +1545,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                     solrIds.add(solrId2);
                     classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(TenantRequested.class, pk).set(TenantRequested.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantResource, TenantIntent.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1969,218 +1556,158 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case TenantRequested.VAR_tenantRequestedNumber:
-            o2.setTenantRequestedNumber(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_archived:
+            o2.setArchived(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_tenantRequestedNumber + "=$" + num);
+            bSql.append(TenantApproval.VAR_archived + "=$" + num);
             num++;
-            bParams.add(o2.sqlTenantRequestedNumber());
+            bParams.add(o2.sqlArchived());
             break;
-          case TenantRequested.VAR_tenantRequestedId:
-            o2.setTenantRequestedId(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_tenantRealizedNumber:
+            o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_tenantRequestedId + "=$" + num);
+            bSql.append(TenantApproval.VAR_tenantRealizedNumber + "=$" + num);
             num++;
-            bParams.add(o2.sqlTenantRequestedId());
+            bParams.add(o2.sqlTenantRealizedNumber());
             break;
-          case TenantRequested.VAR_tenantRequestedName:
-            o2.setTenantRequestedName(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_approvedByEmail:
+            o2.setApprovedByEmail(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_tenantRequestedName + "=$" + num);
+            bSql.append(TenantApproval.VAR_approvedByEmail + "=$" + num);
             num++;
-            bParams.add(o2.sqlTenantRequestedName());
+            bParams.add(o2.sqlApprovedByEmail());
             break;
-          case TenantRequested.VAR_sessionId:
+          case TenantApproval.VAR_approvedByUserId:
+            o2.setApprovedByUserId(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantApproval.VAR_approvedByUserId + "=$" + num);
+            num++;
+            bParams.add(o2.sqlApprovedByUserId());
+            break;
+          case TenantApproval.VAR_approvedByFullName:
+            o2.setApprovedByFullName(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantApproval.VAR_approvedByFullName + "=$" + num);
+            num++;
+            bParams.add(o2.sqlApprovedByFullName());
+            break;
+          case TenantApproval.VAR_sessionId:
             o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_sessionId + "=$" + num);
+            bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
             num++;
             bParams.add(o2.sqlSessionId());
             break;
-          case TenantRequested.VAR_requestApprovals:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
+          case TenantApproval.VAR_approved:
+            o2.setApproved(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantApproval.VAR_approved + "=$" + num);
+            num++;
+            bParams.add(o2.sqlApproved());
             break;
-          case TenantRequested.VAR_userKey:
+          case TenantApproval.VAR_userKey:
             o2.setUserKey(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_userKey + "=$" + num);
+            bSql.append(TenantApproval.VAR_userKey + "=$" + num);
             num++;
             bParams.add(o2.sqlUserKey());
             break;
-          case TenantRequested.VAR_createdByEmail:
-            o2.setCreatedByEmail(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_approvalNote:
+            o2.setApprovalNote(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_createdByEmail + "=$" + num);
+            bSql.append(TenantApproval.VAR_approvalNote + "=$" + num);
             num++;
-            bParams.add(o2.sqlCreatedByEmail());
+            bParams.add(o2.sqlApprovalNote());
             break;
-          case TenantRequested.VAR_createdByUserId:
-            o2.setCreatedByUserId(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_approvalName:
+            o2.setApprovalName(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_createdByUserId + "=$" + num);
+            bSql.append(TenantApproval.VAR_approvalName + "=$" + num);
             num++;
-            bParams.add(o2.sqlCreatedByUserId());
+            bParams.add(o2.sqlApprovalName());
             break;
-          case TenantRequested.VAR_createdByFullName:
-            o2.setCreatedByFullName(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_approvalId:
+            o2.setApprovalId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_createdByFullName + "=$" + num);
+            bSql.append(TenantApproval.VAR_approvalId + "=$" + num);
             num++;
-            bParams.add(o2.sqlCreatedByFullName());
+            bParams.add(o2.sqlApprovalId());
             break;
-          case TenantRequested.VAR_objectTitle:
+          case TenantApproval.VAR_objectTitle:
             o2.setObjectTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_objectTitle + "=$" + num);
+            bSql.append(TenantApproval.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
-          case TenantRequested.VAR_createdVia:
-            o2.setCreatedVia(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_approvalTitle:
+            o2.setApprovalTitle(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_createdVia + "=$" + num);
+            bSql.append(TenantApproval.VAR_approvalTitle + "=$" + num);
             num++;
-            bParams.add(o2.sqlCreatedVia());
+            bParams.add(o2.sqlApprovalTitle());
             break;
-          case TenantRequested.VAR_displayPage:
+          case TenantApproval.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_displayPage + "=$" + num);
+            bSql.append(TenantApproval.VAR_displayPage + "=$" + num);
             num++;
             bParams.add(o2.sqlDisplayPage());
             break;
-          case TenantRequested.VAR_intentState:
-            o2.setIntentState(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_intentState + "=$" + num);
-            num++;
-            bParams.add(o2.sqlIntentState());
-            break;
-          case TenantRequested.VAR_editPage:
+          case TenantApproval.VAR_editPage:
             o2.setEditPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_editPage + "=$" + num);
+            bSql.append(TenantApproval.VAR_editPage + "=$" + num);
             num++;
             bParams.add(o2.sqlEditPage());
             break;
-          case TenantRequested.VAR_requestedState:
-            o2.setRequestedState(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_requestedState + "=$" + num);
-            num++;
-            bParams.add(o2.sqlRequestedState());
-            break;
-          case TenantRequested.VAR_userPage:
+          case TenantApproval.VAR_userPage:
             o2.setUserPage(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_userPage + "=$" + num);
+            bSql.append(TenantApproval.VAR_userPage + "=$" + num);
             num++;
             bParams.add(o2.sqlUserPage());
             break;
-          case TenantRequested.VAR_realizedState:
-            o2.setRealizedState(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_realizedState + "=$" + num);
-            num++;
-            bParams.add(o2.sqlRealizedState());
-            break;
-          case TenantRequested.VAR_download:
+          case TenantApproval.VAR_download:
             o2.setDownload(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRequested.VAR_download + "=$" + num);
+            bSql.append(TenantApproval.VAR_download + "=$" + num);
             num++;
             bParams.add(o2.sqlDownload());
-            break;
-          case TenantRequested.VAR_tenantDescription:
-            o2.setTenantDescription(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_tenantDescription + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantDescription());
-            break;
-          case TenantRequested.VAR_tenantRealized:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, o.getSolrId(), val).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_locked:
-            o2.setLocked(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantRequested.VAR_locked + "=$" + num);
-            num++;
-            bParams.add(o2.sqlLocked());
             break;
           }
         }
@@ -2195,8 +1722,8 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               ).onSuccess(b -> {
             a.handle(Future.succeededFuture());
           }).onFailure(ex -> {
-            RuntimeException ex2 = new RuntimeException("value TenantRequested failed", ex);
-            LOG.error(String.format("relateTenantRequested failed. "), ex2);
+            RuntimeException ex2 = new RuntimeException("value TenantApproval failed", ex);
+            LOG.error(String.format("relateTenantApproval failed. "), ex2);
             a.handle(Future.failedFuture(ex2));
           });
         }));
@@ -2205,28 +1732,28 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete(o2);
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlPOSTTenantRequested failed. "), ex);
+          LOG.error(String.format("sqlPOSTTenantApproval failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlPOSTTenantRequested failed. "), ex);
+        LOG.error(String.format("sqlPOSTTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlPOSTTenantRequested failed. "), ex);
+      LOG.error(String.format("sqlPOSTTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200POSTTenantRequested(TenantRequested o) {
+  public Future<ServiceResponse> response200POSTTenantApproval(TenantApproval o) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       JsonObject json = JsonObject.mapFrom(o);
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200POSTTenantRequested failed. "), ex);
+      LOG.error(String.format("response200POSTTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -2235,27 +1762,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // DELETE //
 
   @Override
-  public void deleteTenantRequested(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deleteTenantRequested started. "));
+  public void deleteTenantApproval(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deleteTenantApproval started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2275,9 +1808,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE")) {
             List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
             authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                   Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                   return permission.getJsonArray("scopes").contains("DELETE")
@@ -2322,47 +1866,47 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantRequested -> {
+              searchTenantApprovalList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantApproval -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listTenantRequested.getRequest().getRows());
-                  apiRequest.setNumFound(listTenantRequested.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenantApproval.getRequest().getRows());
+                  apiRequest.setNumFound(listTenantApproval.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listTenantRequested.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenantApproval.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETETenantRequested(apiRequest, listTenantRequested).onSuccess(e -> {
-                    response200DELETETenantRequested(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deleteTenantRequested succeeded. "));
+                  listDELETETenantApproval(apiRequest, listTenantApproval).onSuccess(e -> {
+                    response200DELETETenantApproval(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deleteTenantApproval succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deleteTenantRequested failed. "), ex);
+                      LOG.error(String.format("deleteTenantApproval failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deleteTenantRequested failed. "), ex);
+                    LOG.error(String.format("deleteTenantApproval failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deleteTenantRequested failed. "), ex);
+                  LOG.error(String.format("deleteTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deleteTenantRequested failed. "), ex);
+                LOG.error(String.format("deleteTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteTenantRequested failed. "), ex);
+            LOG.error(String.format("deleteTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteTenantRequested failed. "), ex);
+        LOG.error(String.format("deleteTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2370,7 +1914,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deleteTenantRequested failed. ", ex2));
+          LOG.error(String.format("deleteTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2385,58 +1929,58 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("deleteTenantRequested failed. "), ex);
+        LOG.error(String.format("deleteTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETETenantRequested(ApiRequest apiRequest, SearchList<TenantRequested> listTenantRequested) {
+  public Future<Void> listDELETETenantApproval(ApiRequest apiRequest, SearchList<TenantApproval> listTenantApproval) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-    listTenantRequested.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+    listTenantApproval.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      TenantRequested o2 = jsonObject.mapTo(TenantRequested.class);
+      TenantApproval o2 = jsonObject.mapTo(TenantApproval.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deleteTenantRequestedFuture(o).onSuccess(a -> {
+        deleteTenantApprovalFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETETenantRequested failed. "), ex);
+          LOG.error(String.format("listDELETETenantApproval failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listTenantRequested.next().onSuccess(next -> {
+      listTenantApproval.next().onSuccess(next -> {
         if(next) {
-          listDELETETenantRequested(apiRequest, listTenantRequested).onSuccess(b -> {
+          listDELETETenantApproval(apiRequest, listTenantApproval).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETETenantRequested failed. "), ex);
+            LOG.error(String.format("listDELETETenantApproval failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETETenantRequested failed. "), ex);
+        LOG.error(String.format("listDELETETenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETETenantRequested failed. "), ex);
+      LOG.error(String.format("listDELETETenantApproval failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deleteTenantRequestedFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deleteTenantApprovalFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -2448,10 +1992,10 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             siteRequest.addScopes(scope);
           });
         });
-        searchTenantRequestedList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantRequested -> {
+        searchTenantApprovalList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantApproval -> {
           try {
-            TenantRequested o = listTenantRequested.first();
-            if(o != null && listTenantRequested.getResponse().getResponse().getNumFound() == 1) {
+            TenantApproval o = listTenantApproval.first();
+            if(o != null && listTenantApproval.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -2463,9 +2007,9 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getTenantRequestedId().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deleteTenantRequestedFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getApprovalId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deleteTenantApprovalFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -2474,42 +2018,42 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deleteTenantRequested failed. "), ex);
+            LOG.error(String.format("deleteTenantApproval failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deleteTenantRequested failed. "), ex);
+          LOG.error(String.format("deleteTenantApproval failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deleteTenantRequested failed. "), ex);
+        LOG.error(String.format("deleteTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deleteTenantRequested failed. "), ex);
+      LOG.error(String.format("deleteTenantApproval failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<TenantRequested> deleteTenantRequestedFuture(TenantRequested o) {
+  public Future<TenantApproval> deleteTenantApprovalFuture(TenantApproval o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<TenantRequested> promise = Promise.promise();
+    Promise<TenantApproval> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<TenantRequested> promise1 = Promise.promise();
+      Promise<TenantApproval> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsTenantRequested(siteRequest).onSuccess(a -> {
-          sqlDELETETenantRequested(o).onSuccess(tenantRequested -> {
-            relateTenantRequested(o).onSuccess(d -> {
-              unindexTenantRequested(o).onSuccess(o2 -> {
+        varsTenantApproval(siteRequest).onSuccess(a -> {
+          sqlDELETETenantApproval(o).onSuccess(tenantApproval -> {
+            relateTenantApproval(o).onSuccess(d -> {
+              unindexTenantApproval(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestTenantRequested();
+                    o2.apiRequestTenantApproval();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -2531,27 +2075,27 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(tenantRequested -> {
-        Promise<TenantRequested> promise2 = Promise.promise();
-        refreshTenantRequested(o).onSuccess(a -> {
+      }).compose(tenantApproval -> {
+        Promise<TenantApproval> promise2 = Promise.promise();
+        refreshTenantApproval(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(tenantRequested -> {
-        promise.complete(tenantRequested);
+      }).onSuccess(tenantApproval -> {
+        promise.complete(tenantApproval);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deleteTenantRequestedFuture failed. "), ex);
+      LOG.error(String.format("deleteTenantApprovalFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETETenantRequested(TenantRequested o) {
+  public Future<Void> sqlDELETETenantApproval(TenantApproval o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -2560,11 +2104,11 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM TenantRequested ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM TenantApproval ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      TenantRequested o2 = new TenantRequested();
+      TenantApproval o2 = new TenantApproval();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -2573,17 +2117,16 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantRequested.VAR_hostInventoryIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+          case TenantApproval.VAR_tenantRequestedId:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("HostInventory");
+                    classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2594,28 +2137,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case TenantRequested.VAR_ansibleProjectIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_tenantResource:
+          case TenantApproval.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
@@ -2624,49 +2146,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                     solrIds.add(solrId2);
                     classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(TenantRequested.class, pk).set(TenantRequested.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_requestApprovals:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_tenantRealized:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2689,8 +2169,8 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value TenantRequested failed", ex);
-          LOG.error(String.format("unrelateTenantRequested failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value TenantApproval failed", ex);
+          LOG.error(String.format("unrelateTenantApproval failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -2698,27 +2178,27 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETETenantRequested failed. "), ex);
+          LOG.error(String.format("sqlDELETETenantApproval failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETETenantRequested failed. "), ex);
+        LOG.error(String.format("sqlDELETETenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETETenantRequested failed. "), ex);
+      LOG.error(String.format("sqlDELETETenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETETenantRequested(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETETenantApproval(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETETenantRequested failed. "), ex);
+      LOG.error(String.format("response200DELETETenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -2727,27 +2207,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // PUTImport //
 
   @Override
-  public void putimportTenantRequested(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("putimportTenantRequested started. "));
+  public void putimportTenantApproval(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("putimportTenantApproval started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "PUT"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "PUT"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -2767,9 +2253,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("PUT")) {
             List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("PUT")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
             authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                   Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                   return permission.getJsonArray("scopes").contains("PUT")
@@ -2821,32 +2318,32 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               apiRequest.setNumPATCH(0L);
               apiRequest.initDeepApiRequest(siteRequest);
               siteRequest.setApiRequest_(apiRequest);
-              eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
-              varsTenantRequested(siteRequest).onSuccess(d -> {
-                listPUTImportTenantRequested(apiRequest, siteRequest).onSuccess(e -> {
-                  response200PUTImportTenantRequested(siteRequest).onSuccess(response -> {
-                    LOG.debug(String.format("putimportTenantRequested succeeded. "));
+              eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
+              varsTenantApproval(siteRequest).onSuccess(d -> {
+                listPUTImportTenantApproval(apiRequest, siteRequest).onSuccess(e -> {
+                  response200PUTImportTenantApproval(siteRequest).onSuccess(response -> {
+                    LOG.debug(String.format("putimportTenantApproval succeeded. "));
                     eventHandler.handle(Future.succeededFuture(response));
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportTenantRequested failed. "), ex);
+                    LOG.error(String.format("putimportTenantApproval failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 }).onFailure(ex -> {
-                  LOG.error(String.format("putimportTenantRequested failed. "), ex);
+                  LOG.error(String.format("putimportTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("putimportTenantRequested failed. "), ex);
+                LOG.error(String.format("putimportTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("putimportTenantRequested failed. "), ex);
+            LOG.error(String.format("putimportTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportTenantRequested failed. "), ex);
+        LOG.error(String.format("putimportTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -2854,7 +2351,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportTenantRequested failed. ", ex2));
+          LOG.error(String.format("putimportTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -2869,13 +2366,13 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("putimportTenantRequested failed. "), ex);
+        LOG.error(String.format("putimportTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listPUTImportTenantRequested(ApiRequest apiRequest, SiteRequest siteRequest) {
+  public Future<Void> listPUTImportTenantApproval(ApiRequest apiRequest, SiteRequest siteRequest) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
     JsonArray jsonArray = Optional.ofNullable(siteRequest.getJsonObject()).map(o -> o.getJsonArray("list")).orElse(new JsonArray());
@@ -2900,10 +2397,10 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(TenantRequested.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportTenantRequestedFuture")).onSuccess(a -> {
+          eventBus.request(TenantApproval.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "putimportTenantApprovalFuture")).onSuccess(a -> {
             promise1.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listPUTImportTenantRequested failed. "), ex);
+            LOG.error(String.format("listPUTImportTenantApproval failed. "), ex);
             promise1.tryFail(ex);
           });
         }));
@@ -2912,18 +2409,18 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
         promise.complete();
       }).onFailure(ex -> {
-        LOG.error(String.format("listPUTImportTenantRequested failed. "), ex);
+        LOG.error(String.format("listPUTImportTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("listPUTImportTenantRequested failed. "), ex);
+      LOG.error(String.format("listPUTImportTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
   @Override
-  public void putimportTenantRequestedFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void putimportTenantApprovalFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -2939,19 +2436,19 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         apiRequest.setNumPATCH(0L);
         apiRequest.initDeepApiRequest(siteRequest);
         siteRequest.setApiRequest_(apiRequest);
-        String tenantRequestedId = Optional.ofNullable(body.getString(TenantRequested.VAR_tenantRequestedId)).orElse(body.getString(TenantRequested.VAR_solrId));
+        String approvalId = Optional.ofNullable(body.getString(TenantApproval.VAR_approvalId)).orElse(body.getString(TenantApproval.VAR_solrId));
         if(Optional.ofNullable(serviceRequest.getParams()).map(p -> p.getJsonObject("query")).map( q -> q.getJsonArray("var")).orElse(new JsonArray()).stream().filter(s -> "refresh:false".equals(s)).count() > 0L) {
           siteRequest.getRequestVars().put( "refresh", "false" );
         }
         pgPool.getConnection().onSuccess(sqlConnection -> {
-          String sqlQuery = String.format("select * from %s WHERE tenantRequestedId=$1", TenantRequested.CLASS_SIMPLE_NAME);
+          String sqlQuery = String.format("select * from %s WHERE approvalId=$1", TenantApproval.CLASS_SIMPLE_NAME);
           sqlConnection.preparedQuery(sqlQuery)
-              .execute(Tuple.tuple(Arrays.asList(tenantRequestedId))
+              .execute(Tuple.tuple(Arrays.asList(approvalId))
               ).onSuccess(result -> {
             sqlConnection.close().onSuccess(a -> {
               try {
                 if(result.size() >= 1) {
-                  TenantRequested o = new TenantRequested();
+                  TenantApproval o = new TenantApproval();
                   o.setSiteRequest_(siteRequest);
                   for(Row definition : result.value()) {
                     for(Integer i = 0; i < definition.size(); i++) {
@@ -2960,11 +2457,11 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                         Object columnValue = definition.getValue(i);
                         o.persistForClass(columnName, columnValue);
                       } catch(Exception e) {
-                        LOG.error(String.format("persistTenantRequested failed. "), e);
+                        LOG.error(String.format("persistTenantApproval failed. "), e);
                       }
                     }
                   }
-                  TenantRequested o2 = new TenantRequested();
+                  TenantApproval o2 = new TenantApproval();
                   o2.setSiteRequest_(siteRequest);
                   JsonObject body2 = new JsonObject();
                   for(String f : body.fieldNames()) {
@@ -2996,56 +2493,56 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                     } else {
                       o2.persistForClass(f, bodyVal);
                       o2.relateForClass(f, bodyVal);
-                      if(!StringUtils.containsAny(f, "tenantRequestedId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "approvalId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.put("set" + StringUtils.capitalize(f), bodyVal);
                     }
                   }
                   for(String f : Optional.ofNullable(o.getSaves()).orElse(new ArrayList<>())) {
                     if(!body.fieldNames().contains(f)) {
-                      if(!StringUtils.containsAny(f, "tenantRequestedId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
+                      if(!StringUtils.containsAny(f, "approvalId", "created", "setCreated") && !Objects.equals(o.obtainForClass(f), o2.obtainForClass(f)))
                         body2.putNull("set" + StringUtils.capitalize(f));
                     }
                   }
                   if(result.size() >= 1) {
                     apiRequest.setOriginal(o);
-                    apiRequest.setId(Optional.ofNullable(o.getTenantRequestedId()).map(v -> v.toString()).orElse(null));
+                    apiRequest.setId(Optional.ofNullable(o.getApprovalId()).map(v -> v.toString()).orElse(null));
                     apiRequest.setSolrId(o.getSolrId());
                   }
                   siteRequest.setJsonObject(body2);
-                  patchTenantRequestedFuture(o, true).onSuccess(b -> {
-                    LOG.debug("Import TenantRequested {} succeeded, modified TenantRequested. ", body.getValue(TenantRequested.VAR_tenantRequestedId));
+                  patchTenantApprovalFuture(o, true).onSuccess(b -> {
+                    LOG.debug("Import TenantApproval {} succeeded, modified TenantApproval. ", body.getValue(TenantApproval.VAR_approvalId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+                    LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 } else {
-                  postTenantRequestedFuture(siteRequest, true).onSuccess(b -> {
-                    LOG.debug("Import TenantRequested {} succeeded, created new TenantRequested. ", body.getValue(TenantRequested.VAR_tenantRequestedId));
+                  postTenantApprovalFuture(siteRequest, true).onSuccess(b -> {
+                    LOG.debug("Import TenantApproval {} succeeded, created new TenantApproval. ", body.getValue(TenantApproval.VAR_approvalId));
                     eventHandler.handle(Future.succeededFuture());
                   }).onFailure(ex -> {
-                    LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+                    LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
                     eventHandler.handle(Future.failedFuture(ex));
                   });
                 }
               } catch(Exception ex) {
-                LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+                LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
                 eventHandler.handle(Future.failedFuture(ex));
               }
             }).onFailure(ex -> {
-              LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+              LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
               eventHandler.handle(Future.failedFuture(ex));
             });
           }).onFailure(ex -> {
-            LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+            LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
             eventHandler.handle(Future.failedFuture(ex));
           });
         }).onFailure(ex -> {
-          LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+          LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
           eventHandler.handle(Future.failedFuture(ex));
         });
       } catch(Exception ex) {
-        LOG.error(String.format("putimportTenantRequestedFuture failed. "), ex);
+        LOG.error(String.format("putimportTenantApprovalFuture failed. "), ex);
         eventHandler.handle(Future.failedFuture(ex));
       }
     }).onFailure(ex -> {
@@ -3053,7 +2550,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("putimportTenantRequested failed. ", ex2));
+          LOG.error(String.format("putimportTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3068,19 +2565,19 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("putimportTenantRequested failed. "), ex);
+        LOG.error(String.format("putimportTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<ServiceResponse> response200PUTImportTenantRequested(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200PUTImportTenantApproval(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200PUTImportTenantRequested failed. "), ex);
+      LOG.error(String.format("response200PUTImportTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -3089,28 +2586,34 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // SearchPage //
 
   @Override
-  public void searchpageTenantRequested(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void searchpageTenantApproval(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     oauth2AuthenticationProvider.refresh(User.create(serviceRequest.getUser())).onSuccess(user -> {
       serviceRequest.setUser(user.principal());
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -3130,9 +2633,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
@@ -3167,26 +2681,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, false, "GET").onSuccess(listTenantRequested -> {
-                response200SearchPageTenantRequested(listTenantRequested).onSuccess(response -> {
+              searchTenantApprovalList(siteRequest, false, true, false, "GET").onSuccess(listTenantApproval -> {
+                response200SearchPageTenantApproval(listTenantApproval).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("searchpageTenantRequested succeeded. "));
+                  LOG.debug(String.format("searchpageTenantApproval succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+                  LOG.error(String.format("searchpageTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+                LOG.error(String.format("searchpageTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+            LOG.error(String.format("searchpageTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+        LOG.error(String.format("searchpageTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3194,7 +2708,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageTenantRequested failed. ", ex2));
+          LOG.error(String.format("searchpageTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3209,7 +2723,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+        LOG.error(String.format("searchpageTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
@@ -3218,7 +2732,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("searchpageTenantRequested failed. ", ex2));
+          LOG.error(String.format("searchpageTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3233,17 +2747,17 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("searchpageTenantRequested failed. "), ex);
+        LOG.error(String.format("searchpageTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void searchpageTenantRequestedPageInit(JsonObject ctx, TenantRequestedPage page, SearchList<TenantRequested> listTenantRequested, Promise<Void> promise) {
+  public void searchpageTenantApprovalPageInit(JsonObject ctx, TenantApprovalPage page, SearchList<TenantApproval> listTenantApproval, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/requested/tenant"));
-    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/requested/tenant"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/approval/tenant"));
+    ctx.put("enUSUrlPage", String.format("%s%s", siteBaseUrl, "/en-us/search/approval/tenant"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlUserPage", Optional.ofNullable(page.getResult()).map(o -> o.getUserPage()));
@@ -3252,19 +2766,19 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
     promise.complete();
   }
 
-  public String templateUriSearchPageTenantRequested(ServiceRequest serviceRequest, TenantRequested result) {
-    return "en-us/search/requested/tenant/TenantRequestedSearchPage.htm";
+  public String templateUriSearchPageTenantApproval(ServiceRequest serviceRequest, TenantApproval result) {
+    return "en-us/search/approval/tenant/TenantApprovalSearchPage.htm";
   }
-  public void templateSearchPageTenantRequested(JsonObject ctx, TenantRequestedPage page, SearchList<TenantRequested> listTenantRequested, Promise<String> promise) {
+  public void templateSearchPageTenantApproval(JsonObject ctx, TenantApprovalPage page, SearchList<TenantApproval> listTenantApproval, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      TenantRequested result = listTenantRequested.first();
-      String pageTemplateUri = templateUriSearchPageTenantRequested(serviceRequest, result);
+      TenantApproval result = listTenantApproval.first();
+      String pageTemplateUri = templateUriSearchPageTenantApproval(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/requested/tenant/TenantRequestedSearchPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/search/approval/tenant/TenantApprovalSearchPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3318,67 +2832,67 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateSearchPageTenantRequested failed. "), ex);
+      LOG.error(String.format("templateSearchPageTenantApproval failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200SearchPageTenantRequested(SearchList<TenantRequested> listTenantRequested) {
+  public Future<ServiceResponse> response200SearchPageTenantApproval(SearchList<TenantApproval> listTenantApproval) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-      TenantRequestedPage page = new TenantRequestedPage();
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+      TenantApprovalPage page = new TenantApprovalPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listTenantRequested.size() >= 1)
-        siteRequest.setRequestPk(listTenantRequested.get(0).getPk());
-      page.setSearchListTenantRequested_(listTenantRequested);
+      if(listTenantApproval.size() >= 1)
+        siteRequest.setRequestPk(listTenantApproval.get(0).getPk());
+      page.setSearchListTenantApproval_(listTenantApproval);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepTenantRequestedPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepTenantApprovalPage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          searchpageTenantRequestedPageInit(ctx, page, listTenantRequested, promise1);
+          searchpageTenantApprovalPageInit(ctx, page, listTenantApproval, promise1);
           promise1.future().onSuccess(b -> {
             try {
               Promise<String> promise2 = Promise.promise();
-              templateSearchPageTenantRequested(ctx, page, listTenantRequested, promise2);
+              templateSearchPageTenantApproval(ctx, page, listTenantApproval, promise2);
               promise2.future().onSuccess(renderedTemplate -> {
                 try {
                   Buffer buffer = Buffer.buffer(renderedTemplate);
                   promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
                 } catch(Throwable ex) {
-                  LOG.error(String.format("response200SearchPageTenantRequested failed. "), ex);
+                  LOG.error(String.format("response200SearchPageTenantApproval failed. "), ex);
                   promise.fail(ex);
                 }
               }).onFailure(ex -> {
                 promise.fail(ex);
               });
             } catch(Throwable ex) {
-              LOG.error(String.format("response200SearchPageTenantRequested failed. "), ex);
+              LOG.error(String.format("response200SearchPageTenantApproval failed. "), ex);
               promise.tryFail(ex);
             }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200SearchPageTenantRequested failed. "), ex);
+          LOG.error(String.format("response200SearchPageTenantApproval failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200SearchPageTenantRequested failed. "), ex);
+      LOG.error(String.format("response200SearchPageTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotSearchPageTenantRequested(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotSearchPageTenantApproval(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -3407,7 +2921,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotSearchPageTenantRequested(pivotFields2, pivotArray2);
+          responsePivotSearchPageTenantApproval(pivotFields2, pivotArray2);
         }
       }
     }
@@ -3416,26 +2930,32 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // EditPage //
 
   @Override
-  public void editpageTenantRequested(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void editpageTenantApproval(ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "GET"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -3455,9 +2975,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("GET")) {
               List<String> fqs = new ArrayList<>();
+              authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                    Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                    return permission.getJsonArray("scopes").contains("GET")
+                        && mPermission.find();
+                  }).forEach(permission -> {
+                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                      if(!scopes.contains(scope))
+                        scopes.add(scope);
+                    });
+                  });
               authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                     Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                     return permission.getJsonArray("scopes").contains("GET")
@@ -3492,26 +3023,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, false, "GET").onSuccess(listTenantRequested -> {
-                response200EditPageTenantRequested(listTenantRequested).onSuccess(response -> {
+              searchTenantApprovalList(siteRequest, false, true, false, "GET").onSuccess(listTenantApproval -> {
+                response200EditPageTenantApproval(listTenantApproval).onSuccess(response -> {
                   eventHandler.handle(Future.succeededFuture(response));
-                  LOG.debug(String.format("editpageTenantRequested succeeded. "));
+                  LOG.debug(String.format("editpageTenantApproval succeeded. "));
                 }).onFailure(ex -> {
-                  LOG.error(String.format("editpageTenantRequested failed. "), ex);
+                  LOG.error(String.format("editpageTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 });
               }).onFailure(ex -> {
-                LOG.error(String.format("editpageTenantRequested failed. "), ex);
+                LOG.error(String.format("editpageTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
             });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("editpageTenantRequested failed. "), ex);
+            LOG.error(String.format("editpageTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("editpageTenantRequested failed. "), ex);
+        LOG.error(String.format("editpageTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3519,7 +3050,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("editpageTenantRequested failed. ", ex2));
+          LOG.error(String.format("editpageTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3534,16 +3065,16 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("editpageTenantRequested failed. "), ex);
+        LOG.error(String.format("editpageTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public void editpageTenantRequestedPageInit(JsonObject ctx, TenantRequestedPage page, SearchList<TenantRequested> listTenantRequested, Promise<Void> promise) {
+  public void editpageTenantApprovalPageInit(JsonObject ctx, TenantApprovalPage page, SearchList<TenantApproval> listTenantApproval, Promise<Void> promise) {
     String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
 
-    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/requested/tenant"));
+    ctx.put("enUSUrlSearchPage", String.format("%s%s", siteBaseUrl, "/en-us/search/approval/tenant"));
     ctx.put("enUSUrlDisplayPage", Optional.ofNullable(page.getResult()).map(o -> o.getDisplayPage()));
     ctx.put("enUSUrlEditPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
     ctx.put("enUSUrlPage", Optional.ofNullable(page.getResult()).map(o -> o.getEditPage()));
@@ -3553,19 +3084,19 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
     promise.complete();
   }
 
-  public String templateUriEditPageTenantRequested(ServiceRequest serviceRequest, TenantRequested result) {
-    return "en-us/edit/requested/tenant/TenantRequestedEditPage.htm";
+  public String templateUriEditPageTenantApproval(ServiceRequest serviceRequest, TenantApproval result) {
+    return "en-us/edit/approval/tenant/TenantApprovalEditPage.htm";
   }
-  public void templateEditPageTenantRequested(JsonObject ctx, TenantRequestedPage page, SearchList<TenantRequested> listTenantRequested, Promise<String> promise) {
+  public void templateEditPageTenantApproval(JsonObject ctx, TenantApprovalPage page, SearchList<TenantApproval> listTenantApproval, Promise<String> promise) {
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
-      TenantRequested result = listTenantRequested.first();
-      String pageTemplateUri = templateUriEditPageTenantRequested(serviceRequest, result);
+      TenantApproval result = listTenantApproval.first();
+      String pageTemplateUri = templateUriEditPageTenantApproval(serviceRequest, result);
       String siteTemplatePath = config.getString(ComputateConfigKeys.TEMPLATE_PATH);
       Path resourceTemplatePath = Path.of(siteTemplatePath, pageTemplateUri);
       if(result == null || !Files.exists(resourceTemplatePath)) {
-        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/requested/tenant/TenantRequestedEditPage.htm"), Charset.forName("UTF-8"));
+        String template = Files.readString(Path.of(siteTemplatePath, "en-us/edit/approval/tenant/TenantApprovalEditPage.htm"), Charset.forName("UTF-8"));
         String renderedTemplate = jinjava.render(template, ctx.getMap());
         promise.complete(renderedTemplate);
       } else if(pageTemplateUri.endsWith(".md")) {
@@ -3619,67 +3150,67 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         promise.complete(renderedTemplate);
       }
     } catch(Exception ex) {
-      LOG.error(String.format("templateEditPageTenantRequested failed. "), ex);
+      LOG.error(String.format("templateEditPageTenantApproval failed. "), ex);
       ExceptionUtils.rethrow(ex);
     }
   }
-  public Future<ServiceResponse> response200EditPageTenantRequested(SearchList<TenantRequested> listTenantRequested) {
+  public Future<ServiceResponse> response200EditPageTenantApproval(SearchList<TenantApproval> listTenantApproval) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
-      SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-      TenantRequestedPage page = new TenantRequestedPage();
+      SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+      TenantApprovalPage page = new TenantApprovalPage();
       MultiMap requestHeaders = MultiMap.caseInsensitiveMultiMap();
       siteRequest.setRequestHeaders(requestHeaders);
 
-      if(listTenantRequested.size() >= 1)
-        siteRequest.setRequestPk(listTenantRequested.get(0).getPk());
-      page.setSearchListTenantRequested_(listTenantRequested);
+      if(listTenantApproval.size() >= 1)
+        siteRequest.setRequestPk(listTenantApproval.get(0).getPk());
+      page.setSearchListTenantApproval_(listTenantApproval);
       page.setSiteRequest_(siteRequest);
       page.setServiceRequest(siteRequest.getServiceRequest());
       page.setWebClient(webClient);
       page.setVertx(vertx);
-      page.promiseDeepTenantRequestedPage(siteRequest).onSuccess(a -> {
+      page.promiseDeepTenantApprovalPage(siteRequest).onSuccess(a -> {
         try {
           JsonObject ctx = ConfigKeys.getPageContext(config);
           ctx.mergeIn(JsonObject.mapFrom(page));
           Promise<Void> promise1 = Promise.promise();
-          editpageTenantRequestedPageInit(ctx, page, listTenantRequested, promise1);
+          editpageTenantApprovalPageInit(ctx, page, listTenantApproval, promise1);
           promise1.future().onSuccess(b -> {
             try {
               Promise<String> promise2 = Promise.promise();
-              templateEditPageTenantRequested(ctx, page, listTenantRequested, promise2);
+              templateEditPageTenantApproval(ctx, page, listTenantApproval, promise2);
               promise2.future().onSuccess(renderedTemplate -> {
                 try {
                   Buffer buffer = Buffer.buffer(renderedTemplate);
                   promise.complete(new ServiceResponse(200, "OK", buffer, requestHeaders));
                 } catch(Throwable ex) {
-                  LOG.error(String.format("response200EditPageTenantRequested failed. "), ex);
+                  LOG.error(String.format("response200EditPageTenantApproval failed. "), ex);
                   promise.fail(ex);
                 }
               }).onFailure(ex -> {
                 promise.fail(ex);
               });
             } catch(Throwable ex) {
-              LOG.error(String.format("response200EditPageTenantRequested failed. "), ex);
+              LOG.error(String.format("response200EditPageTenantApproval failed. "), ex);
               promise.tryFail(ex);
             }
           }).onFailure(ex -> {
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("response200EditPageTenantRequested failed. "), ex);
+          LOG.error(String.format("response200EditPageTenantApproval failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("response200EditPageTenantRequested failed. "), ex);
+      LOG.error(String.format("response200EditPageTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void responsePivotEditPageTenantRequested(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
+  public void responsePivotEditPageTenantApproval(List<SolrResponse.Pivot> pivots, JsonArray pivotArray) {
     if(pivots != null) {
       for(SolrResponse.Pivot pivotField : pivots) {
         String entityIndexed = pivotField.getField();
@@ -3708,7 +3239,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         if(pivotFields2 != null) {
           JsonArray pivotArray2 = new JsonArray();
           pivotJson.put("pivot", pivotArray2);
-          responsePivotEditPageTenantRequested(pivotFields2, pivotArray2);
+          responsePivotEditPageTenantApproval(pivotFields2, pivotArray2);
         }
       }
     }
@@ -3717,27 +3248,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
   // DELETEFilter //
 
   @Override
-  public void deletefilterTenantRequested(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
-    LOG.debug(String.format("deletefilterTenantRequested started. "));
+  public void deletefilterTenantApproval(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+    LOG.debug(String.format("deletefilterTenantApproval started. "));
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
         siteRequest.setLang("enUS");
-        String tenantRequestedId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("tenantRequestedId");
-        String TENANTREQUESTED = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANTREQUESTED");
+        String approvalId = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("approvalId");
+        String TENANT = siteRequest.getServiceRequest().getParams().getJsonObject("path").getString("TENANT");
         List<String> groups = Optional.ofNullable(siteRequest.getGroups()).orElse(new ArrayList<>());
         MultiMap form = MultiMap.caseInsensitiveMultiMap();
         form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
         form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
         form.add("response_mode", "permissions");
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "GET"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "POST"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "PATCH"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "DELETE"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "Admin"));
-        form.add("permission", String.format("%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, "SuperAdmin"));
-        if(tenantRequestedId != null)
-          form.add("permission", String.format("%s-%s#%s", TenantRequested.CLASS_AUTH_RESOURCE, tenantRequestedId, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "GET"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "POST"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "PATCH"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "DELETE"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "Admin"));
+        form.add("permission", String.format("%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, "SuperAdmin"));
+        if(approvalId != null)
+          form.add("permission", String.format("%s-%s#%s", TenantApproval.CLASS_AUTH_RESOURCE, approvalId, "DELETE"));
+        groups.stream().map(group -> {
+              Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
+              return mPermission.find() ? mPermission : null;
+            }).filter(v -> v != null).forEach(mPermission -> {
+              form.add("permission", String.format("%s#%s", mPermission.group(1), mPermission.group(3)));
+            });
         groups.stream().map(group -> {
               Matcher mPermission = Pattern.compile("^/(.*-?TENANT-([a-z0-9\\-]+))-(\\w+)$").matcher(group);
               return mPermission.find() ? mPermission : null;
@@ -3757,9 +3294,20 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           try {
             HttpResponse<Buffer> authorizationDecision = authorizationDecisionResponse.result();
             JsonArray authorizationDecisionBody = authorizationDecisionResponse.failed() ? new JsonArray() : authorizationDecision.bodyAsJsonArray();
-            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANTREQUESTED".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
+            JsonArray scopes = authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(o -> "TENANT".equals(o.getString("rsname"))).findFirst().map(decision -> ((JsonObject)decision).getJsonArray("scopes")).orElse(new JsonArray());
             if(!scopes.contains("DELETE")) {
             List<String> fqs = new ArrayList<>();
+            authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
+                  Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
+                  return permission.getJsonArray("scopes").contains("DELETE")
+                      && mPermission.find();
+                }).forEach(permission -> {
+                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
+                    if(!scopes.contains(scope))
+                      scopes.add(scope);
+                  });
+                });
             authorizationDecisionBody.stream().map(o -> (JsonObject)o).filter(permission -> {
                   Matcher mPermission = Pattern.compile("^(.*-?TENANT-([a-z0-9\\-]+))$").matcher(permission.getString("rsname"));
                   return permission.getJsonArray("scopes").contains("DELETE")
@@ -3804,47 +3352,47 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             } else {
               siteRequest.setScopes(scopes.stream().map(o -> o.toString()).collect(Collectors.toList()));
               List<String> scopes2 = siteRequest.getScopes();
-              searchTenantRequestedList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantRequested -> {
+              searchTenantApprovalList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantApproval -> {
                 try {
                   ApiRequest apiRequest = new ApiRequest();
-                  apiRequest.setRows(listTenantRequested.getRequest().getRows());
-                  apiRequest.setNumFound(listTenantRequested.getResponse().getResponse().getNumFound());
+                  apiRequest.setRows(listTenantApproval.getRequest().getRows());
+                  apiRequest.setNumFound(listTenantApproval.getResponse().getResponse().getNumFound());
                   apiRequest.setNumPATCH(0L);
                   apiRequest.initDeepApiRequest(siteRequest);
                   siteRequest.setApiRequest_(apiRequest);
                   if(apiRequest.getNumFound() == 1L)
-                    apiRequest.setOriginal(listTenantRequested.first());
-                  apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getSolrId()).orElse(null));
-                  eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                    apiRequest.setOriginal(listTenantApproval.first());
+                  apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getSolrId()).orElse(null));
+                  eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
 
-                  listDELETEFilterTenantRequested(apiRequest, listTenantRequested).onSuccess(e -> {
-                    response200DELETEFilterTenantRequested(siteRequest).onSuccess(response -> {
-                      LOG.debug(String.format("deletefilterTenantRequested succeeded. "));
+                  listDELETEFilterTenantApproval(apiRequest, listTenantApproval).onSuccess(e -> {
+                    response200DELETEFilterTenantApproval(siteRequest).onSuccess(response -> {
+                      LOG.debug(String.format("deletefilterTenantApproval succeeded. "));
                       eventHandler.handle(Future.succeededFuture(response));
                     }).onFailure(ex -> {
-                      LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+                      LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
                       error(siteRequest, eventHandler, ex);
                     });
                   }).onFailure(ex -> {
-                    LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+                    LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
                     error(siteRequest, eventHandler, ex);
                   });
                 } catch(Exception ex) {
-                  LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+                  LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
                   error(siteRequest, eventHandler, ex);
                 }
               }).onFailure(ex -> {
-                LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+                LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
                 error(siteRequest, eventHandler, ex);
               });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+            LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
             error(null, eventHandler, ex);
           }
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+        LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
@@ -3852,7 +3400,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         try {
           eventHandler.handle(Future.succeededFuture(new ServiceResponse(302, "Found", null, MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.LOCATION, "/logout?redirect_uri=" + URLEncoder.encode(serviceRequest.getExtra().getString("uri"), "UTF-8")))));
         } catch(Exception ex2) {
-          LOG.error(String.format("deletefilterTenantRequested failed. ", ex2));
+          LOG.error(String.format("deletefilterTenantApproval failed. ", ex2));
           error(null, eventHandler, ex2);
         }
       } else if(StringUtils.startsWith(ex.getMessage(), "401 UNAUTHORIZED ")) {
@@ -3867,58 +3415,58 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               )
           ));
       } else {
-        LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+        LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     });
   }
 
-  public Future<Void> listDELETEFilterTenantRequested(ApiRequest apiRequest, SearchList<TenantRequested> listTenantRequested) {
+  public Future<Void> listDELETEFilterTenantApproval(ApiRequest apiRequest, SearchList<TenantApproval> listTenantApproval) {
     Promise<Void> promise = Promise.promise();
     List<Future> futures = new ArrayList<>();
-    SiteRequest siteRequest = listTenantRequested.getSiteRequest_(SiteRequest.class);
-    listTenantRequested.getList().forEach(o -> {
+    SiteRequest siteRequest = listTenantApproval.getSiteRequest_(SiteRequest.class);
+    listTenantApproval.getList().forEach(o -> {
       SiteRequest siteRequest2 = generateSiteRequest(siteRequest.getUser(), siteRequest.getUserPrincipal(), siteRequest.getServiceRequest(), siteRequest.getJsonObject(), SiteRequest.class);
       siteRequest2.setScopes(siteRequest.getScopes());
       o.setSiteRequest_(siteRequest2);
       siteRequest2.setApiRequest_(siteRequest.getApiRequest_());
       JsonObject jsonObject = JsonObject.mapFrom(o);
-      TenantRequested o2 = jsonObject.mapTo(TenantRequested.class);
+      TenantApproval o2 = jsonObject.mapTo(TenantApproval.class);
       o2.setSiteRequest_(siteRequest2);
       futures.add(Future.future(promise1 -> {
-        deletefilterTenantRequestedFuture(o).onSuccess(a -> {
+        deletefilterTenantApprovalFuture(o).onSuccess(a -> {
           promise1.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("listDELETEFilterTenantRequested failed. "), ex);
+          LOG.error(String.format("listDELETEFilterTenantApproval failed. "), ex);
           promise1.tryFail(ex);
         });
       }));
     });
     CompositeFuture.all(futures).onSuccess( a -> {
-      listTenantRequested.next().onSuccess(next -> {
+      listTenantApproval.next().onSuccess(next -> {
         if(next) {
-          listDELETEFilterTenantRequested(apiRequest, listTenantRequested).onSuccess(b -> {
+          listDELETEFilterTenantApproval(apiRequest, listTenantApproval).onSuccess(b -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("listDELETEFilterTenantRequested failed. "), ex);
+            LOG.error(String.format("listDELETEFilterTenantApproval failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete();
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("listDELETEFilterTenantRequested failed. "), ex);
+        LOG.error(String.format("listDELETEFilterTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     }).onFailure(ex -> {
-      LOG.error(String.format("listDELETEFilterTenantRequested failed. "), ex);
+      LOG.error(String.format("listDELETEFilterTenantApproval failed. "), ex);
       promise.tryFail(ex);
     });
     return promise.future();
   }
 
   @Override
-  public void deletefilterTenantRequestedFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
+  public void deletefilterTenantApprovalFuture(JsonObject body, ServiceRequest serviceRequest, Handler<AsyncResult<ServiceResponse>> eventHandler) {
     Boolean classPublicRead = false;
     user(serviceRequest, SiteRequest.class, SiteUser.class, SiteUser.getClassApiAddress(), "postSiteUserFuture", "patchSiteUserFuture", classPublicRead).onSuccess(siteRequest -> {
       try {
@@ -3930,10 +3478,10 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             siteRequest.addScopes(scope);
           });
         });
-        searchTenantRequestedList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantRequested -> {
+        searchTenantApprovalList(siteRequest, false, true, true, "DELETE").onSuccess(listTenantApproval -> {
           try {
-            TenantRequested o = listTenantRequested.first();
-            if(o != null && listTenantRequested.getResponse().getResponse().getNumFound() == 1) {
+            TenantApproval o = listTenantApproval.first();
+            if(o != null && listTenantApproval.getResponse().getResponse().getNumFound() == 1) {
               ApiRequest apiRequest = new ApiRequest();
               apiRequest.setRows(1L);
               apiRequest.setNumFound(1L);
@@ -3945,9 +3493,9 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }
               if(apiRequest.getNumFound() == 1L)
                 apiRequest.setOriginal(o);
-              apiRequest.setId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getTenantRequestedId().toString()).orElse(null));
-              apiRequest.setSolrId(Optional.ofNullable(listTenantRequested.first()).map(o2 -> o2.getSolrId()).orElse(null));
-              deletefilterTenantRequestedFuture(o).onSuccess(o2 -> {
+              apiRequest.setId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getApprovalId().toString()).orElse(null));
+              apiRequest.setSolrId(Optional.ofNullable(listTenantApproval.first()).map(o2 -> o2.getSolrId()).orElse(null));
+              deletefilterTenantApprovalFuture(o).onSuccess(o2 -> {
                 eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
               }).onFailure(ex -> {
                 eventHandler.handle(Future.failedFuture(ex));
@@ -3956,42 +3504,42 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               eventHandler.handle(Future.succeededFuture(ServiceResponse.completedWithJson(Buffer.buffer(new JsonObject().encodePrettily()))));
             }
           } catch(Exception ex) {
-            LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+            LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
             error(siteRequest, eventHandler, ex);
           }
         }).onFailure(ex -> {
-          LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+          LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
           error(siteRequest, eventHandler, ex);
         });
       } catch(Exception ex) {
-        LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+        LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
         error(null, eventHandler, ex);
       }
     }).onFailure(ex -> {
-      LOG.error(String.format("deletefilterTenantRequested failed. "), ex);
+      LOG.error(String.format("deletefilterTenantApproval failed. "), ex);
       error(null, eventHandler, ex);
     });
   }
 
-  public Future<TenantRequested> deletefilterTenantRequestedFuture(TenantRequested o) {
+  public Future<TenantApproval> deletefilterTenantApprovalFuture(TenantApproval o) {
     SiteRequest siteRequest = o.getSiteRequest_();
-    Promise<TenantRequested> promise = Promise.promise();
+    Promise<TenantApproval> promise = Promise.promise();
 
     try {
       ApiRequest apiRequest = siteRequest.getApiRequest_();
-      Promise<TenantRequested> promise1 = Promise.promise();
+      Promise<TenantApproval> promise1 = Promise.promise();
       pgPool.withTransaction(sqlConnection -> {
         siteRequest.setSqlConnection(sqlConnection);
-        varsTenantRequested(siteRequest).onSuccess(a -> {
-          sqlDELETEFilterTenantRequested(o).onSuccess(tenantRequested -> {
-            relateTenantRequested(o).onSuccess(d -> {
-              unindexTenantRequested(o).onSuccess(o2 -> {
+        varsTenantApproval(siteRequest).onSuccess(a -> {
+          sqlDELETEFilterTenantApproval(o).onSuccess(tenantApproval -> {
+            relateTenantApproval(o).onSuccess(d -> {
+              unindexTenantApproval(o).onSuccess(o2 -> {
                 if(apiRequest != null) {
                   apiRequest.setNumPATCH(apiRequest.getNumPATCH() + 1);
                   if(apiRequest.getNumFound() == 1L && Optional.ofNullable(siteRequest.getJsonObject()).map(json -> json.size() > 0).orElse(false)) {
-                    o2.apiRequestTenantRequested();
+                    o2.apiRequestTenantApproval();
                     if(apiRequest.getVars().size() > 0 && Optional.ofNullable(siteRequest.getRequestVars().get("refresh")).map(refresh -> !refresh.equals("false")).orElse(true))
-                      eventBus.publish("websocketTenantRequested", JsonObject.mapFrom(apiRequest).toString());
+                      eventBus.publish("websocketTenantApproval", JsonObject.mapFrom(apiRequest).toString());
                   }
                 }
                 promise1.complete();
@@ -4013,27 +3561,27 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       }).onFailure(ex -> {
         siteRequest.setSqlConnection(null);
         promise.tryFail(ex);
-      }).compose(tenantRequested -> {
-        Promise<TenantRequested> promise2 = Promise.promise();
-        refreshTenantRequested(o).onSuccess(a -> {
+      }).compose(tenantApproval -> {
+        Promise<TenantApproval> promise2 = Promise.promise();
+        refreshTenantApproval(o).onSuccess(a -> {
           promise2.complete(o);
         }).onFailure(ex -> {
           promise2.tryFail(ex);
         });
         return promise2.future();
-      }).onSuccess(tenantRequested -> {
-        promise.complete(tenantRequested);
+      }).onSuccess(tenantApproval -> {
+        promise.complete(tenantApproval);
       }).onFailure(ex -> {
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("deletefilterTenantRequestedFuture failed. "), ex);
+      LOG.error(String.format("deletefilterTenantApprovalFuture failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> sqlDELETEFilterTenantRequested(TenantRequested o) {
+  public Future<Void> sqlDELETEFilterTenantApproval(TenantApproval o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -4042,11 +3590,11 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       List<String> classes = Optional.ofNullable(apiRequest).map(r -> r.getClasses()).orElse(new ArrayList<>());
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Integer num = 1;
-      StringBuilder bSql = new StringBuilder("DELETE FROM TenantRequested ");
+      StringBuilder bSql = new StringBuilder("DELETE FROM TenantApproval ");
       List<Object> bParams = new ArrayList<Object>();
       Long pk = o.getPk();
       JsonObject jsonObject = siteRequest.getJsonObject();
-      TenantRequested o2 = new TenantRequested();
+      TenantApproval o2 = new TenantApproval();
       o2.setSiteRequest_(siteRequest);
       List<Future> futures1 = new ArrayList<>();
       List<Future> futures2 = new ArrayList<>();
@@ -4055,17 +3603,16 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantRequested.VAR_hostInventoryIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(HostInventory.varIndexedHostInventory(HostInventory.VAR_tenantResource), HostInventory.class, val).onSuccess(o3 -> {
+          case TenantApproval.VAR_tenantRequestedId:
+            Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
+              futures1.add(Future.future(promise2 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
-                    classes.add("HostInventory");
+                    classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(HostInventory.class, pk2).set(HostInventory.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4076,28 +3623,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               }));
             });
             break;
-          case TenantRequested.VAR_ansibleProjectIds:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(AnsibleProject.varIndexedAnsibleProject(AnsibleProject.VAR_tenantResource), AnsibleProject.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("AnsibleProject");
-                  }
-                  sql(siteRequest).update(AnsibleProject.class, pk2).set(AnsibleProject.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_tenantResource:
+          case TenantApproval.VAR_tenantResource:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantIntent.varIndexedTenantIntent(TenantIntent.VAR_tenantResource), TenantIntent.class, val).onSuccess(o3 -> {
@@ -4106,49 +3632,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                     solrIds.add(solrId2);
                     classes.add("TenantIntent");
                   }
-                  sql(siteRequest).update(TenantRequested.class, pk).set(TenantRequested.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_requestApprovals:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantApproval.varIndexedTenantApproval(TenantApproval.VAR_approvalId), TenantApproval.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantApproval");
-                  }
-                  sql(siteRequest).update(TenantApproval.class, pk2).set(TenantApproval.VAR_approvalId, TenantRequested.class, null, null).onSuccess(a -> {
-                    promise2.complete();
-                  }).onFailure(ex -> {
-                    promise2.tryFail(ex);
-                  });
-                }).onFailure(ex -> {
-                  promise2.tryFail(ex);
-                });
-              }));
-            });
-            break;
-          case TenantRequested.VAR_tenantRealized:
-            Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
-              futures2.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
-                  String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
-                  Long pk2 = Optional.ofNullable(o3).map(o4 -> o4.getPk()).orElse(null);
-                  if(solrId2 != null) {
-                    solrIds.add(solrId2);
-                    classes.add("TenantRealized");
-                  }
-                  sql(siteRequest).update(TenantRealized.class, pk2).set(TenantRealized.VAR_tenantResource, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantResource, TenantIntent.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4171,8 +3655,8 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             ).onSuccess(b -> {
           a.handle(Future.succeededFuture());
         }).onFailure(ex -> {
-          RuntimeException ex2 = new RuntimeException("value TenantRequested failed", ex);
-          LOG.error(String.format("unrelateTenantRequested failed. "), ex2);
+          RuntimeException ex2 = new RuntimeException("value TenantApproval failed", ex);
+          LOG.error(String.format("unrelateTenantApproval failed. "), ex2);
           a.handle(Future.failedFuture(ex2));
         });
       }));
@@ -4180,27 +3664,27 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         CompositeFuture.all(futures2).onSuccess(b -> {
           promise.complete();
         }).onFailure(ex -> {
-          LOG.error(String.format("sqlDELETEFilterTenantRequested failed. "), ex);
+          LOG.error(String.format("sqlDELETEFilterTenantApproval failed. "), ex);
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("sqlDELETEFilterTenantRequested failed. "), ex);
+        LOG.error(String.format("sqlDELETEFilterTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("sqlDELETEFilterTenantRequested failed. "), ex);
+      LOG.error(String.format("sqlDELETEFilterTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<ServiceResponse> response200DELETEFilterTenantRequested(SiteRequest siteRequest) {
+  public Future<ServiceResponse> response200DELETEFilterTenantApproval(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       JsonObject json = new JsonObject();
       promise.complete(ServiceResponse.completedWithJson(Buffer.buffer(Optional.ofNullable(json).orElse(new JsonObject()).encodePrettily())));
     } catch(Exception ex) {
-      LOG.error(String.format("response200DELETEFilterTenantRequested failed. "), ex);
+      LOG.error(String.format("response200DELETEFilterTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -4208,78 +3692,78 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
 
   // General //
 
-  public Future<TenantRequested> createTenantRequested(SiteRequest siteRequest) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> createTenantApproval(SiteRequest siteRequest) {
+    Promise<TenantApproval> promise = Promise.promise();
     try {
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       String userId = siteRequest.getUserId();
       Long userKey = siteRequest.getUserKey();
       ZonedDateTime created = Optional.ofNullable(siteRequest.getJsonObject()).map(j -> j.getString("created")).map(s -> ZonedDateTime.parse(s, ComputateZonedDateTimeSerializer.ZONED_DATE_TIME_FORMATTER.withZone(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))))).orElse(ZonedDateTime.now(ZoneId.of(config.getString(ConfigKeys.SITE_ZONE))));
 
-      sqlConnection.preparedQuery("INSERT INTO TenantRequested(created, userKey) VALUES($1, $2) RETURNING pk")
+      sqlConnection.preparedQuery("INSERT INTO TenantApproval(created, userKey) VALUES($1, $2) RETURNING pk")
           .collecting(Collectors.toList())
           .execute(Tuple.of(created.toOffsetDateTime(), userKey)).onSuccess(result -> {
         Row createLine = result.value().stream().findFirst().orElseGet(() -> null);
         Long pk = createLine.getLong(0);
-        TenantRequested o = new TenantRequested();
+        TenantApproval o = new TenantApproval();
         o.setPk(pk);
         o.setSiteRequest_(siteRequest);
         promise.complete(o);
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error("createTenantRequested failed. ", ex2);
+        LOG.error("createTenantApproval failed. ", ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("createTenantRequested failed. "), ex);
+      LOG.error(String.format("createTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public void searchTenantRequestedQ(SearchList<TenantRequested> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchTenantApprovalQ(SearchList<TenantApproval> searchList, String entityVar, String valueIndexed, String varIndexed) {
     searchList.q(varIndexed + ":" + ("*".equals(valueIndexed) ? valueIndexed : SearchTool.escapeQueryChars(valueIndexed)));
     if(!"*".equals(entityVar)) {
     }
   }
 
-  public String searchTenantRequestedFq(SearchList<TenantRequested> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public String searchTenantApprovalFq(SearchList<TenantApproval> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     if(StringUtils.startsWith(valueIndexed, "[")) {
       String[] fqs = StringUtils.substringAfter(StringUtils.substringBeforeLast(valueIndexed, "]"), "[").split(" TO ");
       if(fqs.length != 2)
         throw new RuntimeException(String.format("\"%s\" invalid range query. ", valueIndexed));
-      String fq1 = fqs[0].equals("*") ? fqs[0] : TenantRequested.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
-      String fq2 = fqs[1].equals("*") ? fqs[1] : TenantRequested.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
+      String fq1 = fqs[0].equals("*") ? fqs[0] : TenantApproval.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[0]);
+      String fq2 = fqs[1].equals("*") ? fqs[1] : TenantApproval.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), fqs[1]);
        return varIndexed + ":[" + fq1 + " TO " + fq2 + "]";
     } else {
-      return varIndexed + ":" + SearchTool.escapeQueryChars(TenantRequested.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
+      return varIndexed + ":" + SearchTool.escapeQueryChars(TenantApproval.staticSearchFqForClass(entityVar, searchList.getSiteRequest_(SiteRequest.class), valueIndexed)).replace("\\", "\\\\");
     }
   }
 
-  public void searchTenantRequestedSort(SearchList<TenantRequested> searchList, String entityVar, String valueIndexed, String varIndexed) {
+  public void searchTenantApprovalSort(SearchList<TenantApproval> searchList, String entityVar, String valueIndexed, String varIndexed) {
     if(varIndexed == null)
       throw new RuntimeException(String.format("\"%s\" is not an indexed entity. ", entityVar));
     searchList.sort(varIndexed, valueIndexed);
   }
 
-  public void searchTenantRequestedRows(SearchList<TenantRequested> searchList, Long valueRows) {
+  public void searchTenantApprovalRows(SearchList<TenantApproval> searchList, Long valueRows) {
       searchList.rows(valueRows != null ? valueRows : 10L);
   }
 
-  public void searchTenantRequestedStart(SearchList<TenantRequested> searchList, Long valueStart) {
+  public void searchTenantApprovalStart(SearchList<TenantApproval> searchList, Long valueStart) {
     searchList.start(valueStart);
   }
 
-  public void searchTenantRequestedVar(SearchList<TenantRequested> searchList, String var, String value) {
+  public void searchTenantApprovalVar(SearchList<TenantApproval> searchList, String var, String value) {
     searchList.getSiteRequest_(SiteRequest.class).getRequestVars().put(var, value);
   }
 
-  public void searchTenantRequestedUri(SearchList<TenantRequested> searchList) {
+  public void searchTenantApprovalUri(SearchList<TenantApproval> searchList) {
   }
 
-  public Future<ServiceResponse> varsTenantRequested(SiteRequest siteRequest) {
+  public Future<ServiceResponse> varsTenantApproval(SiteRequest siteRequest) {
     Promise<ServiceResponse> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
@@ -4297,25 +3781,25 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
             siteRequest.getRequestVars().put(entityVar, valueIndexed);
           }
         } catch(Exception ex) {
-          LOG.error(String.format("searchTenantRequested failed. "), ex);
+          LOG.error(String.format("searchTenantApproval failed. "), ex);
           promise.tryFail(ex);
         }
       });
       promise.complete();
     } catch(Exception ex) {
-      LOG.error(String.format("searchTenantRequested failed. "), ex);
+      LOG.error(String.format("searchTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<SearchList<TenantRequested>> searchTenantRequestedList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, String scope) {
-    Promise<SearchList<TenantRequested>> promise = Promise.promise();
+  public Future<SearchList<TenantApproval>> searchTenantApprovalList(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, String scope) {
+    Promise<SearchList<TenantApproval>> promise = Promise.promise();
     try {
       ServiceRequest serviceRequest = siteRequest.getServiceRequest();
       String entityListStr = siteRequest.getServiceRequest().getParams().getJsonObject("query").getString("fl");
       String[] entityList = entityListStr == null ? null : entityListStr.split(",\\s*");
-      SearchList<TenantRequested> searchList = new SearchList<TenantRequested>();
+      SearchList<TenantApproval> searchList = new SearchList<TenantApproval>();
       searchList.setScope(scope);
       String facetRange = null;
       Date facetRangeStart = null;
@@ -4326,18 +3810,18 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       searchList.setPopulate(populate);
       searchList.setStore(store);
       searchList.q("*:*");
-      searchList.setC(TenantRequested.class);
+      searchList.setC(TenantApproval.class);
       searchList.setSiteRequest_(siteRequest);
       searchList.facetMinCount(1);
       if(entityList != null) {
         for(String v : entityList) {
-          searchList.fl(TenantRequested.varIndexedTenantRequested(v));
+          searchList.fl(TenantApproval.varIndexedTenantApproval(v));
         }
       }
 
-      String tenantRequestedId = serviceRequest.getParams().getJsonObject("path").getString("tenantRequestedId");
-      if(tenantRequestedId != null) {
-        searchList.fq("tenantRequestedId_docvalues_string:" + SearchTool.escapeQueryChars(tenantRequestedId));
+      String approvalId = serviceRequest.getParams().getJsonObject("path").getString("approvalId");
+      if(approvalId != null) {
+        searchList.fq("approvalId_docvalues_string:" + SearchTool.escapeQueryChars(approvalId));
       }
 
       for(String paramName : serviceRequest.getParams().getJsonObject("query").fieldNames()) {
@@ -4360,7 +3844,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               String[] varsIndexed = new String[entityVars.length];
               for(Integer i = 0; i < entityVars.length; i++) {
                 entityVar = entityVars[i];
-                varsIndexed[i] = TenantRequested.varIndexedTenantRequested(entityVar);
+                varsIndexed[i] = TenantApproval.varIndexedTenantApproval(entityVar);
               }
               searchList.facetPivot((solrLocalParams == null ? "" : solrLocalParams) + StringUtils.join(varsIndexed, ","));
             }
@@ -4372,8 +3856,8 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                 while(mQ.find()) {
                   entityVar = mQ.group(1).trim();
                   valueIndexed = mQ.group(2).trim();
-                  varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
-                  String entityQ = searchTenantRequestedFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
+                  String entityQ = searchTenantApprovalFq(searchList, entityVar, valueIndexed, varIndexed);
                   mQ.appendReplacement(sb, entityQ);
                 }
                 if(!sb.isEmpty()) {
@@ -4386,8 +3870,8 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                 while(mFq.find()) {
                   entityVar = mFq.group(1).trim();
                   valueIndexed = mFq.group(2).trim();
-                  varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
-                  String entityFq = searchTenantRequestedFq(searchList, entityVar, valueIndexed, varIndexed);
+                  varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
+                  String entityFq = searchTenantApprovalFq(searchList, entityVar, valueIndexed, varIndexed);
                   mFq.appendReplacement(sb, entityFq);
                 }
                 if(!sb.isEmpty()) {
@@ -4397,14 +3881,14 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
               } else if(paramName.equals("sort")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, " "));
                 valueIndexed = StringUtils.trim(StringUtils.substringAfter((String)paramObject, " "));
-                varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
-                searchTenantRequestedSort(searchList, entityVar, valueIndexed, varIndexed);
+                varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
+                searchTenantApprovalSort(searchList, entityVar, valueIndexed, varIndexed);
               } else if(paramName.equals("start")) {
                 valueStart = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchTenantRequestedStart(searchList, valueStart);
+                searchTenantApprovalStart(searchList, valueStart);
               } else if(paramName.equals("rows")) {
                 valueRows = paramObject instanceof Long ? (Long)paramObject : Long.parseLong(paramObject.toString());
-                searchTenantRequestedRows(searchList, valueRows);
+                searchTenantApprovalRows(searchList, valueRows);
               } else if(paramName.equals("stats")) {
                 searchList.stats((Boolean)paramObject);
               } else if(paramName.equals("stats.field")) {
@@ -4412,7 +3896,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                 if(mStats.find()) {
                   String solrLocalParams = mStats.group(1);
                   entityVar = mStats.group(2).trim();
-                  varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
+                  varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
                   searchList.statsField((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   statsField = entityVar;
                   statsFieldIndexed = varIndexed;
@@ -4438,25 +3922,25 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                 if(mFacetRange.find()) {
                   String solrLocalParams = mFacetRange.group(1);
                   entityVar = mFacetRange.group(2).trim();
-                  varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
+                  varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
                   searchList.facetRange((solrLocalParams == null ? "" : solrLocalParams) + varIndexed);
                   facetRange = entityVar;
                 }
               } else if(paramName.equals("facet.field")) {
                 entityVar = (String)paramObject;
-                varIndexed = TenantRequested.varIndexedTenantRequested(entityVar);
+                varIndexed = TenantApproval.varIndexedTenantApproval(entityVar);
                 if(varIndexed != null)
                   searchList.facetField(varIndexed);
               } else if(paramName.equals("var")) {
                 entityVar = StringUtils.trim(StringUtils.substringBefore((String)paramObject, ":"));
                 valueIndexed = URLDecoder.decode(StringUtils.trim(StringUtils.substringAfter((String)paramObject, ":")), "UTF-8");
-                searchTenantRequestedVar(searchList, entityVar, valueIndexed);
+                searchTenantApprovalVar(searchList, entityVar, valueIndexed);
               } else if(paramName.equals("cursorMark")) {
                 valueCursorMark = (String)paramObject;
                 searchList.cursorMark((String)paramObject);
               }
             }
-            searchTenantRequestedUri(searchList);
+            searchTenantApprovalUri(searchList);
           }
         } catch(Exception e) {
           ExceptionUtils.rethrow(e);
@@ -4471,7 +3955,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       String facetRangeGap2 = facetRangeGap;
       String statsField2 = statsField;
       String statsFieldIndexed2 = statsFieldIndexed;
-      searchTenantRequested2(siteRequest, populate, store, modify, searchList);
+      searchTenantApproval2(siteRequest, populate, store, modify, searchList);
       searchList.promiseDeepForClass(siteRequest).onSuccess(searchList2 -> {
         if(facetRange2 != null && statsField2 != null && facetRange2.equals(statsField2)) {
           StatsField stats = searchList.getResponse().getStats().getStatsFields().get(statsFieldIndexed2);
@@ -4507,26 +3991,26 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           searchList.query().onSuccess(b -> {
             promise.complete(searchList);
           }).onFailure(ex -> {
-            LOG.error(String.format("searchTenantRequested failed. "), ex);
+            LOG.error(String.format("searchTenantApproval failed. "), ex);
             promise.tryFail(ex);
           });
         } else {
           promise.complete(searchList);
         }
       }).onFailure(ex -> {
-        LOG.error(String.format("searchTenantRequested failed. "), ex);
+        LOG.error(String.format("searchTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("searchTenantRequested failed. "), ex);
+      LOG.error(String.format("searchTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
-  public void searchTenantRequested2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<TenantRequested> searchList) {
+  public void searchTenantApproval2(SiteRequest siteRequest, Boolean populate, Boolean store, Boolean modify, SearchList<TenantApproval> searchList) {
   }
 
-  public Future<JsonObject> upsertTenantRequested(TenantRequested o, Boolean inheritPrimaryKey, Boolean patch) {
+  public Future<JsonObject> upsertTenantApproval(TenantApproval o, Boolean inheritPrimaryKey, Boolean patch) {
     Promise<JsonObject> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
@@ -4535,152 +4019,141 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         promise.complete();
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
-        String old_tenantResource = TenantRequested.staticJsonTenantResource(o.getTenantResource());
-        String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
-        String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-        TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
+        String old_tenantRequestedId = TenantApproval.staticJsonTenantRequestedId(o.getTenantRequestedId());
+        String new_tenantRequestedId = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedId, patch));
+        String tenantRequestedId = Optional.ofNullable(Optional.ofNullable(new_tenantRequestedId).orElse(old_tenantRequestedId)).orElse(null);
+        TenantRequested.fqTenantRequested(siteRequest, TenantRequested.VAR_tenantRequestedId, tenantRequestedId).onSuccess(oTenantRequested -> {
           try {
-            if(oTenantIntent == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
+            if(oTenantRequested == null) {
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantRequested %s", tenantRequestedId));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
-
-              String old_hubId = TenantRequested.staticJsonHubId(o.getHubId());
-              String new_hubId = json.getString(TenantRequested.varJson(TenantRequested.VAR_hubId, patch));
-              String hubId = Optional.ofNullable(Optional.ofNullable(new_hubId).orElse(old_hubId)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_hubId, patch), hubId);
-
-              String old_clusterName = TenantRequested.staticJsonClusterName(o.getClusterName());
-              String new_clusterName = json.getString(TenantRequested.varJson(TenantRequested.VAR_clusterName, patch));
-              String clusterName = Optional.ofNullable(Optional.ofNullable(new_clusterName).orElse(old_clusterName)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_clusterName, patch), clusterName);
-
-              String old_created = TenantRequested.staticJsonCreated(o.getCreated());
-              String new_created = json.getString(TenantRequested.varJson(TenantRequested.VAR_created, patch));
-              String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_created, patch), created);
-
-              String old_aapOrganizationId = TenantRequested.staticJsonAapOrganizationId(o.getAapOrganizationId());
-              String new_aapOrganizationId = json.getString(TenantRequested.varJson(TenantRequested.VAR_aapOrganizationId, patch));
-              String aapOrganizationId = Optional.ofNullable(Optional.ofNullable(new_aapOrganizationId).orElse(old_aapOrganizationId)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_aapOrganizationId, patch), aapOrganizationId);
-
-              String old_tenantName = TenantRequested.staticJsonTenantName(o.getTenantName());
-              String new_tenantName = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantName, patch));
-              String tenantName = Optional.ofNullable(Optional.ofNullable(new_tenantName).orElse(old_tenantName)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_tenantName, patch), tenantName);
-
-              String old_tenantId = TenantRequested.staticJsonTenantId(o.getTenantId());
-              String new_tenantId = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantId, patch));
-              String tenantId = oTenantIntent.getTenantId();
-              json.put(TenantRequested.varJson(TenantRequested.VAR_tenantId, patch), tenantId);
-
-              Boolean old_archived = TenantRequested.staticJsonArchived(o.getArchived());
-              Boolean new_archived = json.getBoolean(TenantRequested.varJson(TenantRequested.VAR_archived, patch));
-              Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_archived, patch), archived);
-
-              String old_tenantRequestedNumber = TenantRequested.staticJsonTenantRequestedNumber(o.getTenantRequestedNumber());
-              String new_tenantRequestedNumber = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedNumber, patch));
-              String tenantRequestedNumber = Optional.ofNullable(Optional.ofNullable(new_tenantRequestedNumber).orElse(old_tenantRequestedNumber)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedNumber, patch), tenantRequestedNumber);
-
-              String old_tenantRequestedId = TenantRequested.staticJsonTenantRequestedId(o.getTenantRequestedId());
-              String new_tenantRequestedId = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedId, patch));
-              String tenantRequestedId = String.format("%s-%s", tenantResource, tenantRequestedNumber);
               json.put(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedId, patch), tenantRequestedId);
+              String old_tenantResource = TenantApproval.staticJsonTenantResource(o.getTenantResource());
+              String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
+              String tenantResource = oTenantRequested.getTenantResource();
+              TenantIntent.fqTenantIntent(siteRequest, TenantIntent.VAR_tenantResource, tenantResource).onSuccess(oTenantIntent -> {
+                try {
+                  if(oTenantIntent == null) {
+                    RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantIntent %s", tenantResource));
+                    LOG.error(ex.getMessage(), ex);
+                    promise.fail(ex);
+                  } else {
+                    json.put(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch), tenantResource);
 
-              String old_tenantRequestedName = TenantRequested.staticJsonTenantRequestedName(o.getTenantRequestedName());
-              String new_tenantRequestedName = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedName, patch));
-              String tenantRequestedName = String.format("%s %s", oTenantIntent.getTenantName(), tenantRequestedNumber);
-              json.put(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedName, patch), tenantRequestedName);
+                    String old_tenantName = TenantApproval.staticJsonTenantName(o.getTenantName());
+                    String new_tenantName = json.getString(TenantApproval.varJson(TenantApproval.VAR_tenantName, patch));
+                    String tenantName = oTenantIntent.getTenantName();
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_tenantName, patch), tenantName);
 
-              String old_sessionId = TenantRequested.staticJsonSessionId(o.getSessionId());
-              String new_sessionId = json.getString(TenantRequested.varJson(TenantRequested.VAR_sessionId, patch));
-              String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_sessionId, patch), sessionId);
+                    String old_tenantId = TenantApproval.staticJsonTenantId(o.getTenantId());
+                    String new_tenantId = json.getString(TenantApproval.varJson(TenantApproval.VAR_tenantId, patch));
+                    String tenantId = oTenantIntent.getTenantId();
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_tenantId, patch), tenantId);
 
-              String old_userKey = TenantRequested.staticJsonUserKey(o.getUserKey());
-              String new_userKey = json.getString(TenantRequested.varJson(TenantRequested.VAR_userKey, patch));
-              String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_userKey, patch), userKey);
+                    String old_created = TenantApproval.staticJsonCreated(o.getCreated());
+                    String new_created = json.getString(TenantApproval.varJson(TenantApproval.VAR_created, patch));
+                    String created = Optional.ofNullable(Optional.ofNullable(new_created).orElse(old_created)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_created, patch), created);
 
-              String old_createdByEmail = TenantRequested.staticJsonCreatedByEmail(o.getCreatedByEmail());
-              String new_createdByEmail = json.getString(TenantRequested.varJson(TenantRequested.VAR_createdByEmail, patch));
-              String createdByEmail = siteRequest.getUserEmail();
-              json.put(TenantRequested.varJson(TenantRequested.VAR_createdByEmail, patch), createdByEmail);
+                    Boolean old_archived = TenantApproval.staticJsonArchived(o.getArchived());
+                    Boolean new_archived = json.getBoolean(TenantApproval.varJson(TenantApproval.VAR_archived, patch));
+                    Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_archived, patch), archived);
 
-              String old_createdByUserId = TenantRequested.staticJsonCreatedByUserId(o.getCreatedByUserId());
-              String new_createdByUserId = json.getString(TenantRequested.varJson(TenantRequested.VAR_createdByUserId, patch));
-              String createdByUserId = siteRequest.getUserId();
-              json.put(TenantRequested.varJson(TenantRequested.VAR_createdByUserId, patch), createdByUserId);
+                    String old_tenantRealizedNumber = TenantApproval.staticJsonTenantRealizedNumber(o.getTenantRealizedNumber());
+                    String new_tenantRealizedNumber = json.getString(TenantApproval.varJson(TenantApproval.VAR_tenantRealizedNumber, patch));
+                    String tenantRealizedNumber = Optional.ofNullable(Optional.ofNullable(new_tenantRealizedNumber).orElse(old_tenantRealizedNumber)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_tenantRealizedNumber, patch), tenantRealizedNumber);
 
-              String old_createdByFullName = TenantRequested.staticJsonCreatedByFullName(o.getCreatedByFullName());
-              String new_createdByFullName = json.getString(TenantRequested.varJson(TenantRequested.VAR_createdByFullName, patch));
-              String createdByFullName = siteRequest.getUserFullName();
-              json.put(TenantRequested.varJson(TenantRequested.VAR_createdByFullName, patch), createdByFullName);
+                    String old_approvedByEmail = TenantApproval.staticJsonApprovedByEmail(o.getApprovedByEmail());
+                    String new_approvedByEmail = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvedByEmail, patch));
+                    String approvedByEmail = siteRequest.getUserEmail();
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_approvedByEmail, patch), approvedByEmail);
 
-              String old_objectTitle = TenantRequested.staticJsonObjectTitle(o.getObjectTitle());
-              String new_objectTitle = json.getString(TenantRequested.varJson(TenantRequested.VAR_objectTitle, patch));
-              String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_objectTitle, patch), objectTitle);
+                    String old_approvedByUserId = TenantApproval.staticJsonApprovedByUserId(o.getApprovedByUserId());
+                    String new_approvedByUserId = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvedByUserId, patch));
+                    String approvedByUserId = siteRequest.getUserId();
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_approvedByUserId, patch), approvedByUserId);
 
-              String old_createdVia = TenantRequested.staticJsonCreatedVia(o.getCreatedVia());
-              String new_createdVia = json.getString(TenantRequested.varJson(TenantRequested.VAR_createdVia, patch));
-              String createdVia = Optional.ofNullable(new_createdVia).orElse(oTenantIntent.getCreatedVia());
-              json.put(TenantRequested.varJson(TenantRequested.VAR_createdVia, patch), createdVia);
+                    String old_approvedByFullName = TenantApproval.staticJsonApprovedByFullName(o.getApprovedByFullName());
+                    String new_approvedByFullName = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvedByFullName, patch));
+                    String approvedByFullName = siteRequest.getUserFullName();
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_approvedByFullName, patch), approvedByFullName);
 
-              String old_displayPage = TenantRequested.staticJsonDisplayPage(o.getDisplayPage());
-              String new_displayPage = json.getString(TenantRequested.varJson(TenantRequested.VAR_displayPage, patch));
-              String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_displayPage, patch), displayPage);
+                    String old_sessionId = TenantApproval.staticJsonSessionId(o.getSessionId());
+                    String new_sessionId = json.getString(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch));
+                    String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch), sessionId);
 
-              String old_intentState = TenantRequested.staticJsonIntentState(o.getIntentState());
-              String new_intentState = json.getString(TenantRequested.varJson(TenantRequested.VAR_intentState, patch));
-              String intentState = Optional.ofNullable(new_intentState).orElse(oTenantIntent.getIntentState());
-              json.put(TenantRequested.varJson(TenantRequested.VAR_intentState, patch), intentState);
+                    Boolean old_approved = TenantApproval.staticJsonApproved(o.getApproved());
+                    Boolean new_approved = json.getBoolean(TenantApproval.varJson(TenantApproval.VAR_approved, patch));
+                    Boolean approved = Optional.ofNullable(Optional.ofNullable(new_approved).orElse(old_approved)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_approved, patch), approved);
 
-              String old_editPage = TenantRequested.staticJsonEditPage(o.getEditPage());
-              String new_editPage = json.getString(TenantRequested.varJson(TenantRequested.VAR_editPage, patch));
-              String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_editPage, patch), editPage);
+                    String old_userKey = TenantApproval.staticJsonUserKey(o.getUserKey());
+                    String new_userKey = json.getString(TenantApproval.varJson(TenantApproval.VAR_userKey, patch));
+                    String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_userKey, patch), userKey);
 
-              String old_requestedState = TenantRequested.staticJsonRequestedState(o.getRequestedState());
-              String new_requestedState = json.getString(TenantRequested.varJson(TenantRequested.VAR_requestedState, patch));
-              String requestedState = Optional.ofNullable(new_requestedState).orElse(oTenantIntent.getRequestedState());
-              json.put(TenantRequested.varJson(TenantRequested.VAR_requestedState, patch), requestedState);
+                    String old_approvalNote = TenantApproval.staticJsonApprovalNote(o.getApprovalNote());
+                    String new_approvalNote = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalNote, patch));
+                    String approvalNote = Optional.ofNullable(Optional.ofNullable(new_approvalNote).orElse(old_approvalNote)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_approvalNote, patch), approvalNote);
 
-              String old_userPage = TenantRequested.staticJsonUserPage(o.getUserPage());
-              String new_userPage = json.getString(TenantRequested.varJson(TenantRequested.VAR_userPage, patch));
-              String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_userPage, patch), userPage);
+                    String old_approvalName = TenantApproval.staticJsonApprovalName(o.getApprovalName());
+                    String new_approvalName = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalName, patch));
+                    String approvalName = String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", tenantRequestedId);
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_approvalName, patch), approvalName);
 
-              String old_realizedState = TenantRequested.staticJsonRealizedState(o.getRealizedState());
-              String new_realizedState = json.getString(TenantRequested.varJson(TenantRequested.VAR_realizedState, patch));
-              String realizedState = Optional.ofNullable(new_realizedState).orElse(oTenantIntent.getRealizedState());
-              json.put(TenantRequested.varJson(TenantRequested.VAR_realizedState, patch), realizedState);
+                    String old_approvalId = TenantApproval.staticJsonApprovalId(o.getApprovalId());
+                    String new_approvalId = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalId, patch));
+                    String approvalId = String.format("%s-%s-by-%s-%s", tenantRequestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail));
+                    json.put(TenantApproval.varJson(TenantApproval.VAR_approvalId, patch), approvalId);
 
-              String old_download = TenantRequested.staticJsonDownload(o.getDownload());
-              String new_download = json.getString(TenantRequested.varJson(TenantRequested.VAR_download, patch));
-              String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
-              // json.put(TenantRequested.varJson(TenantRequested.VAR_download, patch), download);
+                    String old_objectTitle = TenantApproval.staticJsonObjectTitle(o.getObjectTitle());
+                    String new_objectTitle = json.getString(TenantApproval.varJson(TenantApproval.VAR_objectTitle, patch));
+                    String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_objectTitle, patch), objectTitle);
 
-              String old_tenantDescription = TenantRequested.staticJsonTenantDescription(o.getTenantDescription());
-              String new_tenantDescription = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantDescription, patch));
-              String tenantDescription = Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
-              json.put(TenantRequested.varJson(TenantRequested.VAR_tenantDescription, patch), tenantDescription);
+                    String old_approvalTitle = TenantApproval.staticJsonApprovalTitle(o.getApprovalTitle());
+                    String new_approvalTitle = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalTitle, patch));
+                    String approvalTitle = Optional.ofNullable(Optional.ofNullable(new_approvalTitle).orElse(old_approvalTitle)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_approvalTitle, patch), approvalTitle);
 
-              Boolean old_locked = TenantRequested.staticJsonLocked(o.getLocked());
-              Boolean new_locked = json.getBoolean(TenantRequested.varJson(TenantRequested.VAR_locked, patch));
-              Boolean locked = Optional.ofNullable(Optional.ofNullable(new_locked).orElse(old_locked)).orElse(false);
-              json.put(TenantRequested.varJson(TenantRequested.VAR_locked, patch), locked);
+                    String old_displayPage = TenantApproval.staticJsonDisplayPage(o.getDisplayPage());
+                    String new_displayPage = json.getString(TenantApproval.varJson(TenantApproval.VAR_displayPage, patch));
+                    String displayPage = Optional.ofNullable(Optional.ofNullable(new_displayPage).orElse(old_displayPage)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_displayPage, patch), displayPage);
 
-              promise.complete(json);
+                    String old_editPage = TenantApproval.staticJsonEditPage(o.getEditPage());
+                    String new_editPage = json.getString(TenantApproval.varJson(TenantApproval.VAR_editPage, patch));
+                    String editPage = Optional.ofNullable(Optional.ofNullable(new_editPage).orElse(old_editPage)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_editPage, patch), editPage);
+
+                    String old_userPage = TenantApproval.staticJsonUserPage(o.getUserPage());
+                    String new_userPage = json.getString(TenantApproval.varJson(TenantApproval.VAR_userPage, patch));
+                    String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_userPage, patch), userPage);
+
+                    String old_download = TenantApproval.staticJsonDownload(o.getDownload());
+                    String new_download = json.getString(TenantApproval.varJson(TenantApproval.VAR_download, patch));
+                    String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_download, patch), download);
+
+                    promise.complete(json);
+                  }
+                } catch(Exception ex) {
+                  LOG.error(String.format("upsertTenantApproval failed. "), ex);
+                  promise.tryFail(ex);
+                }
+              }).onFailure(ex -> {
+                promise.fail(ex);
+              });
             }
           } catch(Exception ex) {
-            LOG.error(String.format("upsertTenantRequested failed. "), ex);
+            LOG.error(String.format("upsertTenantApproval failed. "), ex);
             promise.tryFail(ex);
           }
         }).onFailure(ex -> {
@@ -4688,19 +4161,19 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         });
       }
     } catch(Exception ex) {
-      LOG.error(String.format("upsertTenantRequested failed. "), ex);
+      LOG.error(String.format("upsertTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> persistTenantRequested(TenantRequested o, Boolean patch) {
+  public Future<Void> persistTenantApproval(TenantApproval o, Boolean patch) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, tenantResource, tenantRequestedNumber, tenantRequestedId, tenantRequestedName, sessionId, userKey, createdByEmail, createdByUserId, createdByFullName, objectTitle, createdVia, displayPage, intentState, editPage, requestedState, userPage, realizedState, download, tenantDescription, locked FROM TenantRequested WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantRequestedId, tenantResource, archived, tenantRealizedNumber, approvedByEmail, approvedByUserId, approvedByFullName, sessionId, approved, userKey, approvalNote, approvalName, approvalId, objectTitle, approvalTitle, displayPage, editPage, userPage, download FROM TenantApproval WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4713,7 +4186,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                 try {
                   o.persistForClass(columnName, columnValue);
                 } catch(Exception e) {
-                  LOG.error(String.format("persistTenantRequested failed. "), e);
+                  LOG.error(String.format("persistTenantApproval failed. "), e);
                 }
               }
             }
@@ -4721,33 +4194,33 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           o.promiseDeepForClass(siteRequest).onSuccess(a -> {
             promise.complete();
           }).onFailure(ex -> {
-            LOG.error(String.format("persistTenantRequested failed. "), ex);
+            LOG.error(String.format("persistTenantApproval failed. "), ex);
             promise.tryFail(ex);
           });
         } catch(Exception ex) {
-          LOG.error(String.format("persistTenantRequested failed. "), ex);
+          LOG.error(String.format("persistTenantApproval failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("persistTenantRequested failed. "), ex2);
+        LOG.error(String.format("persistTenantApproval failed. "), ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("persistTenantRequested failed. "), ex);
+      LOG.error(String.format("persistTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> relateTenantRequested(TenantRequested o) {
+  public Future<Void> relateTenantApproval(TenantApproval o) {
     Promise<Void> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$1")
+      sqlConnection.preparedQuery("SELECT tenantRequestedId as pk2, 'tenantRequestedId' FROM TenantRequested WHERE tenantRequestedId=$1 UNION SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantResource())
+          .execute(Tuple.of(o.getTenantRequestedId(), o.getTenantResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4757,32 +4230,32 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           }
           promise.complete();
         } catch(Exception ex) {
-          LOG.error(String.format("relateTenantRequested failed. "), ex);
+          LOG.error(String.format("relateTenantApproval failed. "), ex);
           promise.tryFail(ex);
         }
       }).onFailure(ex -> {
         RuntimeException ex2 = new RuntimeException(ex);
-        LOG.error(String.format("relateTenantRequested failed. "), ex2);
+        LOG.error(String.format("relateTenantApproval failed. "), ex2);
         promise.tryFail(ex2);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("relateTenantRequested failed. "), ex);
+      LOG.error(String.format("relateTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
   public String searchVar(String varIndexed) {
-    return TenantRequested.searchVarTenantRequested(varIndexed);
+    return TenantApproval.searchVarTenantApproval(varIndexed);
   }
 
   @Override
   public String getClassApiAddress() {
-    return TenantRequested.CLASS_API_ADDRESS_TenantRequested;
+    return TenantApproval.CLASS_API_ADDRESS_TenantApproval;
   }
 
-  public Future<TenantRequested> indexTenantRequested(TenantRequested o) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> indexTenantApproval(TenantApproval o) {
+    Promise<TenantApproval> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4791,7 +4264,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       json.put("add", add);
       JsonObject doc = new JsonObject();
       add.put("doc", doc);
-      o.indexTenantRequested(doc);
+      o.indexTenantApproval(doc);
       String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
       String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
       String solrHostName = siteRequest.getConfig().getString(ConfigKeys.SOLR_HOST_NAME);
@@ -4808,18 +4281,18 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
         promise.complete(o);
       }).onFailure(ex -> {
-        LOG.error(String.format("indexTenantRequested failed. "), new RuntimeException(ex));
+        LOG.error(String.format("indexTenantApproval failed. "), new RuntimeException(ex));
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("indexTenantRequested failed. "), ex);
+      LOG.error(String.format("indexTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<TenantRequested> unindexTenantRequested(TenantRequested o) {
-    Promise<TenantRequested> promise = Promise.promise();
+  public Future<TenantApproval> unindexTenantApproval(TenantApproval o) {
+    Promise<TenantApproval> promise = Promise.promise();
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       ApiRequest apiRequest = siteRequest.getApiRequest_();
@@ -4827,7 +4300,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         JsonObject json = new JsonObject();
         JsonObject delete = new JsonObject();
         json.put("delete", delete);
-        String query = String.format("filter(%s:%s)", TenantRequested.VAR_solrId, o.obtainForClass(TenantRequested.VAR_solrId));
+        String query = String.format("filter(%s:%s)", TenantApproval.VAR_solrId, o.obtainForClass(TenantApproval.VAR_solrId));
         delete.put("query", query);
         String solrUsername = siteRequest.getConfig().getString(ConfigKeys.SOLR_USERNAME);
         String solrPassword = siteRequest.getConfig().getString(ConfigKeys.SOLR_PASSWORD);
@@ -4845,21 +4318,21 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         webClient.post(solrPort, solrHostName, solrRequestUri).ssl(solrSsl).authentication(new UsernamePasswordCredentials(solrUsername, solrPassword)).putHeader("Content-Type", "application/json").sendBuffer(json.toBuffer()).expecting(HttpResponseExpectation.SC_OK).onSuccess(b -> {
           promise.complete(o);
         }).onFailure(ex -> {
-          LOG.error(String.format("unindexTenantRequested failed. "), new RuntimeException(ex));
+          LOG.error(String.format("unindexTenantApproval failed. "), new RuntimeException(ex));
           promise.tryFail(ex);
         });
       }).onFailure(ex -> {
-        LOG.error(String.format("unindexTenantRequested failed. "), ex);
+        LOG.error(String.format("unindexTenantApproval failed. "), ex);
         promise.tryFail(ex);
       });
     } catch(Exception ex) {
-      LOG.error(String.format("unindexTenantRequested failed. "), ex);
+      LOG.error(String.format("unindexTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
   }
 
-  public Future<Void> refreshTenantRequested(TenantRequested o) {
+  public Future<Void> refreshTenantApproval(TenantApproval o) {
     Promise<Void> promise = Promise.promise();
     SiteRequest siteRequest = o.getSiteRequest_();
     try {
@@ -4873,6 +4346,42 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         for(int i=0; i < solrIds.size(); i++) {
           String solrId2 = solrIds.get(i);
           String classSimpleName2 = classes.get(i);
+
+          if("TenantRequested".equals(classSimpleName2) && solrId2 != null) {
+            SearchList<TenantRequested> searchList2 = new SearchList<TenantRequested>();
+            searchList2.setStore(true);
+            searchList2.q("*:*");
+            searchList2.setC(TenantRequested.class);
+            searchList2.fq("solrId:" + solrId2);
+            searchList2.rows(1L);
+            futures.add(Future.future(promise2 -> {
+              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
+                TenantRequested o2 = searchList2.getList().stream().findFirst().orElse(null);
+                if(o2 != null) {
+                  JsonObject params = new JsonObject();
+                  params.put("body", new JsonObject());
+                  params.put("scopes", siteRequest.getScopes());
+                  params.put("cookie", new JsonObject());
+                  params.put("path", new JsonObject());
+                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
+                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
+                  JsonObject json = new JsonObject().put("context", context);
+                  eventBus.request("dcm-enUS-TenantRequested", json, new DeliveryOptions().addHeader("action", "patchTenantRequestedFuture")).onSuccess(c -> {
+                    JsonObject responseMessage = (JsonObject)c.body();
+                    Integer statusCode = responseMessage.getInteger("statusCode");
+                    if(statusCode.equals(200))
+                      promise2.complete();
+                    else
+                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
+                  }).onFailure(ex -> {
+                    promise2.fail(ex);
+                  });
+                }
+              }).onFailure(ex -> {
+                promise2.fail(ex);
+              });
+            }));
+          }
 
           if("TenantIntent".equals(classSimpleName2) && solrId2 != null) {
             SearchList<TenantIntent> searchList2 = new SearchList<TenantIntent>();
@@ -4894,78 +4403,6 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
                   JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
                   JsonObject json = new JsonObject().put("context", context);
                   eventBus.request("dcm-enUS-TenantIntent", json, new DeliveryOptions().addHeader("action", "patchTenantIntentFuture")).onSuccess(c -> {
-                    JsonObject responseMessage = (JsonObject)c.body();
-                    Integer statusCode = responseMessage.getInteger("statusCode");
-                    if(statusCode.equals(200))
-                      promise2.complete();
-                    else
-                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-                  }).onFailure(ex -> {
-                    promise2.fail(ex);
-                  });
-                }
-              }).onFailure(ex -> {
-                promise2.fail(ex);
-              });
-            }));
-          }
-
-          if("TenantApproval".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<TenantApproval> searchList2 = new SearchList<TenantApproval>();
-            searchList2.setStore(true);
-            searchList2.q("*:*");
-            searchList2.setC(TenantApproval.class);
-            searchList2.fq("solrId:" + solrId2);
-            searchList2.rows(1L);
-            futures.add(Future.future(promise2 -> {
-              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                TenantApproval o2 = searchList2.getList().stream().findFirst().orElse(null);
-                if(o2 != null) {
-                  JsonObject params = new JsonObject();
-                  params.put("body", new JsonObject());
-                  params.put("scopes", siteRequest.getScopes());
-                  params.put("cookie", new JsonObject());
-                  params.put("path", new JsonObject());
-                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
-                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
-                  JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-TenantApproval", json, new DeliveryOptions().addHeader("action", "patchTenantApprovalFuture")).onSuccess(c -> {
-                    JsonObject responseMessage = (JsonObject)c.body();
-                    Integer statusCode = responseMessage.getInteger("statusCode");
-                    if(statusCode.equals(200))
-                      promise2.complete();
-                    else
-                      promise2.fail(new RuntimeException(responseMessage.getString("statusMessage")));
-                  }).onFailure(ex -> {
-                    promise2.fail(ex);
-                  });
-                }
-              }).onFailure(ex -> {
-                promise2.fail(ex);
-              });
-            }));
-          }
-
-          if("TenantRealized".equals(classSimpleName2) && solrId2 != null) {
-            SearchList<TenantRealized> searchList2 = new SearchList<TenantRealized>();
-            searchList2.setStore(true);
-            searchList2.q("*:*");
-            searchList2.setC(TenantRealized.class);
-            searchList2.fq("solrId:" + solrId2);
-            searchList2.rows(1L);
-            futures.add(Future.future(promise2 -> {
-              searchList2.promiseDeepSearchList(siteRequest).onSuccess(b -> {
-                TenantRealized o2 = searchList2.getList().stream().findFirst().orElse(null);
-                if(o2 != null) {
-                  JsonObject params = new JsonObject();
-                  params.put("body", new JsonObject());
-                  params.put("scopes", siteRequest.getScopes());
-                  params.put("cookie", new JsonObject());
-                  params.put("path", new JsonObject());
-                  params.put("query", new JsonObject().put("q", "*:*").put("fq", new JsonArray().add("solrId:" + solrId2)).put("var", new JsonArray().add("refresh:false")));
-                  JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
-                  JsonObject json = new JsonObject().put("context", context);
-                  eventBus.request("dcm-enUS-TenantRealized", json, new DeliveryOptions().addHeader("action", "patchTenantRealizedFuture")).onSuccess(c -> {
                     JsonObject responseMessage = (JsonObject)c.body();
                     Integer statusCode = responseMessage.getInteger("statusCode");
                     if(statusCode.equals(200))
@@ -5004,7 +4441,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
           params.put("query", query);
           JsonObject context = new JsonObject().put("params", params).put("user", siteRequest.getUserPrincipal());
           JsonObject json = new JsonObject().put("context", context);
-          eventBus.request(TenantRequested.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchTenantRequestedFuture")).onSuccess(c -> {
+          eventBus.request(TenantApproval.getClassApiAddress(), json, new DeliveryOptions().addHeader("action", "patchTenantApprovalFuture")).onSuccess(c -> {
             JsonObject responseMessage = (JsonObject)c.body();
             Integer statusCode = responseMessage.getInteger("statusCode");
             if(statusCode.equals(200))
@@ -5023,7 +4460,7 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
         promise.complete();
       }
     } catch(Exception ex) {
-      LOG.error(String.format("refreshTenantRequested failed. "), ex);
+      LOG.error(String.format("refreshTenantApproval failed. "), ex);
       promise.tryFail(ex);
     }
     return promise.future();
@@ -5036,36 +4473,31 @@ public class TenantRequestedEnUSGenApiServiceImpl extends BaseApiServiceImpl imp
       Map<String, Object> result = (Map<String, Object>)ctx.get("result");
       SiteRequest siteRequest2 = (SiteRequest)siteRequest;
       String siteBaseUrl = config.getString(ComputateConfigKeys.SITE_BASE_URL);
-      TenantRequested o = new TenantRequested();
+      TenantApproval o = new TenantApproval();
       o.setSiteRequest_((SiteRequest)siteRequest);
 
-      o.persistForClass(TenantRequested.VAR_hubId, TenantRequested.staticSetHubId(siteRequest2, (String)result.get(TenantRequested.VAR_hubId)));
-      o.persistForClass(TenantRequested.VAR_clusterName, TenantRequested.staticSetClusterName(siteRequest2, (String)result.get(TenantRequested.VAR_clusterName)));
-      o.persistForClass(TenantRequested.VAR_created, TenantRequested.staticSetCreated(siteRequest2, (String)result.get(TenantRequested.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(TenantRequested.VAR_aapOrganizationId, TenantRequested.staticSetAapOrganizationId(siteRequest2, (String)result.get(TenantRequested.VAR_aapOrganizationId)));
-      o.persistForClass(TenantRequested.VAR_tenantName, TenantRequested.staticSetTenantName(siteRequest2, (String)result.get(TenantRequested.VAR_tenantName)));
-      o.persistForClass(TenantRequested.VAR_tenantId, TenantRequested.staticSetTenantId(siteRequest2, (String)result.get(TenantRequested.VAR_tenantId)));
-      o.persistForClass(TenantRequested.VAR_archived, TenantRequested.staticSetArchived(siteRequest2, (String)result.get(TenantRequested.VAR_archived)));
-      o.persistForClass(TenantRequested.VAR_tenantResource, TenantRequested.staticSetTenantResource(siteRequest2, (String)result.get(TenantRequested.VAR_tenantResource)));
-      o.persistForClass(TenantRequested.VAR_tenantRequestedNumber, TenantRequested.staticSetTenantRequestedNumber(siteRequest2, (String)result.get(TenantRequested.VAR_tenantRequestedNumber)));
-      o.persistForClass(TenantRequested.VAR_tenantRequestedId, TenantRequested.staticSetTenantRequestedId(siteRequest2, (String)result.get(TenantRequested.VAR_tenantRequestedId)));
-      o.persistForClass(TenantRequested.VAR_tenantRequestedName, TenantRequested.staticSetTenantRequestedName(siteRequest2, (String)result.get(TenantRequested.VAR_tenantRequestedName)));
-      o.persistForClass(TenantRequested.VAR_sessionId, TenantRequested.staticSetSessionId(siteRequest2, (String)result.get(TenantRequested.VAR_sessionId)));
-      o.persistForClass(TenantRequested.VAR_userKey, TenantRequested.staticSetUserKey(siteRequest2, (String)result.get(TenantRequested.VAR_userKey)));
-      o.persistForClass(TenantRequested.VAR_createdByEmail, TenantRequested.staticSetCreatedByEmail(siteRequest2, (String)result.get(TenantRequested.VAR_createdByEmail)));
-      o.persistForClass(TenantRequested.VAR_createdByUserId, TenantRequested.staticSetCreatedByUserId(siteRequest2, (String)result.get(TenantRequested.VAR_createdByUserId)));
-      o.persistForClass(TenantRequested.VAR_createdByFullName, TenantRequested.staticSetCreatedByFullName(siteRequest2, (String)result.get(TenantRequested.VAR_createdByFullName)));
-      o.persistForClass(TenantRequested.VAR_objectTitle, TenantRequested.staticSetObjectTitle(siteRequest2, (String)result.get(TenantRequested.VAR_objectTitle)));
-      o.persistForClass(TenantRequested.VAR_createdVia, TenantRequested.staticSetCreatedVia(siteRequest2, (String)result.get(TenantRequested.VAR_createdVia)));
-      o.persistForClass(TenantRequested.VAR_displayPage, TenantRequested.staticSetDisplayPage(siteRequest2, (String)result.get(TenantRequested.VAR_displayPage)));
-      o.persistForClass(TenantRequested.VAR_intentState, TenantRequested.staticSetIntentState(siteRequest2, (String)result.get(TenantRequested.VAR_intentState)));
-      o.persistForClass(TenantRequested.VAR_editPage, TenantRequested.staticSetEditPage(siteRequest2, (String)result.get(TenantRequested.VAR_editPage)));
-      o.persistForClass(TenantRequested.VAR_requestedState, TenantRequested.staticSetRequestedState(siteRequest2, (String)result.get(TenantRequested.VAR_requestedState)));
-      o.persistForClass(TenantRequested.VAR_userPage, TenantRequested.staticSetUserPage(siteRequest2, (String)result.get(TenantRequested.VAR_userPage)));
-      o.persistForClass(TenantRequested.VAR_realizedState, TenantRequested.staticSetRealizedState(siteRequest2, (String)result.get(TenantRequested.VAR_realizedState)));
-      o.persistForClass(TenantRequested.VAR_download, TenantRequested.staticSetDownload(siteRequest2, (String)result.get(TenantRequested.VAR_download)));
-      o.persistForClass(TenantRequested.VAR_tenantDescription, TenantRequested.staticSetTenantDescription(siteRequest2, (String)result.get(TenantRequested.VAR_tenantDescription)));
-      o.persistForClass(TenantRequested.VAR_locked, TenantRequested.staticSetLocked(siteRequest2, (String)result.get(TenantRequested.VAR_locked)));
+      o.persistForClass(TenantApproval.VAR_tenantName, TenantApproval.staticSetTenantName(siteRequest2, (String)result.get(TenantApproval.VAR_tenantName)));
+      o.persistForClass(TenantApproval.VAR_tenantId, TenantApproval.staticSetTenantId(siteRequest2, (String)result.get(TenantApproval.VAR_tenantId)));
+      o.persistForClass(TenantApproval.VAR_created, TenantApproval.staticSetCreated(siteRequest2, (String)result.get(TenantApproval.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
+      o.persistForClass(TenantApproval.VAR_tenantRequestedId, TenantApproval.staticSetTenantRequestedId(siteRequest2, (String)result.get(TenantApproval.VAR_tenantRequestedId)));
+      o.persistForClass(TenantApproval.VAR_tenantResource, TenantApproval.staticSetTenantResource(siteRequest2, (String)result.get(TenantApproval.VAR_tenantResource)));
+      o.persistForClass(TenantApproval.VAR_archived, TenantApproval.staticSetArchived(siteRequest2, (String)result.get(TenantApproval.VAR_archived)));
+      o.persistForClass(TenantApproval.VAR_tenantRealizedNumber, TenantApproval.staticSetTenantRealizedNumber(siteRequest2, (String)result.get(TenantApproval.VAR_tenantRealizedNumber)));
+      o.persistForClass(TenantApproval.VAR_approvedByEmail, TenantApproval.staticSetApprovedByEmail(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByEmail)));
+      o.persistForClass(TenantApproval.VAR_approvedByUserId, TenantApproval.staticSetApprovedByUserId(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByUserId)));
+      o.persistForClass(TenantApproval.VAR_approvedByFullName, TenantApproval.staticSetApprovedByFullName(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByFullName)));
+      o.persistForClass(TenantApproval.VAR_sessionId, TenantApproval.staticSetSessionId(siteRequest2, (String)result.get(TenantApproval.VAR_sessionId)));
+      o.persistForClass(TenantApproval.VAR_approved, TenantApproval.staticSetApproved(siteRequest2, (String)result.get(TenantApproval.VAR_approved)));
+      o.persistForClass(TenantApproval.VAR_userKey, TenantApproval.staticSetUserKey(siteRequest2, (String)result.get(TenantApproval.VAR_userKey)));
+      o.persistForClass(TenantApproval.VAR_approvalNote, TenantApproval.staticSetApprovalNote(siteRequest2, (String)result.get(TenantApproval.VAR_approvalNote)));
+      o.persistForClass(TenantApproval.VAR_approvalName, TenantApproval.staticSetApprovalName(siteRequest2, (String)result.get(TenantApproval.VAR_approvalName)));
+      o.persistForClass(TenantApproval.VAR_approvalId, TenantApproval.staticSetApprovalId(siteRequest2, (String)result.get(TenantApproval.VAR_approvalId)));
+      o.persistForClass(TenantApproval.VAR_objectTitle, TenantApproval.staticSetObjectTitle(siteRequest2, (String)result.get(TenantApproval.VAR_objectTitle)));
+      o.persistForClass(TenantApproval.VAR_approvalTitle, TenantApproval.staticSetApprovalTitle(siteRequest2, (String)result.get(TenantApproval.VAR_approvalTitle)));
+      o.persistForClass(TenantApproval.VAR_displayPage, TenantApproval.staticSetDisplayPage(siteRequest2, (String)result.get(TenantApproval.VAR_displayPage)));
+      o.persistForClass(TenantApproval.VAR_editPage, TenantApproval.staticSetEditPage(siteRequest2, (String)result.get(TenantApproval.VAR_editPage)));
+      o.persistForClass(TenantApproval.VAR_userPage, TenantApproval.staticSetUserPage(siteRequest2, (String)result.get(TenantApproval.VAR_userPage)));
+      o.persistForClass(TenantApproval.VAR_download, TenantApproval.staticSetDownload(siteRequest2, (String)result.get(TenantApproval.VAR_download)));
 
       o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
         try {

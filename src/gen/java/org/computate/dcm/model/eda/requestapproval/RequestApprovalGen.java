@@ -1,7 +1,6 @@
 package org.computate.dcm.model.eda.requestapproval;
 
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import org.computate.search.wrap.Wrap;
 import org.computate.dcm.model.BaseModel;
 import org.computate.dcm.request.SiteRequest;
@@ -199,7 +198,7 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   public static final String NoNameFound_enUS = "no request approval found";
   public static final String ApiUri_enUS = "/en-us/api/approval";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/approval";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/approval/{approvalResource}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/approval/{approvalId}";
   public static final String OfName_enUS = "of request approval";
   public static final String ANameAdjective_enUS = "a request approval";
   public static final String NameAdjectiveSingular_enUS = "request approval";
@@ -225,7 +224,7 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/approval";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/approval";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/approval";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/approval/{approvalResource}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/approval/{approvalId}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/approval/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/approval/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/approval";
@@ -233,130 +232,6 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   public static final String DELETEFilter_enUS_StringFormatUrl = "%s/en-us/api/approval";
 
   public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-thumbs-up\"></i>";
-
-	//////////////////
-  // approvalName //
-	//////////////////
-
-
-  /**
-   *  The entity approvalName
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String approvalName;
-
-  /**
-   * <br> The entity approvalName
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalName">Find the entity approvalName in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _approvalName(Wrap<String> w);
-
-  public String getApprovalName() {
-    return approvalName;
-  }
-  public void setApprovalName(String o) {
-    this.approvalName = RequestApproval.staticSetApprovalName(siteRequest_, o);
-  }
-  public static String staticSetApprovalName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected RequestApproval approvalNameInit() {
-    Wrap<String> approvalNameWrap = new Wrap<String>().var("approvalName");
-    if(approvalName == null) {
-      _approvalName(approvalNameWrap);
-      Optional.ofNullable(approvalNameWrap.getO()).ifPresent(o -> {
-        setApprovalName(o);
-      });
-    }
-    return (RequestApproval)this;
-  }
-
-  public static String staticSearchApprovalName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrApprovalName(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqApprovalName(SiteRequest siteRequest_, String o) {
-    return RequestApproval.staticSearchApprovalName(siteRequest_, RequestApproval.staticSetApprovalName(siteRequest_, o)).toString();
-  }
-
-  public String sqlApprovalName() {
-    return approvalName;
-  }
-
-  public static String staticJsonApprovalName(String approvalName) {
-    return approvalName;
-  }
-
-	////////////////
-  // approvalId //
-	////////////////
-
-
-  /**
-   *  The entity approvalId
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String approvalId;
-
-  /**
-   * <br> The entity approvalId
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalId">Find the entity approvalId in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _approvalId(Wrap<String> w);
-
-  public String getApprovalId() {
-    return approvalId;
-  }
-  public void setApprovalId(String o) {
-    this.approvalId = RequestApproval.staticSetApprovalId(siteRequest_, o);
-  }
-  public static String staticSetApprovalId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected RequestApproval approvalIdInit() {
-    Wrap<String> approvalIdWrap = new Wrap<String>().var("approvalId");
-    if(approvalId == null) {
-      _approvalId(approvalIdWrap);
-      Optional.ofNullable(approvalIdWrap.getO()).ifPresent(o -> {
-        setApprovalId(o);
-      });
-    }
-    return (RequestApproval)this;
-  }
-
-  public static String staticSearchApprovalId(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrApprovalId(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqApprovalId(SiteRequest siteRequest_, String o) {
-    return RequestApproval.staticSearchApprovalId(siteRequest_, RequestApproval.staticSetApprovalId(siteRequest_, o)).toString();
-  }
-
-  public String sqlApprovalId() {
-    return approvalId;
-  }
-
-  public static String staticJsonApprovalId(String approvalId) {
-    return approvalId;
-  }
 
 	/////////////////////
   // approvedByEmail //
@@ -544,68 +419,6 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     return approvedByFullName;
   }
 
-	//////////////////
-  // approvalNote //
-	//////////////////
-
-
-  /**
-   *  The entity approvalNote
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String approvalNote;
-
-  /**
-   * <br> The entity approvalNote
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalNote">Find the entity approvalNote in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _approvalNote(Wrap<String> w);
-
-  public String getApprovalNote() {
-    return approvalNote;
-  }
-  public void setApprovalNote(String o) {
-    this.approvalNote = RequestApproval.staticSetApprovalNote(siteRequest_, o);
-  }
-  public static String staticSetApprovalNote(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected RequestApproval approvalNoteInit() {
-    Wrap<String> approvalNoteWrap = new Wrap<String>().var("approvalNote");
-    if(approvalNote == null) {
-      _approvalNote(approvalNoteWrap);
-      Optional.ofNullable(approvalNoteWrap.getO()).ifPresent(o -> {
-        setApprovalNote(o);
-      });
-    }
-    return (RequestApproval)this;
-  }
-
-  public static String staticSearchApprovalNote(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrApprovalNote(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqApprovalNote(SiteRequest siteRequest_, String o) {
-    return RequestApproval.staticSearchApprovalNote(siteRequest_, RequestApproval.staticSetApprovalNote(siteRequest_, o)).toString();
-  }
-
-  public String sqlApprovalNote() {
-    return approvalNote;
-  }
-
-  public static String staticJsonApprovalNote(String approvalNote) {
-    return approvalNote;
-  }
-
 	//////////////
   // approved //
 	//////////////
@@ -671,6 +484,68 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static Boolean staticJsonApproved(Boolean approved) {
     return approved;
+  }
+
+	//////////////////
+  // approvalNote //
+	//////////////////
+
+
+  /**
+   *  The entity approvalNote
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String approvalNote;
+
+  /**
+   * <br> The entity approvalNote
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalNote">Find the entity approvalNote in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _approvalNote(Wrap<String> w);
+
+  public String getApprovalNote() {
+    return approvalNote;
+  }
+  public void setApprovalNote(String o) {
+    this.approvalNote = RequestApproval.staticSetApprovalNote(siteRequest_, o);
+  }
+  public static String staticSetApprovalNote(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected RequestApproval approvalNoteInit() {
+    Wrap<String> approvalNoteWrap = new Wrap<String>().var("approvalNote");
+    if(approvalNote == null) {
+      _approvalNote(approvalNoteWrap);
+      Optional.ofNullable(approvalNoteWrap.getO()).ifPresent(o -> {
+        setApprovalNote(o);
+      });
+    }
+    return (RequestApproval)this;
+  }
+
+  public static String staticSearchApprovalNote(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrApprovalNote(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqApprovalNote(SiteRequest siteRequest_, String o) {
+    return RequestApproval.staticSearchApprovalNote(siteRequest_, RequestApproval.staticSetApprovalNote(siteRequest_, o)).toString();
+  }
+
+  public String sqlApprovalNote() {
+    return approvalNote;
+  }
+
+  public static String staticJsonApprovalNote(String approvalNote) {
+    return approvalNote;
   }
 
 	///////////////
@@ -797,6 +672,130 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     return modelResource;
   }
 
+	//////////////////
+  // approvalName //
+	//////////////////
+
+
+  /**
+   *  The entity approvalName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String approvalName;
+
+  /**
+   * <br> The entity approvalName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalName">Find the entity approvalName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _approvalName(Wrap<String> w);
+
+  public String getApprovalName() {
+    return approvalName;
+  }
+  public void setApprovalName(String o) {
+    this.approvalName = RequestApproval.staticSetApprovalName(siteRequest_, o);
+  }
+  public static String staticSetApprovalName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected RequestApproval approvalNameInit() {
+    Wrap<String> approvalNameWrap = new Wrap<String>().var("approvalName");
+    if(approvalName == null) {
+      _approvalName(approvalNameWrap);
+      Optional.ofNullable(approvalNameWrap.getO()).ifPresent(o -> {
+        setApprovalName(o);
+      });
+    }
+    return (RequestApproval)this;
+  }
+
+  public static String staticSearchApprovalName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrApprovalName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqApprovalName(SiteRequest siteRequest_, String o) {
+    return RequestApproval.staticSearchApprovalName(siteRequest_, RequestApproval.staticSetApprovalName(siteRequest_, o)).toString();
+  }
+
+  public String sqlApprovalName() {
+    return approvalName;
+  }
+
+  public static String staticJsonApprovalName(String approvalName) {
+    return approvalName;
+  }
+
+	////////////////
+  // approvalId //
+	////////////////
+
+
+  /**
+   *  The entity approvalId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String approvalId;
+
+  /**
+   * <br> The entity approvalId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.requestapproval.RequestApproval&fq=entiteVar_enUS_indexed_string:approvalId">Find the entity approvalId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _approvalId(Wrap<String> w);
+
+  public String getApprovalId() {
+    return approvalId;
+  }
+  public void setApprovalId(String o) {
+    this.approvalId = RequestApproval.staticSetApprovalId(siteRequest_, o);
+  }
+  public static String staticSetApprovalId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected RequestApproval approvalIdInit() {
+    Wrap<String> approvalIdWrap = new Wrap<String>().var("approvalId");
+    if(approvalId == null) {
+      _approvalId(approvalIdWrap);
+      Optional.ofNullable(approvalIdWrap.getO()).ifPresent(o -> {
+        setApprovalId(o);
+      });
+    }
+    return (RequestApproval)this;
+  }
+
+  public static String staticSearchApprovalId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrApprovalId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqApprovalId(SiteRequest siteRequest_, String o) {
+    return RequestApproval.staticSearchApprovalId(siteRequest_, RequestApproval.staticSetApprovalId(siteRequest_, o)).toString();
+  }
+
+  public String sqlApprovalId() {
+    return approvalId;
+  }
+
+  public static String staticJsonApprovalId(String approvalId) {
+    return approvalId;
+  }
+
 	///////////////////
   // approvalTitle //
 	///////////////////
@@ -889,15 +888,15 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
-        approvalNameInit();
-        approvalIdInit();
         approvedByEmailInit();
         approvedByUserIdInit();
         approvedByFullNameInit();
-        approvalNoteInit();
         approvedInit();
+        approvalNoteInit();
         modelTypeInit();
         modelResourceInit();
+        approvalNameInit();
+        approvalIdInit();
         approvalTitleInit();
         promise2.complete();
       } catch(Exception ex) {
@@ -952,24 +951,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   public Object obtainRequestApproval(String var) {
     RequestApproval oRequestApproval = (RequestApproval)this;
     switch(var) {
-      case "approvalName":
-        return oRequestApproval.approvalName;
-      case "approvalId":
-        return oRequestApproval.approvalId;
       case "approvedByEmail":
         return oRequestApproval.approvedByEmail;
       case "approvedByUserId":
         return oRequestApproval.approvedByUserId;
       case "approvedByFullName":
         return oRequestApproval.approvedByFullName;
-      case "approvalNote":
-        return oRequestApproval.approvalNote;
       case "approved":
         return oRequestApproval.approved;
+      case "approvalNote":
+        return oRequestApproval.approvalNote;
       case "modelType":
         return oRequestApproval.modelType;
       case "modelResource":
         return oRequestApproval.modelResource;
+      case "approvalName":
+        return oRequestApproval.approvalName;
+      case "approvalId":
+        return oRequestApproval.approvalId;
       case "approvalTitle":
         return oRequestApproval.approvalTitle;
       default:
@@ -1011,24 +1010,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static Object staticSetRequestApproval(String entityVar, SiteRequest siteRequest_, String v, RequestApproval o) {
     switch(entityVar) {
-    case "approvalName":
-      return RequestApproval.staticSetApprovalName(siteRequest_, v);
-    case "approvalId":
-      return RequestApproval.staticSetApprovalId(siteRequest_, v);
     case "approvedByEmail":
       return RequestApproval.staticSetApprovedByEmail(siteRequest_, v);
     case "approvedByUserId":
       return RequestApproval.staticSetApprovedByUserId(siteRequest_, v);
     case "approvedByFullName":
       return RequestApproval.staticSetApprovedByFullName(siteRequest_, v);
-    case "approvalNote":
-      return RequestApproval.staticSetApprovalNote(siteRequest_, v);
     case "approved":
       return RequestApproval.staticSetApproved(siteRequest_, v);
+    case "approvalNote":
+      return RequestApproval.staticSetApprovalNote(siteRequest_, v);
     case "modelType":
       return RequestApproval.staticSetModelType(siteRequest_, v);
     case "modelResource":
       return RequestApproval.staticSetModelResource(siteRequest_, v);
+    case "approvalName":
+      return RequestApproval.staticSetApprovalName(siteRequest_, v);
+    case "approvalId":
+      return RequestApproval.staticSetApprovalId(siteRequest_, v);
     case "approvalTitle":
       return RequestApproval.staticSetApprovalTitle(siteRequest_, v);
       default:
@@ -1075,24 +1074,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static Object staticSearchRequestApproval(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "approvalName":
-      return RequestApproval.staticSearchApprovalName(siteRequest_, (String)o);
-    case "approvalId":
-      return RequestApproval.staticSearchApprovalId(siteRequest_, (String)o);
     case "approvedByEmail":
       return RequestApproval.staticSearchApprovedByEmail(siteRequest_, (String)o);
     case "approvedByUserId":
       return RequestApproval.staticSearchApprovedByUserId(siteRequest_, (String)o);
     case "approvedByFullName":
       return RequestApproval.staticSearchApprovedByFullName(siteRequest_, (String)o);
-    case "approvalNote":
-      return RequestApproval.staticSearchApprovalNote(siteRequest_, (String)o);
     case "approved":
       return RequestApproval.staticSearchApproved(siteRequest_, (Boolean)o);
+    case "approvalNote":
+      return RequestApproval.staticSearchApprovalNote(siteRequest_, (String)o);
     case "modelType":
       return RequestApproval.staticSearchModelType(siteRequest_, (String)o);
     case "modelResource":
       return RequestApproval.staticSearchModelResource(siteRequest_, (String)o);
+    case "approvalName":
+      return RequestApproval.staticSearchApprovalName(siteRequest_, (String)o);
+    case "approvalId":
+      return RequestApproval.staticSearchApprovalId(siteRequest_, (String)o);
     case "approvalTitle":
       return RequestApproval.staticSearchApprovalTitle(siteRequest_, (String)o);
       default:
@@ -1109,24 +1108,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static String staticSearchStrRequestApproval(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "approvalName":
-      return RequestApproval.staticSearchStrApprovalName(siteRequest_, (String)o);
-    case "approvalId":
-      return RequestApproval.staticSearchStrApprovalId(siteRequest_, (String)o);
     case "approvedByEmail":
       return RequestApproval.staticSearchStrApprovedByEmail(siteRequest_, (String)o);
     case "approvedByUserId":
       return RequestApproval.staticSearchStrApprovedByUserId(siteRequest_, (String)o);
     case "approvedByFullName":
       return RequestApproval.staticSearchStrApprovedByFullName(siteRequest_, (String)o);
-    case "approvalNote":
-      return RequestApproval.staticSearchStrApprovalNote(siteRequest_, (String)o);
     case "approved":
       return RequestApproval.staticSearchStrApproved(siteRequest_, (Boolean)o);
+    case "approvalNote":
+      return RequestApproval.staticSearchStrApprovalNote(siteRequest_, (String)o);
     case "modelType":
       return RequestApproval.staticSearchStrModelType(siteRequest_, (String)o);
     case "modelResource":
       return RequestApproval.staticSearchStrModelResource(siteRequest_, (String)o);
+    case "approvalName":
+      return RequestApproval.staticSearchStrApprovalName(siteRequest_, (String)o);
+    case "approvalId":
+      return RequestApproval.staticSearchStrApprovalId(siteRequest_, (String)o);
     case "approvalTitle":
       return RequestApproval.staticSearchStrApprovalTitle(siteRequest_, (String)o);
       default:
@@ -1143,24 +1142,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static String staticSearchFqRequestApproval(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
-    case "approvalName":
-      return RequestApproval.staticSearchFqApprovalName(siteRequest_, o);
-    case "approvalId":
-      return RequestApproval.staticSearchFqApprovalId(siteRequest_, o);
     case "approvedByEmail":
       return RequestApproval.staticSearchFqApprovedByEmail(siteRequest_, o);
     case "approvedByUserId":
       return RequestApproval.staticSearchFqApprovedByUserId(siteRequest_, o);
     case "approvedByFullName":
       return RequestApproval.staticSearchFqApprovedByFullName(siteRequest_, o);
-    case "approvalNote":
-      return RequestApproval.staticSearchFqApprovalNote(siteRequest_, o);
     case "approved":
       return RequestApproval.staticSearchFqApproved(siteRequest_, o);
+    case "approvalNote":
+      return RequestApproval.staticSearchFqApprovalNote(siteRequest_, o);
     case "modelType":
       return RequestApproval.staticSearchFqModelType(siteRequest_, o);
     case "modelResource":
       return RequestApproval.staticSearchFqModelResource(siteRequest_, o);
+    case "approvalName":
+      return RequestApproval.staticSearchFqApprovalName(siteRequest_, o);
+    case "approvalId":
+      return RequestApproval.staticSearchFqApprovalId(siteRequest_, o);
     case "approvalTitle":
       return RequestApproval.staticSearchFqApprovalTitle(siteRequest_, o);
       default:
@@ -1189,19 +1188,7 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public Object persistRequestApproval(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("approvalname".equals(varLower)) {
-        if(val instanceof String) {
-          setApprovalName((String)val);
-        }
-        saves.add("approvalName");
-        return val;
-      } else if("approvalid".equals(varLower)) {
-        if(val instanceof String) {
-          setApprovalId((String)val);
-        }
-        saves.add("approvalId");
-        return val;
-      } else if("approvedbyemail".equals(varLower)) {
+      if("approvedbyemail".equals(varLower)) {
         if(val instanceof String) {
           setApprovedByEmail((String)val);
         }
@@ -1219,12 +1206,6 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
         }
         saves.add("approvedByFullName");
         return val;
-      } else if("approvalnote".equals(varLower)) {
-        if(val instanceof String) {
-          setApprovalNote((String)val);
-        }
-        saves.add("approvalNote");
-        return val;
       } else if("approved".equals(varLower)) {
         if(val instanceof Boolean) {
           setApproved((Boolean)val);
@@ -1232,6 +1213,12 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
           setApproved(val == null ? null : val.toString());
         }
         saves.add("approved");
+        return val;
+      } else if("approvalnote".equals(varLower)) {
+        if(val instanceof String) {
+          setApprovalNote((String)val);
+        }
+        saves.add("approvalNote");
         return val;
       } else if("modeltype".equals(varLower)) {
         if(val instanceof String) {
@@ -1244,6 +1231,18 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
           setModelResource((String)val);
         }
         saves.add("modelResource");
+        return val;
+      } else if("approvalname".equals(varLower)) {
+        if(val instanceof String) {
+          setApprovalName((String)val);
+        }
+        saves.add("approvalName");
+        return val;
+      } else if("approvalid".equals(varLower)) {
+        if(val instanceof String) {
+          setApprovalId((String)val);
+        }
+        saves.add("approvalId");
         return val;
       } else if("approvaltitle".equals(varLower)) {
         if(val instanceof String) {
@@ -1268,18 +1267,6 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
 
-      if(saves.contains("approvalName")) {
-        String approvalName = (String)doc.get("approvalName_docvalues_string");
-        if(approvalName != null)
-          oRequestApproval.setApprovalName(approvalName);
-      }
-
-      if(saves.contains("approvalId")) {
-        String approvalId = (String)doc.get("approvalId_docvalues_string");
-        if(approvalId != null)
-          oRequestApproval.setApprovalId(approvalId);
-      }
-
       if(saves.contains("approvedByEmail")) {
         String approvedByEmail = (String)doc.get("approvedByEmail_docvalues_string");
         if(approvedByEmail != null)
@@ -1298,16 +1285,16 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
           oRequestApproval.setApprovedByFullName(approvedByFullName);
       }
 
-      if(saves.contains("approvalNote")) {
-        String approvalNote = (String)doc.get("approvalNote_docvalues_string");
-        if(approvalNote != null)
-          oRequestApproval.setApprovalNote(approvalNote);
-      }
-
       if(saves.contains("approved")) {
         Boolean approved = (Boolean)doc.get("approved_docvalues_boolean");
         if(approved != null)
           oRequestApproval.setApproved(approved);
+      }
+
+      if(saves.contains("approvalNote")) {
+        String approvalNote = (String)doc.get("approvalNote_docvalues_string");
+        if(approvalNote != null)
+          oRequestApproval.setApprovalNote(approvalNote);
       }
 
       if(saves.contains("modelType")) {
@@ -1322,6 +1309,18 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
           oRequestApproval.setModelResource(modelResource);
       }
 
+      if(saves.contains("approvalName")) {
+        String approvalName = (String)doc.get("approvalName_docvalues_string");
+        if(approvalName != null)
+          oRequestApproval.setApprovalName(approvalName);
+      }
+
+      if(saves.contains("approvalId")) {
+        String approvalId = (String)doc.get("approvalId_docvalues_string");
+        if(approvalId != null)
+          oRequestApproval.setApprovalId(approvalId);
+      }
+
       if(saves.contains("approvalTitle")) {
         String approvalTitle = (String)doc.get("approvalTitle_docvalues_string");
         if(approvalTitle != null)
@@ -1333,12 +1332,6 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
 
   public void indexRequestApproval(JsonObject doc) {
-    if(approvalName != null) {
-      doc.put("approvalName_docvalues_string", approvalName);
-    }
-    if(approvalId != null) {
-      doc.put("approvalId_docvalues_string", approvalId);
-    }
     if(approvedByEmail != null) {
       doc.put("approvedByEmail_docvalues_string", approvedByEmail);
     }
@@ -1348,17 +1341,23 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     if(approvedByFullName != null) {
       doc.put("approvedByFullName_docvalues_string", approvedByFullName);
     }
-    if(approvalNote != null) {
-      doc.put("approvalNote_docvalues_string", approvalNote);
-    }
     if(approved != null) {
       doc.put("approved_docvalues_boolean", approved);
+    }
+    if(approvalNote != null) {
+      doc.put("approvalNote_docvalues_string", approvalNote);
     }
     if(modelType != null) {
       doc.put("modelType_docvalues_string", modelType);
     }
     if(modelResource != null) {
       doc.put("modelResource_docvalues_string", modelResource);
+    }
+    if(approvalName != null) {
+      doc.put("approvalName_docvalues_string", approvalName);
+    }
+    if(approvalId != null) {
+      doc.put("approvalId_docvalues_string", approvalId);
     }
     if(approvalTitle != null) {
       doc.put("approvalTitle_docvalues_string", approvalTitle);
@@ -1369,24 +1368,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static String varStoredRequestApproval(String entityVar) {
     switch(entityVar) {
-      case "approvalName":
-        return "approvalName_docvalues_string";
-      case "approvalId":
-        return "approvalId_docvalues_string";
       case "approvedByEmail":
         return "approvedByEmail_docvalues_string";
       case "approvedByUserId":
         return "approvedByUserId_docvalues_string";
       case "approvedByFullName":
         return "approvedByFullName_docvalues_string";
-      case "approvalNote":
-        return "approvalNote_docvalues_string";
       case "approved":
         return "approved_docvalues_boolean";
+      case "approvalNote":
+        return "approvalNote_docvalues_string";
       case "modelType":
         return "modelType_docvalues_string";
       case "modelResource":
         return "modelResource_docvalues_string";
+      case "approvalName":
+        return "approvalName_docvalues_string";
+      case "approvalId":
+        return "approvalId_docvalues_string";
       case "approvalTitle":
         return "approvalTitle_docvalues_string";
       default:
@@ -1396,24 +1395,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static String varIndexedRequestApproval(String entityVar) {
     switch(entityVar) {
-      case "approvalName":
-        return "approvalName_docvalues_string";
-      case "approvalId":
-        return "approvalId_docvalues_string";
       case "approvedByEmail":
         return "approvedByEmail_docvalues_string";
       case "approvedByUserId":
         return "approvedByUserId_docvalues_string";
       case "approvedByFullName":
         return "approvedByFullName_docvalues_string";
-      case "approvalNote":
-        return "approvalNote_docvalues_string";
       case "approved":
         return "approved_docvalues_boolean";
+      case "approvalNote":
+        return "approvalNote_docvalues_string";
       case "modelType":
         return "modelType_docvalues_string";
       case "modelResource":
         return "modelResource_docvalues_string";
+      case "approvalName":
+        return "approvalName_docvalues_string";
+      case "approvalId":
+        return "approvalId_docvalues_string";
       case "approvalTitle":
         return "approvalTitle_docvalues_string";
       default:
@@ -1423,24 +1422,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static String searchVarRequestApproval(String searchVar) {
     switch(searchVar) {
-      case "approvalName_docvalues_string":
-        return "approvalName";
-      case "approvalId_docvalues_string":
-        return "approvalId";
       case "approvedByEmail_docvalues_string":
         return "approvedByEmail";
       case "approvedByUserId_docvalues_string":
         return "approvedByUserId";
       case "approvedByFullName_docvalues_string":
         return "approvedByFullName";
-      case "approvalNote_docvalues_string":
-        return "approvalNote";
       case "approved_docvalues_boolean":
         return "approved";
+      case "approvalNote_docvalues_string":
+        return "approvalNote";
       case "modelType_docvalues_string":
         return "modelType";
       case "modelResource_docvalues_string":
         return "modelResource";
+      case "approvalName_docvalues_string":
+        return "approvalName";
+      case "approvalId_docvalues_string":
+        return "approvalId";
       case "approvalTitle_docvalues_string":
         return "approvalTitle";
       default:
@@ -1473,15 +1472,15 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     RequestApproval oRequestApproval = (RequestApproval)this;
     SiteRequest siteRequest = oRequestApproval.getSiteRequest_();
 
-    oRequestApproval.setApprovalName(Optional.ofNullable(doc.get("approvalName_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oRequestApproval.setApprovalId(Optional.ofNullable(doc.get("approvalId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setApprovedByEmail(Optional.ofNullable(doc.get("approvedByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setApprovedByUserId(Optional.ofNullable(doc.get("approvedByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setApprovedByFullName(Optional.ofNullable(doc.get("approvedByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oRequestApproval.setApprovalNote(Optional.ofNullable(doc.get("approvalNote_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setApproved(Optional.ofNullable(doc.get("approved_docvalues_boolean")).map(v -> v.toString()).orElse(null));
+    oRequestApproval.setApprovalNote(Optional.ofNullable(doc.get("approvalNote_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setModelType(Optional.ofNullable(doc.get("modelType_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setModelResource(Optional.ofNullable(doc.get("modelResource_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oRequestApproval.setApprovalName(Optional.ofNullable(doc.get("approvalName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oRequestApproval.setApprovalId(Optional.ofNullable(doc.get("approvalId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oRequestApproval.setApprovalTitle(Optional.ofNullable(doc.get("approvalTitle_docvalues_string")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
@@ -1496,24 +1495,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof RequestApproval) {
       RequestApproval original = (RequestApproval)o;
-      if(!Objects.equals(approvalName, original.getApprovalName()))
-        apiRequest.addVars("approvalName");
-      if(!Objects.equals(approvalId, original.getApprovalId()))
-        apiRequest.addVars("approvalId");
       if(!Objects.equals(approvedByEmail, original.getApprovedByEmail()))
         apiRequest.addVars("approvedByEmail");
       if(!Objects.equals(approvedByUserId, original.getApprovedByUserId()))
         apiRequest.addVars("approvedByUserId");
       if(!Objects.equals(approvedByFullName, original.getApprovedByFullName()))
         apiRequest.addVars("approvedByFullName");
-      if(!Objects.equals(approvalNote, original.getApprovalNote()))
-        apiRequest.addVars("approvalNote");
       if(!Objects.equals(approved, original.getApproved()))
         apiRequest.addVars("approved");
+      if(!Objects.equals(approvalNote, original.getApprovalNote()))
+        apiRequest.addVars("approvalNote");
       if(!Objects.equals(modelType, original.getModelType()))
         apiRequest.addVars("modelType");
       if(!Objects.equals(modelResource, original.getModelResource()))
         apiRequest.addVars("modelResource");
+      if(!Objects.equals(approvalName, original.getApprovalName()))
+        apiRequest.addVars("approvalName");
+      if(!Objects.equals(approvalId, original.getApprovalId()))
+        apiRequest.addVars("approvalId");
       if(!Objects.equals(approvalTitle, original.getApprovalTitle()))
         apiRequest.addVars("approvalTitle");
       super.apiRequestBaseModel();
@@ -1527,15 +1526,15 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
-    sb.append(Optional.ofNullable(approvalName).map(v -> "approvalName: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(approvalId).map(v -> "approvalId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvedByEmail).map(v -> "approvedByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvedByUserId).map(v -> "approvedByUserId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvedByFullName).map(v -> "approvedByFullName: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(approvalNote).map(v -> "approvalNote: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approved).map(v -> "approved: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(approvalNote).map(v -> "approvalNote: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(modelType).map(v -> "modelType: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(modelResource).map(v -> "modelResource: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(approvalName).map(v -> "approvalName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(approvalId).map(v -> "approvalId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvalTitle).map(v -> "approvalTitle: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
   }
@@ -1547,24 +1546,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_RequestApproval;
   }
-  public static final String VAR_approvalName = "approvalName";
-  public static final String SET_approvalName = "setApprovalName";
-  public static final String VAR_approvalId = "approvalId";
-  public static final String SET_approvalId = "setApprovalId";
   public static final String VAR_approvedByEmail = "approvedByEmail";
   public static final String SET_approvedByEmail = "setApprovedByEmail";
   public static final String VAR_approvedByUserId = "approvedByUserId";
   public static final String SET_approvedByUserId = "setApprovedByUserId";
   public static final String VAR_approvedByFullName = "approvedByFullName";
   public static final String SET_approvedByFullName = "setApprovedByFullName";
-  public static final String VAR_approvalNote = "approvalNote";
-  public static final String SET_approvalNote = "setApprovalNote";
   public static final String VAR_approved = "approved";
   public static final String SET_approved = "setApproved";
+  public static final String VAR_approvalNote = "approvalNote";
+  public static final String SET_approvalNote = "setApprovalNote";
   public static final String VAR_modelType = "modelType";
   public static final String SET_modelType = "setModelType";
   public static final String VAR_modelResource = "modelResource";
   public static final String SET_modelResource = "setModelResource";
+  public static final String VAR_approvalName = "approvalName";
+  public static final String SET_approvalName = "setApprovalName";
+  public static final String VAR_approvalId = "approvalId";
+  public static final String SET_approvalId = "setApprovalId";
   public static final String VAR_approvalTitle = "approvalTitle";
   public static final String SET_approvalTitle = "setApprovalTitle";
 
@@ -1580,12 +1579,12 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     return RequestApproval.varsFqRequestApproval(new ArrayList<String>());
   }
   public static List<String> varsFqRequestApproval(List<String> vars) {
-    vars.add(VAR_approvalName);
-    vars.add(VAR_approvalId);
-    vars.add(VAR_approvalNote);
     vars.add(VAR_approved);
+    vars.add(VAR_approvalNote);
     vars.add(VAR_modelType);
     vars.add(VAR_modelResource);
+    vars.add(VAR_approvalName);
+    vars.add(VAR_approvalId);
     vars.add(VAR_approvalTitle);
     BaseModel.varsFqBaseModel(vars);
     return vars;
@@ -1599,15 +1598,15 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     return vars;
   }
 
-  public static final String DISPLAY_NAME_approvalName = "approval name";
-  public static final String DISPLAY_NAME_approvalId = "approval ID";
   public static final String DISPLAY_NAME_approvedByEmail = "approved by user email";
   public static final String DISPLAY_NAME_approvedByUserId = "approved by user ID";
   public static final String DISPLAY_NAME_approvedByFullName = "approved by user full name";
-  public static final String DISPLAY_NAME_approvalNote = "approval note";
   public static final String DISPLAY_NAME_approved = "approved";
+  public static final String DISPLAY_NAME_approvalNote = "approval note";
   public static final String DISPLAY_NAME_modelType = "model type";
   public static final String DISPLAY_NAME_modelResource = "model resource";
+  public static final String DISPLAY_NAME_approvalName = "approval name";
+  public static final String DISPLAY_NAME_approvalId = "approval ID";
   public static final String DISPLAY_NAME_approvalTitle = "approval title";
 
   @Override
@@ -1645,24 +1644,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static String varJsonRequestApproval(String var, Boolean patch) {
     switch(var) {
-    case VAR_approvalName:
-      return patch ? SET_approvalName : VAR_approvalName;
-    case VAR_approvalId:
-      return patch ? SET_approvalId : VAR_approvalId;
     case VAR_approvedByEmail:
       return patch ? SET_approvedByEmail : VAR_approvedByEmail;
     case VAR_approvedByUserId:
       return patch ? SET_approvedByUserId : VAR_approvedByUserId;
     case VAR_approvedByFullName:
       return patch ? SET_approvedByFullName : VAR_approvedByFullName;
-    case VAR_approvalNote:
-      return patch ? SET_approvalNote : VAR_approvalNote;
     case VAR_approved:
       return patch ? SET_approved : VAR_approved;
+    case VAR_approvalNote:
+      return patch ? SET_approvalNote : VAR_approvalNote;
     case VAR_modelType:
       return patch ? SET_modelType : VAR_modelType;
     case VAR_modelResource:
       return patch ? SET_modelResource : VAR_modelResource;
+    case VAR_approvalName:
+      return patch ? SET_approvalName : VAR_approvalName;
+    case VAR_approvalId:
+      return patch ? SET_approvalId : VAR_approvalId;
     case VAR_approvalTitle:
       return patch ? SET_approvalTitle : VAR_approvalTitle;
     default:
@@ -1675,24 +1674,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
   }
   public static String displayNameRequestApproval(String var) {
     switch(var) {
-    case VAR_approvalName:
-      return DISPLAY_NAME_approvalName;
-    case VAR_approvalId:
-      return DISPLAY_NAME_approvalId;
     case VAR_approvedByEmail:
       return DISPLAY_NAME_approvedByEmail;
     case VAR_approvedByUserId:
       return DISPLAY_NAME_approvedByUserId;
     case VAR_approvedByFullName:
       return DISPLAY_NAME_approvedByFullName;
-    case VAR_approvalNote:
-      return DISPLAY_NAME_approvalNote;
     case VAR_approved:
       return DISPLAY_NAME_approved;
+    case VAR_approvalNote:
+      return DISPLAY_NAME_approvalNote;
     case VAR_modelType:
       return DISPLAY_NAME_modelType;
     case VAR_modelResource:
       return DISPLAY_NAME_modelResource;
+    case VAR_approvalName:
+      return DISPLAY_NAME_approvalName;
+    case VAR_approvalId:
+      return DISPLAY_NAME_approvalId;
     case VAR_approvalTitle:
       return DISPLAY_NAME_approvalTitle;
     default:
@@ -1704,24 +1703,24 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
     if(var == null)
       return null;
     switch(var) {
-    case VAR_approvalName:
-      return "The name of this approval";
-    case VAR_approvalId:
-      return "The ID of this approval. By default, this will be auto-generated based on the approval name, converting non-alphanumeric characters to hyphens, all lowercase. ";
     case VAR_approvedByEmail:
       return "The email address for the user who approved the change request. ";
     case VAR_approvedByUserId:
       return "The IdP UUID record for the user who approved the change request. ";
     case VAR_approvedByFullName:
       return "The first and last name for the user who approved the change request. ";
-    case VAR_approvalNote:
-      return "A note from the approver about their decision about the requested change. ";
     case VAR_approved:
       return "Whether the requested change was approved by the approver. ";
+    case VAR_approvalNote:
+      return "A note from the approver about their decision about the requested change. ";
     case VAR_modelType:
       return "The Java Class simple name of this approval. ";
     case VAR_modelResource:
       return "The unique model resource of this approval. ";
+    case VAR_approvalName:
+      return "The name of this approval";
+    case VAR_approvalId:
+      return "The ID of this approval. By default, this will be auto-generated based on the approval name, converting non-alphanumeric characters to hyphens, all lowercase. ";
     case VAR_approvalTitle:
       return "A brief title from the approver about their decision about the requested change. ";
       default:
@@ -1731,23 +1730,23 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static String classSimpleNameRequestApproval(String var) {
     switch(var) {
-    case VAR_approvalName:
-      return "String";
-    case VAR_approvalId:
-      return "String";
     case VAR_approvedByEmail:
       return "String";
     case VAR_approvedByUserId:
       return "String";
     case VAR_approvedByFullName:
       return "String";
-    case VAR_approvalNote:
-      return "String";
     case VAR_approved:
       return "Boolean";
+    case VAR_approvalNote:
+      return "String";
     case VAR_modelType:
       return "String";
     case VAR_modelResource:
+      return "String";
+    case VAR_approvalName:
+      return "String";
+    case VAR_approvalId:
       return "String";
     case VAR_approvalTitle:
       return "String";
@@ -1758,10 +1757,10 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmColumnRequestApproval(String var) {
     switch(var) {
-    case VAR_approvalName:
-      return 1;
     case VAR_approvalNote:
       return 3;
+    case VAR_approvalName:
+      return 1;
       default:
         return BaseModel.htmColumnBaseModel(var);
     }
@@ -1769,12 +1768,16 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmRowRequestApproval(String var) {
     switch(var) {
-    case VAR_approvalName:
-      return 23;
     case VAR_approvedByEmail:
       return 10;
+    case VAR_approvedByUserId:
+      return 10;
+    case VAR_approvedByFullName:
+      return 10;
+    case VAR_approved:
+      return 11;
     case VAR_approvalNote:
-      return 23;
+      return 11;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -1782,12 +1785,16 @@ public abstract class RequestApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmCellRequestApproval(String var) {
     switch(var) {
-    case VAR_approvalName:
-      return 1;
     case VAR_approvedByEmail:
       return 0;
+    case VAR_approvedByUserId:
+      return 0;
+    case VAR_approvedByFullName:
+      return 0;
+    case VAR_approved:
+      return 0;
     case VAR_approvalNote:
-      return 4;
+      return 0;
       default:
         return BaseModel.htmCellBaseModel(var);
     }

@@ -114,15 +114,15 @@ import org.computate.search.response.solr.SolrResponse;
  *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
  * <h2>
- *   Order: 143
+ *   Order: 144
  * </h2>
  * <p>
- *   This class contains a comment <kbd><b>Order: 143</b></kbd>, 
- *   which means this class will be sorted by the given number 143 
+ *   This class contains a comment <kbd><b>Order: 144</b></kbd>, 
+ *   which means this class will be sorted by the given number 144 
  *   ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 143</h2>
- * <p>This class contains a comment <kbd><b>SqlOrder: 143</b></kbd>, which means this class will be sorted by the given number 143 ascending when SQL code to create and drop the tables is generated. 
+ * <h2>SqlOrder: 144</h2>
+ * <p>This class contains a comment <kbd><b>SqlOrder: 144</b></kbd>, which means this class will be sorted by the given number 144 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <kbd><b>Model: true</b></kbd>, which means this class will be stored in the database. 
