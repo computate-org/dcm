@@ -2,7 +2,6 @@ package org.computate.dcm.model.eda.tenant.approval;
 
 import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
 import java.lang.String;
-import java.lang.Integer;
 import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;

@@ -2,7 +2,6 @@ package org.computate.dcm.model.eda.tenant.approval;
 
 import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
 import java.lang.String;
-import java.lang.Integer;
 import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
@@ -512,8 +511,8 @@ public class TenantApprovalGenPage extends TenantApprovalGenPageGen<PageLayout> 
 
   @Override
   protected void _pageTitle(Wrap<String> c) {
-    if(result != null && result.getApprovalTitle() != null)
-      c.o(result.getApprovalTitle());
+    if(result != null && result.getObjectTitle() != null)
+      c.o(result.getObjectTitle());
     else if(result != null)
       c.o("tenant approvals");
     else if(searchListTenantApproval_ == null || resultCount == 0)

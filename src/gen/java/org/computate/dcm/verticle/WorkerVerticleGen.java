@@ -73,6 +73,9 @@ import org.computate.dcm.model.eda.tenant.requested.TenantRequestedEnUSGenApiSer
 import org.computate.dcm.model.eda.tenant.approval.TenantApproval;
 import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.approval.TenantApprovalEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.discovered.TenantDiscovered;
+import org.computate.dcm.model.eda.tenant.discovered.TenantDiscoveredEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.discovered.TenantDiscoveredEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;

@@ -59,14 +59,14 @@ public class TenantRequestedEnUSApiServiceImpl extends TenantRequestedEnUSGenApi
               searchList.q("*:*");
               searchList.setC(TenantRequested.class);
               searchList.fq(String.format("%s:", TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantResource)) + SearchTool.escapeQueryChars(tenantResource));
-              searchList.statsField("tenantRequestedNumber_docvalues_int");
+              searchList.statsField("requestedNumber_docvalues_int");
               searchList.rows(0);
               searchList.promiseDeepForClass(siteRequest).onSuccess(a -> {
                 try {
-                  String old_tenantRequestedNumber = TenantRequested.staticJsonTenantRequestedNumber(o.getTenantRequestedNumber());
-                  String new_tenantRequestedNumber = Integer.toString((Optional.ofNullable(searchList.getResponse().getStats().get("tenantRequestedNumber_docvalues_int")).map(stats -> (Double)stats.getMax()).map(max -> max.intValue() + 1).orElse(1)));
-                  String tenantRequestedNumber = Optional.ofNullable(old_tenantRequestedNumber).orElse(new_tenantRequestedNumber);
-                  json.put(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedNumber, patch), tenantRequestedNumber.toString());
+                  String old_requestedNumber = TenantRequested.staticJsonRequestedNumber(o.getRequestedNumber());
+                  String new_requestedNumber = Integer.toString((Optional.ofNullable(searchList.getResponse().getStats().get("requestedNumber_docvalues_int")).map(stats -> (Double)stats.getMax()).map(max -> max.intValue() + 1).orElse(1)));
+                  String requestedNumber = Optional.ofNullable(old_requestedNumber).orElse(new_requestedNumber);
+                  json.put(TenantRequested.varJson(TenantRequested.VAR_requestedNumber, patch), requestedNumber.toString());
 
                   Boolean old_locked = TenantRequested.staticJsonLocked(o.getLocked());
                   Boolean new_locked = json.getBoolean(TenantRequested.varJson(TenantRequested.VAR_locked, patch));

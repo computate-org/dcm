@@ -46,8 +46,10 @@ import java.lang.String;
 import org.computate.dcm.model.eda.hostinventory.HostInventory;
 import io.vertx.core.json.JsonArray;
 import org.computate.dcm.model.eda.ansibleproject.AnsibleProject;
+import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
 import java.lang.Integer;
+import java.lang.Boolean;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
 import io.vertx.core.Future;
@@ -114,15 +116,15 @@ import org.computate.search.response.solr.SolrResponse;
  *   Each API has built in pagination of the search results to ensure a user can query all the data a page at a time without running the application out of memory. 
  * </p>
  * <h2>
- *   Order: 144
+ *   Order: 145
  * </h2>
  * <p>
- *   This class contains a comment <kbd><b>Order: 144</b></kbd>, 
- *   which means this class will be sorted by the given number 144 
+ *   This class contains a comment <kbd><b>Order: 145</b></kbd>, 
+ *   which means this class will be sorted by the given number 145 
  *   ascending when code that relates to multiple classes at the same time is generated. 
  * </p>
- * <h2>SqlOrder: 144</h2>
- * <p>This class contains a comment <kbd><b>SqlOrder: 144</b></kbd>, which means this class will be sorted by the given number 144 ascending when SQL code to create and drop the tables is generated. 
+ * <h2>SqlOrder: 145</h2>
+ * <p>This class contains a comment <kbd><b>SqlOrder: 145</b></kbd>, which means this class will be sorted by the given number 145 ascending when SQL code to create and drop the tables is generated. 
  * </p>
  * <h2>Model: true</h2>
  * <p>This class contains a comment <kbd><b>Model: true</b></kbd>, which means this class will be stored in the database. 
@@ -203,7 +205,7 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String NoNameFound_enUS = "no realized tenant found";
   public static final String ApiUri_enUS = "/en-us/api/intent/realized";
   public static final String ApiUriSearchPage_enUS = "/en-us/search/realized/tenant";
-  public static final String ApiUriEditPage_enUS = "/en-us/edit/realized/tenant/{tenantResource}";
+  public static final String ApiUriEditPage_enUS = "/en-us/edit/realized/tenant/{realizedId}";
   public static final String OfName_enUS = "of realized tenant";
   public static final String ANameAdjective_enUS = "a realized tenant";
   public static final String NameAdjectiveSingular_enUS = "realized tenant";
@@ -211,7 +213,7 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String Search_enUS_OpenApiUri = "/en-us/api/intent/realized";
   public static final String Search_enUS_StringFormatUri = "/en-us/api/intent/realized";
   public static final String Search_enUS_StringFormatUrl = "%s/en-us/api/intent/realized";
-  public static final String GET_enUS_OpenApiUri = "/en-us/api/intent/realized/{tenantRealizedId}";
+  public static final String GET_enUS_OpenApiUri = "/en-us/api/intent/realized/{realizedId}";
   public static final String GET_enUS_StringFormatUri = "/en-us/api/intent/realized/%s";
   public static final String GET_enUS_StringFormatUrl = "%s/en-us/api/intent/realized/%s";
   public static final String PATCH_enUS_OpenApiUri = "/en-us/api/intent/realized";
@@ -220,7 +222,7 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String POST_enUS_OpenApiUri = "/en-us/api/intent/realized";
   public static final String POST_enUS_StringFormatUri = "/en-us/api/intent/realized";
   public static final String POST_enUS_StringFormatUrl = "%s/en-us/api/intent/realized";
-  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/intent/realized/{tenantRealizedId}";
+  public static final String DELETE_enUS_OpenApiUri = "/en-us/api/intent/realized/{realizedId}";
   public static final String DELETE_enUS_StringFormatUri = "/en-us/api/intent/realized/%s";
   public static final String DELETE_enUS_StringFormatUrl = "%s/en-us/api/intent/realized/%s";
   public static final String PUTImport_enUS_OpenApiUri = "/en-us/api/intent/realized-import";
@@ -229,7 +231,7 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String SearchPage_enUS_OpenApiUri = "/en-us/search/realized/tenant";
   public static final String SearchPage_enUS_StringFormatUri = "/en-us/search/realized/tenant";
   public static final String SearchPage_enUS_StringFormatUrl = "%s/en-us/search/realized/tenant";
-  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/realized/tenant/{tenantResource}";
+  public static final String EditPage_enUS_OpenApiUri = "/en-us/edit/realized/tenant/{realizedId}";
   public static final String EditPage_enUS_StringFormatUri = "/en-us/edit/realized/tenant/%s";
   public static final String EditPage_enUS_StringFormatUrl = "%s/en-us/edit/realized/tenant/%s";
   public static final String DELETEFilter_enUS_OpenApiUri = "/en-us/api/intent/realized";
@@ -362,66 +364,66 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     return tenantId;
   }
 
-	///////////////////////
-  // tenantDescription //
-	///////////////////////
+	/////////////////
+  // requestedId //
+	/////////////////
 
 
   /**
-   *  The entity tenantDescription
+   *  The entity requestedId
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String tenantDescription;
+  protected String requestedId;
 
   /**
-   * <br> The entity tenantDescription
+   * <br> The entity requestedId
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:requestedId">Find the entity requestedId in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantDescription(Wrap<String> w);
+  protected abstract void _requestedId(Wrap<String> w);
 
-  public String getTenantDescription() {
-    return tenantDescription;
+  public String getRequestedId() {
+    return requestedId;
   }
-  public void setTenantDescription(String o) {
-    this.tenantDescription = TenantRealized.staticSetTenantDescription(siteRequest_, o);
+  public void setRequestedId(String o) {
+    this.requestedId = TenantRealized.staticSetRequestedId(siteRequest_, o);
   }
-  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSetRequestedId(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected TenantRealized tenantDescriptionInit() {
-    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
-    if(tenantDescription == null) {
-      _tenantDescription(tenantDescriptionWrap);
-      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
-        setTenantDescription(o);
+  protected TenantRealized requestedIdInit() {
+    Wrap<String> requestedIdWrap = new Wrap<String>().var("requestedId");
+    if(requestedId == null) {
+      _requestedId(requestedIdWrap);
+      Optional.ofNullable(requestedIdWrap.getO()).ifPresent(o -> {
+        setRequestedId(o);
       });
     }
     return (TenantRealized)this;
   }
 
-  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchRequestedId(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrRequestedId(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
-    return TenantRealized.staticSearchTenantDescription(siteRequest_, TenantRealized.staticSetTenantDescription(siteRequest_, o)).toString();
+  public static String staticSearchFqRequestedId(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRequestedId(siteRequest_, TenantRealized.staticSetRequestedId(siteRequest_, o)).toString();
   }
 
-  public String sqlTenantDescription() {
-    return tenantDescription;
+  public String sqlRequestedId() {
+    return requestedId;
   }
 
-  public static String staticJsonTenantDescription(String tenantDescription) {
-    return tenantDescription;
+  public static String staticJsonRequestedId(String requestedId) {
+    return requestedId;
   }
 
 	////////////////////
@@ -486,144 +488,384 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     return tenantResource;
   }
 
-	//////////////////////////
-  // tenantRealizedNumber //
-	//////////////////////////
+	////////////////////
+  // realizedNumber //
+	////////////////////
 
 
   /**
-   *  The entity tenantRealizedNumber
+   *  The entity realizedNumber
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonSerialize(using = ToStringSerializer.class)
   @JsonInclude(Include.NON_NULL)
-  protected Integer tenantRealizedNumber;
+  protected Integer realizedNumber;
 
   /**
-   * <br> The entity tenantRealizedNumber
+   * <br> The entity realizedNumber
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:tenantRealizedNumber">Find the entity tenantRealizedNumber in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedNumber">Find the entity realizedNumber in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantRealizedNumber(Wrap<Integer> w);
+  protected abstract void _realizedNumber(Wrap<Integer> w);
 
-  public Integer getTenantRealizedNumber() {
-    return tenantRealizedNumber;
+  public Integer getRealizedNumber() {
+    return realizedNumber;
   }
 
-  public void setTenantRealizedNumber(Integer tenantRealizedNumber) {
-    this.tenantRealizedNumber = tenantRealizedNumber;
+  public void setRealizedNumber(Integer realizedNumber) {
+    this.realizedNumber = realizedNumber;
   }
   @JsonIgnore
-  public void setTenantRealizedNumber(String o) {
-    this.tenantRealizedNumber = TenantRealized.staticSetTenantRealizedNumber(siteRequest_, o);
+  public void setRealizedNumber(String o) {
+    this.realizedNumber = TenantRealized.staticSetRealizedNumber(siteRequest_, o);
   }
-  public static Integer staticSetTenantRealizedNumber(SiteRequest siteRequest_, String o) {
+  public static Integer staticSetRealizedNumber(SiteRequest siteRequest_, String o) {
     if(NumberUtils.isParsable(o))
       return Integer.parseInt(o);
     return null;
   }
-  protected TenantRealized tenantRealizedNumberInit() {
-    Wrap<Integer> tenantRealizedNumberWrap = new Wrap<Integer>().var("tenantRealizedNumber");
-    if(tenantRealizedNumber == null) {
-      _tenantRealizedNumber(tenantRealizedNumberWrap);
-      Optional.ofNullable(tenantRealizedNumberWrap.getO()).ifPresent(o -> {
-        setTenantRealizedNumber(o);
+  protected TenantRealized realizedNumberInit() {
+    Wrap<Integer> realizedNumberWrap = new Wrap<Integer>().var("realizedNumber");
+    if(realizedNumber == null) {
+      _realizedNumber(realizedNumberWrap);
+      Optional.ofNullable(realizedNumberWrap.getO()).ifPresent(o -> {
+        setRealizedNumber(o);
       });
     }
     return (TenantRealized)this;
   }
 
-  public static Integer staticSearchTenantRealizedNumber(SiteRequest siteRequest_, Integer o) {
+  public static Integer staticSearchRealizedNumber(SiteRequest siteRequest_, Integer o) {
     return o;
   }
 
-  public static String staticSearchStrTenantRealizedNumber(SiteRequest siteRequest_, Integer o) {
+  public static String staticSearchStrRealizedNumber(SiteRequest siteRequest_, Integer o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantRealizedNumber(SiteRequest siteRequest_, String o) {
-    return TenantRealized.staticSearchTenantRealizedNumber(siteRequest_, TenantRealized.staticSetTenantRealizedNumber(siteRequest_, o)).toString();
+  public static String staticSearchFqRealizedNumber(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedNumber(siteRequest_, TenantRealized.staticSetRealizedNumber(siteRequest_, o)).toString();
   }
 
-  public Integer sqlTenantRealizedNumber() {
-    return tenantRealizedNumber;
+  public Integer sqlRealizedNumber() {
+    return realizedNumber;
   }
 
-  public static String staticJsonTenantRealizedNumber(Integer tenantRealizedNumber) {
-    return Optional.ofNullable(tenantRealizedNumber).map(v -> v.toString()).orElse(null);
+  public static String staticJsonRealizedNumber(Integer realizedNumber) {
+    return Optional.ofNullable(realizedNumber).map(v -> v.toString()).orElse(null);
   }
 
-	//////////////////////
-  // tenantRealizedId //
-	//////////////////////
+	/////////////////////
+  // realizedByEmail //
+	/////////////////////
 
 
   /**
-   *  The entity tenantRealizedId
+   *  The entity realizedByEmail
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
-  @JsonSerialize(using = ToStringSerializer.class)
   @JsonInclude(Include.NON_NULL)
-  protected Integer tenantRealizedId;
+  protected String realizedByEmail;
 
   /**
-   * <br> The entity tenantRealizedId
+   * <br> The entity realizedByEmail
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:tenantRealizedId">Find the entity tenantRealizedId in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedByEmail">Find the entity realizedByEmail in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantRealizedId(Wrap<Integer> w);
+  protected abstract void _realizedByEmail(Wrap<String> w);
 
-  public Integer getTenantRealizedId() {
-    return tenantRealizedId;
+  public String getRealizedByEmail() {
+    return realizedByEmail;
   }
-
-  public void setTenantRealizedId(Integer tenantRealizedId) {
-    this.tenantRealizedId = tenantRealizedId;
+  public void setRealizedByEmail(String o) {
+    this.realizedByEmail = TenantRealized.staticSetRealizedByEmail(siteRequest_, o);
   }
-  @JsonIgnore
-  public void setTenantRealizedId(String o) {
-    this.tenantRealizedId = TenantRealized.staticSetTenantRealizedId(siteRequest_, o);
+  public static String staticSetRealizedByEmail(SiteRequest siteRequest_, String o) {
+    return o;
   }
-  public static Integer staticSetTenantRealizedId(SiteRequest siteRequest_, String o) {
-    if(NumberUtils.isParsable(o))
-      return Integer.parseInt(o);
-    return null;
-  }
-  protected TenantRealized tenantRealizedIdInit() {
-    Wrap<Integer> tenantRealizedIdWrap = new Wrap<Integer>().var("tenantRealizedId");
-    if(tenantRealizedId == null) {
-      _tenantRealizedId(tenantRealizedIdWrap);
-      Optional.ofNullable(tenantRealizedIdWrap.getO()).ifPresent(o -> {
-        setTenantRealizedId(o);
+  protected TenantRealized realizedByEmailInit() {
+    Wrap<String> realizedByEmailWrap = new Wrap<String>().var("realizedByEmail");
+    if(realizedByEmail == null) {
+      _realizedByEmail(realizedByEmailWrap);
+      Optional.ofNullable(realizedByEmailWrap.getO()).ifPresent(o -> {
+        setRealizedByEmail(o);
       });
     }
     return (TenantRealized)this;
   }
 
-  public static Integer staticSearchTenantRealizedId(SiteRequest siteRequest_, Integer o) {
+  public static String staticSearchRealizedByEmail(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrTenantRealizedId(SiteRequest siteRequest_, Integer o) {
+  public static String staticSearchStrRealizedByEmail(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantRealizedId(SiteRequest siteRequest_, String o) {
-    return TenantRealized.staticSearchTenantRealizedId(siteRequest_, TenantRealized.staticSetTenantRealizedId(siteRequest_, o)).toString();
+  public static String staticSearchFqRealizedByEmail(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedByEmail(siteRequest_, TenantRealized.staticSetRealizedByEmail(siteRequest_, o)).toString();
   }
 
-  public Integer sqlTenantRealizedId() {
-    return tenantRealizedId;
+  public String sqlRealizedByEmail() {
+    return realizedByEmail;
   }
 
-  public static String staticJsonTenantRealizedId(Integer tenantRealizedId) {
-    return Optional.ofNullable(tenantRealizedId).map(v -> v.toString()).orElse(null);
+  public static String staticJsonRealizedByEmail(String realizedByEmail) {
+    return realizedByEmail;
+  }
+
+	//////////////////////
+  // realizedByUserId //
+	//////////////////////
+
+
+  /**
+   *  The entity realizedByUserId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String realizedByUserId;
+
+  /**
+   * <br> The entity realizedByUserId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedByUserId">Find the entity realizedByUserId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _realizedByUserId(Wrap<String> w);
+
+  public String getRealizedByUserId() {
+    return realizedByUserId;
+  }
+  public void setRealizedByUserId(String o) {
+    this.realizedByUserId = TenantRealized.staticSetRealizedByUserId(siteRequest_, o);
+  }
+  public static String staticSetRealizedByUserId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRealized realizedByUserIdInit() {
+    Wrap<String> realizedByUserIdWrap = new Wrap<String>().var("realizedByUserId");
+    if(realizedByUserId == null) {
+      _realizedByUserId(realizedByUserIdWrap);
+      Optional.ofNullable(realizedByUserIdWrap.getO()).ifPresent(o -> {
+        setRealizedByUserId(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static String staticSearchRealizedByUserId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRealizedByUserId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRealizedByUserId(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedByUserId(siteRequest_, TenantRealized.staticSetRealizedByUserId(siteRequest_, o)).toString();
+  }
+
+  public String sqlRealizedByUserId() {
+    return realizedByUserId;
+  }
+
+  public static String staticJsonRealizedByUserId(String realizedByUserId) {
+    return realizedByUserId;
+  }
+
+	////////////////////////
+  // realizedByFullName //
+	////////////////////////
+
+
+  /**
+   *  The entity realizedByFullName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String realizedByFullName;
+
+  /**
+   * <br> The entity realizedByFullName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedByFullName">Find the entity realizedByFullName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _realizedByFullName(Wrap<String> w);
+
+  public String getRealizedByFullName() {
+    return realizedByFullName;
+  }
+  public void setRealizedByFullName(String o) {
+    this.realizedByFullName = TenantRealized.staticSetRealizedByFullName(siteRequest_, o);
+  }
+  public static String staticSetRealizedByFullName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRealized realizedByFullNameInit() {
+    Wrap<String> realizedByFullNameWrap = new Wrap<String>().var("realizedByFullName");
+    if(realizedByFullName == null) {
+      _realizedByFullName(realizedByFullNameWrap);
+      Optional.ofNullable(realizedByFullNameWrap.getO()).ifPresent(o -> {
+        setRealizedByFullName(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static String staticSearchRealizedByFullName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRealizedByFullName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRealizedByFullName(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedByFullName(siteRequest_, TenantRealized.staticSetRealizedByFullName(siteRequest_, o)).toString();
+  }
+
+  public String sqlRealizedByFullName() {
+    return realizedByFullName;
+  }
+
+  public static String staticJsonRealizedByFullName(String realizedByFullName) {
+    return realizedByFullName;
+  }
+
+	////////////////
+  // realizedId //
+	////////////////
+
+
+  /**
+   *  The entity realizedId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String realizedId;
+
+  /**
+   * <br> The entity realizedId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedId">Find the entity realizedId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _realizedId(Wrap<String> w);
+
+  public String getRealizedId() {
+    return realizedId;
+  }
+  public void setRealizedId(String o) {
+    this.realizedId = TenantRealized.staticSetRealizedId(siteRequest_, o);
+  }
+  public static String staticSetRealizedId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRealized realizedIdInit() {
+    Wrap<String> realizedIdWrap = new Wrap<String>().var("realizedId");
+    if(realizedId == null) {
+      _realizedId(realizedIdWrap);
+      Optional.ofNullable(realizedIdWrap.getO()).ifPresent(o -> {
+        setRealizedId(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static String staticSearchRealizedId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRealizedId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRealizedId(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedId(siteRequest_, TenantRealized.staticSetRealizedId(siteRequest_, o)).toString();
+  }
+
+  public String sqlRealizedId() {
+    return realizedId;
+  }
+
+  public static String staticJsonRealizedId(String realizedId) {
+    return realizedId;
+  }
+
+	//////////////////
+  // realizedName //
+	//////////////////
+
+
+  /**
+   *  The entity realizedName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String realizedName;
+
+  /**
+   * <br> The entity realizedName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:realizedName">Find the entity realizedName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _realizedName(Wrap<String> w);
+
+  public String getRealizedName() {
+    return realizedName;
+  }
+  public void setRealizedName(String o) {
+    this.realizedName = TenantRealized.staticSetRealizedName(siteRequest_, o);
+  }
+  public static String staticSetRealizedName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRealized realizedNameInit() {
+    Wrap<String> realizedNameWrap = new Wrap<String>().var("realizedName");
+    if(realizedName == null) {
+      _realizedName(realizedNameWrap);
+      Optional.ofNullable(realizedNameWrap.getO()).ifPresent(o -> {
+        setRealizedName(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static String staticSearchRealizedName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRealizedName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRealizedName(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchRealizedName(siteRequest_, TenantRealized.staticSetRealizedName(siteRequest_, o)).toString();
+  }
+
+  public String sqlRealizedName() {
+    return realizedName;
+  }
+
+  public static String staticJsonRealizedName(String realizedName) {
+    return realizedName;
   }
 
 	////////////////////
@@ -1060,6 +1302,135 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     return realizedState;
   }
 
+	///////////////////////
+  // tenantDescription //
+	///////////////////////
+
+
+  /**
+   *  The entity tenantDescription
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String tenantDescription;
+
+  /**
+   * <br> The entity tenantDescription
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _tenantDescription(Wrap<String> w);
+
+  public String getTenantDescription() {
+    return tenantDescription;
+  }
+  public void setTenantDescription(String o) {
+    this.tenantDescription = TenantRealized.staticSetTenantDescription(siteRequest_, o);
+  }
+  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected TenantRealized tenantDescriptionInit() {
+    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
+    if(tenantDescription == null) {
+      _tenantDescription(tenantDescriptionWrap);
+      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
+        setTenantDescription(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchTenantDescription(siteRequest_, TenantRealized.staticSetTenantDescription(siteRequest_, o)).toString();
+  }
+
+  public String sqlTenantDescription() {
+    return tenantDescription;
+  }
+
+  public static String staticJsonTenantDescription(String tenantDescription) {
+    return tenantDescription;
+  }
+
+	////////////
+  // locked //
+	////////////
+
+
+  /**
+   *  The entity locked
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected Boolean locked;
+
+  /**
+   * <br> The entity locked
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.realized.TenantRealized&fq=entiteVar_enUS_indexed_string:locked">Find the entity locked in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _locked(Wrap<Boolean> w);
+
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
+  }
+  @JsonIgnore
+  public void setLocked(String o) {
+    this.locked = TenantRealized.staticSetLocked(siteRequest_, o);
+  }
+  public static Boolean staticSetLocked(SiteRequest siteRequest_, String o) {
+    return Boolean.parseBoolean(o);
+  }
+  protected TenantRealized lockedInit() {
+    Wrap<Boolean> lockedWrap = new Wrap<Boolean>().var("locked");
+    if(locked == null) {
+      _locked(lockedWrap);
+      Optional.ofNullable(lockedWrap.getO()).ifPresent(o -> {
+        setLocked(o);
+      });
+    }
+    return (TenantRealized)this;
+  }
+
+  public static Boolean staticSearchLocked(SiteRequest siteRequest_, Boolean o) {
+    return o;
+  }
+
+  public static String staticSearchStrLocked(SiteRequest siteRequest_, Boolean o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqLocked(SiteRequest siteRequest_, String o) {
+    return TenantRealized.staticSearchLocked(siteRequest_, TenantRealized.staticSetLocked(siteRequest_, o)).toString();
+  }
+
+  public Boolean sqlLocked() {
+    return locked;
+  }
+
+  public static Boolean staticJsonLocked(Boolean locked) {
+    return locked;
+  }
+
   //////////////
   // initDeep //
   //////////////
@@ -1092,10 +1463,14 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       try {
         tenantNameInit();
         tenantIdInit();
-        tenantDescriptionInit();
+        requestedIdInit();
         tenantResourceInit();
-        tenantRealizedNumberInit();
-        tenantRealizedIdInit();
+        realizedNumberInit();
+        realizedByEmailInit();
+        realizedByUserIdInit();
+        realizedByFullNameInit();
+        realizedIdInit();
+        realizedNameInit();
         createdByEmailInit();
         createdByUserIdInit();
         createdByFullNameInit();
@@ -1103,6 +1478,8 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         intentStateInit();
         requestedStateInit();
         realizedStateInit();
+        tenantDescriptionInit();
+        lockedInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1160,14 +1537,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return oTenantRealized.tenantName;
       case "tenantId":
         return oTenantRealized.tenantId;
-      case "tenantDescription":
-        return oTenantRealized.tenantDescription;
+      case "requestedId":
+        return oTenantRealized.requestedId;
       case "tenantResource":
         return oTenantRealized.tenantResource;
-      case "tenantRealizedNumber":
-        return oTenantRealized.tenantRealizedNumber;
-      case "tenantRealizedId":
-        return oTenantRealized.tenantRealizedId;
+      case "realizedNumber":
+        return oTenantRealized.realizedNumber;
+      case "realizedByEmail":
+        return oTenantRealized.realizedByEmail;
+      case "realizedByUserId":
+        return oTenantRealized.realizedByUserId;
+      case "realizedByFullName":
+        return oTenantRealized.realizedByFullName;
+      case "realizedId":
+        return oTenantRealized.realizedId;
+      case "realizedName":
+        return oTenantRealized.realizedName;
       case "createdByEmail":
         return oTenantRealized.createdByEmail;
       case "createdByUserId":
@@ -1182,6 +1567,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return oTenantRealized.requestedState;
       case "realizedState":
         return oTenantRealized.realizedState;
+      case "tenantDescription":
+        return oTenantRealized.tenantDescription;
+      case "locked":
+        return oTenantRealized.locked;
       default:
         return super.obtainTenant(var);
     }
@@ -1207,6 +1596,12 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public Object relateTenantRealized(String var, Object val) {
     TenantRealized oTenantRealized = (TenantRealized)this;
     switch(var) {
+      case "requestedId":
+        if(oTenantRealized.getRequestedId() == null)
+          oTenantRealized.setRequestedId(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("requestedId"))
+          saves.add("requestedId");
+        return val;
       case "tenantResource":
         if(oTenantRealized.getTenantResource() == null)
           oTenantRealized.setTenantResource(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
@@ -1231,14 +1626,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSetTenantName(siteRequest_, v);
     case "tenantId":
       return TenantRealized.staticSetTenantId(siteRequest_, v);
-    case "tenantDescription":
-      return TenantRealized.staticSetTenantDescription(siteRequest_, v);
+    case "requestedId":
+      return TenantRealized.staticSetRequestedId(siteRequest_, v);
     case "tenantResource":
       return TenantRealized.staticSetTenantResource(siteRequest_, v);
-    case "tenantRealizedNumber":
-      return TenantRealized.staticSetTenantRealizedNumber(siteRequest_, v);
-    case "tenantRealizedId":
-      return TenantRealized.staticSetTenantRealizedId(siteRequest_, v);
+    case "realizedNumber":
+      return TenantRealized.staticSetRealizedNumber(siteRequest_, v);
+    case "realizedByEmail":
+      return TenantRealized.staticSetRealizedByEmail(siteRequest_, v);
+    case "realizedByUserId":
+      return TenantRealized.staticSetRealizedByUserId(siteRequest_, v);
+    case "realizedByFullName":
+      return TenantRealized.staticSetRealizedByFullName(siteRequest_, v);
+    case "realizedId":
+      return TenantRealized.staticSetRealizedId(siteRequest_, v);
+    case "realizedName":
+      return TenantRealized.staticSetRealizedName(siteRequest_, v);
     case "createdByEmail":
       return TenantRealized.staticSetCreatedByEmail(siteRequest_, v);
     case "createdByUserId":
@@ -1253,6 +1656,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSetRequestedState(siteRequest_, v);
     case "realizedState":
       return TenantRealized.staticSetRealizedState(siteRequest_, v);
+    case "tenantDescription":
+      return TenantRealized.staticSetTenantDescription(siteRequest_, v);
+    case "locked":
+      return TenantRealized.staticSetLocked(siteRequest_, v);
       default:
         return Tenant.staticSetTenant(entityVar,  siteRequest_, v, o);
     }
@@ -1301,14 +1708,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchTenantName(siteRequest_, (String)o);
     case "tenantId":
       return TenantRealized.staticSearchTenantId(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantRealized.staticSearchTenantDescription(siteRequest_, (String)o);
+    case "requestedId":
+      return TenantRealized.staticSearchRequestedId(siteRequest_, (String)o);
     case "tenantResource":
       return TenantRealized.staticSearchTenantResource(siteRequest_, (String)o);
-    case "tenantRealizedNumber":
-      return TenantRealized.staticSearchTenantRealizedNumber(siteRequest_, (Integer)o);
-    case "tenantRealizedId":
-      return TenantRealized.staticSearchTenantRealizedId(siteRequest_, (Integer)o);
+    case "realizedNumber":
+      return TenantRealized.staticSearchRealizedNumber(siteRequest_, (Integer)o);
+    case "realizedByEmail":
+      return TenantRealized.staticSearchRealizedByEmail(siteRequest_, (String)o);
+    case "realizedByUserId":
+      return TenantRealized.staticSearchRealizedByUserId(siteRequest_, (String)o);
+    case "realizedByFullName":
+      return TenantRealized.staticSearchRealizedByFullName(siteRequest_, (String)o);
+    case "realizedId":
+      return TenantRealized.staticSearchRealizedId(siteRequest_, (String)o);
+    case "realizedName":
+      return TenantRealized.staticSearchRealizedName(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantRealized.staticSearchCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -1323,6 +1738,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantRealized.staticSearchRealizedState(siteRequest_, (String)o);
+    case "tenantDescription":
+      return TenantRealized.staticSearchTenantDescription(siteRequest_, (String)o);
+    case "locked":
+      return TenantRealized.staticSearchLocked(siteRequest_, (Boolean)o);
       default:
         return Tenant.staticSearchTenant(entityVar,  siteRequest_, o);
     }
@@ -1341,14 +1760,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchStrTenantName(siteRequest_, (String)o);
     case "tenantId":
       return TenantRealized.staticSearchStrTenantId(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantRealized.staticSearchStrTenantDescription(siteRequest_, (String)o);
+    case "requestedId":
+      return TenantRealized.staticSearchStrRequestedId(siteRequest_, (String)o);
     case "tenantResource":
       return TenantRealized.staticSearchStrTenantResource(siteRequest_, (String)o);
-    case "tenantRealizedNumber":
-      return TenantRealized.staticSearchStrTenantRealizedNumber(siteRequest_, (Integer)o);
-    case "tenantRealizedId":
-      return TenantRealized.staticSearchStrTenantRealizedId(siteRequest_, (Integer)o);
+    case "realizedNumber":
+      return TenantRealized.staticSearchStrRealizedNumber(siteRequest_, (Integer)o);
+    case "realizedByEmail":
+      return TenantRealized.staticSearchStrRealizedByEmail(siteRequest_, (String)o);
+    case "realizedByUserId":
+      return TenantRealized.staticSearchStrRealizedByUserId(siteRequest_, (String)o);
+    case "realizedByFullName":
+      return TenantRealized.staticSearchStrRealizedByFullName(siteRequest_, (String)o);
+    case "realizedId":
+      return TenantRealized.staticSearchStrRealizedId(siteRequest_, (String)o);
+    case "realizedName":
+      return TenantRealized.staticSearchStrRealizedName(siteRequest_, (String)o);
     case "createdByEmail":
       return TenantRealized.staticSearchStrCreatedByEmail(siteRequest_, (String)o);
     case "createdByUserId":
@@ -1363,6 +1790,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchStrRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantRealized.staticSearchStrRealizedState(siteRequest_, (String)o);
+    case "tenantDescription":
+      return TenantRealized.staticSearchStrTenantDescription(siteRequest_, (String)o);
+    case "locked":
+      return TenantRealized.staticSearchStrLocked(siteRequest_, (Boolean)o);
       default:
         return Tenant.staticSearchStrTenant(entityVar,  siteRequest_, o);
     }
@@ -1381,14 +1812,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchFqTenantName(siteRequest_, o);
     case "tenantId":
       return TenantRealized.staticSearchFqTenantId(siteRequest_, o);
-    case "tenantDescription":
-      return TenantRealized.staticSearchFqTenantDescription(siteRequest_, o);
+    case "requestedId":
+      return TenantRealized.staticSearchFqRequestedId(siteRequest_, o);
     case "tenantResource":
       return TenantRealized.staticSearchFqTenantResource(siteRequest_, o);
-    case "tenantRealizedNumber":
-      return TenantRealized.staticSearchFqTenantRealizedNumber(siteRequest_, o);
-    case "tenantRealizedId":
-      return TenantRealized.staticSearchFqTenantRealizedId(siteRequest_, o);
+    case "realizedNumber":
+      return TenantRealized.staticSearchFqRealizedNumber(siteRequest_, o);
+    case "realizedByEmail":
+      return TenantRealized.staticSearchFqRealizedByEmail(siteRequest_, o);
+    case "realizedByUserId":
+      return TenantRealized.staticSearchFqRealizedByUserId(siteRequest_, o);
+    case "realizedByFullName":
+      return TenantRealized.staticSearchFqRealizedByFullName(siteRequest_, o);
+    case "realizedId":
+      return TenantRealized.staticSearchFqRealizedId(siteRequest_, o);
+    case "realizedName":
+      return TenantRealized.staticSearchFqRealizedName(siteRequest_, o);
     case "createdByEmail":
       return TenantRealized.staticSearchFqCreatedByEmail(siteRequest_, o);
     case "createdByUserId":
@@ -1403,6 +1842,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return TenantRealized.staticSearchFqRequestedState(siteRequest_, o);
     case "realizedState":
       return TenantRealized.staticSearchFqRealizedState(siteRequest_, o);
+    case "tenantDescription":
+      return TenantRealized.staticSearchFqTenantDescription(siteRequest_, o);
+    case "locked":
+      return TenantRealized.staticSearchFqLocked(siteRequest_, o);
       default:
         return Tenant.staticSearchFqTenant(entityVar,  siteRequest_, o);
     }
@@ -1441,11 +1884,11 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         }
         saves.add("tenantId");
         return val;
-      } else if("tenantdescription".equals(varLower)) {
+      } else if("requestedid".equals(varLower)) {
         if(val instanceof String) {
-          setTenantDescription((String)val);
+          setRequestedId((String)val);
         }
-        saves.add("tenantDescription");
+        saves.add("requestedId");
         return val;
       } else if("tenantresource".equals(varLower)) {
         if(val instanceof String) {
@@ -1453,21 +1896,43 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         }
         saves.add("tenantResource");
         return val;
-      } else if("tenantrealizednumber".equals(varLower)) {
+      } else if("realizednumber".equals(varLower)) {
         if(val instanceof Integer) {
-          setTenantRealizedNumber((Integer)val);
+          setRealizedNumber((Integer)val);
         } else {
-          setTenantRealizedNumber(val == null ? null : val.toString());
+          setRealizedNumber(val == null ? null : val.toString());
         }
-        saves.add("tenantRealizedNumber");
+        saves.add("realizedNumber");
         return val;
-      } else if("tenantrealizedid".equals(varLower)) {
-        if(val instanceof Integer) {
-          setTenantRealizedId((Integer)val);
-        } else {
-          setTenantRealizedId(val == null ? null : val.toString());
+      } else if("realizedbyemail".equals(varLower)) {
+        if(val instanceof String) {
+          setRealizedByEmail((String)val);
         }
-        saves.add("tenantRealizedId");
+        saves.add("realizedByEmail");
+        return val;
+      } else if("realizedbyuserid".equals(varLower)) {
+        if(val instanceof String) {
+          setRealizedByUserId((String)val);
+        }
+        saves.add("realizedByUserId");
+        return val;
+      } else if("realizedbyfullname".equals(varLower)) {
+        if(val instanceof String) {
+          setRealizedByFullName((String)val);
+        }
+        saves.add("realizedByFullName");
+        return val;
+      } else if("realizedid".equals(varLower)) {
+        if(val instanceof String) {
+          setRealizedId((String)val);
+        }
+        saves.add("realizedId");
+        return val;
+      } else if("realizedname".equals(varLower)) {
+        if(val instanceof String) {
+          setRealizedName((String)val);
+        }
+        saves.add("realizedName");
         return val;
       } else if("createdbyemail".equals(varLower)) {
         if(val instanceof String) {
@@ -1511,6 +1976,20 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         }
         saves.add("realizedState");
         return val;
+      } else if("tenantdescription".equals(varLower)) {
+        if(val instanceof String) {
+          setTenantDescription((String)val);
+        }
+        saves.add("tenantDescription");
+        return val;
+      } else if("locked".equals(varLower)) {
+        if(val instanceof Boolean) {
+          setLocked((Boolean)val);
+        } else {
+          setLocked(val == null ? null : val.toString());
+        }
+        saves.add("locked");
+        return val;
     } else {
       return super.persistTenant(var, val);
     }
@@ -1540,26 +2019,48 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
           oTenantRealized.setTenantId(tenantId);
       }
 
-      if(saves.contains("tenantDescription")) {
-        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
-        if(tenantDescription != null)
-          oTenantRealized.setTenantDescription(tenantDescription);
-      }
+      String requestedId = (String)doc.get("requestedId_docvalues_string");
+      if(requestedId != null)
+        oTenantRealized.setRequestedId(requestedId);
 
       String tenantResource = (String)doc.get("tenantResource_docvalues_string");
       if(tenantResource != null)
         oTenantRealized.setTenantResource(tenantResource);
 
-      if(saves.contains("tenantRealizedNumber")) {
-        Integer tenantRealizedNumber = (Integer)doc.get("tenantRealizedNumber_docvalues_int");
-        if(tenantRealizedNumber != null)
-          oTenantRealized.setTenantRealizedNumber(tenantRealizedNumber);
+      if(saves.contains("realizedNumber")) {
+        Integer realizedNumber = (Integer)doc.get("realizedNumber_docvalues_int");
+        if(realizedNumber != null)
+          oTenantRealized.setRealizedNumber(realizedNumber);
       }
 
-      if(saves.contains("tenantRealizedId")) {
-        Integer tenantRealizedId = (Integer)doc.get("tenantRealizedId_docvalues_int");
-        if(tenantRealizedId != null)
-          oTenantRealized.setTenantRealizedId(tenantRealizedId);
+      if(saves.contains("realizedByEmail")) {
+        String realizedByEmail = (String)doc.get("realizedByEmail_docvalues_string");
+        if(realizedByEmail != null)
+          oTenantRealized.setRealizedByEmail(realizedByEmail);
+      }
+
+      if(saves.contains("realizedByUserId")) {
+        String realizedByUserId = (String)doc.get("realizedByUserId_docvalues_string");
+        if(realizedByUserId != null)
+          oTenantRealized.setRealizedByUserId(realizedByUserId);
+      }
+
+      if(saves.contains("realizedByFullName")) {
+        String realizedByFullName = (String)doc.get("realizedByFullName_docvalues_string");
+        if(realizedByFullName != null)
+          oTenantRealized.setRealizedByFullName(realizedByFullName);
+      }
+
+      if(saves.contains("realizedId")) {
+        String realizedId = (String)doc.get("realizedId_docvalues_string");
+        if(realizedId != null)
+          oTenantRealized.setRealizedId(realizedId);
+      }
+
+      if(saves.contains("realizedName")) {
+        String realizedName = (String)doc.get("realizedName_docvalues_string");
+        if(realizedName != null)
+          oTenantRealized.setRealizedName(realizedName);
       }
 
       if(saves.contains("createdByEmail")) {
@@ -1603,6 +2104,18 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         if(realizedState != null)
           oTenantRealized.setRealizedState(realizedState);
       }
+
+      if(saves.contains("tenantDescription")) {
+        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
+        if(tenantDescription != null)
+          oTenantRealized.setTenantDescription(tenantDescription);
+      }
+
+      if(saves.contains("locked")) {
+        Boolean locked = (Boolean)doc.get("locked_docvalues_boolean");
+        if(locked != null)
+          oTenantRealized.setLocked(locked);
+      }
     }
 
     super.populateTenant(doc);
@@ -1615,17 +2128,29 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     if(tenantId != null) {
       doc.put("tenantId_docvalues_string", tenantId);
     }
-    if(tenantDescription != null) {
-      doc.put("tenantDescription_docvalues_string", tenantDescription);
+    if(requestedId != null) {
+      doc.put("requestedId_docvalues_string", requestedId);
     }
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
     }
-    if(tenantRealizedNumber != null) {
-      doc.put("tenantRealizedNumber_docvalues_int", tenantRealizedNumber);
+    if(realizedNumber != null) {
+      doc.put("realizedNumber_docvalues_int", realizedNumber);
     }
-    if(tenantRealizedId != null) {
-      doc.put("tenantRealizedId_docvalues_int", tenantRealizedId);
+    if(realizedByEmail != null) {
+      doc.put("realizedByEmail_docvalues_string", realizedByEmail);
+    }
+    if(realizedByUserId != null) {
+      doc.put("realizedByUserId_docvalues_string", realizedByUserId);
+    }
+    if(realizedByFullName != null) {
+      doc.put("realizedByFullName_docvalues_string", realizedByFullName);
+    }
+    if(realizedId != null) {
+      doc.put("realizedId_docvalues_string", realizedId);
+    }
+    if(realizedName != null) {
+      doc.put("realizedName_docvalues_string", realizedName);
     }
     if(createdByEmail != null) {
       doc.put("createdByEmail_docvalues_string", createdByEmail);
@@ -1648,6 +2173,12 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     if(realizedState != null) {
       doc.put("realizedState_docvalues_string", realizedState);
     }
+    if(tenantDescription != null) {
+      doc.put("tenantDescription_docvalues_string", tenantDescription);
+    }
+    if(locked != null) {
+      doc.put("locked_docvalues_boolean", locked);
+    }
     super.indexTenant(doc);
 
 	}
@@ -1658,14 +2189,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "tenantName_docvalues_string";
       case "tenantId":
         return "tenantId_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "requestedId":
+        return "requestedId_docvalues_string";
       case "tenantResource":
         return "tenantResource_docvalues_string";
-      case "tenantRealizedNumber":
-        return "tenantRealizedNumber_docvalues_int";
-      case "tenantRealizedId":
-        return "tenantRealizedId_docvalues_int";
+      case "realizedNumber":
+        return "realizedNumber_docvalues_int";
+      case "realizedByEmail":
+        return "realizedByEmail_docvalues_string";
+      case "realizedByUserId":
+        return "realizedByUserId_docvalues_string";
+      case "realizedByFullName":
+        return "realizedByFullName_docvalues_string";
+      case "realizedId":
+        return "realizedId_docvalues_string";
+      case "realizedName":
+        return "realizedName_docvalues_string";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1680,6 +2219,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
+      case "locked":
+        return "locked_docvalues_boolean";
       default:
         return Tenant.varStoredTenant(entityVar);
     }
@@ -1691,14 +2234,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "tenantName_docvalues_string";
       case "tenantId":
         return "tenantId_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "requestedId":
+        return "requestedId_docvalues_string";
       case "tenantResource":
         return "tenantResource_docvalues_string";
-      case "tenantRealizedNumber":
-        return "tenantRealizedNumber_docvalues_int";
-      case "tenantRealizedId":
-        return "tenantRealizedId_docvalues_int";
+      case "realizedNumber":
+        return "realizedNumber_docvalues_int";
+      case "realizedByEmail":
+        return "realizedByEmail_docvalues_string";
+      case "realizedByUserId":
+        return "realizedByUserId_docvalues_string";
+      case "realizedByFullName":
+        return "realizedByFullName_docvalues_string";
+      case "realizedId":
+        return "realizedId_docvalues_string";
+      case "realizedName":
+        return "realizedName_docvalues_string";
       case "createdByEmail":
         return "createdByEmail_docvalues_string";
       case "createdByUserId":
@@ -1713,6 +2264,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
+      case "tenantDescription":
+        return "tenantDescription_docvalues_string";
+      case "locked":
+        return "locked_docvalues_boolean";
       default:
         return Tenant.varIndexedTenant(entityVar);
     }
@@ -1724,14 +2279,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "tenantName";
       case "tenantId_docvalues_string":
         return "tenantId";
-      case "tenantDescription_docvalues_string":
-        return "tenantDescription";
+      case "requestedId_docvalues_string":
+        return "requestedId";
       case "tenantResource_docvalues_string":
         return "tenantResource";
-      case "tenantRealizedNumber_docvalues_int":
-        return "tenantRealizedNumber";
-      case "tenantRealizedId_docvalues_int":
-        return "tenantRealizedId";
+      case "realizedNumber_docvalues_int":
+        return "realizedNumber";
+      case "realizedByEmail_docvalues_string":
+        return "realizedByEmail";
+      case "realizedByUserId_docvalues_string":
+        return "realizedByUserId";
+      case "realizedByFullName_docvalues_string":
+        return "realizedByFullName";
+      case "realizedId_docvalues_string":
+        return "realizedId";
+      case "realizedName_docvalues_string":
+        return "realizedName";
       case "createdByEmail_docvalues_string":
         return "createdByEmail";
       case "createdByUserId_docvalues_string":
@@ -1746,6 +2309,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         return "requestedState";
       case "realizedState_docvalues_string":
         return "realizedState";
+      case "tenantDescription_docvalues_string":
+        return "tenantDescription";
+      case "locked_docvalues_boolean":
+        return "locked";
       default:
         return Tenant.searchVarTenant(searchVar);
     }
@@ -1778,10 +2345,14 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
 
     oTenantRealized.setTenantName(Optional.ofNullable(doc.get("tenantName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantRealized.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRequestedId(Optional.ofNullable(doc.get("requestedId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantRealized.setTenantRealizedNumber(Optional.ofNullable(doc.get("tenantRealizedNumber_docvalues_int")).map(v -> v.toString()).orElse(null));
-    oTenantRealized.setTenantRealizedId(Optional.ofNullable(doc.get("tenantRealizedId_docvalues_int")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedNumber(Optional.ofNullable(doc.get("realizedNumber_docvalues_int")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedByEmail(Optional.ofNullable(doc.get("realizedByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedByUserId(Optional.ofNullable(doc.get("realizedByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedByFullName(Optional.ofNullable(doc.get("realizedByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedId(Optional.ofNullable(doc.get("realizedId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setRealizedName(Optional.ofNullable(doc.get("realizedName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setCreatedByEmail(Optional.ofNullable(doc.get("createdByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setCreatedByUserId(Optional.ofNullable(doc.get("createdByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setCreatedByFullName(Optional.ofNullable(doc.get("createdByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1789,6 +2360,8 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     oTenantRealized.setIntentState(Optional.ofNullable(doc.get("intentState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setRequestedState(Optional.ofNullable(doc.get("requestedState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRealized.setRealizedState(Optional.ofNullable(doc.get("realizedState_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRealized.setLocked(Optional.ofNullable(doc.get("locked_docvalues_boolean")).map(v -> v.toString()).orElse(null));
 
     super.storeTenant(doc);
   }
@@ -1806,14 +2379,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         apiRequest.addVars("tenantName");
       if(!Objects.equals(tenantId, original.getTenantId()))
         apiRequest.addVars("tenantId");
-      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
-        apiRequest.addVars("tenantDescription");
+      if(!Objects.equals(requestedId, original.getRequestedId()))
+        apiRequest.addVars("requestedId");
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
-      if(!Objects.equals(tenantRealizedNumber, original.getTenantRealizedNumber()))
-        apiRequest.addVars("tenantRealizedNumber");
-      if(!Objects.equals(tenantRealizedId, original.getTenantRealizedId()))
-        apiRequest.addVars("tenantRealizedId");
+      if(!Objects.equals(realizedNumber, original.getRealizedNumber()))
+        apiRequest.addVars("realizedNumber");
+      if(!Objects.equals(realizedByEmail, original.getRealizedByEmail()))
+        apiRequest.addVars("realizedByEmail");
+      if(!Objects.equals(realizedByUserId, original.getRealizedByUserId()))
+        apiRequest.addVars("realizedByUserId");
+      if(!Objects.equals(realizedByFullName, original.getRealizedByFullName()))
+        apiRequest.addVars("realizedByFullName");
+      if(!Objects.equals(realizedId, original.getRealizedId()))
+        apiRequest.addVars("realizedId");
+      if(!Objects.equals(realizedName, original.getRealizedName()))
+        apiRequest.addVars("realizedName");
       if(!Objects.equals(createdByEmail, original.getCreatedByEmail()))
         apiRequest.addVars("createdByEmail");
       if(!Objects.equals(createdByUserId, original.getCreatedByUserId()))
@@ -1828,6 +2409,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
         apiRequest.addVars("requestedState");
       if(!Objects.equals(realizedState, original.getRealizedState()))
         apiRequest.addVars("realizedState");
+      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
+        apiRequest.addVars("tenantDescription");
+      if(!Objects.equals(locked, original.getLocked()))
+        apiRequest.addVars("locked");
       super.apiRequestTenant();
     }
   }
@@ -1841,10 +2426,14 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantName).map(v -> "tenantName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(requestedId).map(v -> "requestedId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantRealizedNumber).map(v -> "tenantRealizedNumber: " + v + "\n").orElse(""));
-    sb.append(Optional.ofNullable(tenantRealizedId).map(v -> "tenantRealizedId: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(realizedNumber).map(v -> "realizedNumber: " + v + "\n").orElse(""));
+    sb.append(Optional.ofNullable(realizedByEmail).map(v -> "realizedByEmail: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(realizedByUserId).map(v -> "realizedByUserId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(realizedByFullName).map(v -> "realizedByFullName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(realizedId).map(v -> "realizedId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(realizedName).map(v -> "realizedName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByEmail).map(v -> "createdByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByUserId).map(v -> "createdByUserId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByFullName).map(v -> "createdByFullName: \"" + v + "\"\n" ).orElse(""));
@@ -1852,6 +2441,8 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     sb.append(Optional.ofNullable(intentState).map(v -> "intentState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(requestedState).map(v -> "requestedState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(realizedState).map(v -> "realizedState: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(locked).map(v -> "locked: " + v + "\n").orElse(""));
     return sb.toString();
   }
 
@@ -1866,14 +2457,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String SET_tenantName = "setTenantName";
   public static final String VAR_tenantId = "tenantId";
   public static final String SET_tenantId = "setTenantId";
-  public static final String VAR_tenantDescription = "tenantDescription";
-  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String VAR_requestedId = "requestedId";
+  public static final String SET_requestedId = "setRequestedId";
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
-  public static final String VAR_tenantRealizedNumber = "tenantRealizedNumber";
-  public static final String SET_tenantRealizedNumber = "setTenantRealizedNumber";
-  public static final String VAR_tenantRealizedId = "tenantRealizedId";
-  public static final String SET_tenantRealizedId = "setTenantRealizedId";
+  public static final String VAR_realizedNumber = "realizedNumber";
+  public static final String SET_realizedNumber = "setRealizedNumber";
+  public static final String VAR_realizedByEmail = "realizedByEmail";
+  public static final String SET_realizedByEmail = "setRealizedByEmail";
+  public static final String VAR_realizedByUserId = "realizedByUserId";
+  public static final String SET_realizedByUserId = "setRealizedByUserId";
+  public static final String VAR_realizedByFullName = "realizedByFullName";
+  public static final String SET_realizedByFullName = "setRealizedByFullName";
+  public static final String VAR_realizedId = "realizedId";
+  public static final String SET_realizedId = "setRealizedId";
+  public static final String VAR_realizedName = "realizedName";
+  public static final String SET_realizedName = "setRealizedName";
   public static final String VAR_createdByEmail = "createdByEmail";
   public static final String SET_createdByEmail = "setCreatedByEmail";
   public static final String VAR_createdByUserId = "createdByUserId";
@@ -1888,6 +2487,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String SET_requestedState = "setRequestedState";
   public static final String VAR_realizedState = "realizedState";
   public static final String SET_realizedState = "setRealizedState";
+  public static final String VAR_tenantDescription = "tenantDescription";
+  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String VAR_locked = "locked";
+  public static final String SET_locked = "setLocked";
 
   public static List<String> varsQForClass() {
     return TenantRealized.varsQTenantRealized(new ArrayList<String>());
@@ -1903,10 +2506,13 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static List<String> varsFqTenantRealized(List<String> vars) {
     vars.add(VAR_tenantName);
     vars.add(VAR_tenantId);
-    vars.add(VAR_tenantDescription);
+    vars.add(VAR_requestedId);
     vars.add(VAR_tenantResource);
-    vars.add(VAR_tenantRealizedNumber);
-    vars.add(VAR_tenantRealizedId);
+    vars.add(VAR_realizedNumber);
+    vars.add(VAR_realizedId);
+    vars.add(VAR_realizedName);
+    vars.add(VAR_tenantDescription);
+    vars.add(VAR_locked);
     Tenant.varsFqTenant(vars);
     return vars;
   }
@@ -1915,18 +2521,21 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     return TenantRealized.varsRangeTenantRealized(new ArrayList<String>());
   }
   public static List<String> varsRangeTenantRealized(List<String> vars) {
-    vars.add(VAR_tenantRealizedNumber);
-    vars.add(VAR_tenantRealizedId);
+    vars.add(VAR_realizedNumber);
     Tenant.varsRangeTenant(vars);
     return vars;
   }
 
   public static final String DISPLAY_NAME_tenantName = "tenant name";
   public static final String DISPLAY_NAME_tenantId = "tenant ID";
-  public static final String DISPLAY_NAME_tenantDescription = "description";
+  public static final String DISPLAY_NAME_requestedId = "tenant requested";
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
-  public static final String DISPLAY_NAME_tenantRealizedNumber = "tenant realized number";
-  public static final String DISPLAY_NAME_tenantRealizedId = "tenant realized ID";
+  public static final String DISPLAY_NAME_realizedNumber = "tenant realized number";
+  public static final String DISPLAY_NAME_realizedByEmail = "realized by user email";
+  public static final String DISPLAY_NAME_realizedByUserId = "realized by user ID";
+  public static final String DISPLAY_NAME_realizedByFullName = "realized by user full name";
+  public static final String DISPLAY_NAME_realizedId = "tenant realized ID";
+  public static final String DISPLAY_NAME_realizedName = "tenant realized name";
   public static final String DISPLAY_NAME_createdByEmail = "created by user email";
   public static final String DISPLAY_NAME_createdByUserId = "created by user ID";
   public static final String DISPLAY_NAME_createdByFullName = "created by user full name";
@@ -1934,10 +2543,12 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
   public static final String DISPLAY_NAME_intentState = "intent state";
   public static final String DISPLAY_NAME_requestedState = "requested state";
   public static final String DISPLAY_NAME_realizedState = "realized state";
+  public static final String DISPLAY_NAME_tenantDescription = "description";
+  public static final String DISPLAY_NAME_locked = "locked";
 
   @Override
   public String idForClass() {
-    return Optional.ofNullable(tenantRealizedId).map(o -> o.toString()).orElse(null);
+    return realizedId;
   }
 
   @Override
@@ -1947,7 +2558,7 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
 
   @Override
   public String nameForClass() {
-    return tenantName;
+    return realizedName;
   }
 
   @Override
@@ -1974,14 +2585,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return patch ? SET_tenantName : VAR_tenantName;
     case VAR_tenantId:
       return patch ? SET_tenantId : VAR_tenantId;
-    case VAR_tenantDescription:
-      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_requestedId:
+      return patch ? SET_requestedId : VAR_requestedId;
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
-    case VAR_tenantRealizedNumber:
-      return patch ? SET_tenantRealizedNumber : VAR_tenantRealizedNumber;
-    case VAR_tenantRealizedId:
-      return patch ? SET_tenantRealizedId : VAR_tenantRealizedId;
+    case VAR_realizedNumber:
+      return patch ? SET_realizedNumber : VAR_realizedNumber;
+    case VAR_realizedByEmail:
+      return patch ? SET_realizedByEmail : VAR_realizedByEmail;
+    case VAR_realizedByUserId:
+      return patch ? SET_realizedByUserId : VAR_realizedByUserId;
+    case VAR_realizedByFullName:
+      return patch ? SET_realizedByFullName : VAR_realizedByFullName;
+    case VAR_realizedId:
+      return patch ? SET_realizedId : VAR_realizedId;
+    case VAR_realizedName:
+      return patch ? SET_realizedName : VAR_realizedName;
     case VAR_createdByEmail:
       return patch ? SET_createdByEmail : VAR_createdByEmail;
     case VAR_createdByUserId:
@@ -1996,6 +2615,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return patch ? SET_requestedState : VAR_requestedState;
     case VAR_realizedState:
       return patch ? SET_realizedState : VAR_realizedState;
+    case VAR_tenantDescription:
+      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_locked:
+      return patch ? SET_locked : VAR_locked;
     default:
       return Tenant.varJsonTenant(var, patch);
     }
@@ -2010,14 +2633,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return DISPLAY_NAME_tenantName;
     case VAR_tenantId:
       return DISPLAY_NAME_tenantId;
-    case VAR_tenantDescription:
-      return DISPLAY_NAME_tenantDescription;
+    case VAR_requestedId:
+      return DISPLAY_NAME_requestedId;
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
-    case VAR_tenantRealizedNumber:
-      return DISPLAY_NAME_tenantRealizedNumber;
-    case VAR_tenantRealizedId:
-      return DISPLAY_NAME_tenantRealizedId;
+    case VAR_realizedNumber:
+      return DISPLAY_NAME_realizedNumber;
+    case VAR_realizedByEmail:
+      return DISPLAY_NAME_realizedByEmail;
+    case VAR_realizedByUserId:
+      return DISPLAY_NAME_realizedByUserId;
+    case VAR_realizedByFullName:
+      return DISPLAY_NAME_realizedByFullName;
+    case VAR_realizedId:
+      return DISPLAY_NAME_realizedId;
+    case VAR_realizedName:
+      return DISPLAY_NAME_realizedName;
     case VAR_createdByEmail:
       return DISPLAY_NAME_createdByEmail;
     case VAR_createdByUserId:
@@ -2032,6 +2663,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return DISPLAY_NAME_requestedState;
     case VAR_realizedState:
       return DISPLAY_NAME_realizedState;
+    case VAR_tenantDescription:
+      return DISPLAY_NAME_tenantDescription;
+    case VAR_locked:
+      return DISPLAY_NAME_locked;
     default:
       return Tenant.displayNameTenant(var);
     }
@@ -2045,14 +2680,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return "The name of this tenant";
     case VAR_tenantId:
       return "The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. ";
-    case VAR_tenantDescription:
-      return "A description of this tenant";
+    case VAR_requestedId:
+      return "The tenant requested being approved. ";
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
-    case VAR_tenantRealizedNumber:
+    case VAR_realizedNumber:
       return "A unique number for each realized version of this tenant. ";
-    case VAR_tenantRealizedId:
+    case VAR_realizedByEmail:
+      return "The email address for the user who realized the change request. ";
+    case VAR_realizedByUserId:
+      return "The IdP UUID record for the user who realized the change request. ";
+    case VAR_realizedByFullName:
+      return "The first and last name for the user who realized the change request. ";
+    case VAR_realizedId:
       return "The unique ID for this tenant realized. ";
+    case VAR_realizedName:
+      return "The name of this tenant realized model";
     case VAR_createdByEmail:
       return "The email address for the user who created the change request. ";
     case VAR_createdByUserId:
@@ -2067,6 +2710,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return "Represents a complete, validated, provider-ready declaration of desired state. ";
     case VAR_realizedState:
       return "Must be a complete representation of the provisioned resource in DCM unified format \u2014 not a status code, but a full state description. ";
+    case VAR_tenantDescription:
+      return "A description of this tenant";
+    case VAR_locked:
+      return "A tenant intent gets locked after creating the first tenant request. ";
       default:
         return Tenant.descriptionTenant(var);
     }
@@ -2078,14 +2725,22 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return "String";
     case VAR_tenantId:
       return "String";
-    case VAR_tenantDescription:
+    case VAR_requestedId:
       return "String";
     case VAR_tenantResource:
       return "String";
-    case VAR_tenantRealizedNumber:
+    case VAR_realizedNumber:
       return "Integer";
-    case VAR_tenantRealizedId:
-      return "Integer";
+    case VAR_realizedByEmail:
+      return "String";
+    case VAR_realizedByUserId:
+      return "String";
+    case VAR_realizedByFullName:
+      return "String";
+    case VAR_realizedId:
+      return "String";
+    case VAR_realizedName:
+      return "String";
     case VAR_createdByEmail:
       return "String";
     case VAR_createdByUserId:
@@ -2100,6 +2755,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return "String";
     case VAR_realizedState:
       return "String";
+    case VAR_tenantDescription:
+      return "String";
+    case VAR_locked:
+      return "Boolean";
       default:
         return Tenant.classSimpleNameTenant(var);
     }
@@ -2107,12 +2766,12 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
 
   public static Integer htmColumnTenantRealized(String var) {
     switch(var) {
-    case VAR_tenantName:
+    case VAR_requestedId:
+      return 0;
+    case VAR_realizedName:
       return 1;
     case VAR_tenantDescription:
       return 3;
-    case VAR_tenantResource:
-      return 0;
       default:
         return Tenant.htmColumnTenant(var);
     }
@@ -2120,12 +2779,14 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
 
   public static Integer htmRowTenantRealized(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 23;
-    case VAR_tenantDescription:
-      return 23;
-    case VAR_tenantResource:
+    case VAR_requestedId:
       return 5;
+    case VAR_realizedByEmail:
+      return 10;
+    case VAR_realizedByUserId:
+      return 10;
+    case VAR_realizedByFullName:
+      return 10;
     case VAR_createdByEmail:
       return 10;
     case VAR_createdVia:
@@ -2136,6 +2797,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
       return 12;
     case VAR_realizedState:
       return 12;
+    case VAR_tenantDescription:
+      return 20;
+    case VAR_locked:
+      return 21;
       default:
         return Tenant.htmRowTenant(var);
     }
@@ -2143,11 +2808,13 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
 
   public static Integer htmCellTenantRealized(String var) {
     switch(var) {
-    case VAR_tenantName:
-      return 1;
-    case VAR_tenantDescription:
-      return 4;
-    case VAR_tenantResource:
+    case VAR_requestedId:
+      return 0;
+    case VAR_realizedByEmail:
+      return 0;
+    case VAR_realizedByUserId:
+      return 0;
+    case VAR_realizedByFullName:
       return 0;
     case VAR_createdByEmail:
       return 0;
@@ -2158,6 +2825,10 @@ public abstract class TenantRealizedGen<DEV> extends Tenant {
     case VAR_requestedState:
       return 0;
     case VAR_realizedState:
+      return 0;
+    case VAR_tenantDescription:
+      return 4;
+    case VAR_locked:
       return 0;
       default:
         return Tenant.htmCellTenant(var);

@@ -175,7 +175,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                     permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                       if(!scopes.contains(scope))
                         scopes.add(scope);
@@ -395,7 +395,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                     permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                       if(!scopes.contains(scope))
                         scopes.add(scope);
@@ -553,7 +553,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   return permission.getJsonArray("scopes").contains("PATCH")
                       && mPermission.find();
                 }).forEach(permission -> {
-                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                   permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                     if(!scopes.contains(scope))
                       scopes.add(scope);
@@ -887,16 +887,16 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlCreated());
             break;
-          case "setTenantRequestedId":
+          case "setRequestedId":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_requestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_requestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -907,10 +907,10 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               }));
             });
             break;
-          case "removeTenantRequestedId":
+          case "removeRequestedId":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(solrId2 -> {
               futures2.add(Future.future(promise2 -> {
-                sql(siteRequest).update(TenantApproval.class, pk).setToNull(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null).onSuccess(a -> {
+                sql(siteRequest).update(TenantApproval.class, pk).setToNull(TenantApproval.VAR_requestedId, TenantRequested.class, null).onSuccess(a -> {
                   promise2.complete();
                 }).onFailure(ex -> {
                   promise2.tryFail(ex);
@@ -957,14 +957,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlArchived());
             break;
-          case "setTenantRealizedNumber":
-              o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantApproval.VAR_tenantRealizedNumber + "=$" + num);
-              num++;
-              bParams.add(o2.sqlTenantRealizedNumber());
-            break;
           case "setApprovedByEmail":
               o2.setApprovedByEmail(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -989,14 +981,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlApprovedByFullName());
             break;
-          case "setSessionId":
-              o2.setSessionId(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
-              num++;
-              bParams.add(o2.sqlSessionId());
-            break;
           case "setApproved":
               o2.setApproved(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
@@ -1005,13 +989,13 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlApproved());
             break;
-          case "setUserKey":
-              o2.setUserKey(jsonObject.getString(entityVar));
+          case "setSessionId":
+              o2.setSessionId(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantApproval.VAR_userKey + "=$" + num);
+              bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
               num++;
-              bParams.add(o2.sqlUserKey());
+              bParams.add(o2.sqlSessionId());
             break;
           case "setApprovalNote":
               o2.setApprovalNote(jsonObject.getString(entityVar));
@@ -1020,6 +1004,14 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               bSql.append(TenantApproval.VAR_approvalNote + "=$" + num);
               num++;
               bParams.add(o2.sqlApprovalNote());
+            break;
+          case "setUserKey":
+              o2.setUserKey(jsonObject.getString(entityVar));
+              if(bParams.size() > 0)
+                bSql.append(", ");
+              bSql.append(TenantApproval.VAR_userKey + "=$" + num);
+              num++;
+              bParams.add(o2.sqlUserKey());
             break;
           case "setApprovalName":
               o2.setApprovalName(jsonObject.getString(entityVar));
@@ -1044,14 +1036,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               bSql.append(TenantApproval.VAR_objectTitle + "=$" + num);
               num++;
               bParams.add(o2.sqlObjectTitle());
-            break;
-          case "setApprovalTitle":
-              o2.setApprovalTitle(jsonObject.getString(entityVar));
-              if(bParams.size() > 0)
-                bSql.append(", ");
-              bSql.append(TenantApproval.VAR_approvalTitle + "=$" + num);
-              num++;
-              bParams.add(o2.sqlApprovalTitle());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1193,7 +1177,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   return permission.getJsonArray("scopes").contains("POST")
                       && mPermission.find();
                 }).forEach(permission -> {
-                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                   permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                     if(!scopes.contains(scope))
                       scopes.add(scope);
@@ -1516,16 +1500,16 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlCreated());
             break;
-          case TenantApproval.VAR_tenantRequestedId:
+          case TenantApproval.VAR_requestedId:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_requestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_requestedId, TenantRequested.class, solrId2, val).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -1565,15 +1549,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlArchived());
             break;
-          case TenantApproval.VAR_tenantRealizedNumber:
-            o2.setTenantRealizedNumber(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantApproval.VAR_tenantRealizedNumber + "=$" + num);
-            num++;
-            bParams.add(o2.sqlTenantRealizedNumber());
-            break;
           case TenantApproval.VAR_approvedByEmail:
             o2.setApprovedByEmail(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1601,15 +1576,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlApprovedByFullName());
             break;
-          case TenantApproval.VAR_sessionId:
-            o2.setSessionId(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
-            num++;
-            bParams.add(o2.sqlSessionId());
-            break;
           case TenantApproval.VAR_approved:
             o2.setApproved(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
@@ -1619,14 +1585,14 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlApproved());
             break;
-          case TenantApproval.VAR_userKey:
-            o2.setUserKey(jsonObject.getString(entityVar));
+          case TenantApproval.VAR_sessionId:
+            o2.setSessionId(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantApproval.VAR_userKey + "=$" + num);
+            bSql.append(TenantApproval.VAR_sessionId + "=$" + num);
             num++;
-            bParams.add(o2.sqlUserKey());
+            bParams.add(o2.sqlSessionId());
             break;
           case TenantApproval.VAR_approvalNote:
             o2.setApprovalNote(jsonObject.getString(entityVar));
@@ -1636,6 +1602,15 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(TenantApproval.VAR_approvalNote + "=$" + num);
             num++;
             bParams.add(o2.sqlApprovalNote());
+            break;
+          case TenantApproval.VAR_userKey:
+            o2.setUserKey(jsonObject.getString(entityVar));
+            if(bParams.size() > 0) {
+              bSql.append(", ");
+            }
+            bSql.append(TenantApproval.VAR_userKey + "=$" + num);
+            num++;
+            bParams.add(o2.sqlUserKey());
             break;
           case TenantApproval.VAR_approvalName:
             o2.setApprovalName(jsonObject.getString(entityVar));
@@ -1663,15 +1638,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             bSql.append(TenantApproval.VAR_objectTitle + "=$" + num);
             num++;
             bParams.add(o2.sqlObjectTitle());
-            break;
-          case TenantApproval.VAR_approvalTitle:
-            o2.setApprovalTitle(jsonObject.getString(entityVar));
-            if(bParams.size() > 0) {
-              bSql.append(", ");
-            }
-            bSql.append(TenantApproval.VAR_approvalTitle + "=$" + num);
-            num++;
-            bParams.add(o2.sqlApprovalTitle());
             break;
           case TenantApproval.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1816,7 +1782,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   return permission.getJsonArray("scopes").contains("DELETE")
                       && mPermission.find();
                 }).forEach(permission -> {
-                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                   permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                     if(!scopes.contains(scope))
                       scopes.add(scope);
@@ -2117,16 +2083,16 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantApproval.VAR_tenantRequestedId:
+          case TenantApproval.VAR_requestedId:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_requestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_requestedId, TenantRequested.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -2261,7 +2227,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   return permission.getJsonArray("scopes").contains("PUT")
                       && mPermission.find();
                 }).forEach(permission -> {
-                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                   permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                     if(!scopes.contains(scope))
                       scopes.add(scope);
@@ -2641,7 +2607,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                     permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                       if(!scopes.contains(scope))
                         scopes.add(scope);
@@ -2983,7 +2949,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     return permission.getJsonArray("scopes").contains("GET")
                         && mPermission.find();
                   }).forEach(permission -> {
-                    fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                    fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                     permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                       if(!scopes.contains(scope))
                         scopes.add(scope);
@@ -3302,7 +3268,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                   return permission.getJsonArray("scopes").contains("DELETE")
                       && mPermission.find();
                 }).forEach(permission -> {
-                  fqs.add(String.format("%s:%s", "tenantRequestedId", permission.getString("rsname")));
+                  fqs.add(String.format("%s:%s", "requestedId", permission.getString("rsname")));
                   permission.getJsonArray("scopes").stream().map(s -> (String)s).forEach(scope -> {
                     if(!scopes.contains(scope))
                       scopes.add(scope);
@@ -3603,16 +3569,16 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         Set<String> entityVars = jsonObject.fieldNames();
         for(String entityVar : entityVars) {
           switch(entityVar) {
-          case TenantApproval.VAR_tenantRequestedId:
+          case TenantApproval.VAR_requestedId:
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures1.add(Future.future(promise2 -> {
-                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_tenantRequestedId), TenantRequested.class, val).onSuccess(o3 -> {
+                searchModel(siteRequest).query(TenantRequested.varIndexedTenantRequested(TenantRequested.VAR_requestedId), TenantRequested.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
                   if(solrId2 != null) {
                     solrIds.add(solrId2);
                     classes.add("TenantRequested");
                   }
-                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_tenantRequestedId, TenantRequested.class, null, null).onSuccess(a -> {
+                  sql(siteRequest).update(TenantApproval.class, pk).set(TenantApproval.VAR_requestedId, TenantRequested.class, null, null).onSuccess(a -> {
                     promise2.complete();
                   }).onFailure(ex -> {
                     promise2.tryFail(ex);
@@ -4019,17 +3985,17 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
         promise.complete();
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
-        String old_tenantRequestedId = TenantApproval.staticJsonTenantRequestedId(o.getTenantRequestedId());
-        String new_tenantRequestedId = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedId, patch));
-        String tenantRequestedId = Optional.ofNullable(Optional.ofNullable(new_tenantRequestedId).orElse(old_tenantRequestedId)).orElse(null);
-        TenantRequested.fqTenantRequested(siteRequest, TenantRequested.VAR_tenantRequestedId, tenantRequestedId).onSuccess(oTenantRequested -> {
+        String old_requestedId = TenantApproval.staticJsonRequestedId(o.getRequestedId());
+        String new_requestedId = json.getString(TenantRequested.varJson(TenantRequested.VAR_requestedId, patch));
+        String requestedId = Optional.ofNullable(Optional.ofNullable(new_requestedId).orElse(old_requestedId)).orElse(null);
+        TenantRequested.fqTenantRequested(siteRequest, TenantRequested.VAR_requestedId, requestedId).onSuccess(oTenantRequested -> {
           try {
             if(oTenantRequested == null) {
-              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantRequested %s", tenantRequestedId));
+              RuntimeException ex = new RuntimeException(String.format("Could not find a matching TenantRequested %s", requestedId));
               LOG.error(ex.getMessage(), ex);
               promise.fail(ex);
             } else {
-              json.put(TenantRequested.varJson(TenantRequested.VAR_tenantRequestedId, patch), tenantRequestedId);
+              json.put(TenantRequested.varJson(TenantRequested.VAR_requestedId, patch), requestedId);
               String old_tenantResource = TenantApproval.staticJsonTenantResource(o.getTenantResource());
               String new_tenantResource = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantResource, patch));
               String tenantResource = oTenantRequested.getTenantResource();
@@ -4062,11 +4028,6 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     Boolean archived = Optional.ofNullable(Optional.ofNullable(new_archived).orElse(old_archived)).orElse(null);
                     // json.put(TenantApproval.varJson(TenantApproval.VAR_archived, patch), archived);
 
-                    String old_tenantRealizedNumber = TenantApproval.staticJsonTenantRealizedNumber(o.getTenantRealizedNumber());
-                    String new_tenantRealizedNumber = json.getString(TenantApproval.varJson(TenantApproval.VAR_tenantRealizedNumber, patch));
-                    String tenantRealizedNumber = Optional.ofNullable(Optional.ofNullable(new_tenantRealizedNumber).orElse(old_tenantRealizedNumber)).orElse(null);
-                    // json.put(TenantApproval.varJson(TenantApproval.VAR_tenantRealizedNumber, patch), tenantRealizedNumber);
-
                     String old_approvedByEmail = TenantApproval.staticJsonApprovedByEmail(o.getApprovedByEmail());
                     String new_approvedByEmail = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvedByEmail, patch));
                     String approvedByEmail = siteRequest.getUserEmail();
@@ -4082,45 +4043,40 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     String approvedByFullName = siteRequest.getUserFullName();
                     json.put(TenantApproval.varJson(TenantApproval.VAR_approvedByFullName, patch), approvedByFullName);
 
-                    String old_sessionId = TenantApproval.staticJsonSessionId(o.getSessionId());
-                    String new_sessionId = json.getString(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch));
-                    String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
-                    // json.put(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch), sessionId);
-
                     Boolean old_approved = TenantApproval.staticJsonApproved(o.getApproved());
                     Boolean new_approved = json.getBoolean(TenantApproval.varJson(TenantApproval.VAR_approved, patch));
                     Boolean approved = Optional.ofNullable(Optional.ofNullable(new_approved).orElse(old_approved)).orElse(null);
                     // json.put(TenantApproval.varJson(TenantApproval.VAR_approved, patch), approved);
 
-                    String old_userKey = TenantApproval.staticJsonUserKey(o.getUserKey());
-                    String new_userKey = json.getString(TenantApproval.varJson(TenantApproval.VAR_userKey, patch));
-                    String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
-                    // json.put(TenantApproval.varJson(TenantApproval.VAR_userKey, patch), userKey);
+                    String old_sessionId = TenantApproval.staticJsonSessionId(o.getSessionId());
+                    String new_sessionId = json.getString(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch));
+                    String sessionId = Optional.ofNullable(Optional.ofNullable(new_sessionId).orElse(old_sessionId)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_sessionId, patch), sessionId);
 
                     String old_approvalNote = TenantApproval.staticJsonApprovalNote(o.getApprovalNote());
                     String new_approvalNote = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalNote, patch));
                     String approvalNote = Optional.ofNullable(Optional.ofNullable(new_approvalNote).orElse(old_approvalNote)).orElse(null);
                     // json.put(TenantApproval.varJson(TenantApproval.VAR_approvalNote, patch), approvalNote);
 
+                    String old_userKey = TenantApproval.staticJsonUserKey(o.getUserKey());
+                    String new_userKey = json.getString(TenantApproval.varJson(TenantApproval.VAR_userKey, patch));
+                    String userKey = Optional.ofNullable(Optional.ofNullable(new_userKey).orElse(old_userKey)).orElse(null);
+                    // json.put(TenantApproval.varJson(TenantApproval.VAR_userKey, patch), userKey);
+
                     String old_approvalName = TenantApproval.staticJsonApprovalName(o.getApprovalName());
                     String new_approvalName = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalName, patch));
-                    String approvalName = String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", tenantRequestedId);
+                    String approvalName = String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", requestedId);
                     json.put(TenantApproval.varJson(TenantApproval.VAR_approvalName, patch), approvalName);
 
                     String old_approvalId = TenantApproval.staticJsonApprovalId(o.getApprovalId());
                     String new_approvalId = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalId, patch));
-                    String approvalId = String.format("%s-%s-by-%s-%s", tenantRequestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail));
+                    String approvalId = String.format("%s-%s-by-%s-%s", requestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail));
                     json.put(TenantApproval.varJson(TenantApproval.VAR_approvalId, patch), approvalId);
 
                     String old_objectTitle = TenantApproval.staticJsonObjectTitle(o.getObjectTitle());
                     String new_objectTitle = json.getString(TenantApproval.varJson(TenantApproval.VAR_objectTitle, patch));
                     String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
                     // json.put(TenantApproval.varJson(TenantApproval.VAR_objectTitle, patch), objectTitle);
-
-                    String old_approvalTitle = TenantApproval.staticJsonApprovalTitle(o.getApprovalTitle());
-                    String new_approvalTitle = json.getString(TenantApproval.varJson(TenantApproval.VAR_approvalTitle, patch));
-                    String approvalTitle = Optional.ofNullable(Optional.ofNullable(new_approvalTitle).orElse(old_approvalTitle)).orElse(null);
-                    // json.put(TenantApproval.varJson(TenantApproval.VAR_approvalTitle, patch), approvalTitle);
 
                     String old_displayPage = TenantApproval.staticJsonDisplayPage(o.getDisplayPage());
                     String new_displayPage = json.getString(TenantApproval.varJson(TenantApproval.VAR_displayPage, patch));
@@ -4173,7 +4129,7 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, tenantRequestedId, tenantResource, archived, tenantRealizedNumber, approvedByEmail, approvedByUserId, approvedByFullName, sessionId, approved, userKey, approvalNote, approvalName, approvalId, objectTitle, approvalTitle, displayPage, editPage, userPage, download FROM TenantApproval WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT tenantName, tenantId, created, requestedId, tenantResource, archived, approvedByEmail, approvedByUserId, approvedByFullName, approved, sessionId, approvalNote, userKey, approvalName, approvalId, objectTitle, displayPage, editPage, userPage, download FROM TenantApproval WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -4218,9 +4174,9 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
     try {
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
-      sqlConnection.preparedQuery("SELECT tenantRequestedId as pk2, 'tenantRequestedId' FROM TenantRequested WHERE tenantRequestedId=$1 UNION SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$2")
+      sqlConnection.preparedQuery("SELECT requestedId as pk2, 'requestedId' FROM TenantRequested WHERE requestedId=$1 UNION SELECT tenantResource as pk2, 'tenantResource' FROM TenantIntent WHERE tenantResource=$2")
           .collecting(Collectors.toList())
-          .execute(Tuple.of(o.getTenantRequestedId(), o.getTenantResource())
+          .execute(Tuple.of(o.getRequestedId(), o.getTenantResource())
           ).onSuccess(result -> {
         try {
           if(result != null) {
@@ -4479,21 +4435,19 @@ public class TenantApprovalEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       o.persistForClass(TenantApproval.VAR_tenantName, TenantApproval.staticSetTenantName(siteRequest2, (String)result.get(TenantApproval.VAR_tenantName)));
       o.persistForClass(TenantApproval.VAR_tenantId, TenantApproval.staticSetTenantId(siteRequest2, (String)result.get(TenantApproval.VAR_tenantId)));
       o.persistForClass(TenantApproval.VAR_created, TenantApproval.staticSetCreated(siteRequest2, (String)result.get(TenantApproval.VAR_created), Optional.ofNullable(siteRequest).map(r -> r.getConfig()).map(config -> config.getString(ConfigKeys.SITE_ZONE)).map(z -> ZoneId.of(z)).orElse(ZoneId.of("UTC"))));
-      o.persistForClass(TenantApproval.VAR_tenantRequestedId, TenantApproval.staticSetTenantRequestedId(siteRequest2, (String)result.get(TenantApproval.VAR_tenantRequestedId)));
+      o.persistForClass(TenantApproval.VAR_requestedId, TenantApproval.staticSetRequestedId(siteRequest2, (String)result.get(TenantApproval.VAR_requestedId)));
       o.persistForClass(TenantApproval.VAR_tenantResource, TenantApproval.staticSetTenantResource(siteRequest2, (String)result.get(TenantApproval.VAR_tenantResource)));
       o.persistForClass(TenantApproval.VAR_archived, TenantApproval.staticSetArchived(siteRequest2, (String)result.get(TenantApproval.VAR_archived)));
-      o.persistForClass(TenantApproval.VAR_tenantRealizedNumber, TenantApproval.staticSetTenantRealizedNumber(siteRequest2, (String)result.get(TenantApproval.VAR_tenantRealizedNumber)));
       o.persistForClass(TenantApproval.VAR_approvedByEmail, TenantApproval.staticSetApprovedByEmail(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByEmail)));
       o.persistForClass(TenantApproval.VAR_approvedByUserId, TenantApproval.staticSetApprovedByUserId(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByUserId)));
       o.persistForClass(TenantApproval.VAR_approvedByFullName, TenantApproval.staticSetApprovedByFullName(siteRequest2, (String)result.get(TenantApproval.VAR_approvedByFullName)));
-      o.persistForClass(TenantApproval.VAR_sessionId, TenantApproval.staticSetSessionId(siteRequest2, (String)result.get(TenantApproval.VAR_sessionId)));
       o.persistForClass(TenantApproval.VAR_approved, TenantApproval.staticSetApproved(siteRequest2, (String)result.get(TenantApproval.VAR_approved)));
-      o.persistForClass(TenantApproval.VAR_userKey, TenantApproval.staticSetUserKey(siteRequest2, (String)result.get(TenantApproval.VAR_userKey)));
+      o.persistForClass(TenantApproval.VAR_sessionId, TenantApproval.staticSetSessionId(siteRequest2, (String)result.get(TenantApproval.VAR_sessionId)));
       o.persistForClass(TenantApproval.VAR_approvalNote, TenantApproval.staticSetApprovalNote(siteRequest2, (String)result.get(TenantApproval.VAR_approvalNote)));
+      o.persistForClass(TenantApproval.VAR_userKey, TenantApproval.staticSetUserKey(siteRequest2, (String)result.get(TenantApproval.VAR_userKey)));
       o.persistForClass(TenantApproval.VAR_approvalName, TenantApproval.staticSetApprovalName(siteRequest2, (String)result.get(TenantApproval.VAR_approvalName)));
       o.persistForClass(TenantApproval.VAR_approvalId, TenantApproval.staticSetApprovalId(siteRequest2, (String)result.get(TenantApproval.VAR_approvalId)));
       o.persistForClass(TenantApproval.VAR_objectTitle, TenantApproval.staticSetObjectTitle(siteRequest2, (String)result.get(TenantApproval.VAR_objectTitle)));
-      o.persistForClass(TenantApproval.VAR_approvalTitle, TenantApproval.staticSetApprovalTitle(siteRequest2, (String)result.get(TenantApproval.VAR_approvalTitle)));
       o.persistForClass(TenantApproval.VAR_displayPage, TenantApproval.staticSetDisplayPage(siteRequest2, (String)result.get(TenantApproval.VAR_displayPage)));
       o.persistForClass(TenantApproval.VAR_editPage, TenantApproval.staticSetEditPage(siteRequest2, (String)result.get(TenantApproval.VAR_editPage)));
       o.persistForClass(TenantApproval.VAR_userPage, TenantApproval.staticSetUserPage(siteRequest2, (String)result.get(TenantApproval.VAR_userPage)));

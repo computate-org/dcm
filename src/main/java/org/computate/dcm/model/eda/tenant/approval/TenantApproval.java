@@ -81,9 +81,9 @@ public class TenantApproval extends TenantApprovalGen<BaseModel> {
    * HtmColumn: 0
    * Required: true
    * AuthorizationResource: TENANT
-   * Relate: TenantRequested.tenantRequestedId
+   * Relate: TenantRequested.requestedId
    **/
-  protected void _tenantRequestedId(Wrap<String> w) {
+  protected void _requestedId(Wrap<String> w) {
   }
 
   /**
@@ -100,19 +100,6 @@ public class TenantApproval extends TenantApprovalGen<BaseModel> {
    **/
   protected void _tenantResource(Wrap<String> w) {
     w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
-  }
-
-  /**
-   * {@inheritDoc}
-   * DocValues: true
-   * Persist: true
-   * DisplayName: tenant realized number
-   * Description: A unique number for each realized version of this tenant. 
-   * Facet: true
-   * Required: true
-   **/
-  protected void _tenantRealizedNumber(Wrap<Integer> w) {
-    // tomorrow, search for the max requested number by tenantResource, and increment by 1 in upsert. 
   }
 
   /**
@@ -196,7 +183,7 @@ public class TenantApproval extends TenantApprovalGen<BaseModel> {
    * Facet: true
    * VarName: true
    * Required: true
-   * StringFormat: String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", tenantRequestedId)
+   * StringFormat: String.format("%s <%s> %s the %s", approvedByFullName, approvedByEmail, approved ? "approved" : "rejected", requestedId)
    **/
   protected void _approvalName(Wrap<String> w) {
   }
@@ -211,23 +198,14 @@ public class TenantApproval extends TenantApprovalGen<BaseModel> {
    * DefaultFacet: true
    * Unique: true
    * VarId: true
-   * StringFormat: String.format("%s-%s-by-%s-%s", tenantRequestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail))
+   * StringFormat: String.format("%s-%s-by-%s-%s", requestedId, approved ? "approved" : "rejected", TenantApproval.toId(approvedByFullName), TenantApproval.toId(approvedByEmail))
    **/
   protected void _approvalId(Wrap<String> w) {
     w.o(toId(approvalName));
   }
 
-  /**
-   * {@inheritDoc}
-   * DocValues: true
-   * Persist: true
-   * DisplayName: approval title
-   * Description: A brief title from the approver about their decision about the requested change. 
-   * Facet: true
-   * VarTitle: true
-   **/
-  protected void _approvalTitle(Wrap<String> w) {
-
+  @Override
+  protected void _objectTitle(Wrap<String> w) {
     String approvedStr;
     if(approved == null)
       approvedStr = "has not been reviewed";
@@ -248,6 +226,6 @@ public class TenantApproval extends TenantApprovalGen<BaseModel> {
     else
       dateStr = " " + created.format(DateTimeFormatter.ISO_DATE_TIME);
 
-    w.o(String.format("%s %s by %s <%s>%s%s", tenantRequestedId, approvedStr, approvedByFullName, approvedByEmail, dateStr, noteStr));
+    w.o(String.format("%s %s by %s <%s>%s%s", requestedId, approvedStr, approvedByFullName, approvedByEmail, dateStr, noteStr));
   }
 }

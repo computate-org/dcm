@@ -44,7 +44,6 @@ import java.util.Map;
 import java.lang.String;
 import org.computate.dcm.model.eda.tenant.requested.TenantRequested;
 import org.computate.dcm.model.eda.tenant.intent.TenantIntent;
-import java.lang.Integer;
 import java.lang.Boolean;
 import org.computate.search.wrap.Wrap;
 import io.vertx.core.Promise;
@@ -361,66 +360,66 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     return tenantId;
   }
 
-	///////////////////////
-  // tenantRequestedId //
-	///////////////////////
+	/////////////////
+  // requestedId //
+	/////////////////
 
 
   /**
-   *  The entity tenantRequestedId
+   *  The entity requestedId
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String tenantRequestedId;
+  protected String requestedId;
 
   /**
-   * <br> The entity tenantRequestedId
+   * <br> The entity requestedId
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApproval&fq=entiteVar_enUS_indexed_string:tenantRequestedId">Find the entity tenantRequestedId in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApproval&fq=entiteVar_enUS_indexed_string:requestedId">Find the entity requestedId in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantRequestedId(Wrap<String> w);
+  protected abstract void _requestedId(Wrap<String> w);
 
-  public String getTenantRequestedId() {
-    return tenantRequestedId;
+  public String getRequestedId() {
+    return requestedId;
   }
-  public void setTenantRequestedId(String o) {
-    this.tenantRequestedId = TenantApproval.staticSetTenantRequestedId(siteRequest_, o);
+  public void setRequestedId(String o) {
+    this.requestedId = TenantApproval.staticSetRequestedId(siteRequest_, o);
   }
-  public static String staticSetTenantRequestedId(SiteRequest siteRequest_, String o) {
+  public static String staticSetRequestedId(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected TenantApproval tenantRequestedIdInit() {
-    Wrap<String> tenantRequestedIdWrap = new Wrap<String>().var("tenantRequestedId");
-    if(tenantRequestedId == null) {
-      _tenantRequestedId(tenantRequestedIdWrap);
-      Optional.ofNullable(tenantRequestedIdWrap.getO()).ifPresent(o -> {
-        setTenantRequestedId(o);
+  protected TenantApproval requestedIdInit() {
+    Wrap<String> requestedIdWrap = new Wrap<String>().var("requestedId");
+    if(requestedId == null) {
+      _requestedId(requestedIdWrap);
+      Optional.ofNullable(requestedIdWrap.getO()).ifPresent(o -> {
+        setRequestedId(o);
       });
     }
     return (TenantApproval)this;
   }
 
-  public static String staticSearchTenantRequestedId(SiteRequest siteRequest_, String o) {
+  public static String staticSearchRequestedId(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrTenantRequestedId(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrRequestedId(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantRequestedId(SiteRequest siteRequest_, String o) {
-    return TenantApproval.staticSearchTenantRequestedId(siteRequest_, TenantApproval.staticSetTenantRequestedId(siteRequest_, o)).toString();
+  public static String staticSearchFqRequestedId(SiteRequest siteRequest_, String o) {
+    return TenantApproval.staticSearchRequestedId(siteRequest_, TenantApproval.staticSetRequestedId(siteRequest_, o)).toString();
   }
 
-  public String sqlTenantRequestedId() {
-    return tenantRequestedId;
+  public String sqlRequestedId() {
+    return requestedId;
   }
 
-  public static String staticJsonTenantRequestedId(String tenantRequestedId) {
-    return tenantRequestedId;
+  public static String staticJsonRequestedId(String requestedId) {
+    return requestedId;
   }
 
 	////////////////////
@@ -483,76 +482,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
   public static String staticJsonTenantResource(String tenantResource) {
     return tenantResource;
-  }
-
-	//////////////////////////
-  // tenantRealizedNumber //
-	//////////////////////////
-
-
-  /**
-   *  The entity tenantRealizedNumber
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonSerialize(using = ToStringSerializer.class)
-  @JsonInclude(Include.NON_NULL)
-  protected Integer tenantRealizedNumber;
-
-  /**
-   * <br> The entity tenantRealizedNumber
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApproval&fq=entiteVar_enUS_indexed_string:tenantRealizedNumber">Find the entity tenantRealizedNumber in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _tenantRealizedNumber(Wrap<Integer> w);
-
-  public Integer getTenantRealizedNumber() {
-    return tenantRealizedNumber;
-  }
-
-  public void setTenantRealizedNumber(Integer tenantRealizedNumber) {
-    this.tenantRealizedNumber = tenantRealizedNumber;
-  }
-  @JsonIgnore
-  public void setTenantRealizedNumber(String o) {
-    this.tenantRealizedNumber = TenantApproval.staticSetTenantRealizedNumber(siteRequest_, o);
-  }
-  public static Integer staticSetTenantRealizedNumber(SiteRequest siteRequest_, String o) {
-    if(NumberUtils.isParsable(o))
-      return Integer.parseInt(o);
-    return null;
-  }
-  protected TenantApproval tenantRealizedNumberInit() {
-    Wrap<Integer> tenantRealizedNumberWrap = new Wrap<Integer>().var("tenantRealizedNumber");
-    if(tenantRealizedNumber == null) {
-      _tenantRealizedNumber(tenantRealizedNumberWrap);
-      Optional.ofNullable(tenantRealizedNumberWrap.getO()).ifPresent(o -> {
-        setTenantRealizedNumber(o);
-      });
-    }
-    return (TenantApproval)this;
-  }
-
-  public static Integer staticSearchTenantRealizedNumber(SiteRequest siteRequest_, Integer o) {
-    return o;
-  }
-
-  public static String staticSearchStrTenantRealizedNumber(SiteRequest siteRequest_, Integer o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqTenantRealizedNumber(SiteRequest siteRequest_, String o) {
-    return TenantApproval.staticSearchTenantRealizedNumber(siteRequest_, TenantApproval.staticSetTenantRealizedNumber(siteRequest_, o)).toString();
-  }
-
-  public Integer sqlTenantRealizedNumber() {
-    return tenantRealizedNumber;
-  }
-
-  public static String staticJsonTenantRealizedNumber(Integer tenantRealizedNumber) {
-    return Optional.ofNullable(tenantRealizedNumber).map(v -> v.toString()).orElse(null);
   }
 
 	/////////////////////
@@ -994,68 +923,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     return approvalId;
   }
 
-	///////////////////
-  // approvalTitle //
-	///////////////////
-
-
-  /**
-   *  The entity approvalTitle
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String approvalTitle;
-
-  /**
-   * <br> The entity approvalTitle
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.approval.TenantApproval&fq=entiteVar_enUS_indexed_string:approvalTitle">Find the entity approvalTitle in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _approvalTitle(Wrap<String> w);
-
-  public String getApprovalTitle() {
-    return approvalTitle;
-  }
-  public void setApprovalTitle(String o) {
-    this.approvalTitle = TenantApproval.staticSetApprovalTitle(siteRequest_, o);
-  }
-  public static String staticSetApprovalTitle(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected TenantApproval approvalTitleInit() {
-    Wrap<String> approvalTitleWrap = new Wrap<String>().var("approvalTitle");
-    if(approvalTitle == null) {
-      _approvalTitle(approvalTitleWrap);
-      Optional.ofNullable(approvalTitleWrap.getO()).ifPresent(o -> {
-        setApprovalTitle(o);
-      });
-    }
-    return (TenantApproval)this;
-  }
-
-  public static String staticSearchApprovalTitle(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrApprovalTitle(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqApprovalTitle(SiteRequest siteRequest_, String o) {
-    return TenantApproval.staticSearchApprovalTitle(siteRequest_, TenantApproval.staticSetApprovalTitle(siteRequest_, o)).toString();
-  }
-
-  public String sqlApprovalTitle() {
-    return approvalTitle;
-  }
-
-  public static String staticJsonApprovalTitle(String approvalTitle) {
-    return approvalTitle;
-  }
-
   //////////////
   // initDeep //
   //////////////
@@ -1088,9 +955,8 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       try {
         tenantNameInit();
         tenantIdInit();
-        tenantRequestedIdInit();
+        requestedIdInit();
         tenantResourceInit();
-        tenantRealizedNumberInit();
         approvedByEmailInit();
         approvedByUserIdInit();
         approvedByFullNameInit();
@@ -1098,7 +964,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         approvalNoteInit();
         approvalNameInit();
         approvalIdInit();
-        approvalTitleInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1156,12 +1021,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return oTenantApproval.tenantName;
       case "tenantId":
         return oTenantApproval.tenantId;
-      case "tenantRequestedId":
-        return oTenantApproval.tenantRequestedId;
+      case "requestedId":
+        return oTenantApproval.requestedId;
       case "tenantResource":
         return oTenantApproval.tenantResource;
-      case "tenantRealizedNumber":
-        return oTenantApproval.tenantRealizedNumber;
       case "approvedByEmail":
         return oTenantApproval.approvedByEmail;
       case "approvedByUserId":
@@ -1176,8 +1039,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return oTenantApproval.approvalName;
       case "approvalId":
         return oTenantApproval.approvalId;
-      case "approvalTitle":
-        return oTenantApproval.approvalTitle;
       default:
         return super.obtainBaseModel(var);
     }
@@ -1203,11 +1064,11 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
   public Object relateTenantApproval(String var, Object val) {
     TenantApproval oTenantApproval = (TenantApproval)this;
     switch(var) {
-      case "tenantRequestedId":
-        if(oTenantApproval.getTenantRequestedId() == null)
-          oTenantApproval.setTenantRequestedId(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
-        if(!saves.contains("tenantRequestedId"))
-          saves.add("tenantRequestedId");
+      case "requestedId":
+        if(oTenantApproval.getRequestedId() == null)
+          oTenantApproval.setRequestedId(Optional.ofNullable(val).map(v -> v.toString()).orElse(null));
+        if(!saves.contains("requestedId"))
+          saves.add("requestedId");
         return val;
       case "tenantResource":
         if(oTenantApproval.getTenantResource() == null)
@@ -1233,12 +1094,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSetTenantName(siteRequest_, v);
     case "tenantId":
       return TenantApproval.staticSetTenantId(siteRequest_, v);
-    case "tenantRequestedId":
-      return TenantApproval.staticSetTenantRequestedId(siteRequest_, v);
+    case "requestedId":
+      return TenantApproval.staticSetRequestedId(siteRequest_, v);
     case "tenantResource":
       return TenantApproval.staticSetTenantResource(siteRequest_, v);
-    case "tenantRealizedNumber":
-      return TenantApproval.staticSetTenantRealizedNumber(siteRequest_, v);
     case "approvedByEmail":
       return TenantApproval.staticSetApprovedByEmail(siteRequest_, v);
     case "approvedByUserId":
@@ -1253,8 +1112,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSetApprovalName(siteRequest_, v);
     case "approvalId":
       return TenantApproval.staticSetApprovalId(siteRequest_, v);
-    case "approvalTitle":
-      return TenantApproval.staticSetApprovalTitle(siteRequest_, v);
       default:
         return BaseModel.staticSetBaseModel(entityVar,  siteRequest_, v, o);
     }
@@ -1303,12 +1160,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchTenantName(siteRequest_, (String)o);
     case "tenantId":
       return TenantApproval.staticSearchTenantId(siteRequest_, (String)o);
-    case "tenantRequestedId":
-      return TenantApproval.staticSearchTenantRequestedId(siteRequest_, (String)o);
+    case "requestedId":
+      return TenantApproval.staticSearchRequestedId(siteRequest_, (String)o);
     case "tenantResource":
       return TenantApproval.staticSearchTenantResource(siteRequest_, (String)o);
-    case "tenantRealizedNumber":
-      return TenantApproval.staticSearchTenantRealizedNumber(siteRequest_, (Integer)o);
     case "approvedByEmail":
       return TenantApproval.staticSearchApprovedByEmail(siteRequest_, (String)o);
     case "approvedByUserId":
@@ -1323,8 +1178,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchApprovalName(siteRequest_, (String)o);
     case "approvalId":
       return TenantApproval.staticSearchApprovalId(siteRequest_, (String)o);
-    case "approvalTitle":
-      return TenantApproval.staticSearchApprovalTitle(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1343,12 +1196,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchStrTenantName(siteRequest_, (String)o);
     case "tenantId":
       return TenantApproval.staticSearchStrTenantId(siteRequest_, (String)o);
-    case "tenantRequestedId":
-      return TenantApproval.staticSearchStrTenantRequestedId(siteRequest_, (String)o);
+    case "requestedId":
+      return TenantApproval.staticSearchStrRequestedId(siteRequest_, (String)o);
     case "tenantResource":
       return TenantApproval.staticSearchStrTenantResource(siteRequest_, (String)o);
-    case "tenantRealizedNumber":
-      return TenantApproval.staticSearchStrTenantRealizedNumber(siteRequest_, (Integer)o);
     case "approvedByEmail":
       return TenantApproval.staticSearchStrApprovedByEmail(siteRequest_, (String)o);
     case "approvedByUserId":
@@ -1363,8 +1214,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchStrApprovalName(siteRequest_, (String)o);
     case "approvalId":
       return TenantApproval.staticSearchStrApprovalId(siteRequest_, (String)o);
-    case "approvalTitle":
-      return TenantApproval.staticSearchStrApprovalTitle(siteRequest_, (String)o);
       default:
         return BaseModel.staticSearchStrBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1383,12 +1232,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchFqTenantName(siteRequest_, o);
     case "tenantId":
       return TenantApproval.staticSearchFqTenantId(siteRequest_, o);
-    case "tenantRequestedId":
-      return TenantApproval.staticSearchFqTenantRequestedId(siteRequest_, o);
+    case "requestedId":
+      return TenantApproval.staticSearchFqRequestedId(siteRequest_, o);
     case "tenantResource":
       return TenantApproval.staticSearchFqTenantResource(siteRequest_, o);
-    case "tenantRealizedNumber":
-      return TenantApproval.staticSearchFqTenantRealizedNumber(siteRequest_, o);
     case "approvedByEmail":
       return TenantApproval.staticSearchFqApprovedByEmail(siteRequest_, o);
     case "approvedByUserId":
@@ -1403,8 +1250,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return TenantApproval.staticSearchFqApprovalName(siteRequest_, o);
     case "approvalId":
       return TenantApproval.staticSearchFqApprovalId(siteRequest_, o);
-    case "approvalTitle":
-      return TenantApproval.staticSearchFqApprovalTitle(siteRequest_, o);
       default:
         return BaseModel.staticSearchFqBaseModel(entityVar,  siteRequest_, o);
     }
@@ -1443,25 +1288,17 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         }
         saves.add("tenantId");
         return val;
-      } else if("tenantrequestedid".equals(varLower)) {
+      } else if("requestedid".equals(varLower)) {
         if(val instanceof String) {
-          setTenantRequestedId((String)val);
+          setRequestedId((String)val);
         }
-        saves.add("tenantRequestedId");
+        saves.add("requestedId");
         return val;
       } else if("tenantresource".equals(varLower)) {
         if(val instanceof String) {
           setTenantResource((String)val);
         }
         saves.add("tenantResource");
-        return val;
-      } else if("tenantrealizednumber".equals(varLower)) {
-        if(val instanceof Integer) {
-          setTenantRealizedNumber((Integer)val);
-        } else {
-          setTenantRealizedNumber(val == null ? null : val.toString());
-        }
-        saves.add("tenantRealizedNumber");
         return val;
       } else if("approvedbyemail".equals(varLower)) {
         if(val instanceof String) {
@@ -1507,12 +1344,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         }
         saves.add("approvalId");
         return val;
-      } else if("approvaltitle".equals(varLower)) {
-        if(val instanceof String) {
-          setApprovalTitle((String)val);
-        }
-        saves.add("approvalTitle");
-        return val;
     } else {
       return super.persistBaseModel(var, val);
     }
@@ -1542,19 +1373,13 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
           oTenantApproval.setTenantId(tenantId);
       }
 
-      String tenantRequestedId = (String)doc.get("tenantRequestedId_docvalues_string");
-      if(tenantRequestedId != null)
-        oTenantApproval.setTenantRequestedId(tenantRequestedId);
+      String requestedId = (String)doc.get("requestedId_docvalues_string");
+      if(requestedId != null)
+        oTenantApproval.setRequestedId(requestedId);
 
       String tenantResource = (String)doc.get("tenantResource_docvalues_string");
       if(tenantResource != null)
         oTenantApproval.setTenantResource(tenantResource);
-
-      if(saves.contains("tenantRealizedNumber")) {
-        Integer tenantRealizedNumber = (Integer)doc.get("tenantRealizedNumber_docvalues_int");
-        if(tenantRealizedNumber != null)
-          oTenantApproval.setTenantRealizedNumber(tenantRealizedNumber);
-      }
 
       if(saves.contains("approvedByEmail")) {
         String approvedByEmail = (String)doc.get("approvedByEmail_docvalues_string");
@@ -1597,12 +1422,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         if(approvalId != null)
           oTenantApproval.setApprovalId(approvalId);
       }
-
-      if(saves.contains("approvalTitle")) {
-        String approvalTitle = (String)doc.get("approvalTitle_docvalues_string");
-        if(approvalTitle != null)
-          oTenantApproval.setApprovalTitle(approvalTitle);
-      }
     }
 
     super.populateBaseModel(doc);
@@ -1615,14 +1434,11 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     if(tenantId != null) {
       doc.put("tenantId_docvalues_string", tenantId);
     }
-    if(tenantRequestedId != null) {
-      doc.put("tenantRequestedId_docvalues_string", tenantRequestedId);
+    if(requestedId != null) {
+      doc.put("requestedId_docvalues_string", requestedId);
     }
     if(tenantResource != null) {
       doc.put("tenantResource_docvalues_string", tenantResource);
-    }
-    if(tenantRealizedNumber != null) {
-      doc.put("tenantRealizedNumber_docvalues_int", tenantRealizedNumber);
     }
     if(approvedByEmail != null) {
       doc.put("approvedByEmail_docvalues_string", approvedByEmail);
@@ -1645,9 +1461,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     if(approvalId != null) {
       doc.put("approvalId_docvalues_string", approvalId);
     }
-    if(approvalTitle != null) {
-      doc.put("approvalTitle_docvalues_string", approvalTitle);
-    }
     super.indexBaseModel(doc);
 
 	}
@@ -1658,12 +1471,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "tenantName_docvalues_string";
       case "tenantId":
         return "tenantId_docvalues_string";
-      case "tenantRequestedId":
-        return "tenantRequestedId_docvalues_string";
+      case "requestedId":
+        return "requestedId_docvalues_string";
       case "tenantResource":
         return "tenantResource_docvalues_string";
-      case "tenantRealizedNumber":
-        return "tenantRealizedNumber_docvalues_int";
       case "approvedByEmail":
         return "approvedByEmail_docvalues_string";
       case "approvedByUserId":
@@ -1678,8 +1489,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "approvalName_docvalues_string";
       case "approvalId":
         return "approvalId_docvalues_string";
-      case "approvalTitle":
-        return "approvalTitle_docvalues_string";
       default:
         return BaseModel.varStoredBaseModel(entityVar);
     }
@@ -1691,12 +1500,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "tenantName_docvalues_string";
       case "tenantId":
         return "tenantId_docvalues_string";
-      case "tenantRequestedId":
-        return "tenantRequestedId_docvalues_string";
+      case "requestedId":
+        return "requestedId_docvalues_string";
       case "tenantResource":
         return "tenantResource_docvalues_string";
-      case "tenantRealizedNumber":
-        return "tenantRealizedNumber_docvalues_int";
       case "approvedByEmail":
         return "approvedByEmail_docvalues_string";
       case "approvedByUserId":
@@ -1711,8 +1518,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "approvalName_docvalues_string";
       case "approvalId":
         return "approvalId_docvalues_string";
-      case "approvalTitle":
-        return "approvalTitle_docvalues_string";
       default:
         return BaseModel.varIndexedBaseModel(entityVar);
     }
@@ -1724,12 +1529,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "tenantName";
       case "tenantId_docvalues_string":
         return "tenantId";
-      case "tenantRequestedId_docvalues_string":
-        return "tenantRequestedId";
+      case "requestedId_docvalues_string":
+        return "requestedId";
       case "tenantResource_docvalues_string":
         return "tenantResource";
-      case "tenantRealizedNumber_docvalues_int":
-        return "tenantRealizedNumber";
       case "approvedByEmail_docvalues_string":
         return "approvedByEmail";
       case "approvedByUserId_docvalues_string":
@@ -1744,8 +1547,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         return "approvalName";
       case "approvalId_docvalues_string":
         return "approvalId";
-      case "approvalTitle_docvalues_string":
-        return "approvalTitle";
       default:
         return BaseModel.searchVarBaseModel(searchVar);
     }
@@ -1778,9 +1579,8 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
     oTenantApproval.setTenantName(Optional.ofNullable(doc.get("tenantName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setTenantId(Optional.ofNullable(doc.get("tenantId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantApproval.setTenantRequestedId(Optional.ofNullable(doc.get("tenantRequestedId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantApproval.setRequestedId(Optional.ofNullable(doc.get("requestedId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setTenantResource(Optional.ofNullable(doc.get("tenantResource_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantApproval.setTenantRealizedNumber(Optional.ofNullable(doc.get("tenantRealizedNumber_docvalues_int")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setApprovedByEmail(Optional.ofNullable(doc.get("approvedByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setApprovedByUserId(Optional.ofNullable(doc.get("approvedByUserId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setApprovedByFullName(Optional.ofNullable(doc.get("approvedByFullName_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -1788,7 +1588,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     oTenantApproval.setApprovalNote(Optional.ofNullable(doc.get("approvalNote_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setApprovalName(Optional.ofNullable(doc.get("approvalName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantApproval.setApprovalId(Optional.ofNullable(doc.get("approvalId_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantApproval.setApprovalTitle(Optional.ofNullable(doc.get("approvalTitle_docvalues_string")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
   }
@@ -1806,12 +1605,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         apiRequest.addVars("tenantName");
       if(!Objects.equals(tenantId, original.getTenantId()))
         apiRequest.addVars("tenantId");
-      if(!Objects.equals(tenantRequestedId, original.getTenantRequestedId()))
-        apiRequest.addVars("tenantRequestedId");
+      if(!Objects.equals(requestedId, original.getRequestedId()))
+        apiRequest.addVars("requestedId");
       if(!Objects.equals(tenantResource, original.getTenantResource()))
         apiRequest.addVars("tenantResource");
-      if(!Objects.equals(tenantRealizedNumber, original.getTenantRealizedNumber()))
-        apiRequest.addVars("tenantRealizedNumber");
       if(!Objects.equals(approvedByEmail, original.getApprovedByEmail()))
         apiRequest.addVars("approvedByEmail");
       if(!Objects.equals(approvedByUserId, original.getApprovedByUserId()))
@@ -1826,8 +1623,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
         apiRequest.addVars("approvalName");
       if(!Objects.equals(approvalId, original.getApprovalId()))
         apiRequest.addVars("approvalId");
-      if(!Objects.equals(approvalTitle, original.getApprovalTitle()))
-        apiRequest.addVars("approvalTitle");
       super.apiRequestBaseModel();
     }
   }
@@ -1841,9 +1636,8 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     sb.append(super.toString());
     sb.append(Optional.ofNullable(tenantName).map(v -> "tenantName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantId).map(v -> "tenantId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantRequestedId).map(v -> "tenantRequestedId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(requestedId).map(v -> "requestedId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantResource).map(v -> "tenantResource: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantRealizedNumber).map(v -> "tenantRealizedNumber: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(approvedByEmail).map(v -> "approvedByEmail: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvedByUserId).map(v -> "approvedByUserId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvedByFullName).map(v -> "approvedByFullName: \"" + v + "\"\n" ).orElse(""));
@@ -1851,7 +1645,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     sb.append(Optional.ofNullable(approvalNote).map(v -> "approvalNote: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvalName).map(v -> "approvalName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(approvalId).map(v -> "approvalId: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(approvalTitle).map(v -> "approvalTitle: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
   }
 
@@ -1866,12 +1659,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
   public static final String SET_tenantName = "setTenantName";
   public static final String VAR_tenantId = "tenantId";
   public static final String SET_tenantId = "setTenantId";
-  public static final String VAR_tenantRequestedId = "tenantRequestedId";
-  public static final String SET_tenantRequestedId = "setTenantRequestedId";
+  public static final String VAR_requestedId = "requestedId";
+  public static final String SET_requestedId = "setRequestedId";
   public static final String VAR_tenantResource = "tenantResource";
   public static final String SET_tenantResource = "setTenantResource";
-  public static final String VAR_tenantRealizedNumber = "tenantRealizedNumber";
-  public static final String SET_tenantRealizedNumber = "setTenantRealizedNumber";
   public static final String VAR_approvedByEmail = "approvedByEmail";
   public static final String SET_approvedByEmail = "setApprovedByEmail";
   public static final String VAR_approvedByUserId = "approvedByUserId";
@@ -1886,8 +1677,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
   public static final String SET_approvalName = "setApprovalName";
   public static final String VAR_approvalId = "approvalId";
   public static final String SET_approvalId = "setApprovalId";
-  public static final String VAR_approvalTitle = "approvalTitle";
-  public static final String SET_approvalTitle = "setApprovalTitle";
 
   public static List<String> varsQForClass() {
     return TenantApproval.varsQTenantApproval(new ArrayList<String>());
@@ -1903,14 +1692,12 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
   public static List<String> varsFqTenantApproval(List<String> vars) {
     vars.add(VAR_tenantName);
     vars.add(VAR_tenantId);
-    vars.add(VAR_tenantRequestedId);
+    vars.add(VAR_requestedId);
     vars.add(VAR_tenantResource);
-    vars.add(VAR_tenantRealizedNumber);
     vars.add(VAR_approved);
     vars.add(VAR_approvalNote);
     vars.add(VAR_approvalName);
     vars.add(VAR_approvalId);
-    vars.add(VAR_approvalTitle);
     BaseModel.varsFqBaseModel(vars);
     return vars;
   }
@@ -1919,16 +1706,14 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
     return TenantApproval.varsRangeTenantApproval(new ArrayList<String>());
   }
   public static List<String> varsRangeTenantApproval(List<String> vars) {
-    vars.add(VAR_tenantRealizedNumber);
     BaseModel.varsRangeBaseModel(vars);
     return vars;
   }
 
   public static final String DISPLAY_NAME_tenantName = "tenant name";
   public static final String DISPLAY_NAME_tenantId = "tenant ID";
-  public static final String DISPLAY_NAME_tenantRequestedId = "tenant requested";
+  public static final String DISPLAY_NAME_requestedId = "tenant requested";
   public static final String DISPLAY_NAME_tenantResource = "tenant auth resource";
-  public static final String DISPLAY_NAME_tenantRealizedNumber = "tenant realized number";
   public static final String DISPLAY_NAME_approvedByEmail = "approved by user email";
   public static final String DISPLAY_NAME_approvedByUserId = "approved by user ID";
   public static final String DISPLAY_NAME_approvedByFullName = "approved by user full name";
@@ -1936,7 +1721,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
   public static final String DISPLAY_NAME_approvalNote = "approval note";
   public static final String DISPLAY_NAME_approvalName = "approval name";
   public static final String DISPLAY_NAME_approvalId = "approval ID";
-  public static final String DISPLAY_NAME_approvalTitle = "approval title";
 
   @Override
   public String idForClass() {
@@ -1945,7 +1729,7 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
   @Override
   public String titleForClass() {
-    return approvalTitle;
+    return objectTitle;
   }
 
   @Override
@@ -1977,12 +1761,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return patch ? SET_tenantName : VAR_tenantName;
     case VAR_tenantId:
       return patch ? SET_tenantId : VAR_tenantId;
-    case VAR_tenantRequestedId:
-      return patch ? SET_tenantRequestedId : VAR_tenantRequestedId;
+    case VAR_requestedId:
+      return patch ? SET_requestedId : VAR_requestedId;
     case VAR_tenantResource:
       return patch ? SET_tenantResource : VAR_tenantResource;
-    case VAR_tenantRealizedNumber:
-      return patch ? SET_tenantRealizedNumber : VAR_tenantRealizedNumber;
     case VAR_approvedByEmail:
       return patch ? SET_approvedByEmail : VAR_approvedByEmail;
     case VAR_approvedByUserId:
@@ -1997,8 +1779,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return patch ? SET_approvalName : VAR_approvalName;
     case VAR_approvalId:
       return patch ? SET_approvalId : VAR_approvalId;
-    case VAR_approvalTitle:
-      return patch ? SET_approvalTitle : VAR_approvalTitle;
     default:
       return BaseModel.varJsonBaseModel(var, patch);
     }
@@ -2013,12 +1793,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return DISPLAY_NAME_tenantName;
     case VAR_tenantId:
       return DISPLAY_NAME_tenantId;
-    case VAR_tenantRequestedId:
-      return DISPLAY_NAME_tenantRequestedId;
+    case VAR_requestedId:
+      return DISPLAY_NAME_requestedId;
     case VAR_tenantResource:
       return DISPLAY_NAME_tenantResource;
-    case VAR_tenantRealizedNumber:
-      return DISPLAY_NAME_tenantRealizedNumber;
     case VAR_approvedByEmail:
       return DISPLAY_NAME_approvedByEmail;
     case VAR_approvedByUserId:
@@ -2033,8 +1811,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return DISPLAY_NAME_approvalName;
     case VAR_approvalId:
       return DISPLAY_NAME_approvalId;
-    case VAR_approvalTitle:
-      return DISPLAY_NAME_approvalTitle;
     default:
       return BaseModel.displayNameBaseModel(var);
     }
@@ -2048,12 +1824,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return "The name of this tenant";
     case VAR_tenantId:
       return "The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. ";
-    case VAR_tenantRequestedId:
+    case VAR_requestedId:
       return "The tenant requested being approved. ";
     case VAR_tenantResource:
       return "The unique authorization resource for the tenant for multi-tenancy";
-    case VAR_tenantRealizedNumber:
-      return "A unique number for each realized version of this tenant. ";
     case VAR_approvedByEmail:
       return "The email address for the user who approved the change request. ";
     case VAR_approvedByUserId:
@@ -2068,8 +1842,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return "The name of this approval";
     case VAR_approvalId:
       return "The ID of this approval. By default, this will be auto-generated based on the approval name, converting non-alphanumeric characters to hyphens, all lowercase. ";
-    case VAR_approvalTitle:
-      return "A brief title from the approver about their decision about the requested change. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -2081,12 +1853,10 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return "String";
     case VAR_tenantId:
       return "String";
-    case VAR_tenantRequestedId:
+    case VAR_requestedId:
       return "String";
     case VAR_tenantResource:
       return "String";
-    case VAR_tenantRealizedNumber:
-      return "Integer";
     case VAR_approvedByEmail:
       return "String";
     case VAR_approvedByUserId:
@@ -2101,8 +1871,6 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
       return "String";
     case VAR_approvalId:
       return "String";
-    case VAR_approvalTitle:
-      return "String";
       default:
         return BaseModel.classSimpleNameBaseModel(var);
     }
@@ -2110,7 +1878,7 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmColumnTenantApproval(String var) {
     switch(var) {
-    case VAR_tenantRequestedId:
+    case VAR_requestedId:
       return 0;
     case VAR_approvalNote:
       return 3;
@@ -2123,7 +1891,7 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmRowTenantApproval(String var) {
     switch(var) {
-    case VAR_tenantRequestedId:
+    case VAR_requestedId:
       return 5;
     case VAR_approvedByEmail:
       return 10;
@@ -2142,7 +1910,7 @@ public abstract class TenantApprovalGen<DEV> extends BaseModel {
 
   public static Integer htmCellTenantApproval(String var) {
     switch(var) {
-    case VAR_tenantRequestedId:
+    case VAR_requestedId:
       return 0;
     case VAR_approvedByEmail:
       return 0;

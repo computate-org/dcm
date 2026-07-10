@@ -12,7 +12,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-buildings"></i>
  *
  * SearchPageUri: /en-us/search/requested/tenant
- * EditPageUri: /en-us/edit/requested/tenant/{tenantRequestedId}
+ * EditPageUri: /en-us/edit/requested/tenant/{requestedId}
  * ApiUri: /en-us/api/intent/requested
  * ApiMethod:
  *   Search:
@@ -58,6 +58,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmCell: 1
    * HtmRowTitleOpen: tenant details
    * Facet: true
+   * StringFormat: Optional.ofNullable(new_tenantName).orElse(oTenantIntent.getTenantName())
    **/
   protected void _tenantName(Wrap<String> w) {
   }
@@ -89,7 +90,6 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmCell: 0
    * Required: true
    * Relate: TenantIntent.tenantResource
-   * StringFormat: String.format("%s-%s", TenantIntent.CLASS_AUTH_RESOURCE, tenantId)
    **/
   protected void _tenantResource(Wrap<String> w) {
     w.o(String.format("%s-%s", Tenant.CLASS_AUTH_RESOURCE, tenantId));
@@ -104,7 +104,7 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * Facet: true
    * Required: true
    **/
-  protected void _tenantRequestedNumber(Wrap<Integer> w) {
+  protected void _requestedNumber(Wrap<Integer> w) {
   }
 
   /**
@@ -116,11 +116,11 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * Facet: true
    * Required: true
    * VarId: true
-   * StringFormat: String.format("%s-%s", tenantResource, tenantRequestedNumber)
+   * StringFormat: String.format("%s-%s", tenantResource, requestedNumber)
    * HtmColumn: 0
    * Unique: true
    **/
-  protected void _tenantRequestedId(Wrap<String> w) {
+  protected void _requestedId(Wrap<String> w) {
   }
 
   /**
@@ -131,10 +131,10 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * Description: The name of this tenant requested model
    * Facet: true
    * VarName: true
-   * StringFormat: String.format("%s %s", oTenantIntent.getTenantName(), tenantRequestedNumber)
+   * StringFormat: String.format("%s %s", oTenantIntent.getTenantName(), requestedNumber)
    * HtmColumn: 1
    **/
-  protected void _tenantRequestedName(Wrap<String> w) {
+  protected void _requestedName(Wrap<String> w) {
   }
 
   /**
@@ -271,14 +271,14 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: tenant realized
-   * Description: Each time the tenant was realized for this tenant intent. 
-   * Relate: TenantRealized.tenantResource
-   * HtmRowTitleOpen: realizations
+   * DisplayName: tenant discovered
+   * Description: Each time the tenant was discovered for this tenant intent. 
+   * Relate: TenantDiscovered.tenantResource
+   * HtmRowTitleOpen: discovered
    * HtmRow: 21
    * HtmCell: 0
    **/
-  protected void _tenantRealized(List<String> l) {
+  protected void _tenantDiscovered(List<String> l) {
   }
 
   /**
@@ -293,5 +293,18 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * StringFormat: Optional.ofNullable(Optional.ofNullable(new_locked).orElse(old_locked)).orElse(false)
    **/
   protected void _locked(Wrap<Boolean> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: tenant realized
+   * Description: Each time the tenant was realized for this tenant intent. 
+   * Relate: TenantRealized.tenantResource
+   * HtmRowTitleOpen: realizations
+   * HtmRow: 22
+   * HtmCell: 0
+   **/
+  protected void _tenantRealized(List<String> l) {
   }
 }

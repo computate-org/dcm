@@ -4,6 +4,7 @@ import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
 import java.util.List;
 import java.lang.String;
 import java.lang.Integer;
+import java.lang.Boolean;
 import org.computate.dcm.page.PageLayout;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.user.SiteUser;
@@ -485,7 +486,7 @@ public class TenantRealizedGenPage extends TenantRealizedGenPageGen<PageLayout> 
    * Initialized: false
   **/
   protected void _result(Wrap<TenantRealized> w) {
-    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("tenantRealizedId")).orElse(null) != null)
+    if(resultCount >= 1 && Optional.ofNullable(siteRequest_.getServiceRequest().getParams().getJsonObject("path")).map(o -> o.getString("realizedId")).orElse(null) != null)
       w.o(searchListTenantRealized_.get(0));
   }
 
