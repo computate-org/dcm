@@ -262,9 +262,9 @@ public class TenantRequested extends TenantRequestedGen<Tenant> {
    * HtmColumn: 3
    * VarDescription: true
    * Multiline: true
-   * StringFormat: Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
+   * StringFormat: Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
    **/
-  protected void _tenantDescription(Wrap<String> w) {
+  protected void _description(Wrap<String> w) {
     w.o(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
   }
 

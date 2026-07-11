@@ -1230,66 +1230,66 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
     return discoveredState;
   }
 
-	///////////////////////
-  // tenantDescription //
-	///////////////////////
+	/////////////////
+  // description //
+	/////////////////
 
 
   /**
-   *  The entity tenantDescription
+   *  The entity description
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String tenantDescription;
+  protected String description;
 
   /**
-   * <br> The entity tenantDescription
+   * <br> The entity description
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.discovered.TenantDiscovered&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.discovered.TenantDiscovered&fq=entiteVar_enUS_indexed_string:description">Find the entity description in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantDescription(Wrap<String> w);
+  protected abstract void _description(Wrap<String> w);
 
-  public String getTenantDescription() {
-    return tenantDescription;
+  public String getDescription() {
+    return description;
   }
-  public void setTenantDescription(String o) {
-    this.tenantDescription = TenantDiscovered.staticSetTenantDescription(siteRequest_, o);
+  public void setDescription(String o) {
+    this.description = TenantDiscovered.staticSetDescription(siteRequest_, o);
   }
-  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSetDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected TenantDiscovered tenantDescriptionInit() {
-    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
-    if(tenantDescription == null) {
-      _tenantDescription(tenantDescriptionWrap);
-      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
-        setTenantDescription(o);
+  protected TenantDiscovered descriptionInit() {
+    Wrap<String> descriptionWrap = new Wrap<String>().var("description");
+    if(description == null) {
+      _description(descriptionWrap);
+      Optional.ofNullable(descriptionWrap.getO()).ifPresent(o -> {
+        setDescription(o);
       });
     }
     return (TenantDiscovered)this;
   }
 
-  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrDescription(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
-    return TenantDiscovered.staticSearchTenantDescription(siteRequest_, TenantDiscovered.staticSetTenantDescription(siteRequest_, o)).toString();
+  public static String staticSearchFqDescription(SiteRequest siteRequest_, String o) {
+    return TenantDiscovered.staticSearchDescription(siteRequest_, TenantDiscovered.staticSetDescription(siteRequest_, o)).toString();
   }
 
-  public String sqlTenantDescription() {
-    return tenantDescription;
+  public String sqlDescription() {
+    return description;
   }
 
-  public static String staticJsonTenantDescription(String tenantDescription) {
-    return tenantDescription;
+  public static String staticJsonDescription(String description) {
+    return description;
   }
 
   //////////////
@@ -1338,7 +1338,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         requestedStateInit();
         realizedStateInit();
         discoveredStateInit();
-        tenantDescriptionInit();
+        descriptionInit();
         promise2.complete();
       } catch(Exception ex) {
         promise2.fail(ex);
@@ -1424,8 +1424,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         return oTenantDiscovered.realizedState;
       case "discoveredState":
         return oTenantDiscovered.discoveredState;
-      case "tenantDescription":
-        return oTenantDiscovered.tenantDescription;
+      case "description":
+        return oTenantDiscovered.description;
       default:
         return super.obtainTenant(var);
     }
@@ -1509,8 +1509,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return TenantDiscovered.staticSetRealizedState(siteRequest_, v);
     case "discoveredState":
       return TenantDiscovered.staticSetDiscoveredState(siteRequest_, v);
-    case "tenantDescription":
-      return TenantDiscovered.staticSetTenantDescription(siteRequest_, v);
+    case "description":
+      return TenantDiscovered.staticSetDescription(siteRequest_, v);
       default:
         return Tenant.staticSetTenant(entityVar,  siteRequest_, v, o);
     }
@@ -1587,8 +1587,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return TenantDiscovered.staticSearchRealizedState(siteRequest_, (String)o);
     case "discoveredState":
       return TenantDiscovered.staticSearchDiscoveredState(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantDiscovered.staticSearchTenantDescription(siteRequest_, (String)o);
+    case "description":
+      return TenantDiscovered.staticSearchDescription(siteRequest_, (String)o);
       default:
         return Tenant.staticSearchTenant(entityVar,  siteRequest_, o);
     }
@@ -1635,8 +1635,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return TenantDiscovered.staticSearchStrRealizedState(siteRequest_, (String)o);
     case "discoveredState":
       return TenantDiscovered.staticSearchStrDiscoveredState(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantDiscovered.staticSearchStrTenantDescription(siteRequest_, (String)o);
+    case "description":
+      return TenantDiscovered.staticSearchStrDescription(siteRequest_, (String)o);
       default:
         return Tenant.staticSearchStrTenant(entityVar,  siteRequest_, o);
     }
@@ -1683,8 +1683,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return TenantDiscovered.staticSearchFqRealizedState(siteRequest_, o);
     case "discoveredState":
       return TenantDiscovered.staticSearchFqDiscoveredState(siteRequest_, o);
-    case "tenantDescription":
-      return TenantDiscovered.staticSearchFqTenantDescription(siteRequest_, o);
+    case "description":
+      return TenantDiscovered.staticSearchFqDescription(siteRequest_, o);
       default:
         return Tenant.staticSearchFqTenant(entityVar,  siteRequest_, o);
     }
@@ -1807,11 +1807,11 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         }
         saves.add("discoveredState");
         return val;
-      } else if("tenantdescription".equals(varLower)) {
+      } else if("description".equals(varLower)) {
         if(val instanceof String) {
-          setTenantDescription((String)val);
+          setDescription((String)val);
         }
-        saves.add("tenantDescription");
+        saves.add("description");
         return val;
     } else {
       return super.persistTenant(var, val);
@@ -1922,10 +1922,10 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
           oTenantDiscovered.setDiscoveredState(discoveredState);
       }
 
-      if(saves.contains("tenantDescription")) {
-        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
-        if(tenantDescription != null)
-          oTenantDiscovered.setTenantDescription(tenantDescription);
+      if(saves.contains("description")) {
+        String description = (String)doc.get("description_docvalues_string");
+        if(description != null)
+          oTenantDiscovered.setDescription(description);
       }
     }
 
@@ -1981,8 +1981,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
     if(discoveredState != null) {
       doc.put("discoveredState_docvalues_string", discoveredState);
     }
-    if(tenantDescription != null) {
-      doc.put("tenantDescription_docvalues_string", tenantDescription);
+    if(description != null) {
+      doc.put("description_docvalues_string", description);
     }
     super.indexTenant(doc);
 
@@ -2022,8 +2022,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         return "realizedState_docvalues_string";
       case "discoveredState":
         return "discoveredState_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "description":
+        return "description_docvalues_string";
       default:
         return Tenant.varStoredTenant(entityVar);
     }
@@ -2063,8 +2063,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         return "realizedState_docvalues_string";
       case "discoveredState":
         return "discoveredState_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "description":
+        return "description_docvalues_string";
       default:
         return Tenant.varIndexedTenant(entityVar);
     }
@@ -2104,8 +2104,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         return "realizedState";
       case "discoveredState_docvalues_string":
         return "discoveredState";
-      case "tenantDescription_docvalues_string":
-        return "tenantDescription";
+      case "description_docvalues_string":
+        return "description";
       default:
         return Tenant.searchVarTenant(searchVar);
     }
@@ -2152,7 +2152,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
     oTenantDiscovered.setRequestedState(Optional.ofNullable(doc.get("requestedState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantDiscovered.setRealizedState(Optional.ofNullable(doc.get("realizedState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantDiscovered.setDiscoveredState(Optional.ofNullable(doc.get("discoveredState_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantDiscovered.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantDiscovered.setDescription(Optional.ofNullable(doc.get("description_docvalues_string")).map(v -> v.toString()).orElse(null));
 
     super.storeTenant(doc);
   }
@@ -2198,8 +2198,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
         apiRequest.addVars("realizedState");
       if(!Objects.equals(discoveredState, original.getDiscoveredState()))
         apiRequest.addVars("discoveredState");
-      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
-        apiRequest.addVars("tenantDescription");
+      if(!Objects.equals(description, original.getDescription()))
+        apiRequest.addVars("description");
       super.apiRequestTenant();
     }
   }
@@ -2227,7 +2227,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
     sb.append(Optional.ofNullable(requestedState).map(v -> "requestedState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(realizedState).map(v -> "realizedState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(discoveredState).map(v -> "discoveredState: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(description).map(v -> "description: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
   }
 
@@ -2270,8 +2270,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
   public static final String SET_realizedState = "setRealizedState";
   public static final String VAR_discoveredState = "discoveredState";
   public static final String SET_discoveredState = "setDiscoveredState";
-  public static final String VAR_tenantDescription = "tenantDescription";
-  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String VAR_description = "description";
+  public static final String SET_description = "setDescription";
 
   public static List<String> varsQForClass() {
     return TenantDiscovered.varsQTenantDiscovered(new ArrayList<String>());
@@ -2290,7 +2290,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
     vars.add(VAR_requestedId);
     vars.add(VAR_tenantResource);
     vars.add(VAR_discoveredName);
-    vars.add(VAR_tenantDescription);
+    vars.add(VAR_description);
     Tenant.varsFqTenant(vars);
     return vars;
   }
@@ -2319,7 +2319,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
   public static final String DISPLAY_NAME_requestedState = "requested state";
   public static final String DISPLAY_NAME_realizedState = "realized state";
   public static final String DISPLAY_NAME_discoveredState = "discovered state";
-  public static final String DISPLAY_NAME_tenantDescription = "description";
+  public static final String DISPLAY_NAME_description = "description";
 
   @Override
   public String idForClass() {
@@ -2343,7 +2343,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
 
   @Override
   public String descriptionForClass() {
-    return tenantDescription;
+    return description;
   }
 
   @Override
@@ -2388,8 +2388,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return patch ? SET_realizedState : VAR_realizedState;
     case VAR_discoveredState:
       return patch ? SET_discoveredState : VAR_discoveredState;
-    case VAR_tenantDescription:
-      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_description:
+      return patch ? SET_description : VAR_description;
     default:
       return Tenant.varJsonTenant(var, patch);
     }
@@ -2432,8 +2432,8 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return DISPLAY_NAME_realizedState;
     case VAR_discoveredState:
       return DISPLAY_NAME_discoveredState;
-    case VAR_tenantDescription:
-      return DISPLAY_NAME_tenantDescription;
+    case VAR_description:
+      return DISPLAY_NAME_description;
     default:
       return Tenant.displayNameTenant(var);
     }
@@ -2475,7 +2475,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return "Must be a complete representation of the provisioned resource in DCM unified format \u2014 not a status code, but a full state description. ";
     case VAR_discoveredState:
       return "Must be a complete representation of the provisioned resource in DCM unified format \u2014 not a status code, but a full state description. ";
-    case VAR_tenantDescription:
+    case VAR_description:
       return "A description of this tenant";
       default:
         return Tenant.descriptionTenant(var);
@@ -2516,7 +2516,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return "String";
     case VAR_discoveredState:
       return "String";
-    case VAR_tenantDescription:
+    case VAR_description:
       return "String";
       default:
         return Tenant.classSimpleNameTenant(var);
@@ -2529,7 +2529,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return 0;
     case VAR_discoveredName:
       return 1;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 3;
       default:
         return Tenant.htmColumnTenant(var);
@@ -2560,7 +2560,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return 12;
     case VAR_discoveredState:
       return 12;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 20;
       default:
         return Tenant.htmRowTenant(var);
@@ -2591,7 +2591,7 @@ public abstract class TenantDiscoveredGen<DEV> extends Tenant {
       return 0;
     case VAR_discoveredState:
       return 0;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 4;
       default:
         return Tenant.htmCellTenant(var);

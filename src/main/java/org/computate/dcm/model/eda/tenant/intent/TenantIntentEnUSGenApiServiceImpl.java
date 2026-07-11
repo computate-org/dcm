@@ -1162,13 +1162,13 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               num++;
               bParams.add(o2.sqlObjectTitle());
             break;
-          case "setTenantDescription":
-              o2.setTenantDescription(jsonObject.getString(entityVar));
+          case "setDescription":
+              o2.setDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantIntent.VAR_tenantDescription + "=$" + num);
+              bSql.append(TenantIntent.VAR_description + "=$" + num);
               num++;
-              bParams.add(o2.sqlTenantDescription());
+              bParams.add(o2.sqlDescription());
             break;
           case "setDisplayPage":
               o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -1302,9 +1302,9 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               num++;
               bParams.add(o2.sqlUserPage());
             break;
-          case "setTenantDiscovered":
-            JsonArray setTenantDiscoveredValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setTenantDiscoveredValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+          case "setDcmDiscovered":
+            JsonArray setDcmDiscoveredValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            setDcmDiscoveredValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1323,7 +1323,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
                 });
               }));
             });
-            Optional.ofNullable(o.getTenantDiscovered()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setTenantDiscoveredValues.contains(oVal.toString())).forEach(val -> {
+            Optional.ofNullable(o.getDcmDiscovered()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setDcmDiscoveredValues.contains(oVal.toString())).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1343,9 +1343,9 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "addAllTenantDiscovered":
-            JsonArray addAllTenantDiscoveredValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllTenantDiscoveredValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+          case "addAllDcmDiscovered":
+            JsonArray addAllDcmDiscoveredValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            addAllDcmDiscoveredValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1365,7 +1365,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "addTenantDiscovered":
+          case "addDcmDiscovered":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
@@ -1386,7 +1386,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "removeTenantDiscovered":
+          case "removeDcmDiscovered":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
@@ -1410,9 +1410,9 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               num++;
               bParams.add(o2.sqlDownload());
             break;
-          case "setTenantRealized":
-            JsonArray setTenantRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            setTenantRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+          case "setDcmRealized":
+            JsonArray setDcmRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            setDcmRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1431,7 +1431,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
                 });
               }));
             });
-            Optional.ofNullable(o.getTenantRealized()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setTenantRealizedValues.contains(oVal.toString())).forEach(val -> {
+            Optional.ofNullable(o.getDcmRealized()).orElse(Arrays.asList()).stream().filter(oVal -> oVal != null && !setDcmRealizedValues.contains(oVal.toString())).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1451,9 +1451,9 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "addAllTenantRealized":
-            JsonArray addAllTenantRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
-            addAllTenantRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
+          case "addAllDcmRealized":
+            JsonArray addAllDcmRealizedValues = Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray());
+            addAllDcmRealizedValues.stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
                   String solrId2 = Optional.ofNullable(o3).map(o4 -> o4.getSolrId()).filter(solrId3 -> !solrIds.contains(solrId3)).orElse(null);
@@ -1473,7 +1473,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "addTenantRealized":
+          case "addDcmRealized":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
@@ -1494,7 +1494,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case "removeTenantRealized":
+          case "removeDcmRealized":
             Optional.ofNullable(jsonObject.getString(entityVar)).ifPresent(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
@@ -2101,14 +2101,14 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
             num++;
             bParams.add(o2.sqlObjectTitle());
             break;
-          case TenantIntent.VAR_tenantDescription:
-            o2.setTenantDescription(jsonObject.getString(entityVar));
+          case TenantIntent.VAR_description:
+            o2.setDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantIntent.VAR_tenantDescription + "=$" + num);
+            bSql.append(TenantIntent.VAR_description + "=$" + num);
             num++;
-            bParams.add(o2.sqlTenantDescription());
+            bParams.add(o2.sqlDescription());
             break;
           case TenantIntent.VAR_displayPage:
             o2.setDisplayPage(jsonObject.getString(entityVar));
@@ -2167,7 +2167,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
             num++;
             bParams.add(o2.sqlUserPage());
             break;
-          case TenantIntent.VAR_tenantDiscovered:
+          case TenantIntent.VAR_dcmDiscovered:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
@@ -2197,7 +2197,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
             num++;
             bParams.add(o2.sqlDownload());
             break;
-          case TenantIntent.VAR_tenantRealized:
+          case TenantIntent.VAR_dcmRealized:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
@@ -2672,7 +2672,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case TenantIntent.VAR_tenantDiscovered:
+          case TenantIntent.VAR_dcmDiscovered:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
@@ -2693,7 +2693,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case TenantIntent.VAR_tenantRealized:
+          case TenantIntent.VAR_dcmRealized:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
@@ -4155,7 +4155,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case TenantIntent.VAR_tenantDiscovered:
+          case TenantIntent.VAR_dcmDiscovered:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantDiscovered.varIndexedTenantDiscovered(TenantDiscovered.VAR_tenantResource), TenantDiscovered.class, val).onSuccess(o3 -> {
@@ -4176,7 +4176,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
               }));
             });
             break;
-          case TenantIntent.VAR_tenantRealized:
+          case TenantIntent.VAR_dcmRealized:
             Optional.ofNullable(jsonObject.getJsonArray(entityVar)).orElse(new JsonArray()).stream().map(oVal -> oVal.toString()).forEach(val -> {
               futures2.add(Future.future(promise2 -> {
                 searchModel(siteRequest).query(TenantRealized.varIndexedTenantRealized(TenantRealized.VAR_tenantResource), TenantRealized.class, val).onSuccess(o3 -> {
@@ -4674,10 +4674,10 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
         String objectTitle = Optional.ofNullable(Optional.ofNullable(new_objectTitle).orElse(old_objectTitle)).orElse(null);
         // json.put(TenantIntent.varJson(TenantIntent.VAR_objectTitle, patch), objectTitle);
 
-        String old_tenantDescription = TenantIntent.staticJsonTenantDescription(o.getTenantDescription());
-        String new_tenantDescription = json.getString(TenantIntent.varJson(TenantIntent.VAR_tenantDescription, patch));
-        String tenantDescription = Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
-        json.put(TenantIntent.varJson(TenantIntent.VAR_tenantDescription, patch), tenantDescription);
+        String old_description = TenantIntent.staticJsonDescription(o.getDescription());
+        String new_description = json.getString(TenantIntent.varJson(TenantIntent.VAR_description, patch));
+        String description = Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+        json.put(TenantIntent.varJson(TenantIntent.VAR_description, patch), description);
 
         String old_displayPage = TenantIntent.staticJsonDisplayPage(o.getDisplayPage());
         String new_displayPage = json.getString(TenantIntent.varJson(TenantIntent.VAR_displayPage, patch));
@@ -4704,20 +4704,20 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
         String userPage = Optional.ofNullable(Optional.ofNullable(new_userPage).orElse(old_userPage)).orElse(null);
         // json.put(TenantIntent.varJson(TenantIntent.VAR_userPage, patch), userPage);
 
-        JsonArray old_tenantDiscovered = TenantIntent.staticJsonTenantDiscovered(o.getTenantDiscovered());
-        JsonArray new_tenantDiscovered = json.getJsonArray(TenantIntent.varJson(TenantIntent.VAR_tenantDiscovered, patch));
-        JsonArray tenantDiscovered = Optional.ofNullable(Optional.ofNullable(new_tenantDiscovered).orElse(old_tenantDiscovered)).orElse(null);
-        // json.put(TenantIntent.varJson(TenantIntent.VAR_tenantDiscovered, patch), tenantDiscovered);
+        JsonArray old_dcmDiscovered = TenantIntent.staticJsonDcmDiscovered(o.getDcmDiscovered());
+        JsonArray new_dcmDiscovered = json.getJsonArray(TenantIntent.varJson(TenantIntent.VAR_dcmDiscovered, patch));
+        JsonArray dcmDiscovered = Optional.ofNullable(Optional.ofNullable(new_dcmDiscovered).orElse(old_dcmDiscovered)).orElse(null);
+        // json.put(TenantIntent.varJson(TenantIntent.VAR_dcmDiscovered, patch), dcmDiscovered);
 
         String old_download = TenantIntent.staticJsonDownload(o.getDownload());
         String new_download = json.getString(TenantIntent.varJson(TenantIntent.VAR_download, patch));
         String download = Optional.ofNullable(Optional.ofNullable(new_download).orElse(old_download)).orElse(null);
         // json.put(TenantIntent.varJson(TenantIntent.VAR_download, patch), download);
 
-        JsonArray old_tenantRealized = TenantIntent.staticJsonTenantRealized(o.getTenantRealized());
-        JsonArray new_tenantRealized = json.getJsonArray(TenantIntent.varJson(TenantIntent.VAR_tenantRealized, patch));
-        JsonArray tenantRealized = Optional.ofNullable(Optional.ofNullable(new_tenantRealized).orElse(old_tenantRealized)).orElse(null);
-        // json.put(TenantIntent.varJson(TenantIntent.VAR_tenantRealized, patch), tenantRealized);
+        JsonArray old_dcmRealized = TenantIntent.staticJsonDcmRealized(o.getDcmRealized());
+        JsonArray new_dcmRealized = json.getJsonArray(TenantIntent.varJson(TenantIntent.VAR_dcmRealized, patch));
+        JsonArray dcmRealized = Optional.ofNullable(Optional.ofNullable(new_dcmRealized).orElse(old_dcmRealized)).orElse(null);
+        // json.put(TenantIntent.varJson(TenantIntent.VAR_dcmRealized, patch), dcmRealized);
 
         promise.complete(json);
       }
@@ -4734,7 +4734,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, tenantResource, createdByEmail, createdByUserId, createdByFullName, sessionId, createdVia, userKey, intentState, requestedState, realizedState, objectTitle, tenantDescription, displayPage, editPage, locked, userPage, download FROM TenantIntent WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, tenantResource, createdByEmail, createdByUserId, createdByFullName, sessionId, createdVia, userKey, intentState, requestedState, realizedState, objectTitle, description, displayPage, editPage, locked, userPage, download FROM TenantIntent WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -5065,7 +5065,7 @@ public class TenantIntentEnUSGenApiServiceImpl extends BaseApiServiceImpl implem
       o.persistForClass(TenantIntent.VAR_requestedState, TenantIntent.staticSetRequestedState(siteRequest2, (String)result.get(TenantIntent.VAR_requestedState)));
       o.persistForClass(TenantIntent.VAR_realizedState, TenantIntent.staticSetRealizedState(siteRequest2, (String)result.get(TenantIntent.VAR_realizedState)));
       o.persistForClass(TenantIntent.VAR_objectTitle, TenantIntent.staticSetObjectTitle(siteRequest2, (String)result.get(TenantIntent.VAR_objectTitle)));
-      o.persistForClass(TenantIntent.VAR_tenantDescription, TenantIntent.staticSetTenantDescription(siteRequest2, (String)result.get(TenantIntent.VAR_tenantDescription)));
+      o.persistForClass(TenantIntent.VAR_description, TenantIntent.staticSetDescription(siteRequest2, (String)result.get(TenantIntent.VAR_description)));
       o.persistForClass(TenantIntent.VAR_displayPage, TenantIntent.staticSetDisplayPage(siteRequest2, (String)result.get(TenantIntent.VAR_displayPage)));
       o.persistForClass(TenantIntent.VAR_editPage, TenantIntent.staticSetEditPage(siteRequest2, (String)result.get(TenantIntent.VAR_editPage)));
       o.persistForClass(TenantIntent.VAR_locked, TenantIntent.staticSetLocked(siteRequest2, (String)result.get(TenantIntent.VAR_locked)));

@@ -209,9 +209,9 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * HtmColumn: 3
    * VarDescription: true
    * Multiline: true
-   * StringFormat: Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
+   * StringFormat: Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
    **/
-  protected void _tenantDescription(Wrap<String> w) {
+  protected void _description(Wrap<String> w) {
   }
 
   /**
@@ -251,7 +251,7 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * HtmRow: 22
    * HtmCell: 0
    **/
-  protected void _tenantDiscovered(List<String> l) {
+  protected void _dcmDiscovered(List<String> l) {
   }
 
   /**
@@ -264,6 +264,6 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * HtmRow: 23
    * HtmCell: 0
    **/
-  protected void _tenantRealized(List<String> l) {
+  protected void _dcmRealized(List<String> l) {
   }
 }

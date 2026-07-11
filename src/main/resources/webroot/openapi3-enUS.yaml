@@ -22609,7 +22609,7 @@ components:
                     type: string
                   discoveredState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
     PATCHTenantDiscoveredRequest:
       allOf:
@@ -22761,12 +22761,12 @@ components:
               type: string
             removeAllDiscoveredState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
     PATCHTenantDiscoveredResponse:
       allOf:
@@ -22918,12 +22918,12 @@ components:
               type: string
             removeAllDiscoveredState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
     POSTTenantDiscoveredRequest:
       allOf:
@@ -22969,7 +22969,7 @@ components:
               type: string
             discoveredState:
               type: string
-            tenantDescription:
+            description:
               type: string
     POSTTenantDiscoveredResponse:
       allOf:
@@ -23015,7 +23015,7 @@ components:
               type: string
             discoveredState:
               type: string
-            tenantDescription:
+            description:
               type: string
     DELETEFilterTenantDiscoveredResponse:
       allOf:
@@ -23061,7 +23061,7 @@ components:
               type: string
             discoveredState:
               type: string
-            tenantDescription:
+            description:
               type: string
     PUTImportTenantDiscoveredRequest:
       allOf:
@@ -23112,7 +23112,7 @@ components:
                     type: string
                   discoveredState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
     PUTImportTenantDiscoveredResponse:
       allOf:
@@ -23158,7 +23158,7 @@ components:
                     type: string
                   discoveredState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
     GETTenantDiscoveredResponse:
       allOf:
@@ -23204,7 +23204,7 @@ components:
               type: string
             discoveredState:
               type: string
-            tenantDescription:
+            description:
               type: string
     DELETETenantDiscoveredResponse:
       allOf:
@@ -23250,7 +23250,7 @@ components:
               type: string
             discoveredState:
               type: string
-            tenantDescription:
+            description:
               type: string
     EditPageTenantDiscoveredResponse:
       allOf:
@@ -23304,7 +23304,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   requested:
                     type: array
@@ -23312,11 +23312,11 @@ components:
                       type: string
                   locked:
                     type: boolean
-                  tenantDiscovered:
+                  dcmDiscovered:
                     type: array
                     items:
                       type: string
-                  tenantRealized:
+                  dcmRealized:
                     type: array
                     items:
                       type: string
@@ -23428,12 +23428,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setRequested:
               type: array
@@ -23459,37 +23459,37 @@ components:
               type: boolean
             removeAllLocked:
               type: boolean
-            setTenantDiscovered:
+            setDcmDiscovered:
               type: array
               nullable: true
               items:
                 type: string
-            removeTenantDiscovered:
+            removeDcmDiscovered:
               type: string
-            removeAllTenantDiscovered:
+            removeAllDcmDiscovered:
               type: array
               items:
                 type: string
-            addTenantDiscovered:
+            addDcmDiscovered:
               type: string
-            addAllTenantDiscovered:
+            addAllDcmDiscovered:
               type: array
               items:
                 type: string
-            setTenantRealized:
+            setDcmRealized:
               type: array
               nullable: true
               items:
                 type: string
-            removeTenantRealized:
+            removeDcmRealized:
               type: string
-            removeAllTenantRealized:
+            removeAllDcmRealized:
               type: array
               items:
                 type: string
-            addTenantRealized:
+            addDcmRealized:
               type: string
-            addAllTenantRealized:
+            addAllDcmRealized:
               type: array
               items:
                 type: string
@@ -23601,12 +23601,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setRequested:
               type: array
@@ -23632,37 +23632,37 @@ components:
               type: boolean
             removeAllLocked:
               type: boolean
-            setTenantDiscovered:
+            setDcmDiscovered:
               type: array
               nullable: true
               items:
                 type: string
-            removeTenantDiscovered:
+            removeDcmDiscovered:
               type: string
-            removeAllTenantDiscovered:
+            removeAllDcmDiscovered:
               type: array
               items:
                 type: string
-            addTenantDiscovered:
+            addDcmDiscovered:
               type: string
-            addAllTenantDiscovered:
+            addAllDcmDiscovered:
               type: array
               items:
                 type: string
-            setTenantRealized:
+            setDcmRealized:
               type: array
               nullable: true
               items:
                 type: string
-            removeTenantRealized:
+            removeDcmRealized:
               type: string
-            removeAllTenantRealized:
+            removeAllDcmRealized:
               type: array
               items:
                 type: string
-            addTenantRealized:
+            addDcmRealized:
               type: string
-            addAllTenantRealized:
+            addAllDcmRealized:
               type: array
               items:
                 type: string
@@ -23698,7 +23698,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             requested:
               type: array
@@ -23706,11 +23706,11 @@ components:
                 type: string
             locked:
               type: boolean
-            tenantDiscovered:
+            dcmDiscovered:
               type: array
               items:
                 type: string
-            tenantRealized:
+            dcmRealized:
               type: array
               items:
                 type: string
@@ -23746,7 +23746,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             requested:
               type: array
@@ -23754,11 +23754,11 @@ components:
                 type: string
             locked:
               type: boolean
-            tenantDiscovered:
+            dcmDiscovered:
               type: array
               items:
                 type: string
-            tenantRealized:
+            dcmRealized:
               type: array
               items:
                 type: string
@@ -23794,7 +23794,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             requested:
               type: array
@@ -23802,11 +23802,11 @@ components:
                 type: string
             locked:
               type: boolean
-            tenantDiscovered:
+            dcmDiscovered:
               type: array
               items:
                 type: string
-            tenantRealized:
+            dcmRealized:
               type: array
               items:
                 type: string
@@ -23847,7 +23847,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   requested:
                     type: array
@@ -23855,11 +23855,11 @@ components:
                       type: string
                   locked:
                     type: boolean
-                  tenantDiscovered:
+                  dcmDiscovered:
                     type: array
                     items:
                       type: string
-                  tenantRealized:
+                  dcmRealized:
                     type: array
                     items:
                       type: string
@@ -23895,7 +23895,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   requested:
                     type: array
@@ -23903,11 +23903,11 @@ components:
                       type: string
                   locked:
                     type: boolean
-                  tenantDiscovered:
+                  dcmDiscovered:
                     type: array
                     items:
                       type: string
-                  tenantRealized:
+                  dcmRealized:
                     type: array
                     items:
                       type: string
@@ -23943,7 +23943,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             requested:
               type: array
@@ -23951,11 +23951,11 @@ components:
                 type: string
             locked:
               type: boolean
-            tenantDiscovered:
+            dcmDiscovered:
               type: array
               items:
                 type: string
-            tenantRealized:
+            dcmRealized:
               type: array
               items:
                 type: string
@@ -23991,7 +23991,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             requested:
               type: array
@@ -23999,11 +23999,11 @@ components:
                 type: string
             locked:
               type: boolean
-            tenantDiscovered:
+            dcmDiscovered:
               type: array
               items:
                 type: string
-            tenantRealized:
+            dcmRealized:
               type: array
               items:
                 type: string
@@ -24073,7 +24073,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   locked:
                     type: boolean
@@ -24234,12 +24234,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setLocked:
               type: boolean
@@ -24405,12 +24405,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setLocked:
               type: boolean
@@ -24465,7 +24465,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             locked:
               type: boolean
@@ -24515,7 +24515,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             locked:
               type: boolean
@@ -24565,7 +24565,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             locked:
               type: boolean
@@ -24620,7 +24620,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   locked:
                     type: boolean
@@ -24670,7 +24670,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   locked:
                     type: boolean
@@ -24720,7 +24720,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             locked:
               type: boolean
@@ -24770,7 +24770,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             locked:
               type: boolean
@@ -24836,7 +24836,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   tenantDiscovered:
                     type: array
@@ -24994,12 +24994,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setTenantDiscovered:
               type: array
@@ -25188,12 +25188,12 @@ components:
               type: string
             removeAllRealizedState:
               type: string
-            setTenantDescription:
+            setDescription:
               type: string
               nullable: true
-            removeTenantDescription:
+            removeDescription:
               type: string
-            removeAllTenantDescription:
+            removeAllDescription:
               type: string
             setTenantDiscovered:
               type: array
@@ -25278,7 +25278,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             tenantDiscovered:
               type: array
@@ -25332,7 +25332,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             tenantDiscovered:
               type: array
@@ -25386,7 +25386,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             tenantDiscovered:
               type: array
@@ -25445,7 +25445,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   tenantDiscovered:
                     type: array
@@ -25499,7 +25499,7 @@ components:
                     type: string
                   realizedState:
                     type: string
-                  tenantDescription:
+                  description:
                     type: string
                   tenantDiscovered:
                     type: array
@@ -25553,7 +25553,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             tenantDiscovered:
               type: array
@@ -25607,7 +25607,7 @@ components:
               type: string
             realizedState:
               type: string
-            tenantDescription:
+            description:
               type: string
             tenantDiscovered:
               type: array

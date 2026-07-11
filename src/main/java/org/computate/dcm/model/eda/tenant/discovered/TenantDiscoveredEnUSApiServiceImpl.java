@@ -29,10 +29,6 @@ public class TenantDiscoveredEnUSApiServiceImpl extends TenantDiscoveredEnUSGenA
       } else {
         JsonObject json = o.getSiteRequest_().getJsonObject();
 
-        // String old_tenantResource = TenantDiscovered.staticJsonTenantResource(o.getTenantResource());
-        // String new_tenantResource = json.getString(TenantRequested.varJson(TenantRequested.VAR_tenantResource, patch));
-        // String tenantResource = Optional.ofNullable(new_tenantResource).orElse(old_tenantResource);
-
         String old_requestedId = TenantDiscovered.staticJsonRequestedId(o.getRequestedId());
         String new_requestedId = json.getString(TenantRequested.varJson(TenantRequested.VAR_requestedId, patch));
         String requestedId = Optional.ofNullable(Optional.ofNullable(new_requestedId).orElse(old_requestedId)).orElse(null);

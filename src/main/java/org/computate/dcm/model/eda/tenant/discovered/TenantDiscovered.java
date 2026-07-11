@@ -286,9 +286,9 @@ public class TenantDiscovered extends TenantDiscoveredGen<Tenant> {
    * HtmColumn: 3
    * VarDescription: true
    * Multiline: true
-   * StringFormat: Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nDiscovered state: %s", intentState, requestedState, discoveredState))
+   * StringFormat: Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nDiscovered state: %s", intentState, requestedState, discoveredState))
    **/
-  protected void _tenantDescription(Wrap<String> w) {
+  protected void _description(Wrap<String> w) {
     w.o(String.format("Intent state: %s\nRequested state: %s\nDiscovered state: %s", intentState, requestedState, discoveredState));
   }
 }

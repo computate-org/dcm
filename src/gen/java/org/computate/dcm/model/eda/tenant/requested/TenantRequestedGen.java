@@ -1143,66 +1143,66 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     return realizedState;
   }
 
-	///////////////////////
-  // tenantDescription //
-	///////////////////////
+	/////////////////
+  // description //
+	/////////////////
 
 
   /**
-   *  The entity tenantDescription
+   *  The entity description
    *	 is defined as null before being initialized. 
    */
   @JsonProperty
   @JsonInclude(Include.NON_NULL)
-  protected String tenantDescription;
+  protected String description;
 
   /**
-   * <br> The entity tenantDescription
+   * <br> The entity description
    *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.requested.TenantRequested&fq=entiteVar_enUS_indexed_string:tenantDescription">Find the entity tenantDescription in Solr</a>
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.tenant.requested.TenantRequested&fq=entiteVar_enUS_indexed_string:description">Find the entity description in Solr</a>
    * <br>
    * @param w is for wrapping a value to assign to this entity during initialization. 
    **/
-  protected abstract void _tenantDescription(Wrap<String> w);
+  protected abstract void _description(Wrap<String> w);
 
-  public String getTenantDescription() {
-    return tenantDescription;
+  public String getDescription() {
+    return description;
   }
-  public void setTenantDescription(String o) {
-    this.tenantDescription = TenantRequested.staticSetTenantDescription(siteRequest_, o);
+  public void setDescription(String o) {
+    this.description = TenantRequested.staticSetDescription(siteRequest_, o);
   }
-  public static String staticSetTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSetDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
-  protected TenantRequested tenantDescriptionInit() {
-    Wrap<String> tenantDescriptionWrap = new Wrap<String>().var("tenantDescription");
-    if(tenantDescription == null) {
-      _tenantDescription(tenantDescriptionWrap);
-      Optional.ofNullable(tenantDescriptionWrap.getO()).ifPresent(o -> {
-        setTenantDescription(o);
+  protected TenantRequested descriptionInit() {
+    Wrap<String> descriptionWrap = new Wrap<String>().var("description");
+    if(description == null) {
+      _description(descriptionWrap);
+      Optional.ofNullable(descriptionWrap.getO()).ifPresent(o -> {
+        setDescription(o);
       });
     }
     return (TenantRequested)this;
   }
 
-  public static String staticSearchTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchDescription(SiteRequest siteRequest_, String o) {
     return o;
   }
 
-  public static String staticSearchStrTenantDescription(SiteRequest siteRequest_, String o) {
+  public static String staticSearchStrDescription(SiteRequest siteRequest_, String o) {
     return o == null ? null : o.toString();
   }
 
-  public static String staticSearchFqTenantDescription(SiteRequest siteRequest_, String o) {
-    return TenantRequested.staticSearchTenantDescription(siteRequest_, TenantRequested.staticSetTenantDescription(siteRequest_, o)).toString();
+  public static String staticSearchFqDescription(SiteRequest siteRequest_, String o) {
+    return TenantRequested.staticSearchDescription(siteRequest_, TenantRequested.staticSetDescription(siteRequest_, o)).toString();
   }
 
-  public String sqlTenantDescription() {
-    return tenantDescription;
+  public String sqlDescription() {
+    return description;
   }
 
-  public static String staticJsonTenantDescription(String tenantDescription) {
-    return tenantDescription;
+  public static String staticJsonDescription(String description) {
+    return description;
   }
 
 	//////////////////////
@@ -1490,7 +1490,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         intentStateInit();
         requestedStateInit();
         realizedStateInit();
-        tenantDescriptionInit();
+        descriptionInit();
         tenantDiscoveredInit();
         lockedInit();
         tenantRealizedInit();
@@ -1575,8 +1575,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return oTenantRequested.requestedState;
       case "realizedState":
         return oTenantRequested.realizedState;
-      case "tenantDescription":
-        return oTenantRequested.tenantDescription;
+      case "description":
+        return oTenantRequested.description;
       case "tenantDiscovered":
         return oTenantRequested.tenantDiscovered;
       case "locked":
@@ -1671,8 +1671,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSetRequestedState(siteRequest_, v);
     case "realizedState":
       return TenantRequested.staticSetRealizedState(siteRequest_, v);
-    case "tenantDescription":
-      return TenantRequested.staticSetTenantDescription(siteRequest_, v);
+    case "description":
+      return TenantRequested.staticSetDescription(siteRequest_, v);
     case "tenantDiscovered":
       return TenantRequested.staticSetTenantDiscovered(siteRequest_, v);
     case "locked":
@@ -1751,8 +1751,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantRequested.staticSearchRealizedState(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantRequested.staticSearchTenantDescription(siteRequest_, (String)o);
+    case "description":
+      return TenantRequested.staticSearchDescription(siteRequest_, (String)o);
     case "tenantDiscovered":
       return TenantRequested.staticSearchTenantDiscovered(siteRequest_, (String)o);
     case "locked":
@@ -1801,8 +1801,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchStrRequestedState(siteRequest_, (String)o);
     case "realizedState":
       return TenantRequested.staticSearchStrRealizedState(siteRequest_, (String)o);
-    case "tenantDescription":
-      return TenantRequested.staticSearchStrTenantDescription(siteRequest_, (String)o);
+    case "description":
+      return TenantRequested.staticSearchStrDescription(siteRequest_, (String)o);
     case "tenantDiscovered":
       return TenantRequested.staticSearchStrTenantDiscovered(siteRequest_, (String)o);
     case "locked":
@@ -1851,8 +1851,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return TenantRequested.staticSearchFqRequestedState(siteRequest_, o);
     case "realizedState":
       return TenantRequested.staticSearchFqRealizedState(siteRequest_, o);
-    case "tenantDescription":
-      return TenantRequested.staticSearchFqTenantDescription(siteRequest_, o);
+    case "description":
+      return TenantRequested.staticSearchFqDescription(siteRequest_, o);
     case "tenantDiscovered":
       return TenantRequested.staticSearchFqTenantDiscovered(siteRequest_, o);
     case "locked":
@@ -1965,11 +1965,11 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         }
         saves.add("realizedState");
         return val;
-      } else if("tenantdescription".equals(varLower)) {
+      } else if("description".equals(varLower)) {
         if(val instanceof String) {
-          setTenantDescription((String)val);
+          setDescription((String)val);
         }
-        saves.add("tenantDescription");
+        saves.add("description");
         return val;
       } else if("locked".equals(varLower)) {
         if(val instanceof Boolean) {
@@ -2076,10 +2076,10 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
           oTenantRequested.setRealizedState(realizedState);
       }
 
-      if(saves.contains("tenantDescription")) {
-        String tenantDescription = (String)doc.get("tenantDescription_docvalues_string");
-        if(tenantDescription != null)
-          oTenantRequested.setTenantDescription(tenantDescription);
+      if(saves.contains("description")) {
+        String description = (String)doc.get("description_docvalues_string");
+        if(description != null)
+          oTenantRequested.setDescription(description);
       }
 
       List<String> tenantDiscovered = (List<String>)doc.get("tenantDiscovered_docvalues_strings");
@@ -2147,8 +2147,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     if(realizedState != null) {
       doc.put("realizedState_docvalues_string", realizedState);
     }
-    if(tenantDescription != null) {
-      doc.put("tenantDescription_docvalues_string", tenantDescription);
+    if(description != null) {
+      doc.put("description_docvalues_string", description);
     }
     if(tenantDiscovered != null) {
       JsonArray l = new JsonArray();
@@ -2201,8 +2201,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "description":
+        return "description_docvalues_string";
       case "tenantDiscovered":
         return "tenantDiscovered_docvalues_strings";
       case "locked":
@@ -2244,8 +2244,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "requestedState_docvalues_string";
       case "realizedState":
         return "realizedState_docvalues_string";
-      case "tenantDescription":
-        return "tenantDescription_docvalues_string";
+      case "description":
+        return "description_docvalues_string";
       case "tenantDiscovered":
         return "tenantDiscovered_docvalues_strings";
       case "locked":
@@ -2287,8 +2287,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         return "requestedState";
       case "realizedState_docvalues_string":
         return "realizedState";
-      case "tenantDescription_docvalues_string":
-        return "tenantDescription";
+      case "description_docvalues_string":
+        return "description";
       case "tenantDiscovered_docvalues_strings":
         return "tenantDiscovered";
       case "locked_docvalues_boolean":
@@ -2341,7 +2341,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     oTenantRequested.setIntentState(Optional.ofNullable(doc.get("intentState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setRequestedState(Optional.ofNullable(doc.get("requestedState_docvalues_string")).map(v -> v.toString()).orElse(null));
     oTenantRequested.setRealizedState(Optional.ofNullable(doc.get("realizedState_docvalues_string")).map(v -> v.toString()).orElse(null));
-    oTenantRequested.setTenantDescription(Optional.ofNullable(doc.get("tenantDescription_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oTenantRequested.setDescription(Optional.ofNullable(doc.get("description_docvalues_string")).map(v -> v.toString()).orElse(null));
     Optional.ofNullable((List<?>)doc.get("tenantDiscovered_docvalues_strings")).orElse(Arrays.asList()).stream().filter(v -> v != null).forEach(v -> {
       oTenantRequested.addTenantDiscovered(TenantRequested.staticSetTenantDiscovered(siteRequest, v.toString()));
     });
@@ -2390,8 +2390,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
         apiRequest.addVars("requestedState");
       if(!Objects.equals(realizedState, original.getRealizedState()))
         apiRequest.addVars("realizedState");
-      if(!Objects.equals(tenantDescription, original.getTenantDescription()))
-        apiRequest.addVars("tenantDescription");
+      if(!Objects.equals(description, original.getDescription()))
+        apiRequest.addVars("description");
       if(!Objects.equals(tenantDiscovered, original.getTenantDiscovered()))
         apiRequest.addVars("tenantDiscovered");
       if(!Objects.equals(locked, original.getLocked()))
@@ -2423,7 +2423,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     sb.append(Optional.ofNullable(intentState).map(v -> "intentState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(requestedState).map(v -> "requestedState: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(realizedState).map(v -> "realizedState: \"" + v + "\"\n" ).orElse(""));
-    sb.append(Optional.ofNullable(tenantDescription).map(v -> "tenantDescription: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(description).map(v -> "description: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(tenantDiscovered).map(v -> "tenantDiscovered: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(locked).map(v -> "locked: " + v + "\n").orElse(""));
     sb.append(Optional.ofNullable(tenantRealized).map(v -> "tenantRealized: " + v + "\n").orElse(""));
@@ -2465,8 +2465,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static final String SET_requestedState = "setRequestedState";
   public static final String VAR_realizedState = "realizedState";
   public static final String SET_realizedState = "setRealizedState";
-  public static final String VAR_tenantDescription = "tenantDescription";
-  public static final String SET_tenantDescription = "setTenantDescription";
+  public static final String VAR_description = "description";
+  public static final String SET_description = "setDescription";
   public static final String VAR_tenantDiscovered = "tenantDiscovered";
   public static final String SET_tenantDiscovered = "setTenantDiscovered";
   public static final String VAR_locked = "locked";
@@ -2492,7 +2492,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
     vars.add(VAR_requestedNumber);
     vars.add(VAR_requestedId);
     vars.add(VAR_requestedName);
-    vars.add(VAR_tenantDescription);
+    vars.add(VAR_description);
     vars.add(VAR_locked);
     Tenant.varsFqTenant(vars);
     return vars;
@@ -2521,7 +2521,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
   public static final String DISPLAY_NAME_intentState = "intent state";
   public static final String DISPLAY_NAME_requestedState = "requested state";
   public static final String DISPLAY_NAME_realizedState = "realized state";
-  public static final String DISPLAY_NAME_tenantDescription = "description";
+  public static final String DISPLAY_NAME_description = "description";
   public static final String DISPLAY_NAME_tenantDiscovered = "tenant discovered";
   public static final String DISPLAY_NAME_locked = "locked";
   public static final String DISPLAY_NAME_tenantRealized = "tenant realized";
@@ -2548,7 +2548,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
 
   @Override
   public String descriptionForClass() {
-    return tenantDescription;
+    return description;
   }
 
   @Override
@@ -2589,8 +2589,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return patch ? SET_requestedState : VAR_requestedState;
     case VAR_realizedState:
       return patch ? SET_realizedState : VAR_realizedState;
-    case VAR_tenantDescription:
-      return patch ? SET_tenantDescription : VAR_tenantDescription;
+    case VAR_description:
+      return patch ? SET_description : VAR_description;
     case VAR_tenantDiscovered:
       return patch ? SET_tenantDiscovered : VAR_tenantDiscovered;
     case VAR_locked:
@@ -2635,8 +2635,8 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return DISPLAY_NAME_requestedState;
     case VAR_realizedState:
       return DISPLAY_NAME_realizedState;
-    case VAR_tenantDescription:
-      return DISPLAY_NAME_tenantDescription;
+    case VAR_description:
+      return DISPLAY_NAME_description;
     case VAR_tenantDiscovered:
       return DISPLAY_NAME_tenantDiscovered;
     case VAR_locked:
@@ -2680,7 +2680,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return "Represents a complete, validated, provider-ready declaration of desired state. ";
     case VAR_realizedState:
       return "Must be a complete representation of the provisioned resource in DCM unified format \u2014 not a status code, but a full state description. ";
-    case VAR_tenantDescription:
+    case VAR_description:
       return "A description of this tenant";
     case VAR_tenantDiscovered:
       return "Each time the tenant was discovered for this tenant intent. ";
@@ -2723,7 +2723,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return "String";
     case VAR_realizedState:
       return "String";
-    case VAR_tenantDescription:
+    case VAR_description:
       return "String";
     case VAR_tenantDiscovered:
       return "List";
@@ -2742,7 +2742,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return 0;
     case VAR_requestedName:
       return 1;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 3;
       default:
         return Tenant.htmColumnTenant(var);
@@ -2771,7 +2771,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return 12;
     case VAR_realizedState:
       return 12;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 20;
     case VAR_tenantDiscovered:
       return 21;
@@ -2806,7 +2806,7 @@ public abstract class TenantRequestedGen<DEV> extends Tenant {
       return 0;
     case VAR_realizedState:
       return 0;
-    case VAR_tenantDescription:
+    case VAR_description:
       return 4;
     case VAR_tenantDiscovered:
       return 0;

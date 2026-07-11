@@ -1345,13 +1345,13 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
               num++;
               bParams.add(o2.sqlRealizedState());
             break;
-          case "setTenantDescription":
-              o2.setTenantDescription(jsonObject.getString(entityVar));
+          case "setDescription":
+              o2.setDescription(jsonObject.getString(entityVar));
               if(bParams.size() > 0)
                 bSql.append(", ");
-              bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
+              bSql.append(TenantRealized.VAR_description + "=$" + num);
               num++;
-              bParams.add(o2.sqlTenantDescription());
+              bParams.add(o2.sqlDescription());
             break;
           case "setLocked":
               o2.setLocked(jsonObject.getString(entityVar));
@@ -2090,14 +2090,14 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
             num++;
             bParams.add(o2.sqlRealizedState());
             break;
-          case TenantRealized.VAR_tenantDescription:
-            o2.setTenantDescription(jsonObject.getString(entityVar));
+          case TenantRealized.VAR_description:
+            o2.setDescription(jsonObject.getString(entityVar));
             if(bParams.size() > 0) {
               bSql.append(", ");
             }
-            bSql.append(TenantRealized.VAR_tenantDescription + "=$" + num);
+            bSql.append(TenantRealized.VAR_description + "=$" + num);
             num++;
-            bParams.add(o2.sqlTenantDescription());
+            bParams.add(o2.sqlDescription());
             break;
           case TenantRealized.VAR_locked:
             o2.setLocked(jsonObject.getString(entityVar));
@@ -4670,10 +4670,10 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
                     String realizedState = Optional.ofNullable(new_realizedState).orElse(oTenantRequested.getRealizedState());
                     json.put(TenantRealized.varJson(TenantRealized.VAR_realizedState, patch), realizedState);
 
-                    String old_tenantDescription = TenantRealized.staticJsonTenantDescription(o.getTenantDescription());
-                    String new_tenantDescription = json.getString(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch));
-                    String tenantDescription = Optional.ofNullable(new_tenantDescription).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
-                    json.put(TenantRealized.varJson(TenantRealized.VAR_tenantDescription, patch), tenantDescription);
+                    String old_description = TenantRealized.staticJsonDescription(o.getDescription());
+                    String new_description = json.getString(TenantRealized.varJson(TenantRealized.VAR_description, patch));
+                    String description = Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState));
+                    json.put(TenantRealized.varJson(TenantRealized.VAR_description, patch), description);
 
                     Boolean old_locked = TenantRealized.staticJsonLocked(o.getLocked());
                     Boolean new_locked = json.getBoolean(TenantRealized.varJson(TenantRealized.VAR_locked, patch));
@@ -4711,7 +4711,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       SiteRequest siteRequest = o.getSiteRequest_();
       SqlConnection sqlConnection = siteRequest.getSqlConnection();
       Long pk = o.getPk();
-      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, requestedId, tenantResource, realizedNumber, realizedByEmail, sessionId, realizedByUserId, userKey, realizedByFullName, realizedId, realizedName, objectTitle, createdByEmail, displayPage, createdByUserId, editPage, createdByFullName, userPage, createdVia, download, intentState, requestedState, realizedState, tenantDescription, locked FROM TenantRealized WHERE pk=$1")
+      sqlConnection.preparedQuery("SELECT hubId, clusterName, created, aapOrganizationId, tenantName, tenantId, archived, requestedId, tenantResource, realizedNumber, realizedByEmail, sessionId, realizedByUserId, userKey, realizedByFullName, realizedId, realizedName, objectTitle, createdByEmail, displayPage, createdByUserId, editPage, createdByFullName, userPage, createdVia, download, intentState, requestedState, realizedState, description, locked FROM TenantRealized WHERE pk=$1")
           .collecting(Collectors.toList())
           .execute(Tuple.of(pk)
           ).onSuccess(result -> {
@@ -5043,7 +5043,7 @@ public class TenantRealizedEnUSGenApiServiceImpl extends BaseApiServiceImpl impl
       o.persistForClass(TenantRealized.VAR_intentState, TenantRealized.staticSetIntentState(siteRequest2, (String)result.get(TenantRealized.VAR_intentState)));
       o.persistForClass(TenantRealized.VAR_requestedState, TenantRealized.staticSetRequestedState(siteRequest2, (String)result.get(TenantRealized.VAR_requestedState)));
       o.persistForClass(TenantRealized.VAR_realizedState, TenantRealized.staticSetRealizedState(siteRequest2, (String)result.get(TenantRealized.VAR_realizedState)));
-      o.persistForClass(TenantRealized.VAR_tenantDescription, TenantRealized.staticSetTenantDescription(siteRequest2, (String)result.get(TenantRealized.VAR_tenantDescription)));
+      o.persistForClass(TenantRealized.VAR_description, TenantRealized.staticSetDescription(siteRequest2, (String)result.get(TenantRealized.VAR_description)));
       o.persistForClass(TenantRealized.VAR_locked, TenantRealized.staticSetLocked(siteRequest2, (String)result.get(TenantRealized.VAR_locked)));
 
       o.promiseDeepForClass((SiteRequest)siteRequest).onSuccess(o2 -> {
