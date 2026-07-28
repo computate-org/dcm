@@ -213,6 +213,12 @@ import org.computate.dcm.model.eda.tenant.discovered.TenantDiscovered;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSGenApiService;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealizedEnUSApiServiceImpl;
 import org.computate.dcm.model.eda.tenant.realized.TenantRealized;
+import org.computate.dcm.model.eda.tenant.provider.TenantProviderEnUSGenApiService;
+import org.computate.dcm.model.eda.tenant.provider.TenantProviderEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.tenant.provider.TenantProvider;
+import org.computate.dcm.model.eda.provider.intent.ProviderIntentEnUSGenApiService;
+import org.computate.dcm.model.eda.provider.intent.ProviderIntentEnUSApiServiceImpl;
+import org.computate.dcm.model.eda.provider.intent.ProviderIntent;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSGenApiService;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatformEnUSApiServiceImpl;
 import org.computate.dcm.model.platform.aitelemetry.AiTelemetryPlatform;
@@ -504,7 +510,7 @@ public abstract class MainVerticleGen<DEV> extends AbstractVerticle {
 
   public static final String CLASS_SIMPLE_NAME = "MainVerticle";
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.verticle.MainVerticle";
-  public static final String CLASS_AUTH_RESOURCE = "";
+  public static final String CLASS_AUTH_RESOURCE = "MAINVERTICLE";
 
 
   public static String displayNameForClass(String var) {

@@ -1,21 +1,21 @@
-package org.computate.dcm.model.eda.tenant.intent;
+package org.computate.dcm.model.eda.provider.intent;
 
 import java.util.List;
 import org.computate.search.wrap.Wrap;
-import org.computate.dcm.model.eda.tenant.Tenant;
+import org.computate.dcm.model.eda.provider.Provider;
 
 /**
- * Order: 140
- * Description: Describing the intent for a new Tenant. Tenants are separate organizations sharing the same cloud resources. 
- * AName: a tenant intent
- * Icon: <i class="{{ FONTAWESOME_STYLE }} fa-buildings"></i>
- * MenuDetails: multi-tenancy
+ * Order: 151
+ * Description: A provider for requesting other DCM models. 
+ * AName: a provider intent
+ * Icon: <i class=" fa-person-dolly"></i>
+ * MenuDetails: DCM providers
  * MenuDetailsOpen: true
  *
- * AuthorizationResource: TENANT
- * SearchPageUri: /en-us/search/intent/tenant
- * EditPageUri: /en-us/edit/intent/tenant/{tenantResource}
- * ApiUri: /en-us/api/intent/tenant
+ * AuthorizationResource: PROVIDER
+ * SearchPageUri: /en-us/search/intent/provider
+ * EditPageUri: /en-us/edit/intent/provider/{providerResource}
+ * ApiUri: /en-us/api/intent/provider
  * ApiMethod:
  *   Search:
  *   GET:
@@ -25,7 +25,7 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  *   PUTImport:
  * 
  * AuthGroup:
- *   TenantAdmin:
+ *   ProviderAdmin:
  *     GET:
  *   Admin:
  *     POST:
@@ -40,59 +40,51 @@ import org.computate.dcm.model.eda.tenant.Tenant;
  *     Admin:
  *     SuperAdmin:
  **/
-public class TenantIntent extends TenantIntentGen<Tenant> {
-
-  @Override
-  protected void _hostInventoryIds(List<String> l) {
-  }
-
-  @Override
-  protected void _ansibleProjectIds(List<String> l) {
-  }
+public class ProviderIntent extends ProviderIntentGen<Provider> {
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: tenant name
-   * Description: The name of this tenant
+   * DisplayName: provider name
+   * Description: The name of this provider
    * HtmRow: 20
    * HtmCell: 1
    * HtmColumn: 1
-   * HtmRowTitleOpen: tenant details
+   * HtmRowTitleOpen: provider details
    * Facet: true
    * VarName: true
    * Required: true
    **/
-  protected void _tenantName(Wrap<String> w) {
+  protected void _providerName(Wrap<String> w) {
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: tenant ID
-   * Description: The ID of this tenant. By default, this will be auto-generated based on the tenant name, converting non-alphanumeric characters to hyphens, all lowercase. 
+   * DisplayName: provider ID
+   * Description: The ID of this provider. By default, this will be auto-generated based on the provider name, converting non-alphanumeric characters to hyphens, all lowercase. 
    * Facet: true
    * DefaultFacet: true
    **/
-  protected void _tenantId(Wrap<String> w) {
-    w.o(toId(tenantName));
+  protected void _providerId(Wrap<String> w) {
+    w.o(toId(providerName));
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: tenant auth resource
-   * Description: The unique authorization resource for the tenant for multi-tenancy
+   * DisplayName: provider auth resource
+   * Description: The unique authorization resource for the provider for multi-tenancy
    * Facet: true
-   * AuthorizationResource: TENANT
+   * AuthorizationResource: PROVIDER
    * Unique: true
    * VarId: true
-   * StringFormat: String.format("%s-%s", TenantIntent.CLASS_AUTH_RESOURCE, tenantId)
+   * StringFormat: String.format("%s-%s", ProviderIntent.CLASS_AUTH_RESOURCE, providerId)
    **/
-  protected void _tenantResource(Wrap<String> w) {
+  protected void _providerResource(Wrap<String> w) {
   }
 
   /**
@@ -200,7 +192,7 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * DocValues: true
    * Persist: true
    * DisplayName: description
-   * Description: A description of this tenant
+   * Description: A description of this provider
    * HtmRow: 20
    * HtmCell: 4
    * Facet: true
@@ -215,9 +207,9 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: tenant requested
-   * Description: The related tenant requests for this tenant intent. 
-   * Relate: TenantRequested.tenantResource
+   * DisplayName: provider requested
+   * Description: The related provider requests for this provider intent. 
+   * Relate: ProviderRequested.providerResource
    * HtmRowTitleOpen: requests
    * HtmRow: 21
    * HtmCell: 0
@@ -230,7 +222,7 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
    * DocValues: true
    * Persist: true
    * DisplayName: locked
-   * Description: A tenant intent gets locked after creating the first tenant request. 
+   * Description: A provider intent gets locked after creating the first provider request. 
    * HtmRow: 21
    * HtmCell: 0
    * Facet: true
@@ -242,9 +234,9 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: tenant discovered
-   * Description: Each time the tenant was discovered for this tenant intent. 
-   * Relate: TenantDiscovered.tenantResource
+   * DisplayName: provider discovered
+   * Description: Each time the provider was discovered for this provider intent. 
+   * Relate: ProviderDiscovered.providerResource
    * HtmRowTitleOpen: discovered
    * HtmRow: 22
    * HtmCell: 0
@@ -255,9 +247,9 @@ public class TenantIntent extends TenantIntentGen<Tenant> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: tenant realized
-   * Description: Each time the tenant was realized for this tenant intent. 
-   * Relate: TenantRealized.tenantResource
+   * DisplayName: provider realized
+   * Description: Each time the provider was realized for this provider intent. 
+   * Relate: ProviderRealized.providerResource
    * HtmRowTitleOpen: realizations
    * HtmRow: 23
    * HtmCell: 0
