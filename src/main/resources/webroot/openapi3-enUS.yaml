@@ -23713,8 +23713,6 @@ components:
               items:
                 type: object
                 properties:
-                  providerName:
-                    type: string
                   providerId:
                     type: string
                   providerResource:
@@ -23753,13 +23751,6 @@ components:
       allOf:
         - type: object
           properties:
-            setProviderName:
-              type: string
-              nullable: true
-            removeProviderName:
-              type: string
-            removeAllProviderName:
-              type: string
             setProviderId:
               type: string
               nullable: true
@@ -23892,13 +23883,6 @@ components:
       allOf:
         - type: object
           properties:
-            setProviderName:
-              type: string
-              nullable: true
-            removeProviderName:
-              type: string
-            removeAllProviderName:
-              type: string
             setProviderId:
               type: string
               nullable: true
@@ -24031,8 +24015,6 @@ components:
       allOf:
         - type: object
           properties:
-            providerName:
-              type: string
             providerId:
               type: string
             providerResource:
@@ -24071,8 +24053,6 @@ components:
       allOf:
         - type: object
           properties:
-            providerName:
-              type: string
             providerId:
               type: string
             providerResource:
@@ -24111,8 +24091,6 @@ components:
       allOf:
         - type: object
           properties:
-            providerName:
-              type: string
             providerId:
               type: string
             providerResource:
@@ -24156,8 +24134,6 @@ components:
               items:
                 type: object
                 properties:
-                  providerName:
-                    type: string
                   providerId:
                     type: string
                   providerResource:
@@ -24196,8 +24172,6 @@ components:
       allOf:
         - type: object
           properties:
-                  providerName:
-                    type: string
                   providerId:
                     type: string
                   providerResource:
@@ -24236,8 +24210,6 @@ components:
       allOf:
         - type: object
           properties:
-            providerName:
-              type: string
             providerId:
               type: string
             providerResource:
@@ -24276,8 +24248,6 @@ components:
       allOf:
         - type: object
           properties:
-            providerName:
-              type: string
             providerId:
               type: string
             providerResource:

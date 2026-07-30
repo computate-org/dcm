@@ -242,68 +242,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static final String Icon = "<i class=\" fa-person-dolly\"></i>";
 
-	//////////////////
-  // providerName //
-	//////////////////
-
-
-  /**
-   *  The entity providerName
-   *	 is defined as null before being initialized. 
-   */
-  @JsonProperty
-  @JsonInclude(Include.NON_NULL)
-  protected String providerName;
-
-  /**
-   * <br> The entity providerName
-   *  is defined as null before being initialized. 
-   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.provider.intent.ProviderIntent&fq=entiteVar_enUS_indexed_string:providerName">Find the entity providerName in Solr</a>
-   * <br>
-   * @param w is for wrapping a value to assign to this entity during initialization. 
-   **/
-  protected abstract void _providerName(Wrap<String> w);
-
-  public String getProviderName() {
-    return providerName;
-  }
-  public void setProviderName(String o) {
-    this.providerName = ProviderIntent.staticSetProviderName(siteRequest_, o);
-  }
-  public static String staticSetProviderName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-  protected ProviderIntent providerNameInit() {
-    Wrap<String> providerNameWrap = new Wrap<String>().var("providerName");
-    if(providerName == null) {
-      _providerName(providerNameWrap);
-      Optional.ofNullable(providerNameWrap.getO()).ifPresent(o -> {
-        setProviderName(o);
-      });
-    }
-    return (ProviderIntent)this;
-  }
-
-  public static String staticSearchProviderName(SiteRequest siteRequest_, String o) {
-    return o;
-  }
-
-  public static String staticSearchStrProviderName(SiteRequest siteRequest_, String o) {
-    return o == null ? null : o.toString();
-  }
-
-  public static String staticSearchFqProviderName(SiteRequest siteRequest_, String o) {
-    return ProviderIntent.staticSearchProviderName(siteRequest_, ProviderIntent.staticSetProviderName(siteRequest_, o)).toString();
-  }
-
-  public String sqlProviderName() {
-    return providerName;
-  }
-
-  public static String staticJsonProviderName(String providerName) {
-    return providerName;
-  }
-
 	////////////////
   // providerId //
 	////////////////
@@ -1252,7 +1190,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
-        providerNameInit();
         providerIdInit();
         providerResourceInit();
         createdByEmailInit();
@@ -1320,8 +1257,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   public Object obtainProviderIntent(String var) {
     ProviderIntent oProviderIntent = (ProviderIntent)this;
     switch(var) {
-      case "providerName":
-        return oProviderIntent.providerName;
       case "providerId":
         return oProviderIntent.providerId;
       case "providerResource":
@@ -1389,8 +1324,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static Object staticSetProviderIntent(String entityVar, SiteRequest siteRequest_, String v, ProviderIntent o) {
     switch(entityVar) {
-    case "providerName":
-      return ProviderIntent.staticSetProviderName(siteRequest_, v);
     case "providerId":
       return ProviderIntent.staticSetProviderId(siteRequest_, v);
     case "providerResource":
@@ -1440,9 +1373,9 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
       form.add("grant_type", "urn:ietf:params:oauth:grant-type:uma-ticket");
       form.add("audience", config.getString(ComputateConfigKeys.AUTH_CLIENT));
       form.add("response_mode", "permissions");
-      form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "GET"));
       form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "POST"));
       form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "PATCH"));
+      form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "GET"));
       form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "DELETE"));
       form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "Admin"));
       form.add("permission", String.format("%s#%s", ProviderIntent.CLASS_AUTH_RESOURCE, "SuperAdmin"));
@@ -1569,8 +1502,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static Object staticSearchProviderIntent(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "providerName":
-      return ProviderIntent.staticSearchProviderName(siteRequest_, (String)o);
     case "providerId":
       return ProviderIntent.staticSearchProviderId(siteRequest_, (String)o);
     case "providerResource":
@@ -1613,8 +1544,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static String staticSearchStrProviderIntent(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
-    case "providerName":
-      return ProviderIntent.staticSearchStrProviderName(siteRequest_, (String)o);
     case "providerId":
       return ProviderIntent.staticSearchStrProviderId(siteRequest_, (String)o);
     case "providerResource":
@@ -1657,8 +1586,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static String staticSearchFqProviderIntent(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
-    case "providerName":
-      return ProviderIntent.staticSearchFqProviderName(siteRequest_, o);
     case "providerId":
       return ProviderIntent.staticSearchFqProviderId(siteRequest_, o);
     case "providerResource":
@@ -1713,13 +1640,7 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public Object persistProviderIntent(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("providername".equals(varLower)) {
-        if(val instanceof String) {
-          setProviderName((String)val);
-        }
-        saves.add("providerName");
-        return val;
-      } else if("providerid".equals(varLower)) {
+      if("providerid".equals(varLower)) {
         if(val instanceof String) {
           setProviderId((String)val);
         }
@@ -1803,12 +1724,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     ProviderIntent oProviderIntent = (ProviderIntent)this;
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
-
-      if(saves.contains("providerName")) {
-        String providerName = (String)doc.get("providerName_docvalues_string");
-        if(providerName != null)
-          oProviderIntent.setProviderName(providerName);
-      }
 
       if(saves.contains("providerId")) {
         String providerId = (String)doc.get("providerId_docvalues_string");
@@ -1908,9 +1823,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
 
   public void indexProviderIntent(JsonObject doc) {
-    if(providerName != null) {
-      doc.put("providerName_docvalues_string", providerName);
-    }
     if(providerId != null) {
       doc.put("providerId_docvalues_string", providerId);
     }
@@ -1971,8 +1883,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static String varStoredProviderIntent(String entityVar) {
     switch(entityVar) {
-      case "providerName":
-        return "providerName_docvalues_string";
       case "providerId":
         return "providerId_docvalues_string";
       case "providerResource":
@@ -2008,8 +1918,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static String varIndexedProviderIntent(String entityVar) {
     switch(entityVar) {
-      case "providerName":
-        return "providerName_docvalues_string";
       case "providerId":
         return "providerId_docvalues_string";
       case "providerResource":
@@ -2045,8 +1953,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static String searchVarProviderIntent(String searchVar) {
     switch(searchVar) {
-      case "providerName_docvalues_string":
-        return "providerName";
       case "providerId_docvalues_string":
         return "providerId";
       case "providerResource_docvalues_string":
@@ -2105,7 +2011,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     ProviderIntent oProviderIntent = (ProviderIntent)this;
     SiteRequest siteRequest = oProviderIntent.getSiteRequest_();
 
-    oProviderIntent.setProviderName(Optional.ofNullable(doc.get("providerName_docvalues_string")).map(v -> v.toString()).orElse(null));
     oProviderIntent.setProviderId(Optional.ofNullable(doc.get("providerId_docvalues_string")).map(v -> v.toString()).orElse(null));
     oProviderIntent.setProviderResource(Optional.ofNullable(doc.get("providerResource_docvalues_string")).map(v -> v.toString()).orElse(null));
     oProviderIntent.setCreatedByEmail(Optional.ofNullable(doc.get("createdByEmail_docvalues_string")).map(v -> v.toString()).orElse(null));
@@ -2139,8 +2044,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof ProviderIntent) {
       ProviderIntent original = (ProviderIntent)o;
-      if(!Objects.equals(providerName, original.getProviderName()))
-        apiRequest.addVars("providerName");
       if(!Objects.equals(providerId, original.getProviderId()))
         apiRequest.addVars("providerId");
       if(!Objects.equals(providerResource, original.getProviderResource()))
@@ -2180,7 +2083,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
-    sb.append(Optional.ofNullable(providerName).map(v -> "providerName: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(providerId).map(v -> "providerId: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(providerResource).map(v -> "providerResource: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(createdByEmail).map(v -> "createdByEmail: \"" + v + "\"\n" ).orElse(""));
@@ -2205,8 +2107,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   public static String getClassApiAddress() {
     return CLASS_API_ADDRESS_ProviderIntent;
   }
-  public static final String VAR_providerName = "providerName";
-  public static final String SET_providerName = "setProviderName";
   public static final String VAR_providerId = "providerId";
   public static final String SET_providerId = "setProviderId";
   public static final String VAR_providerResource = "providerResource";
@@ -2248,7 +2148,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     return ProviderIntent.varsFqProviderIntent(new ArrayList<String>());
   }
   public static List<String> varsFqProviderIntent(List<String> vars) {
-    vars.add(VAR_providerName);
     vars.add(VAR_providerId);
     vars.add(VAR_providerResource);
     vars.add(VAR_description);
@@ -2265,7 +2164,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     return vars;
   }
 
-  public static final String DISPLAY_NAME_providerName = "provider name";
   public static final String DISPLAY_NAME_providerId = "provider ID";
   public static final String DISPLAY_NAME_providerResource = "provider auth resource";
   public static final String DISPLAY_NAME_createdByEmail = "created by user email";
@@ -2316,8 +2214,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static String varJsonProviderIntent(String var, Boolean patch) {
     switch(var) {
-    case VAR_providerName:
-      return patch ? SET_providerName : VAR_providerName;
     case VAR_providerId:
       return patch ? SET_providerId : VAR_providerId;
     case VAR_providerResource:
@@ -2356,8 +2252,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
   }
   public static String displayNameProviderIntent(String var) {
     switch(var) {
-    case VAR_providerName:
-      return DISPLAY_NAME_providerName;
     case VAR_providerId:
       return DISPLAY_NAME_providerId;
     case VAR_providerResource:
@@ -2395,8 +2289,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     if(var == null)
       return null;
     switch(var) {
-    case VAR_providerName:
-      return "The name of this provider";
     case VAR_providerId:
       return "The ID of this provider. By default, this will be auto-generated based on the provider name, converting non-alphanumeric characters to hyphens, all lowercase. ";
     case VAR_providerResource:
@@ -2432,8 +2324,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static String classSimpleNameProviderIntent(String var) {
     switch(var) {
-    case VAR_providerName:
-      return "String";
     case VAR_providerId:
       return "String";
     case VAR_providerResource:
@@ -2469,8 +2359,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static Integer htmColumnProviderIntent(String var) {
     switch(var) {
-    case VAR_providerName:
-      return 1;
     case VAR_description:
       return 3;
       default:
@@ -2480,8 +2368,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static Integer htmRowProviderIntent(String var) {
     switch(var) {
-    case VAR_providerName:
-      return 20;
     case VAR_createdByEmail:
       return 10;
     case VAR_createdByUserId:
@@ -2499,13 +2385,13 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
     case VAR_description:
       return 20;
     case VAR_requested:
-      return 21;
+      return 31;
     case VAR_locked:
-      return 21;
+      return 31;
     case VAR_dcmDiscovered:
-      return 22;
+      return 32;
     case VAR_dcmRealized:
-      return 23;
+      return 33;
       default:
         return Provider.htmRowProvider(var);
     }
@@ -2513,8 +2399,6 @@ public abstract class ProviderIntentGen<DEV> extends Provider {
 
   public static Integer htmCellProviderIntent(String var) {
     switch(var) {
-    case VAR_providerName:
-      return 1;
     case VAR_createdByEmail:
       return 0;
     case VAR_createdByUserId:

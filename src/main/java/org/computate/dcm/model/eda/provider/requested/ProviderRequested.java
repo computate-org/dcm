@@ -1,4 +1,4 @@
-package org.computate.dcm.model.eda.provider.intent;
+package org.computate.dcm.model.eda.provider.requested;
 
 import java.util.List;
 import org.computate.search.wrap.Wrap;
@@ -7,15 +7,12 @@ import org.computate.dcm.model.eda.provider.Provider;
 /**
  * Order: 151
  * Description: A provider for requesting other DCM models. 
- * AName: a provider intent
+ * AName: a provider requested
  * Icon: <i class=" fa-person-dolly"></i>
- * MenuDetails: DCM providers
- * MenuDetailsOpen: true
  *
- * AuthorizationResource: PROVIDER
- * SearchPageUri: /en-us/search/intent/provider
- * EditPageUri: /en-us/edit/intent/provider/{providerResource}
- * ApiUri: /en-us/api/intent/provider
+ * SearchPageUri: /en-us/search/requested/provider
+ * EditPageUri: /en-us/edit/requested/provider/{providerResource}
+ * ApiUri: /en-us/api/requested/provider
  * ApiMethod:
  *   Search:
  *   GET:
@@ -41,7 +38,7 @@ import org.computate.dcm.model.eda.provider.Provider;
  *     Admin:
  *     SuperAdmin:
  **/
-public class ProviderIntent extends ProviderIntentGen<Provider> {
+public class ProviderRequested extends ProviderRequestedGen<Provider> {
 /**
    * {@inheritDoc}
    * DocValues: true
@@ -50,6 +47,7 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * Description: The ID of this provider. By default, this will be auto-generated based on the provider name, converting non-alphanumeric characters to hyphens, all lowercase. 
    * Facet: true
    * DefaultFacet: true
+   * StringFormat: oProviderIntent.getProviderId()
    **/
   protected void _providerId(Wrap<String> w) {
     w.o(toId(providerName));
@@ -63,11 +61,65 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * Description: The unique authorization resource for the provider for multi-tenancy
    * Facet: true
    * AuthorizationResource: PROVIDER
-   * Unique: true
-   * VarId: true
-   * StringFormat: String.format("%s-%s", ProviderIntent.CLASS_AUTH_RESOURCE, providerId)
+   * HtmRowTitleOpen: provider details
+   * HtmRow: 5
+   * HtmCell: 0
+   * Required: true
+   * Relate: ProviderIntent.providerResource
    **/
   protected void _providerResource(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: provider requested number
+   * Description: A unique number for this change to this provider. 
+   * Facet: true
+   **/
+  protected void _requestedNumber(Wrap<Integer> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: provider requested ID
+   * Description: The unique ID for this provider requested. 
+   * Facet: true
+   * VarId: true
+   * StringFormat: String.format("%s-%s", providerResource, requestedNumber)
+   * HtmColumn: 0
+   * Unique: true
+   **/
+  protected void _requestedId(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * Persist: true
+   * DisplayName: provider requested name
+   * Description: The name of this provider requested model
+   * Facet: true
+   * VarName: true
+   * StringFormat: String.format("%s %s", oProviderIntent.getProviderName(), requestedNumber)
+   * HtmColumn: 1
+   **/
+  protected void _requestedName(Wrap<String> w) {
+  }
+
+  /**
+   * {@inheritDoc}
+   * DocValues: true
+   * DisplayName: provider approvals
+   * Description: A list of provider approvals for this request. 
+   * HtmRow: 8
+   * HtmCell: 0
+   * Relate: ProviderApproval.approvalId
+   **/
+  protected void _requestApprovals(List<String> w) {
   }
 
   /**
@@ -123,6 +175,7 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    *   api: API
    *   migration: migration
    *   system: system
+   * StringFormat: Optional.ofNullable(new_createdVia).orElse(oProviderIntent.getCreatedVia())
    */
   protected void _createdVia(Wrap<String> w) {
   }
@@ -131,13 +184,13 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * {@inheritDoc}
    * DocValues: true
    * Persist: true
-   * DisplayName: intent state
+   * DisplayName: requested state
    * Description: Captures the consumer's raw intent — what they asked for in their own terms. 
    * HtmRowTitleOpen: intent
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_intentState).orElse(oProviderIntent.getIntentState())
    **/
   protected void _intentState(Wrap<String> w) {
   }
@@ -151,7 +204,7 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_requestedState).orElse(oProviderIntent.getRequestedState())
    **/
   protected void _requestedState(Wrap<String> w) {
   }
@@ -165,7 +218,7 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * HtmRow: 12
    * HtmCell: 0
    * Multiline: true
-   * Required: true
+   * StringFormat: Optional.ofNullable(new_realizedState).orElse(oProviderIntent.getRealizedState())
    **/
   protected void _realizedState(Wrap<String> w) {
   }
@@ -182,7 +235,7 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * HtmColumn: 3
    * VarDescription: true
    * Multiline: true
-   * StringFormat: Optional.ofNullable(new_description).orElse(String.format("Intent state: %s\nRequested state: %s\nRealized state: %s", intentState, requestedState, realizedState))
+   * StringFormat: Optional.ofNullable(new_description).orElse(String.format("Requested state: %s\nRequested state: %s\nRealized state: %s", requestedState, requestedState, realizedState))
    **/
   protected void _description(Wrap<String> w) {
   }
@@ -190,23 +243,10 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
   /**
    * {@inheritDoc}
    * DocValues: true
-   * DisplayName: provider requested
-   * Description: The related provider requests for this provider intent. 
-   * Relate: ProviderRequested.providerResource
-   * HtmRowTitleOpen: requests
-   * HtmRow: 31
-   * HtmCell: 0
-   **/
-  protected void _requested(List<String> l) {
-  }
-
-  /**
-   * {@inheritDoc}
-   * DocValues: true
    * Persist: true
    * DisplayName: locked
-   * Description: A provider intent gets locked after creating the first provider request. 
-   * HtmRow: 31
+   * Description: A provider requested gets locked after creating the first provider request. 
+   * HtmRow: 21
    * HtmCell: 0
    * Facet: true
    * StringFormat: Optional.ofNullable(Optional.ofNullable(new_locked).orElse(old_locked)).orElse(false)
@@ -219,24 +259,24 @@ public class ProviderIntent extends ProviderIntentGen<Provider> {
    * DocValues: true
    * DisplayName: provider discovered
    * Description: Each time the provider was discovered for this provider intent. 
-   * Relate: ProviderDiscovered.providerResource
+   * Relate: Discovered.providerResource
    * HtmRowTitleOpen: discovered
-   * HtmRow: 32
+   * HtmRow: 22
    * HtmCell: 0
    **/
-  protected void _dcmDiscovered(List<String> l) {
+  protected void _providerDiscovered(List<String> l) {
   }
 
   /**
    * {@inheritDoc}
    * DocValues: true
    * DisplayName: provider realized
-   * Description: Each time the provider was realized for this provider intent. 
+   * Description: Each time the provider was realized for this provider requested. 
    * Relate: ProviderRealized.providerResource
    * HtmRowTitleOpen: realizations
-   * HtmRow: 33
+   * HtmRow: 23
    * HtmCell: 0
    **/
-  protected void _dcmRealized(List<String> l) {
+  protected void _providerRealized(List<String> l) {
   }
 }

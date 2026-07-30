@@ -1,6 +1,8 @@
 package org.computate.dcm.model.eda.provider;
 
 import org.computate.search.wrap.Wrap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.computate.dcm.model.BaseModel;
 import org.computate.dcm.request.SiteRequest;
 import org.computate.dcm.model.BaseModel;
@@ -185,6 +187,254 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static final String Icon = "<i class=\"{{ FONTAWESOME_STYLE }} fa-person-dolly\"></i>";
 
+	//////////////////
+  // providerName //
+	//////////////////
+
+
+  /**
+   *  The entity providerName
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String providerName;
+
+  /**
+   * <br> The entity providerName
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.provider.Provider&fq=entiteVar_enUS_indexed_string:providerName">Find the entity providerName in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _providerName(Wrap<String> w);
+
+  public String getProviderName() {
+    return providerName;
+  }
+  public void setProviderName(String o) {
+    this.providerName = Provider.staticSetProviderName(siteRequest_, o);
+  }
+  public static String staticSetProviderName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Provider providerNameInit() {
+    Wrap<String> providerNameWrap = new Wrap<String>().var("providerName");
+    if(providerName == null) {
+      _providerName(providerNameWrap);
+      Optional.ofNullable(providerNameWrap.getO()).ifPresent(o -> {
+        setProviderName(o);
+      });
+    }
+    return (Provider)this;
+  }
+
+  public static String staticSearchProviderName(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrProviderName(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqProviderName(SiteRequest siteRequest_, String o) {
+    return Provider.staticSearchProviderName(siteRequest_, Provider.staticSetProviderName(siteRequest_, o)).toString();
+  }
+
+  public String sqlProviderName() {
+    return providerName;
+  }
+
+  public static String staticJsonProviderName(String providerName) {
+    return providerName;
+  }
+
+	///////////////////////
+  // requestedClientId //
+	///////////////////////
+
+
+  /**
+   *  The entity requestedClientId
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String requestedClientId;
+
+  /**
+   * <br> The entity requestedClientId
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.provider.Provider&fq=entiteVar_enUS_indexed_string:requestedClientId">Find the entity requestedClientId in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _requestedClientId(Wrap<String> w);
+
+  public String getRequestedClientId() {
+    return requestedClientId;
+  }
+  public void setRequestedClientId(String o) {
+    this.requestedClientId = Provider.staticSetRequestedClientId(siteRequest_, o);
+  }
+  public static String staticSetRequestedClientId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Provider requestedClientIdInit() {
+    Wrap<String> requestedClientIdWrap = new Wrap<String>().var("requestedClientId");
+    if(requestedClientId == null) {
+      _requestedClientId(requestedClientIdWrap);
+      Optional.ofNullable(requestedClientIdWrap.getO()).ifPresent(o -> {
+        setRequestedClientId(o);
+      });
+    }
+    return (Provider)this;
+  }
+
+  public static String staticSearchRequestedClientId(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRequestedClientId(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRequestedClientId(SiteRequest siteRequest_, String o) {
+    return Provider.staticSearchRequestedClientId(siteRequest_, Provider.staticSetRequestedClientId(siteRequest_, o)).toString();
+  }
+
+  public String sqlRequestedClientId() {
+    return requestedClientId;
+  }
+
+  public static String staticJsonRequestedClientId(String requestedClientId) {
+    return requestedClientId;
+  }
+
+	//////////////////////////////////
+  // requestedEnvironmentVariable //
+	//////////////////////////////////
+
+
+  /**
+   *  The entity requestedEnvironmentVariable
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String requestedEnvironmentVariable;
+
+  /**
+   * <br> The entity requestedEnvironmentVariable
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.provider.Provider&fq=entiteVar_enUS_indexed_string:requestedEnvironmentVariable">Find the entity requestedEnvironmentVariable in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _requestedEnvironmentVariable(Wrap<String> w);
+
+  public String getRequestedEnvironmentVariable() {
+    return requestedEnvironmentVariable;
+  }
+  public void setRequestedEnvironmentVariable(String o) {
+    this.requestedEnvironmentVariable = Provider.staticSetRequestedEnvironmentVariable(siteRequest_, o);
+  }
+  public static String staticSetRequestedEnvironmentVariable(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Provider requestedEnvironmentVariableInit() {
+    Wrap<String> requestedEnvironmentVariableWrap = new Wrap<String>().var("requestedEnvironmentVariable");
+    if(requestedEnvironmentVariable == null) {
+      _requestedEnvironmentVariable(requestedEnvironmentVariableWrap);
+      Optional.ofNullable(requestedEnvironmentVariableWrap.getO()).ifPresent(o -> {
+        setRequestedEnvironmentVariable(o);
+      });
+    }
+    return (Provider)this;
+  }
+
+  public static String staticSearchRequestedEnvironmentVariable(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrRequestedEnvironmentVariable(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqRequestedEnvironmentVariable(SiteRequest siteRequest_, String o) {
+    return Provider.staticSearchRequestedEnvironmentVariable(siteRequest_, Provider.staticSetRequestedEnvironmentVariable(siteRequest_, o)).toString();
+  }
+
+  public String sqlRequestedEnvironmentVariable() {
+    return requestedEnvironmentVariable;
+  }
+
+  public static String staticJsonRequestedEnvironmentVariable(String requestedEnvironmentVariable) {
+    return requestedEnvironmentVariable;
+  }
+
+	/////////////////////////////////
+  // providerRequestInstructions //
+	/////////////////////////////////
+
+
+  /**
+   *  The entity providerRequestInstructions
+   *	 is defined as null before being initialized. 
+   */
+  @JsonProperty
+  @JsonInclude(Include.NON_NULL)
+  protected String providerRequestInstructions;
+
+  /**
+   * <br> The entity providerRequestInstructions
+   *  is defined as null before being initialized. 
+   * <br><a href="https://solr.apps-crc.testing/solr/#/computate/query?q=*:*&fq=partEstEntite_indexed_boolean:true&fq=classeNomCanonique_enUS_indexed_string:org.computate.dcm.model.eda.provider.Provider&fq=entiteVar_enUS_indexed_string:providerRequestInstructions">Find the entity providerRequestInstructions in Solr</a>
+   * <br>
+   * @param w is for wrapping a value to assign to this entity during initialization. 
+   **/
+  protected abstract void _providerRequestInstructions(Wrap<String> w);
+
+  public String getProviderRequestInstructions() {
+    return providerRequestInstructions;
+  }
+  public void setProviderRequestInstructions(String o) {
+    this.providerRequestInstructions = Provider.staticSetProviderRequestInstructions(siteRequest_, o);
+  }
+  public static String staticSetProviderRequestInstructions(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+  protected Provider providerRequestInstructionsInit() {
+    Wrap<String> providerRequestInstructionsWrap = new Wrap<String>().var("providerRequestInstructions");
+    if(providerRequestInstructions == null) {
+      _providerRequestInstructions(providerRequestInstructionsWrap);
+      Optional.ofNullable(providerRequestInstructionsWrap.getO()).ifPresent(o -> {
+        setProviderRequestInstructions(o);
+      });
+    }
+    return (Provider)this;
+  }
+
+  public static String staticSearchProviderRequestInstructions(SiteRequest siteRequest_, String o) {
+    return o;
+  }
+
+  public static String staticSearchStrProviderRequestInstructions(SiteRequest siteRequest_, String o) {
+    return o == null ? null : o.toString();
+  }
+
+  public static String staticSearchFqProviderRequestInstructions(SiteRequest siteRequest_, String o) {
+    return Provider.staticSearchProviderRequestInstructions(siteRequest_, Provider.staticSetProviderRequestInstructions(siteRequest_, o)).toString();
+  }
+
+  public String sqlProviderRequestInstructions() {
+    return providerRequestInstructions;
+  }
+
+  public static String staticJsonProviderRequestInstructions(String providerRequestInstructions) {
+    return providerRequestInstructions;
+  }
+
 	/////////////////
   // providerUrl //
 	/////////////////
@@ -277,6 +527,10 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     Future.future(a -> a.complete()).compose(a -> {
       Promise<Void> promise2 = Promise.promise();
       try {
+        providerNameInit();
+        requestedClientIdInit();
+        requestedEnvironmentVariableInit();
+        providerRequestInstructionsInit();
         providerUrlInit();
         promise2.complete();
       } catch(Exception ex) {
@@ -331,6 +585,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   public Object obtainProvider(String var) {
     Provider oProvider = (Provider)this;
     switch(var) {
+      case "providerName":
+        return oProvider.providerName;
+      case "requestedClientId":
+        return oProvider.requestedClientId;
+      case "requestedEnvironmentVariable":
+        return oProvider.requestedEnvironmentVariable;
+      case "providerRequestInstructions":
+        return oProvider.providerRequestInstructions;
       case "providerUrl":
         return oProvider.providerUrl;
       default:
@@ -372,6 +634,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static Object staticSetProvider(String entityVar, SiteRequest siteRequest_, String v, Provider o) {
     switch(entityVar) {
+    case "providerName":
+      return Provider.staticSetProviderName(siteRequest_, v);
+    case "requestedClientId":
+      return Provider.staticSetRequestedClientId(siteRequest_, v);
+    case "requestedEnvironmentVariable":
+      return Provider.staticSetRequestedEnvironmentVariable(siteRequest_, v);
+    case "providerRequestInstructions":
+      return Provider.staticSetProviderRequestInstructions(siteRequest_, v);
     case "providerUrl":
       return Provider.staticSetProviderUrl(siteRequest_, v);
       default:
@@ -418,6 +688,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static Object staticSearchProvider(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "providerName":
+      return Provider.staticSearchProviderName(siteRequest_, (String)o);
+    case "requestedClientId":
+      return Provider.staticSearchRequestedClientId(siteRequest_, (String)o);
+    case "requestedEnvironmentVariable":
+      return Provider.staticSearchRequestedEnvironmentVariable(siteRequest_, (String)o);
+    case "providerRequestInstructions":
+      return Provider.staticSearchProviderRequestInstructions(siteRequest_, (String)o);
     case "providerUrl":
       return Provider.staticSearchProviderUrl(siteRequest_, (String)o);
       default:
@@ -434,6 +712,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static String staticSearchStrProvider(String entityVar, SiteRequest siteRequest_, Object o) {
     switch(entityVar) {
+    case "providerName":
+      return Provider.staticSearchStrProviderName(siteRequest_, (String)o);
+    case "requestedClientId":
+      return Provider.staticSearchStrRequestedClientId(siteRequest_, (String)o);
+    case "requestedEnvironmentVariable":
+      return Provider.staticSearchStrRequestedEnvironmentVariable(siteRequest_, (String)o);
+    case "providerRequestInstructions":
+      return Provider.staticSearchStrProviderRequestInstructions(siteRequest_, (String)o);
     case "providerUrl":
       return Provider.staticSearchStrProviderUrl(siteRequest_, (String)o);
       default:
@@ -450,6 +736,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static String staticSearchFqProvider(String entityVar, SiteRequest siteRequest_, String o) {
     switch(entityVar) {
+    case "providerName":
+      return Provider.staticSearchFqProviderName(siteRequest_, o);
+    case "requestedClientId":
+      return Provider.staticSearchFqRequestedClientId(siteRequest_, o);
+    case "requestedEnvironmentVariable":
+      return Provider.staticSearchFqRequestedEnvironmentVariable(siteRequest_, o);
+    case "providerRequestInstructions":
+      return Provider.staticSearchFqProviderRequestInstructions(siteRequest_, o);
     case "providerUrl":
       return Provider.staticSearchFqProviderUrl(siteRequest_, o);
       default:
@@ -478,7 +772,31 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public Object persistProvider(String var, Object val) {
     String varLower = var.toLowerCase();
-      if("providerurl".equals(varLower)) {
+      if("providername".equals(varLower)) {
+        if(val instanceof String) {
+          setProviderName((String)val);
+        }
+        saves.add("providerName");
+        return val;
+      } else if("requestedclientid".equals(varLower)) {
+        if(val instanceof String) {
+          setRequestedClientId((String)val);
+        }
+        saves.add("requestedClientId");
+        return val;
+      } else if("requestedenvironmentvariable".equals(varLower)) {
+        if(val instanceof String) {
+          setRequestedEnvironmentVariable((String)val);
+        }
+        saves.add("requestedEnvironmentVariable");
+        return val;
+      } else if("providerrequestinstructions".equals(varLower)) {
+        if(val instanceof String) {
+          setProviderRequestInstructions((String)val);
+        }
+        saves.add("providerRequestInstructions");
+        return val;
+      } else if("providerurl".equals(varLower)) {
         if(val instanceof String) {
           setProviderUrl((String)val);
         }
@@ -501,6 +819,30 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     saves = Optional.ofNullable((ArrayList<String>)doc.get("saves_docvalues_strings")).orElse(new ArrayList<String>());
     if(saves != null) {
 
+      if(saves.contains("providerName")) {
+        String providerName = (String)doc.get("providerName_docvalues_string");
+        if(providerName != null)
+          oProvider.setProviderName(providerName);
+      }
+
+      if(saves.contains("requestedClientId")) {
+        String requestedClientId = (String)doc.get("requestedClientId_docvalues_string");
+        if(requestedClientId != null)
+          oProvider.setRequestedClientId(requestedClientId);
+      }
+
+      if(saves.contains("requestedEnvironmentVariable")) {
+        String requestedEnvironmentVariable = (String)doc.get("requestedEnvironmentVariable_docvalues_string");
+        if(requestedEnvironmentVariable != null)
+          oProvider.setRequestedEnvironmentVariable(requestedEnvironmentVariable);
+      }
+
+      if(saves.contains("providerRequestInstructions")) {
+        String providerRequestInstructions = (String)doc.get("providerRequestInstructions_docvalues_string");
+        if(providerRequestInstructions != null)
+          oProvider.setProviderRequestInstructions(providerRequestInstructions);
+      }
+
       if(saves.contains("providerUrl")) {
         String providerUrl = (String)doc.get("providerUrl_docvalues_string");
         if(providerUrl != null)
@@ -512,6 +854,18 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
 
   public void indexProvider(JsonObject doc) {
+    if(providerName != null) {
+      doc.put("providerName_docvalues_string", providerName);
+    }
+    if(requestedClientId != null) {
+      doc.put("requestedClientId_docvalues_string", requestedClientId);
+    }
+    if(requestedEnvironmentVariable != null) {
+      doc.put("requestedEnvironmentVariable_docvalues_string", requestedEnvironmentVariable);
+    }
+    if(providerRequestInstructions != null) {
+      doc.put("providerRequestInstructions_docvalues_string", providerRequestInstructions);
+    }
     if(providerUrl != null) {
       doc.put("providerUrl_docvalues_string", providerUrl);
     }
@@ -521,6 +875,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static String varStoredProvider(String entityVar) {
     switch(entityVar) {
+      case "providerName":
+        return "providerName_docvalues_string";
+      case "requestedClientId":
+        return "requestedClientId_docvalues_string";
+      case "requestedEnvironmentVariable":
+        return "requestedEnvironmentVariable_docvalues_string";
+      case "providerRequestInstructions":
+        return "providerRequestInstructions_docvalues_string";
       case "providerUrl":
         return "providerUrl_docvalues_string";
       default:
@@ -530,6 +892,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static String varIndexedProvider(String entityVar) {
     switch(entityVar) {
+      case "providerName":
+        return "providerName_docvalues_string";
+      case "requestedClientId":
+        return "requestedClientId_docvalues_string";
+      case "requestedEnvironmentVariable":
+        return "requestedEnvironmentVariable_docvalues_string";
+      case "providerRequestInstructions":
+        return "providerRequestInstructions_docvalues_string";
       case "providerUrl":
         return "providerUrl_docvalues_string";
       default:
@@ -539,6 +909,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static String searchVarProvider(String searchVar) {
     switch(searchVar) {
+      case "providerName_docvalues_string":
+        return "providerName";
+      case "requestedClientId_docvalues_string":
+        return "requestedClientId";
+      case "requestedEnvironmentVariable_docvalues_string":
+        return "requestedEnvironmentVariable";
+      case "providerRequestInstructions_docvalues_string":
+        return "providerRequestInstructions";
       case "providerUrl_docvalues_string":
         return "providerUrl";
       default:
@@ -571,6 +949,10 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     Provider oProvider = (Provider)this;
     SiteRequest siteRequest = oProvider.getSiteRequest_();
 
+    oProvider.setProviderName(Optional.ofNullable(doc.get("providerName_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oProvider.setRequestedClientId(Optional.ofNullable(doc.get("requestedClientId_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oProvider.setRequestedEnvironmentVariable(Optional.ofNullable(doc.get("requestedEnvironmentVariable_docvalues_string")).map(v -> v.toString()).orElse(null));
+    oProvider.setProviderRequestInstructions(Optional.ofNullable(doc.get("providerRequestInstructions_docvalues_string")).map(v -> v.toString()).orElse(null));
     oProvider.setProviderUrl(Optional.ofNullable(doc.get("providerUrl_docvalues_string")).map(v -> v.toString()).orElse(null));
 
     super.storeBaseModel(doc);
@@ -585,6 +967,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     Object o = Optional.ofNullable(apiRequest).map(ApiRequest::getOriginal).orElse(null);
     if(o != null && o instanceof Provider) {
       Provider original = (Provider)o;
+      if(!Objects.equals(providerName, original.getProviderName()))
+        apiRequest.addVars("providerName");
+      if(!Objects.equals(requestedClientId, original.getRequestedClientId()))
+        apiRequest.addVars("requestedClientId");
+      if(!Objects.equals(requestedEnvironmentVariable, original.getRequestedEnvironmentVariable()))
+        apiRequest.addVars("requestedEnvironmentVariable");
+      if(!Objects.equals(providerRequestInstructions, original.getProviderRequestInstructions()))
+        apiRequest.addVars("providerRequestInstructions");
       if(!Objects.equals(providerUrl, original.getProviderUrl()))
         apiRequest.addVars("providerUrl");
       super.apiRequestBaseModel();
@@ -598,6 +988,10 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   @Override public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(super.toString());
+    sb.append(Optional.ofNullable(providerName).map(v -> "providerName: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(requestedClientId).map(v -> "requestedClientId: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(requestedEnvironmentVariable).map(v -> "requestedEnvironmentVariable: \"" + v + "\"\n" ).orElse(""));
+    sb.append(Optional.ofNullable(providerRequestInstructions).map(v -> "providerRequestInstructions: \"" + v + "\"\n" ).orElse(""));
     sb.append(Optional.ofNullable(providerUrl).map(v -> "providerUrl: \"" + v + "\"\n" ).orElse(""));
     return sb.toString();
   }
@@ -605,6 +999,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   public static final String CLASS_SIMPLE_NAME = "Provider";
   public static final String CLASS_CANONICAL_NAME = "org.computate.dcm.model.eda.provider.Provider";
   public static final String CLASS_AUTH_RESOURCE = "PROVIDER";
+  public static final String VAR_providerName = "providerName";
+  public static final String SET_providerName = "setProviderName";
+  public static final String VAR_requestedClientId = "requestedClientId";
+  public static final String SET_requestedClientId = "setRequestedClientId";
+  public static final String VAR_requestedEnvironmentVariable = "requestedEnvironmentVariable";
+  public static final String SET_requestedEnvironmentVariable = "setRequestedEnvironmentVariable";
+  public static final String VAR_providerRequestInstructions = "providerRequestInstructions";
+  public static final String SET_providerRequestInstructions = "setProviderRequestInstructions";
   public static final String VAR_providerUrl = "providerUrl";
   public static final String SET_providerUrl = "setProviderUrl";
 
@@ -620,6 +1022,7 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     return Provider.varsFqProvider(new ArrayList<String>());
   }
   public static List<String> varsFqProvider(List<String> vars) {
+    vars.add(VAR_providerName);
     BaseModel.varsFqBaseModel(vars);
     return vars;
   }
@@ -632,11 +1035,20 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     return vars;
   }
 
+  public static final String DISPLAY_NAME_providerName = "provider name";
+  public static final String DISPLAY_NAME_requestedClientId = "requested client ID";
+  public static final String DISPLAY_NAME_requestedEnvironmentVariable = "client secret environment variable";
+  public static final String DISPLAY_NAME_providerRequestInstructions = "provider request instructions";
   public static final String DISPLAY_NAME_providerUrl = "provider URL";
 
   @Override
   public String titleForClass() {
     return objectTitle;
+  }
+
+  @Override
+  public String nameForClass() {
+    return providerName;
   }
 
   @Override
@@ -649,6 +1061,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static String varJsonProvider(String var, Boolean patch) {
     switch(var) {
+    case VAR_providerName:
+      return patch ? SET_providerName : VAR_providerName;
+    case VAR_requestedClientId:
+      return patch ? SET_requestedClientId : VAR_requestedClientId;
+    case VAR_requestedEnvironmentVariable:
+      return patch ? SET_requestedEnvironmentVariable : VAR_requestedEnvironmentVariable;
+    case VAR_providerRequestInstructions:
+      return patch ? SET_providerRequestInstructions : VAR_providerRequestInstructions;
     case VAR_providerUrl:
       return patch ? SET_providerUrl : VAR_providerUrl;
     default:
@@ -661,6 +1081,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
   }
   public static String displayNameProvider(String var) {
     switch(var) {
+    case VAR_providerName:
+      return DISPLAY_NAME_providerName;
+    case VAR_requestedClientId:
+      return DISPLAY_NAME_requestedClientId;
+    case VAR_requestedEnvironmentVariable:
+      return DISPLAY_NAME_requestedEnvironmentVariable;
+    case VAR_providerRequestInstructions:
+      return DISPLAY_NAME_providerRequestInstructions;
     case VAR_providerUrl:
       return DISPLAY_NAME_providerUrl;
     default:
@@ -672,8 +1100,16 @@ public abstract class ProviderGen<DEV> extends BaseModel {
     if(var == null)
       return null;
     switch(var) {
+    case VAR_providerName:
+      return "The name of this provider";
+    case VAR_requestedClientId:
+      return "The client ID you would like to request from the provider Keycloak service. ";
+    case VAR_requestedEnvironmentVariable:
+      return "The name of the environment variable that should contain the client secret for this provider. ";
+    case VAR_providerRequestInstructions:
+      return "Required steps that must be done before requesting this provider. ";
     case VAR_providerUrl:
-      return "The URL to the DCM provider application. ";
+      return "The URL to the remote DCM provider application. ";
       default:
         return BaseModel.descriptionBaseModel(var);
     }
@@ -681,6 +1117,14 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static String classSimpleNameProvider(String var) {
     switch(var) {
+    case VAR_providerName:
+      return "String";
+    case VAR_requestedClientId:
+      return "String";
+    case VAR_requestedEnvironmentVariable:
+      return "String";
+    case VAR_providerRequestInstructions:
+      return "String";
     case VAR_providerUrl:
       return "String";
       default:
@@ -690,6 +1134,8 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static Integer htmColumnProvider(String var) {
     switch(var) {
+    case VAR_providerName:
+      return 1;
       default:
         return BaseModel.htmColumnBaseModel(var);
     }
@@ -697,6 +1143,16 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static Integer htmRowProvider(String var) {
     switch(var) {
+    case VAR_providerName:
+      return 20;
+    case VAR_requestedClientId:
+      return 21;
+    case VAR_requestedEnvironmentVariable:
+      return 21;
+    case VAR_providerRequestInstructions:
+      return 21;
+    case VAR_providerUrl:
+      return 21;
       default:
         return BaseModel.htmRowBaseModel(var);
     }
@@ -704,6 +1160,16 @@ public abstract class ProviderGen<DEV> extends BaseModel {
 
   public static Integer htmCellProvider(String var) {
     switch(var) {
+    case VAR_providerName:
+      return 1;
+    case VAR_requestedClientId:
+      return 0;
+    case VAR_requestedEnvironmentVariable:
+      return 0;
+    case VAR_providerRequestInstructions:
+      return 0;
+    case VAR_providerUrl:
+      return 0;
       default:
         return BaseModel.htmCellBaseModel(var);
     }
